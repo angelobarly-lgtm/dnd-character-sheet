@@ -1,0 +1,41 @@
+name: Build Android APK
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Create Android platform files
+        run: flutter create --platforms=android --project-name dnd_character_sheet .
+
+      - name: Get dependencies
+        run: flutter pub get
+
+      - name: Generate app icon
+        run: dart run flutter_launcher_icons
+
+      - name: Analyze
+        run: flutter analyze
+
+      - name: Build APK
+        run: flutter build apk --debug
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: dnd-character-sheet-v0.1-apk
+          path: build/app/outputs/flutter-apk/app-debug.apk
+          retention-days: 14
