@@ -116,7 +116,7 @@ class _HomePageState extends State<HomePage>{
               Text('Umano · Monaco ${hero!.level}${hero!.subclass==null?'':' · ${hero!.subclass}'}'),
               Text('PF ${hero!.currentHp<0?hero!.maxHp:hero!.currentHp}/${hero!.maxHp} · Ki ${hero!.ki}/${hero!.maxKi}'),
             ])),const Icon(Icons.chevron_right)
-          ])))),
+          ]))),
         TextButton(onPressed:()async{await Store.clear();setState(()=>hero=null);},child:const Text('Elimina personaggio')),
       ]),
     ),
