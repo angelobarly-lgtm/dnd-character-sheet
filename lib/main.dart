@@ -167,7 +167,7 @@ class _CreatorPageState extends State<CreatorPage> {
           const Divider(),
           const Text('Caratteristiche', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
           DropdownButtonFormField<StatMethod>(
-            value: method,
+            initialValue: method,
             items: const [
               DropdownMenuItem(value: StatMethod.standard, child: Text('Valori standard')),
               DropdownMenuItem(value: StatMethod.pointBuy, child: Text('Acquisto punti · 27')),
