@@ -1,7 +1,7 @@
 name: dnd_character_sheet
-description: D&D 5e 2014 character sheet - V0.1 prototype
+description: D&D 5e 2014 character sheet - V0.1
 publish_to: "none"
-version: 0.1.0+1
+version: 0.1.0+2
 
 environment:
   sdk: ">=3.4.0 <4.0.0"
@@ -9,6 +9,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  shared_preferences: ^2.3.3
 
 dev_dependencies:
   flutter_test:
@@ -18,6 +19,8 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+  assets:
+    - assets/app_icon.png
 
 flutter_launcher_icons:
   android: true

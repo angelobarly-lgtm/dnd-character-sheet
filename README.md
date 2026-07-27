@@ -1,17 +1,21 @@
-# D&D Character Sheet V0.1
+# D&D Character Sheet — V0.1
 
-Prototipo Flutter mobile per D&D 5e (2014).
+Seconda build: prima V0.1 funzionale del prototipo Monaco.
 
-## V0.1
-- Creazione rapida di un Monaco umano
-- Quattro metodi per le caratteristiche: standard, point buy, 4d6 scarta il minore, manuale
-- Scheda mobile
-- PF attuali e temporanei modificabili
-- Tiri salvezza contro morte interattivi
-- Avanzamento di livello del Monaco
-- Ki dal livello 2, scalabile con il livello da Monaco
-- Capacità Ki con consumo automatico
-- Riposo breve/lungo con recupero Ki
-- Dado di Arti Marziali scalabile
+Include:
+- Umano 2014 (+1 a tutte le caratteristiche)
+- Standard Array assegnabile liberamente
+- Point Buy 27
+- 4d6 con dadi visibili e assegnazione dei risultati
+- Inserimento manuale
+- Scheda mobile più vicina alla scheda cartacea
+- PF, PF temporanei e TS contro morte interattivi
+- Dadi Vita d8 e uso durante riposo breve
+- Ki scalabile e recupero
+- Progressione Monaco fino al livello 5 con capacità
+- Scelta Tradizione Monastica al livello 3
+- ASI / talento al livello 4
+- PF aumentati a ogni livello
+- Salvataggio locale del personaggio
 
-Il progetto è volutamente piccolo: serve come base del motore prima di aggiungere tutte le razze, classi, sottoclassi, talenti e incantesimi.
+Nota: descrizioni integrali e pagine dei manuali sono lasciate come segnaposto finché non vengono verificate sulle fonti fornite.
