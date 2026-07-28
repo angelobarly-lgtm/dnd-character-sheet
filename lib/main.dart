@@ -102,7 +102,7 @@ class HeroData {
   Map<String, int> get scores {
     final out = Map<String, int>.from(baseScores);
     if (race == 'Umano') {
-      for (final a in abilities) out[a] = out[a]! + 1;
+      for (final a in abilities) { out[a] = out[a]! + 1; }
     } else if (race == 'Nano') {
       out['COS'] = out['COS']! + 2;
       if (subrace == 'Nano delle Colline') out['SAG'] = out['SAG']! + 1;
@@ -121,8 +121,8 @@ class HeroData {
     final con = mod(scores['COS']!);
     final dwarvenToughness =
         race == 'Nano' && subrace == 'Nano delle Colline' ? level : 0;
-    return max(1, 8 + con) +
-        hpRolls.fold(0, (s, r) => s + max(1, r + con)) +
+    return max(1, 8 + con).toInt() +
+        hpRolls.fold(0, (s, r) => s + max(1, r + con).toInt()) +
         dwarvenToughness;
   }
 
@@ -705,7 +705,7 @@ class _CreatorPageState extends State<CreatorPage> {
               ),
               const SizedBox(height: 12),
               DropdownButtonFormField<String>(
-                value: race,
+                initialValue: race,
                 decoration: const InputDecoration(labelText: 'Razza', border: OutlineInputBorder()),
                 items: const [
                   DropdownMenuItem(value: 'Umano', child: Text('Umano (2014)')),
@@ -716,7 +716,7 @@ class _CreatorPageState extends State<CreatorPage> {
               if (race == 'Nano') ...[
                 const SizedBox(height: 10),
                 DropdownButtonFormField<String>(
-                  value: subrace,
+                  initialValue: subrace,
                   decoration: const InputDecoration(labelText: 'Sottorazza', border: OutlineInputBorder()),
                   items: const [
                     DropdownMenuItem(value: 'Nano delle Colline', child: Text('Nano delle Colline')),
