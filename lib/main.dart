@@ -1296,7 +1296,7 @@ class _AsiPageState extends State<AsiPage> {
             children: [
               RadioGroup<String>(
                 groupValue: mode,
-                onChanged: (v) => setState(() => mode = v),
+                onChanged: (v) { if (v != null) setState(() => mode = v); },
                 child: const Column(
                   children: [
                     RadioListTile(
