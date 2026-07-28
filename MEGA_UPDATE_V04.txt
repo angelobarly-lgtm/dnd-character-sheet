@@ -1,0 +1,22 @@
+D&D Character Sheet - V0.4 MEGA UPDATE
+
+Unisce la prima patch V0.4 con il passaggio grafico generale.
+
+INCLUSO:
+- Home fantasy "Cronache degli Eroi"
+- gestione multipersonaggio e migrazione del vecchio salvataggio
+- creazione PG ridisegnata con sezioni e razze espandibili/selezionabili
+- Umano, Umano Variante, Nano, Nano delle Colline, Nano delle Montagne
+- correzione PF Nano delle Colline (+1 PF per livello)
+- tema globale pergamena / inchiostro / rosso vino / oro
+- scheda principale ridisegnata in stile cartaceo: intestazione, CA, iniziativa,
+  velocità, competenza e caratteristiche a riquadri
+- Capacità, Equipaggiamento e Profilo armonizzati graficamente
+- ASI e placeholder generici della Tradizione rimossi dalla lista Capacità
+- Via della Mano Aperta: Integrità del Corpo al livello 6
+- funzioni esistenti di PF, Ki, dadi, riposi e level-up mantenute
+
+NOTA:
+Questo update fissa la direzione grafica generale. Il mockup Kael resta il riferimento
+per le rifiniture dopo il test su dispositivo. Armi complete, talenti completi e testi
+dei manuali saranno implementati progressivamente senza cambiare il linguaggio grafico.

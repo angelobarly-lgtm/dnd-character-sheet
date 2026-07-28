@@ -1,0 +1,17 @@
+V0.4 Mega Update — Monaco 1–20
+
+Inclusi:
+- progressione base del Monaco fino al livello 20
+- dado Arti Marziali fino a d10
+- movimento senza armatura progressivo
+- limite level-up al 20
+- progressione privilegi di tradizione ai livelli 3/6/11/17
+- PHB: Mano Aperta, Ombra, Quattro Elementi
+- Xanathar: Maestro Ubriaco, Kensei, Anima Solare
+- Tasha: Sé Astrale, Misericordia
+- descrizioni compatte/parafrasate per i privilegi base e Mano Aperta
+- grafica e correzioni del precedente Mega Update conservate
+
+Nota fonti:
+le descrizioni sono riassunti funzionali, non trascrizioni integrali dei manuali.
+I dettagli meccanici non verificabili dai file sorgente disponibili non sono stati inventati.

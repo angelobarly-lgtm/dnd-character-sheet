@@ -14,23 +14,17 @@ String sign(int n) => n >= 0 ? '+$n' : '$n';
 const monkFeaturesByLevel = <int, List<String>>{
   1: ['Difesa Senza Armatura', 'Arti Marziali'],
   2: ['Ki', 'Movimento Senza Armatura'],
-  3: ['Deviare Proiettili', 'Tradizione Monastica'],
-  4: ['Caduta Lenta', 'Aumento dei Punteggi di Caratteristica'],
+  3: ['Deviare Proiettili'],
+  4: ['Caduta Lenta'],
   5: ['Attacco Extra', 'Colpo Stordente'],
-  6: ['Colpi Ki Potenziati', 'Privilegio della Tradizione Monastica'],
-  7: ['Elusione', 'Quiete della Mente'],
-  8: ['Aumento dei Punteggi di Caratteristica'],
+  6: ['Colpi Ki Potenziati'],
+  7: ['Elusione', 'Mente Lucida'],
   9: ['Miglioramento del Movimento Senza Armatura'],
   10: ['Purezza del Corpo'],
-  11: ['Privilegio della Tradizione Monastica'],
-  12: ['Aumento dei Punteggi di Caratteristica'],
   13: ['Lingua del Sole e della Luna'],
   14: ['Anima Adamantina'],
   15: ['Corpo Senza Tempo'],
-  16: ['Aumento dei Punteggi di Caratteristica'],
-  17: ['Privilegio della Tradizione Monastica'],
   18: ['Corpo Vuoto'],
-  19: ['Aumento dei Punteggi di Caratteristica'],
   20: ['Perfezione Interiore'],
 };
 
@@ -45,13 +39,37 @@ const subclassDescriptions = <String, String>{
 
 const subclassFeaturesByLevel = <String, Map<int, List<String>>>{
   'Via della Mano Aperta': {
-    3: ['Tecnica della Mano Aperta'],
+    3: ['Tecnica della Mano Aperta'], 6: ['Integrità del Corpo'],
+    11: ['Tranquillità'], 17: ['Palmo Tremante'],
   },
   'Via dell’Ombra': {
-    3: ['Arti dell’Ombra'],
+    3: ['Arti dell’Ombra'], 6: ['Passo d’Ombra'],
+    11: ['Manto d’Ombra'], 17: ['Opportunista'],
   },
   'Via dei Quattro Elementi': {
-    3: ['Discepolo degli Elementi'],
+    3: ['Discepolo degli Elementi'], 6: ['Discipline Elementali Aggiuntive'],
+    11: ['Discipline Elementali Aggiuntive'], 17: ['Discipline Elementali Aggiuntive'],
+  },
+  'Via del Maestro Ubriaco': {
+    3: ['Competenza Bonus', 'Tecnica dell’Ubriaco'], 6: ['Ondeggiamento Barcollante'],
+    11: ['Fortuna dell’Ubriaco'], 17: ['Frenesia Intossicata'],
+  },
+  'Via del Kensei': {
+    3: ['Via del Kensei'], 6: ['Uno con la Lama'],
+    11: ['Affilare la Lama'], 17: ['Precisione Infallibile'],
+  },
+  'Via dell’Anima Solare': {
+    3: ['Dardo Solare Radiante'], 6: ['Colpo ad Arco Bruciante'],
+    11: ['Esplosione Solare Rovente'], 17: ['Scudo Solare'],
+  },
+  'Via del Sé Astrale': {
+    3: ['Braccia del Sé Astrale'], 6: ['Volto del Sé Astrale'],
+    11: ['Corpo del Sé Astrale'], 17: ['Sé Astrale Risvegliato'],
+  },
+  'Via della Misericordia': {
+    3: ['Strumenti della Misericordia', 'Mani della Guarigione', 'Mani del Dolore'],
+    6: ['Tocco del Medico'], 11: ['Raffica di Guarigione e Dolore'],
+    17: ['Mano della Misericordia Suprema'],
   },
 };
 
@@ -101,8 +119,11 @@ class HeroData {
       level < 5 ? 'd4' : level < 11 ? 'd6' : level < 17 ? 'd8' : 'd10';
   int get maxHp {
     final con = mod(scores['COS']!);
+    final dwarvenToughness =
+        race == 'Nano' && subrace == 'Nano delle Colline' ? level : 0;
     return max(1, 8 + con) +
-        hpRolls.fold(0, (s, r) => s + max(1, r + con));
+        hpRolls.fold(0, (s, r) => s + max(1, r + con)) +
+        dwarvenToughness;
   }
 
   int get ac => 10 + mod(scores['DES']!) + mod(scores['SAG']!);
@@ -116,7 +137,14 @@ class HeroData {
   List<String> get features {
     final out = <String>[];
     for (var l = 1; l <= level; l++) {
-      out.addAll(monkFeaturesByLevel[l] ?? const []);
+      out.addAll(
+        (monkFeaturesByLevel[l] ?? const []).where(
+          (f) =>
+              f != 'Aumento dei Punteggi di Caratteristica' &&
+              f != 'Tradizione Monastica' &&
+              f != 'Privilegio della Tradizione Monastica',
+        ),
+      );
       if (subclass != null) {
         out.addAll(subclassFeaturesByLevel[subclass]?[l] ?? const []);
       }
@@ -168,20 +196,60 @@ class HeroData {
 }
 
 class Store {
-  static const key = 'hero_v01'; // mantiene i salvataggi V0.1
-  static Future<void> save(HeroData h) async {
+  static const legacyKey = 'hero_v01';
+  static const heroesKey = 'heroes_v04';
+
+  static Future<List<HeroData>> loadAll() async {
     final p = await SharedPreferences.getInstance();
-    await p.setString(key, jsonEncode(h.toJson()));
+    final saved = p.getString(heroesKey);
+    if (saved != null) {
+      final decoded = jsonDecode(saved);
+      if (decoded is List) {
+        return decoded
+            .map((e) => HeroData.fromJson(Map<String, dynamic>.from(e)))
+            .toList();
+      }
+    }
+    final legacy = p.getString(legacyKey);
+    if (legacy != null) {
+      final hero = HeroData.fromJson(
+        Map<String, dynamic>.from(jsonDecode(legacy)),
+      );
+      await saveAll([hero]);
+      return [hero];
+    }
+    return [];
+  }
+
+  static Future<void> saveAll(List<HeroData> heroes) async {
+    final p = await SharedPreferences.getInstance();
+    await p.setString(
+      heroesKey,
+      jsonEncode(heroes.map((h) => h.toJson()).toList()),
+    );
+  }
+
+  static Future<void> save(HeroData hero) async {
+    final heroes = await loadAll();
+    final index = heroes.indexWhere((h) => h.name == hero.name);
+    if (index >= 0) {
+      heroes[index] = hero;
+    } else {
+      heroes.add(hero);
+    }
+    await saveAll(heroes);
   }
 
   static Future<HeroData?> load() async {
-    final p = await SharedPreferences.getInstance();
-    final s = p.getString(key);
-    return s == null ? null : HeroData.fromJson(jsonDecode(s));
+    final heroes = await loadAll();
+    return heroes.isEmpty ? null : heroes.first;
   }
 
-  static Future<void> clear() async =>
-      (await SharedPreferences.getInstance()).remove(key);
+  static Future<void> clear() async {
+    final p = await SharedPreferences.getInstance();
+    await p.remove(heroesKey);
+    await p.remove(legacyKey);
+  }
 }
 
 class DndApp extends StatelessWidget {
@@ -210,101 +278,346 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  HeroData? hero;
+  List<HeroData> heroes = [];
   bool loading = true;
+
+  static const parchment = Color(0xffeee3c7);
+  static const ink = Color(0xff211d19);
+  static const wine = Color(0xff6f1d1b);
+  static const gold = Color(0xff9a793e);
 
   @override
   void initState() {
     super.initState();
-    Store.load().then((h) {
-      if (mounted) setState(() { hero = h; loading = false; });
+    _reload();
+  }
+
+  Future<void> _reload() async {
+    final loaded = await Store.loadAll();
+    if (!mounted) return;
+    setState(() {
+      heroes = loaded;
+      loading = false;
     });
   }
 
+  Future<void> _createHero() async {
+    final h = await Navigator.push<HeroData>(
+      context,
+      MaterialPageRoute(builder: (_) => const CreatorPage()),
+    );
+    if (h == null) return;
+    await Store.save(h);
+    await _reload();
+  }
+
+  Future<void> _openHero(HeroData h) async {
+    await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (_) => SheetPage(hero: h)),
+    );
+    await Store.save(h);
+    await _reload();
+  }
+
+  Widget _ornament() => const Row(
+        children: [
+          Expanded(child: Divider(color: gold, thickness: 1)),
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 10),
+            child: Icon(Icons.auto_awesome, size: 18, color: gold),
+          ),
+          Expanded(child: Divider(color: gold, thickness: 1)),
+        ],
+      );
+
+  Widget _heroCard(HeroData h) => InkWell(
+        onTap: () => _openHero(h),
+        child: Container(
+          margin: const EdgeInsets.only(bottom: 14),
+          decoration: BoxDecoration(
+            color: const Color(0xfff7f0dd),
+            border: Border.all(color: ink, width: 1.5),
+            boxShadow: const [
+              BoxShadow(
+                blurRadius: 4,
+                offset: Offset(0, 2),
+                color: Color(0x33000000),
+              ),
+            ],
+          ),
+          child: Column(
+            children: [
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+                color: ink,
+                child: Text(
+                  h.name.toUpperCase(),
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                    color: Color(0xfff4ead0),
+                    fontSize: 19,
+                    fontWeight: FontWeight.w900,
+                    letterSpacing: 1.2,
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(14),
+                child: Column(
+                  children: [
+                    Text(
+                      'Monaco ${h.level} · ${h.raceLabel}',
+                      style: const TextStyle(fontWeight: FontWeight.w700),
+                    ),
+                    if (h.subclass != null)
+                      Padding(
+                        padding: const EdgeInsets.only(top: 3),
+                        child: Text(
+                          h.subclass!,
+                          textAlign: TextAlign.center,
+                          style: const TextStyle(fontStyle: FontStyle.italic),
+                        ),
+                      ),
+                    const Divider(height: 22),
+                    Row(
+                      children: [
+                        Expanded(child: _HomeMetric('PF', '${h.currentHp < 0 ? h.maxHp : h.currentHp}/${h.maxHp}')),
+                        Expanded(child: _HomeMetric('CA', '${h.ac}')),
+                        Expanded(child: _HomeMetric('KI', '${h.ki}/${h.maxKi}')),
+                      ],
+                    ),
+                    const SizedBox(height: 8),
+                    const Text(
+                      'TOCCA PER APRIRE LA SCHEDA',
+                      style: TextStyle(
+                        fontSize: 11,
+                        fontWeight: FontWeight.w800,
+                        letterSpacing: .8,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+
   @override
   Widget build(BuildContext context) => Scaffold(
-        appBar: AppBar(title: const Text('D&D 5e · Scheda Personaggio')),
+        backgroundColor: parchment,
         body: SafeArea(
           child: loading
               ? const Center(child: CircularProgressIndicator())
-              : Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: hero == null
-                      ? Center(
-                          child: FilledButton.icon(
-                            icon: const Icon(Icons.person_add),
-                            label: const Text('NUOVO PERSONAGGIO'),
-                            onPressed: () async {
-                              final h = await Navigator.push<HeroData>(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (_) => const CreatorPage()),
-                              );
-                              if (h != null) {
-                                await Store.save(h);
-                                if (mounted) setState(() => hero = h);
-                              }
-                            },
-                          ),
-                        )
-                      : Column(
-                          children: [
-                            Expanded(
-                              child: InkWell(
-                                onTap: () async {
-                                  await Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (_) => SheetPage(hero: hero!)),
-                                  );
-                                  if (mounted) setState(() {});
-                                },
-                                child: Card(
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(16),
-                                    child: Row(
-                                      children: [
-                                        const Icon(Icons.person, size: 34),
-                                        const SizedBox(width: 14),
-                                        Expanded(
-                                          child: Column(
-                                            mainAxisSize: MainAxisSize.min,
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Text(hero!.name,
-                                                  style: Theme.of(context)
-                                                      .textTheme
-                                                      .titleLarge),
-                                              Text(
-                                                  '${hero!.raceLabel} · Monaco ${hero!.level}${hero!.subclass == null ? '' : ' · ${hero!.subclass}'}'),
-                                              Text(
-                                                  'PF ${hero!.currentHp < 0 ? hero!.maxHp : hero!.currentHp}/${hero!.maxHp} · Ki ${hero!.ki}/${hero!.maxKi}'),
-                                            ],
-                                          ),
-                                        ),
-                                        const Icon(Icons.chevron_right),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                            TextButton(
-                              onPressed: () async {
-                                await Store.clear();
-                                if (mounted) setState(() => hero = null);
-                              },
-                              child: const Text('Elimina personaggio'),
-                            ),
-                          ],
+              : Container(
+                  decoration: const BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [Color(0xfff4ecd8), Color(0xffe8d9b8)],
+                    ),
+                  ),
+                  child: ListView(
+                    padding: const EdgeInsets.fromLTRB(18, 24, 18, 30),
+                    children: [
+                      const Icon(Icons.shield_outlined, size: 44, color: wine),
+                      const SizedBox(height: 8),
+                      const Text(
+                        'CRONACHE DEGLI EROI',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          color: ink,
+                          fontSize: 25,
+                          fontWeight: FontWeight.w900,
+                          letterSpacing: 1.5,
                         ),
+                      ),
+                      const Text(
+                        'D&D · Scheda Personaggio',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          color: Color(0xff5c5144),
+                          fontStyle: FontStyle.italic,
+                        ),
+                      ),
+                      const SizedBox(height: 14),
+                      _ornament(),
+                      const SizedBox(height: 22),
+                      Text(
+                        heroes.isEmpty ? 'INIZIA UNA NUOVA AVVENTURA' : 'I TUOI PERSONAGGI',
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.w800,
+                          letterSpacing: 1.2,
+                        ),
+                      ),
+                      const SizedBox(height: 14),
+                      ...heroes.map(_heroCard),
+                      if (heroes.isEmpty)
+                        const Padding(
+                          padding: EdgeInsets.fromLTRB(14, 10, 14, 24),
+                          child: Text(
+                            'Ogni leggenda comincia da un nome. Crea il tuo personaggio e prepara la sua scheda per l’avventura.',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(fontSize: 15, height: 1.4),
+                          ),
+                        ),
+                      OutlinedButton.icon(
+                        onPressed: _createHero,
+                        icon: const Icon(Icons.add, color: wine),
+                        label: Text(
+                          heroes.isEmpty ? 'CREA IL TUO PRIMO PG' : 'CREA NUOVO PG',
+                          style: const TextStyle(
+                            fontWeight: FontWeight.w900,
+                            letterSpacing: 1,
+                          ),
+                        ),
+                        style: OutlinedButton.styleFrom(
+                          foregroundColor: ink,
+                          backgroundColor: const Color(0xfff7f0dd),
+                          side: const BorderSide(color: wine, width: 2),
+                          padding: const EdgeInsets.symmetric(vertical: 16),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
         ),
       );
 }
 
+class _HomeMetric extends StatelessWidget {
+  const _HomeMetric(this.label, this.value);
+  final String label, value;
+
+  @override
+  Widget build(BuildContext context) => Column(
+        children: [
+          Text(value, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w900)),
+          Text(label, style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w700)),
+        ],
+      );
+}
+
 enum StatMethod { standard, pointBuy, dice, manual }
+
+
+class FantasySection extends StatelessWidget {
+  const FantasySection({
+    super.key,
+    required this.title,
+    required this.child,
+    this.subtitle,
+  });
+
+  final String title;
+  final String? subtitle;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) => Container(
+        margin: const EdgeInsets.only(bottom: 14),
+        decoration: BoxDecoration(
+          color: const Color(0xfff7f0dd),
+          border: Border.all(color: const Color(0xff2b2722), width: 1.3),
+          borderRadius: BorderRadius.circular(3),
+          boxShadow: const [
+            BoxShadow(
+              blurRadius: 3,
+              offset: Offset(0, 2),
+              color: Color(0x22000000),
+            ),
+          ],
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+              color: const Color(0xff211d19),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title.toUpperCase(),
+                    style: const TextStyle(
+                      color: Color(0xfff4ead0),
+                      fontWeight: FontWeight.w900,
+                      letterSpacing: 1,
+                    ),
+                  ),
+                  if (subtitle != null)
+                    Text(
+                      subtitle!,
+                      style: const TextStyle(
+                        color: Color(0xffd9c8a5),
+                        fontSize: 11,
+                        fontStyle: FontStyle.italic,
+                      ),
+                    ),
+                ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(12),
+              child: child,
+            ),
+          ],
+        ),
+      );
+}
+
+class SheetBox extends StatelessWidget {
+  const SheetBox({
+    super.key,
+    required this.label,
+    required this.value,
+    this.onTap,
+  });
+
+  final String label;
+  final String value;
+  final VoidCallback? onTap;
+
+  @override
+  Widget build(BuildContext context) => InkWell(
+        onTap: onTap,
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 9),
+          decoration: BoxDecoration(
+            color: const Color(0xfffbf6e9),
+            border: Border.all(color: const Color(0xff2b2722), width: 1.2),
+            borderRadius: BorderRadius.circular(3),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                value,
+                textAlign: TextAlign.center,
+                style: const TextStyle(
+                  fontSize: 19,
+                  fontWeight: FontWeight.w900,
+                  color: Color(0xff211d19),
+                ),
+              ),
+              const SizedBox(height: 2),
+              Text(
+                label.toUpperCase(),
+                textAlign: TextAlign.center,
+                style: const TextStyle(
+                  fontSize: 9,
+                  fontWeight: FontWeight.w800,
+                  letterSpacing: .7,
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+}
 
 class CreatorPage extends StatefulWidget {
   const CreatorPage({super.key});
@@ -373,7 +686,7 @@ class _CreatorPageState extends State<CreatorPage> {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-        appBar: AppBar(title: const Text('Creazione · V0.2')),
+        appBar: AppBar(title: const Text('Creazione · V0.4')),
         body: SafeArea(
           child: ListView(
             padding: const EdgeInsets.all(16),
@@ -381,7 +694,7 @@ class _CreatorPageState extends State<CreatorPage> {
               Text('Crea il personaggio',
                   style: Theme.of(context).textTheme.headlineSmall),
               const Text(
-                  'V0.2: flusso più leggibile, con il bonus razziale sempre visibile.'),
+                  'V0.4: creazione del personaggio con scelte più leggibili e stile coerente con la scheda.'),
               const SizedBox(height: 14),
               TextField(
                 controller: name,
@@ -1092,6 +1405,31 @@ class DeathRow extends StatelessWidget {
         ],
       );
 }
+
+
+const monkFeatureInfo = <String, String>{
+  'Difesa Senza Armatura': 'Senza armatura e scudo, la CA usa Destrezza e Saggezza oltre alla base 10.',
+  'Arti Marziali': 'Migliora colpi senz’armi e armi da monaco; il dado cresce ai livelli 5, 11 e 17.',
+  'Ki': 'Riserva pari al livello da Monaco, usata per alimentare tecniche speciali e recuperata con il riposo previsto.',
+  'Movimento Senza Armatura': 'Aumenta la velocità quando non indossi armatura e non usi uno scudo.',
+  'Deviare Proiettili': 'Usa la reazione per ridurre i danni di un attacco a distanza con arma e, in certe condizioni, rilanciare il proiettile.',
+  'Caduta Lenta': 'Usa la reazione per ridurre i danni da caduta in funzione del livello.',
+  'Attacco Extra': 'Quando usi l’azione Attacco, puoi effettuare due attacchi.',
+  'Colpo Stordente': 'Dopo un colpo in mischia puoi spendere Ki per tentare di stordire il bersaglio.',
+  'Colpi Ki Potenziati': 'I colpi senz’armi contano come magici per superare resistenze e immunità appropriate.',
+  'Elusione': 'Migliora la difesa contro effetti basati su tiri salvezza su Destrezza.',
+  'Mente Lucida': 'Permette di terminare su di te un effetto di affascinato o spaventato.',
+  'Purezza del Corpo': 'Conferisce immunità alle malattie e ai veleni.',
+  'Lingua del Sole e della Luna': 'Permette di comprendere le lingue parlate e farsi comprendere da chi conosce una lingua.',
+  'Anima Adamantina': 'Conferisce competenza in tutti i tiri salvezza e consente di usare Ki per ritentare un fallimento.',
+  'Corpo Senza Tempo': 'Il Ki protegge il corpo dagli effetti debilitanti dell’età e riduce alcuni bisogni fisici.',
+  'Corpo Vuoto': 'Tecnica di alto livello che usa Ki per ottenere potenti difese e accedere alla proiezione astrale.',
+  'Perfezione Interiore': 'Al livello 20 permette di recuperare una piccola riserva di Ki entrando in combattimento senza Ki.',
+  'Tecnica della Mano Aperta': 'Aggiunge effetti di controllo ai colpi della Raffica di Colpi.',
+  'Integrità del Corpo': 'Permette di recuperare punti ferita con un’azione; l’uso è limitato.',
+  'Tranquillità': 'Dopo un riposo lungo fornisce una protezione che ostacola gli attacchi finché l’effetto non viene interrotto.',
+  'Palmo Tremante': 'Tecnica culminante della Mano Aperta che imprime vibrazioni letali attivabili successivamente.',
+};
 
 class AbilityActionTile extends StatelessWidget {
   const AbilityActionTile(
