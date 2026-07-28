@@ -135,11 +135,14 @@ class _HomePageState extends State<HomePage>{
                 },
                 child: const Text('Elimina personaggio'),
               ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
+    );
   }
+}
 
 enum StatMethod{standard,pointBuy,dice,manual}
 class CreatorPage extends StatefulWidget{const CreatorPage({super.key});@override State<CreatorPage> createState()=>_CreatorPageState();}
