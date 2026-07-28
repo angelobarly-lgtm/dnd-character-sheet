@@ -1,8 +1,8 @@
-# D&D Character Sheet — V0.2
+# D&D Character Sheet — V0.3
 
 Prima revisione della V0.1 funzionale del prototipo Monaco.
 
-## Correzioni V0.2
+## Correzioni V0.3
 - Navigazione Scheda / Capacità / Equip. / Profilo funzionante
 - Ki modificabile con pulsanti + e -
 - Uso capacità Ki con finestra protetta dalla SafeArea

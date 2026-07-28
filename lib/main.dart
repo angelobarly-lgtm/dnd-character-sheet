@@ -17,6 +17,21 @@ const monkFeaturesByLevel = <int, List<String>>{
   3: ['Deviare Proiettili', 'Tradizione Monastica'],
   4: ['Caduta Lenta', 'Aumento dei Punteggi di Caratteristica'],
   5: ['Attacco Extra', 'Colpo Stordente'],
+  6: ['Colpi Ki Potenziati', 'Privilegio della Tradizione Monastica'],
+  7: ['Elusione', 'Quiete della Mente'],
+  8: ['Aumento dei Punteggi di Caratteristica'],
+  9: ['Miglioramento del Movimento Senza Armatura'],
+  10: ['Purezza del Corpo'],
+  11: ['Privilegio della Tradizione Monastica'],
+  12: ['Aumento dei Punteggi di Caratteristica'],
+  13: ['Lingua del Sole e della Luna'],
+  14: ['Anima Adamantina'],
+  15: ['Corpo Senza Tempo'],
+  16: ['Aumento dei Punteggi di Caratteristica'],
+  17: ['Privilegio della Tradizione Monastica'],
+  18: ['Corpo Vuoto'],
+  19: ['Aumento dei Punteggi di Caratteristica'],
+  20: ['Perfezione Interiore'],
 };
 
 const subclassDescriptions = <String, String>{
@@ -54,16 +69,30 @@ class HeroData {
     this.feat,
     this.deathSuccess = 0,
     this.deathFail = 0,
+    this.race = 'Umano',
+    this.subrace,
   });
 
   String name;
+  String race;
+  String? subrace;
   Map<String, int> baseScores;
   int level, currentHp, tempHp, ki, hitDiceUsed, deathSuccess, deathFail;
   List<int> hpRolls;
   String? subclass, feat;
 
-  Map<String, int> get scores =>
-      {for (final a in abilities) a: baseScores[a]! + 1}; // Umano 2014
+  Map<String, int> get scores {
+    final out = Map<String, int>.from(baseScores);
+    if (race == 'Umano') {
+      for (final a in abilities) out[a] = out[a]! + 1;
+    } else if (race == 'Nano') {
+      out['COS'] = out['COS']! + 2;
+      if (subrace == 'Nano delle Colline') out['SAG'] = out['SAG']! + 1;
+      if (subrace == 'Nano delle Montagne') out['FOR'] = out['FOR']! + 2;
+    }
+    return out;
+  }
+  String get raceLabel => race == 'Nano' && subrace != null ? subrace! : race;
   int get prof =>
       level < 5 ? 2 : level < 9 ? 3 : level < 13 ? 4 : level < 17 ? 5 : 6;
   int get maxKi => level >= 2 ? level : 0;
@@ -78,7 +107,11 @@ class HeroData {
 
   int get ac => 10 + mod(scores['DES']!) + mod(scores['SAG']!);
   int get initiative => mod(scores['DES']!);
-  int get speed => level >= 2 ? 12 : 9;
+  int get speed {
+    final base = race == 'Nano' ? 7.5 : 9.0;
+    final bonus = level >= 2 ? (level >= 18 ? 9 : level >= 14 ? 7.5 : level >= 10 ? 6 : level >= 6 ? 4.5 : 3) : 0;
+    return (base + bonus).round();
+  }
 
   List<String> get features {
     final out = <String>[];
@@ -112,6 +145,8 @@ class HeroData {
         'feat': feat,
         'deathSuccess': deathSuccess,
         'deathFail': deathFail,
+        'race': race,
+        'subrace': subrace,
       };
 
   factory HeroData.fromJson(Map<String, dynamic> j) => HeroData(
@@ -127,6 +162,8 @@ class HeroData {
         feat: j['feat'],
         deathSuccess: j['deathSuccess'] ?? 0,
         deathFail: j['deathFail'] ?? 0,
+        race: j['race'] ?? 'Umano',
+        subrace: j['subrace'],
       );
 }
 
@@ -240,7 +277,7 @@ class _HomePageState extends State<HomePage> {
                                                       .textTheme
                                                       .titleLarge),
                                               Text(
-                                                  'Umano · Monaco ${hero!.level}${hero!.subclass == null ? '' : ' · ${hero!.subclass}'}'),
+                                                  '${hero!.raceLabel} · Monaco ${hero!.level}${hero!.subclass == null ? '' : ' · ${hero!.subclass}'}'),
                                               Text(
                                                   'PF ${hero!.currentHp < 0 ? hero!.maxHp : hero!.currentHp}/${hero!.maxHp} · Ki ${hero!.ki}/${hero!.maxKi}'),
                                             ],
@@ -281,6 +318,22 @@ class _CreatorPageState extends State<CreatorPage> {
   Map<String, int?> assigned = {for (final a in abilities) a: null};
   List<List<int>> rolls = [];
   Map<String, int> manual = {for (final a in abilities) a: 8};
+  String race = 'Umano';
+  String? subrace;
+
+  int racialBonus(String a) {
+    if (race == 'Umano') return 1;
+    if (race == 'Nano') {
+      if (a == 'COS') return 2;
+      if (subrace == 'Nano delle Colline' && a == 'SAG') return 1;
+      if (subrace == 'Nano delle Montagne' && a == 'FOR') return 2;
+    }
+    return 0;
+  }
+  String bonusText(String a) {
+    final b = racialBonus(a);
+    return b == 0 ? 'nessun bonus' : '${race == 'Nano' ? (subrace ?? race) : race} +$b';
+  }
 
   int pointCost(int s) =>
       const {8: 0, 9: 1, 10: 2, 11: 3, 12: 4, 13: 5, 14: 7, 15: 9}[s] ??
@@ -338,7 +391,31 @@ class _CreatorPageState extends State<CreatorPage> {
                 ),
               ),
               const SizedBox(height: 12),
-              const InfoTile('Razza', 'Umano (2014) · +1 a tutte le caratteristiche'),
+              DropdownButtonFormField<String>(
+                value: race,
+                decoration: const InputDecoration(labelText: 'Razza', border: OutlineInputBorder()),
+                items: const [
+                  DropdownMenuItem(value: 'Umano', child: Text('Umano (2014)')),
+                  DropdownMenuItem(value: 'Nano', child: Text('Nano (2014)')),
+                ],
+                onChanged: (v) => setState(() { race = v ?? 'Umano'; subrace = null; }),
+              ),
+              if (race == 'Nano') ...[
+                const SizedBox(height: 10),
+                DropdownButtonFormField<String>(
+                  value: subrace,
+                  decoration: const InputDecoration(labelText: 'Sottorazza', border: OutlineInputBorder()),
+                  items: const [
+                    DropdownMenuItem(value: 'Nano delle Colline', child: Text('Nano delle Colline')),
+                    DropdownMenuItem(value: 'Nano delle Montagne', child: Text('Nano delle Montagne')),
+                  ],
+                  onChanged: (v) => setState(() => subrace = v),
+                ),
+                const Padding(
+                  padding: EdgeInsets.only(top: 8),
+                  child: Text('Nano: +2 COS · Colline: +1 SAG · Montagne: +2 FOR · velocità base 7,5 m.'),
+                ),
+              ],
               const InfoTile('Classe', 'Monaco'),
               const InfoTile(
                   'Background', 'Soldato · dati completi nelle versioni successive'),
@@ -430,7 +507,7 @@ class _CreatorPageState extends State<CreatorPage> {
                           style: const TextStyle(fontWeight: FontWeight.bold)),
                       subtitle: Text(current == null
                           ? 'Tocca “Scegli” e assegna uno dei valori disponibili'
-                          : 'Base $current  →  Umano +1  →  ${current + 1}  (${sign(mod(current + 1))})'),
+                          : 'Base $current  →  ${bonusText(a)}  →  ${current + racialBonus(a)}  (${sign(mod(current + racialBonus(a)))})'),
                       trailing: DropdownButton<int>(
                         value: current,
                         hint: const Text('Scegli'),
@@ -449,7 +526,7 @@ class _CreatorPageState extends State<CreatorPage> {
                     title: Text(a,
                         style: const TextStyle(fontWeight: FontWeight.bold)),
                     subtitle: Text(
-                        'Base $val  →  Umano +1  →  ${val + 1}  (${sign(mod(val + 1))})'),
+                        'Base $val  →  ${bonusText(a)}  →  ${val + racialBonus(a)}  (${sign(mod(val + racialBonus(a)))})'),
                     leading: IconButton(
                       icon: const Icon(Icons.remove_circle_outline),
                       onPressed: () {
@@ -500,7 +577,13 @@ class _CreatorPageState extends State<CreatorPage> {
                     }
                     base = Map.of(manual);
                   }
+                  if (race == 'Nano' && subrace == null) {
+                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Scegli la sottorazza del Nano.')));
+                    return;
+                  }
                   final h = HeroData(
+                    race: race,
+                    subrace: subrace,
                     name: name.text.trim().isEmpty
                         ? 'Monaco senza nome'
                         : name.text.trim(),
@@ -631,7 +714,10 @@ class _SheetPageState extends State<SheetPage> {
       context: context,
       useSafeArea: true,
       showDragHandle: true,
-      builder: (ctx) => Padding(
+      builder: (ctx) => SafeArea(
+        top: false,
+        minimum: const EdgeInsets.only(bottom: 12),
+        child: Padding(
         padding: const EdgeInsets.fromLTRB(20, 8, 20, 24),
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -664,6 +750,7 @@ class _SheetPageState extends State<SheetPage> {
             ],
           ],
         ),
+      ),
       ),
     );
   }
@@ -707,117 +794,52 @@ class _SheetPageState extends State<SheetPage> {
   }
 
   Widget sheetTab() => ListView(
-        padding: const EdgeInsets.all(12),
+        padding: const EdgeInsets.fromLTRB(12, 12, 12, 96),
         children: [
-          Center(
-            child: Text('${h.name.toUpperCase()} · MONACO ${h.level}',
-                style: Theme.of(context).textTheme.titleLarge),
-          ),
-          Center(
-            child: Text(
-                'Umano · ${h.subclass ?? 'Tradizione non scelta'} · Bonus competenza ${sign(h.prof)}'),
-          ),
-          const SizedBox(height: 10),
-          Wrap(
-            alignment: WrapAlignment.center,
-            spacing: 6,
-            runSpacing: 6,
-            children: abilities.map(statBox).toList(),
-          ),
-          const SizedBox(height: 12),
-          Row(
-            children: [
-              Expanded(child: Metric('CA', '${h.ac}')),
-              Expanded(child: Metric('INIZ.', sign(h.initiative))),
-              Expanded(child: Metric('VELOCITÀ', '${h.speed} m')),
-              Expanded(
-                  child: Metric(
-                      'PERCEZ.', '${10 + mod(h.scores['SAG']!)}')),
-            ],
-          ),
-          Row(
-            children: [
-              Expanded(
-                child: CounterCard(
-                  title: 'PUNTI FERITA',
-                  value: h.currentHp,
-                  maxValue: h.maxHp,
-                  onMinus: () {
-                    h.currentHp = max(0, h.currentHp - 1);
-                    persist();
-                  },
-                  onPlus: () {
-                    h.currentHp = min(h.maxHp, h.currentHp + 1);
-                    persist();
-                  },
-                ),
-              ),
-              Expanded(
-                child: CounterCard(
-                  title: 'PF TEMP.',
-                  value: h.tempHp,
-                  maxValue: 99,
-                  onMinus: () {
-                    h.tempHp = max(0, h.tempHp - 1);
-                    persist();
-                  },
-                  onPlus: () {
-                    h.tempHp++;
-                    persist();
-                  },
-                ),
-              ),
-            ],
-          ),
           Card(
             child: Padding(
               padding: const EdgeInsets.all(12),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text('DADI VITA · d8',
-                      style: Theme.of(context).textTheme.titleMedium),
-                  Text('${h.hitDiceAvailable} / ${h.level} disponibili'),
-                  const SizedBox(height: 6),
-                  Text('TS CONTRO MORTE',
-                      style: Theme.of(context).textTheme.titleMedium),
-                  DeathRow(
-                    label: 'Successi',
-                    value: h.deathSuccess,
-                    onChanged: (v) {
-                      h.deathSuccess = v;
-                      persist();
-                    },
-                  ),
-                  DeathRow(
-                    label: 'Fallimenti',
-                    value: h.deathFail,
-                    onChanged: (v) {
-                      h.deathFail = v;
-                      persist();
-                    },
-                  ),
-                ],
-              ),
+              child: Column(children: [
+                Text(h.name.toUpperCase(), style: Theme.of(context).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold)),
+                Text('Monaco ${h.level} · ${h.raceLabel} · ${h.subclass ?? 'Tradizione non scelta'}'),
+                Text('Bonus competenza ${sign(h.prof)}'),
+              ]),
             ),
           ),
-          Wrap(
-            spacing: 8,
-            runSpacing: 8,
-            children: [
-              OutlinedButton(
-                  onPressed: shortRest, child: const Text('RIPOSO BREVE')),
-              OutlinedButton(
-                  onPressed: longRest, child: const Text('RIPOSO LUNGO')),
-              FilledButton(
-                onPressed: h.level < 20 ? levelUp : null,
-                child: Text(h.level < 20
-                    ? 'SALI AL LIVELLO ${h.level + 1}'
-                    : 'LIVELLO 20'),
-              ),
-            ],
-          ),
-          const SizedBox(height: 80),
+          Wrap(alignment: WrapAlignment.center, spacing: 6, runSpacing: 6, children: abilities.map(statBox).toList()),
+          const SizedBox(height: 8),
+          Row(children: [
+            Expanded(child: Metric('CA', '${h.ac}')),
+            Expanded(child: Metric('INIZ.', sign(h.initiative))),
+            Expanded(child: Metric('VELOCITÀ', '${h.speed} m')),
+            Expanded(child: Metric('PERCEZ.', '${10 + mod(h.scores['SAG']!)}')),
+          ]),
+          Row(children: [
+            Expanded(child: CounterCard(title: 'PUNTI FERITA', value: h.currentHp, maxValue: h.maxHp, onMinus: () { h.currentHp=max(0,h.currentHp-1); persist(); }, onPlus: () { h.currentHp=min(h.maxHp,h.currentHp+1); persist(); })),
+            Expanded(child: CounterCard(title: 'PF TEMP.', value: h.tempHp, maxValue: 99, onMinus: () { h.tempHp=max(0,h.tempHp-1); persist(); }, onPlus: () { h.tempHp++; persist(); })),
+          ]),
+          Card(child: Padding(padding: const EdgeInsets.all(12), child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            Text('TIRI SALVEZZA', style: Theme.of(context).textTheme.titleMedium),
+            Wrap(spacing: 10, children: abilities.map((a) => Chip(label: Text('$a ${sign(mod(h.scores[a]!) + ((a=='FOR'||a=='DES') ? h.prof : 0))}'))).toList()),
+            const Divider(),
+            Text('ABILITÀ', style: Theme.of(context).textTheme.titleMedium),
+            const Text('Acrobazia (DES) · Addestrare Animali (SAG) · Arcano (INT) · Atletica (FOR) · Furtività (DES) · Indagare (INT) · Inganno (CAR) · Intimidire (CAR) · Intrattenere (CAR) · Intuizione (SAG) · Medicina (SAG) · Natura (INT) · Percezione (SAG) · Persuasione (CAR) · Rapidità di Mano (DES) · Religione (INT) · Sopravvivenza (SAG) · Storia (INT)'),
+            const SizedBox(height: 4),
+            const Text('Le competenze selezionabili verranno collegate al flusso classe/background nella prossima iterazione.'),
+          ]))),
+          Card(child: Padding(padding: const EdgeInsets.all(12), child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            Text('DADI VITA · d8', style: Theme.of(context).textTheme.titleMedium),
+            Text('${h.hitDiceAvailable} / ${h.level} disponibili'),
+            const SizedBox(height: 8),
+            Text('TS CONTRO MORTE', style: Theme.of(context).textTheme.titleMedium),
+            DeathRow(label: 'Successi', value: h.deathSuccess, onChanged: (v) { h.deathSuccess=v; persist(); }),
+            DeathRow(label: 'Fallimenti', value: h.deathFail, onChanged: (v) { h.deathFail=v; persist(); }),
+          ]))),
+          Wrap(spacing: 8, runSpacing: 8, children: [
+            OutlinedButton(onPressed: shortRest, child: const Text('RIPOSO BREVE')),
+            OutlinedButton(onPressed: longRest, child: const Text('RIPOSO LUNGO')),
+            FilledButton(onPressed: h.level < 20 ? levelUp : null, child: Text(h.level < 20 ? 'SALI AL LIVELLO ${h.level+1}' : 'LIVELLO 20')),
+          ]),
         ],
       );
 
@@ -915,7 +937,7 @@ class _SheetPageState extends State<SheetPage> {
             child: Column(
               children: [
                 ListTile(title: const Text('Nome'), subtitle: Text(h.name)),
-                const ListTile(title: Text('Razza'), subtitle: Text('Umano (2014)')),
+                ListTile(title: const Text('Razza'), subtitle: Text('${h.raceLabel} (2014)')),
                 ListTile(
                     title: const Text('Classe'),
                     subtitle: Text('Monaco ${h.level}')),
