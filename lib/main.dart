@@ -109,19 +109,36 @@ class _HomePageState extends State<HomePage>{
         onPressed:()async{final h=await Navigator.push<HeroData>(context,MaterialPageRoute(builder:(_)=>const CreatorPage()));if(h!=null){await Store.save(h);setState(()=>hero=h);}},
       )):Column(children:[
         Expanded(child:InkWell(onTap:()async{await Navigator.push(context,MaterialPageRoute(builder:(_)=>SheetPage(hero:hero!)));setState((){});},
-          child:Card(child:Padding(padding:const EdgeInsets.all(16),child:Row(children:[
-            const CircleAvatar(radius:32,child:Icon(Icons.person,size:34)),const SizedBox(width:14),
-            Expanded(child:Column(mainAxisSize:MainAxisSize.min,crossAxisAlignment:CrossAxisAlignment.start,children:[
-              Text(hero!.name,style:Theme.of(context).textTheme.titleLarge),
-              Text('Umano · Monaco ${hero!.level}${hero!.subclass==null?'':' · ${hero!.subclass}'}'),
-              Text('PF ${hero!.currentHp<0?hero!.maxHp:hero!.currentHp}/${hero!.maxHp} · Ki ${hero!.ki}/${hero!.maxKi}'),
-            ])),const Icon(Icons.chevron_right)
-          ]))),
-        TextButton(onPressed:()async{await Store.clear();setState(()=>hero=null);},child:const Text('Elimina personaggio')),
-      ]),
-    ),
-  );
-}
+      child: Card(
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Row(
+            children: [
+              const Icon(Icons.person, size: 34),
+              const SizedBox(width: 14),
+              Expanded(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(hero!.name, style: Theme.of(context).textTheme.titleLarge),
+                    Text('Umano · Monaco ${hero!.level}${hero!.subclass == null ? '' : ' · ${hero!.subclass}'}'),
+                    Text('PF ${hero!.currentHp<0?hero!.maxHp:hero!.currentHp}/${hero!.maxHp} · Ki ${hero!.ki}/${hero!.maxKi}'),
+                  ],
+                ),
+              ),
+              const Icon(Icons.chevron_right),
+              TextButton(
+                onPressed: () async {
+                  await Store.clear();
+                  setState(() => hero = null);
+                },
+                child: const Text('Elimina personaggio'),
+              ),
+            ],
+          ),
+        ),
+      ),
 
 enum StatMethod{standard,pointBuy,dice,manual}
 class CreatorPage extends StatefulWidget{const CreatorPage({super.key});@override State<CreatorPage> createState()=>_CreatorPageState();}
