@@ -146,7 +146,6 @@ class _HomePageState extends State<HomePage>{
 ),
 );
   }
-}
 
 enum StatMethod{standard,pointBuy,dice,manual}
 class CreatorPage extends StatefulWidget{const CreatorPage({super.key});@override State<CreatorPage> createState()=>_CreatorPageState();}
