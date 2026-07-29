@@ -139,70 +139,6 @@ const monkFeaturesByLevel = <int, List<String>>{
   20: ['Perfezione Interiore'],
 };
 
-const subclassDescriptions = <String, String>{
-  'Via della Mano Aperta':
-      'Una tradizione focalizzata sul controllo del combattimento senz’armi. In V0.2 la scelta viene prima mostrata in anteprima e confermata solo dopo.',
-  'Via dell’Ombra':
-      'Una tradizione legata a furtività e tecniche d’ombra. Le descrizioni complete restano segnaposto finché non vengono verificate sulle fonti fornite.',
-  'Via dei Quattro Elementi':
-      'Una tradizione che unisce disciplina monastica e tecniche elementali. Le descrizioni complete restano segnaposto finché non vengono verificate sulle fonti fornite.',
-};
-
-const subclassFeaturesByLevel = <String, Map<int, List<String>>>{
-  'Via della Mano Aperta': {
-    3: ['Tecnica della Mano Aperta'],
-    6: ['Integrità del Corpo'],
-    11: ['Tranquillità'],
-    17: ['Palmo Tremante'],
-  },
-  'Via dell’Ombra': {
-    3: ['Arti dell’Ombra'],
-    6: ['Passo d’Ombra'],
-    11: ['Manto d’Ombra'],
-    17: ['Opportunista'],
-  },
-  'Via dei Quattro Elementi': {
-    3: ['Discepolo degli Elementi'],
-    6: ['Discipline Elementali Aggiuntive'],
-    11: ['Discipline Elementali Aggiuntive'],
-    17: ['Discipline Elementali Aggiuntive'],
-  },
-  'Via del Maestro Ubriaco': {
-    3: ['Competenza Bonus', 'Tecnica dell’Ubriaco'],
-    6: ['Ondeggiamento Barcollante'],
-    11: ['Fortuna dell’Ubriaco'],
-    17: ['Frenesia Intossicata'],
-  },
-  'Via del Kensei': {
-    3: ['Via del Kensei'],
-    6: ['Uno con la Lama'],
-    11: ['Affilare la Lama'],
-    17: ['Precisione Infallibile'],
-  },
-  'Via dell’Anima Solare': {
-    3: ['Dardo Solare Radiante'],
-    6: ['Colpo ad Arco Bruciante'],
-    11: ['Esplosione Solare Rovente'],
-    17: ['Scudo Solare'],
-  },
-  'Via del Sé Astrale': {
-    3: ['Braccia del Sé Astrale'],
-    6: ['Volto del Sé Astrale'],
-    11: ['Corpo del Sé Astrale'],
-    17: ['Sé Astrale Risvegliato'],
-  },
-  'Via della Misericordia': {
-    3: [
-      'Strumenti della Misericordia',
-      'Mani della Guarigione',
-      'Mani del Dolore'
-    ],
-    6: ['Tocco del Medico'],
-    11: ['Raffica di Guarigione e Dolore'],
-    17: ['Mano della Misericordia Suprema'],
-  },
-};
-
 const raceDescriptions = <String, String>{
   'Umano':
       'Versatile e adattabile. Nella versione 2014 standard aumenta di 1 tutte le caratteristiche.',
@@ -2571,12 +2507,12 @@ class SubclassPage extends StatelessWidget {
               const Text(
                   'Tocca una Via per vedere cosa offre. La scelta non viene salvata finché non premi “Scegli questa Via”.'),
               const SizedBox(height: 10),
-              ...subclassDescriptions.keys.map(
+              ...monkClass.subclasses.keys.map(
                 (s) => Card(
                   child: ListTile(
                     title: Text(s),
                     subtitle: Text(
-                        'Livello 3: ${(subclassFeaturesByLevel[s]?[3] ?? const []).join(', ')}'),
+                        'Livello 3: ${(monkClass.subclasses[s]?.featuresByLevel[3] ?? const <String>[]).join(', ')}'),
                     trailing: const Icon(Icons.chevron_right),
                     onTap: () async {
                       final confirmed = await Navigator.push<bool>(
@@ -2603,7 +2539,8 @@ class SubclassPreviewPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final level3 = subclassFeaturesByLevel[name]?[3] ?? const [];
+    final level3 =
+        monkClass.subclasses[name]?.featuresByLevel[3] ?? const <String>[];
     return Scaffold(
       appBar: AppBar(
         title: Text(name),
@@ -2615,7 +2552,7 @@ class SubclassPreviewPage extends StatelessWidget {
           children: [
             Text(name, style: Theme.of(context).textTheme.headlineSmall),
             const SizedBox(height: 8),
-            Text(subclassDescriptions[name] ?? ''),
+            Text(monkClass.subclasses[name]?.description ?? ''),
             const SizedBox(height: 18),
             Text('Ottieni al livello 3',
                 style: Theme.of(context).textTheme.titleLarge),
