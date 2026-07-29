@@ -1507,6 +1507,211 @@ class _SheetPageState extends State<SheetPage> {
     if (h.currentHp < 0) h.currentHp = h.maxHp;
   }
 
+  List<SubclassOptionDefinition> get knownElementalDisciplines {
+    final subclassName = h.subclass;
+    if (subclassName == null) {
+      return const <SubclassOptionDefinition>[];
+    }
+
+    final subclass = monkClass.subclasses[subclassName];
+    if (subclass == null) {
+      return const <SubclassOptionDefinition>[];
+    }
+
+    final knownIds = h.subclassOptionIds.toSet();
+
+    return subclass.options
+        .where(
+          (option) =>
+              option.category == 'disciplina_elementale' &&
+              knownIds.contains(option.id) &&
+              option.minimumLevel <= h.level,
+        )
+        .toList();
+  }
+
+  int get elementalDisciplineKiLimit {
+    if (h.level >= 17) return 6;
+    if (h.level >= 13) return 5;
+    if (h.level >= 9) return 4;
+    if (h.level >= 5) return 3;
+    return 2;
+  }
+
+  int get elementalDisciplineSaveDc => 8 + h.prof + mod(h.scores['SAG']!);
+
+  int get elementalDisciplineAttackBonus => h.prof + mod(h.scores['SAG']!);
+
+  Future<void> useElementalDiscipline(
+    SubclassOptionDefinition option,
+  ) async {
+    if (option.category != 'disciplina_elementale') return;
+
+    final baseCost = option.cost ?? 0;
+    var selectedCost = baseCost;
+
+    if (option.resource == 'ki') {
+      var maximumAllowed = elementalDisciplineKiLimit;
+
+      if (option.maximumCost != null) {
+        maximumAllowed = min(maximumAllowed, option.maximumCost!);
+      }
+
+      maximumAllowed = min(maximumAllowed, h.ki);
+
+      if (baseCost > h.ki) {
+        if (!mounted) return;
+
+        await showDialog<void>(
+          context: context,
+          builder: (ctx) => AlertDialog(
+            title: Text(option.name),
+            content: Text(
+              'Ki insufficiente.\n\n'
+              'Costo minimo: $baseCost Ki\n'
+              'Ki disponibile: ${h.ki}/${h.maxKi}',
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(ctx),
+                child: const Text('CHIUDI'),
+              ),
+            ],
+          ),
+        );
+        return;
+      }
+
+      if (option.allowsAdditionalResource && maximumAllowed > baseCost) {
+        final chosen = await showDialog<int>(
+          context: context,
+          builder: (ctx) => AlertDialog(
+            title: Text(option.name),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(option.description.summary),
+                const SizedBox(height: 12),
+                const Text(
+                  'Quanti punti Ki vuoi spendere?',
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: 8),
+                Wrap(
+                  spacing: 8,
+                  runSpacing: 8,
+                  children: [
+                    for (var cost = baseCost; cost <= maximumAllowed; cost++)
+                      ActionChip(
+                        label: Text('$cost Ki'),
+                        onPressed: () => Navigator.pop(ctx, cost),
+                      ),
+                  ],
+                ),
+                const SizedBox(height: 12),
+                Text(
+                  'Limite per il tuo livello: '
+                  '$elementalDisciplineKiLimit Ki',
+                ),
+                Text('Ki disponibile: ${h.ki}/${h.maxKi}'),
+              ],
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(ctx),
+                child: const Text('ANNULLA'),
+              ),
+            ],
+          ),
+        );
+
+        if (chosen == null || !mounted) return;
+        selectedCost = chosen;
+      }
+
+      if (selectedCost > h.ki ||
+          selectedCost > elementalDisciplineKiLimit ||
+          (option.maximumCost != null && selectedCost > option.maximumCost!)) {
+        return;
+      }
+    }
+
+    if (!mounted) return;
+
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text(option.name),
+        content: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                option.description.summary,
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              if (option.description.details.isNotEmpty) ...[
+                const SizedBox(height: 10),
+                Text(option.description.details),
+              ],
+              const SizedBox(height: 14),
+              Text('CD disciplina: $elementalDisciplineSaveDc'),
+              Text(
+                'Attacco con disciplina: '
+                '${sign(elementalDisciplineAttackBonus)}',
+              ),
+              if (option.resource == 'ki') ...[
+                const SizedBox(height: 8),
+                Text('Costo: $selectedCost Ki'),
+                Text('Ki disponibile: ${h.ki}/${h.maxKi}'),
+              ],
+            ],
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: const Text('ANNULLA'),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.pop(ctx, true),
+            child: Text(
+              option.resource == 'ki' && selectedCost > 0
+                  ? 'USA · $selectedCost KI'
+                  : 'USA',
+            ),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed != true || !mounted) return;
+
+    if (option.resource == 'ki' && selectedCost > 0) {
+      setState(() {
+        h.ki = max(0, h.ki - selectedCost);
+      });
+
+      await persist();
+    }
+
+    if (!mounted) return;
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          option.resource == 'ki' && selectedCost > 0
+              ? '${option.name} · -$selectedCost Ki'
+              : option.name,
+        ),
+      ),
+    );
+  }
+
   Future<void> rollCheck(String label, int bonus) async {
     final first = Random().nextInt(20) + 1;
     final mode = await showModalBottomSheet<String>(
@@ -1987,67 +2192,145 @@ class _SheetPageState extends State<SheetPage> {
     await persist();
   }
 
-  Widget sheetTab() => Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [Color(0xfff7efd9), Color(0xffe6d3aa)],
-          ),
-        ),
-        child: ListView(
-          padding: const EdgeInsets.fromLTRB(12, 12, 12, 96),
-          children: [
-            Container(
-              padding: const EdgeInsets.all(14),
-              decoration: BoxDecoration(
-                color: const Color(0xfffffbef),
-                border: Border.all(color: const Color(0xff6d4c28), width: 2),
-                borderRadius: BorderRadius.circular(16),
-              ),
-              child: Row(children: [
-                Container(
-                  width: 72,
-                  height: 88,
-                  decoration: BoxDecoration(
-                    color: const Color(0xffe8d7ae),
-                    border: Border.all(color: const Color(0xff6d4c28)),
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: const Icon(Icons.person, size: 48),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                    child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                      Text(h.name.toUpperCase(),
-                          style: Theme.of(context)
-                              .textTheme
-                              .headlineSmall
-                              ?.copyWith(fontWeight: FontWeight.bold)),
-                      Text('Monaco ${h.level} · ${h.raceLabel}'),
-                      Text(h.subclass ?? 'Tradizione non scelta'),
-                      Text('${h.background} · Competenza ${sign(h.prof)}'),
-                    ])),
-              ]),
+  Widget sheetTab() {
+    final passivePerception = 10 +
+        mod(h.scores['SAG']!) +
+        (h.skillProficiencies.contains('Percezione') ? h.prof : 0);
+
+    Widget sectionTitle(String title) => Padding(
+          padding: const EdgeInsets.only(bottom: 6),
+          child: Text(
+            title.toUpperCase(),
+            style: const TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.w900,
+              letterSpacing: 1.1,
             ),
-            Wrap(
-                alignment: WrapAlignment.center,
-                spacing: 6,
-                runSpacing: 6,
-                children: abilities.map(statBox).toList()),
-            const SizedBox(height: 8),
-            Row(children: [
-              Expanded(child: Metric('CA', '${h.ac}')),
-              Expanded(child: Metric('INIZ.', sign(h.initiative))),
-              Expanded(child: Metric('VELOCITÀ', '${h.speed} m')),
-              Expanded(
-                  child: Metric('PERCEZ.', '${10 + mod(h.scores['SAG']!)}')),
-            ]),
-            Row(children: [
-              Expanded(
-                  child: CounterCard(
+          ),
+        );
+
+    Widget parchmentPanel({
+      required Widget child,
+      EdgeInsets padding = const EdgeInsets.all(10),
+    }) =>
+        Container(
+          padding: padding,
+          decoration: BoxDecoration(
+            color: const Color(0xfffffbef),
+            border: Border.all(
+              color: const Color(0xff6d4c28),
+              width: 1.5,
+            ),
+            borderRadius: BorderRadius.circular(10),
+          ),
+          child: child,
+        );
+
+    Widget savingThrowsPanel() => parchmentPanel(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              sectionTitle('Tiri Salvezza'),
+              ...abilities.map((a) {
+                final proficient = monkSavingThrows.contains(a);
+                final bonus = mod(h.scores[a]!) + (proficient ? h.prof : 0);
+
+                return InkWell(
+                  onTap: () => rollCheck('Tiro salvezza $a', bonus),
+                  borderRadius: BorderRadius.circular(6),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 4),
+                    child: Row(
+                      children: [
+                        Icon(
+                          proficient
+                              ? Icons.radio_button_checked
+                              : Icons.radio_button_unchecked,
+                          size: 15,
+                        ),
+                        const SizedBox(width: 7),
+                        SizedBox(
+                          width: 30,
+                          child: Text(
+                            sign(bonus),
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                        Expanded(child: Text(a)),
+                        const Icon(Icons.casino_outlined, size: 16),
+                      ],
+                    ),
+                  ),
+                );
+              }),
+            ],
+          ),
+        );
+
+    Widget skillsPanel() => parchmentPanel(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              sectionTitle('Abilità'),
+              ...skillAbility.entries.map((e) {
+                final proficient = h.skillProficiencies.contains(e.key);
+                final bonus =
+                    mod(h.scores[e.value]!) + (proficient ? h.prof : 0);
+
+                return InkWell(
+                  onTap: () => rollCheck(e.key, bonus),
+                  borderRadius: BorderRadius.circular(6),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 3),
+                    child: Row(
+                      children: [
+                        Icon(
+                          proficient
+                              ? Icons.radio_button_checked
+                              : Icons.radio_button_unchecked,
+                          size: 14,
+                        ),
+                        const SizedBox(width: 6),
+                        SizedBox(
+                          width: 29,
+                          child: Text(
+                            sign(bonus),
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                        Expanded(
+                          child: Text(
+                            e.key,
+                            style: const TextStyle(fontSize: 13),
+                          ),
+                        ),
+                        Text(
+                          e.value,
+                          style: TextStyle(
+                            fontSize: 10,
+                            color: Colors.grey.shade700,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              }),
+            ],
+          ),
+        );
+
+    Widget healthPanel() => parchmentPanel(
+          child: Column(
+            children: [
+              Row(
+                children: [
+                  Expanded(
+                    child: CounterCard(
                       title: 'PUNTI FERITA',
                       value: h.currentHp,
                       maxValue: h.maxHp,
@@ -2058,9 +2341,11 @@ class _SheetPageState extends State<SheetPage> {
                       onPlus: () {
                         h.currentHp = min(h.maxHp, h.currentHp + 1);
                         persist();
-                      })),
-              Expanded(
-                  child: CounterCard(
+                      },
+                    ),
+                  ),
+                  Expanded(
+                    child: CounterCard(
                       title: 'PF TEMP.',
                       value: h.tempHp,
                       maxValue: 99,
@@ -2071,102 +2356,870 @@ class _SheetPageState extends State<SheetPage> {
                       onPlus: () {
                         h.tempHp++;
                         persist();
-                      })),
-            ]),
-            Card(
-              child: Padding(
-                padding: const EdgeInsets.all(12),
-                child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                      },
+                    ),
+                  ),
+                ],
+              ),
+              const Divider(),
+              Row(
+                children: [
+                  Expanded(
+                    child: Column(
+                      children: [
+                        const Text(
+                          'DADI VITA',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        Text(
+                          '${h.hitDiceAvailable} / ${h.level}',
+                          style: const TextStyle(fontSize: 22),
+                        ),
+                        const Text('d8'),
+                      ],
+                    ),
+                  ),
+                  Expanded(
+                    child: Column(
+                      children: [
+                        const Text(
+                          'TS CONTRO MORTE',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        DeathRow(
+                          label: 'Successi',
+                          value: h.deathSuccess,
+                          onChanged: (v) {
+                            h.deathSuccess = v;
+                            persist();
+                          },
+                        ),
+                        DeathRow(
+                          label: 'Fallimenti',
+                          value: h.deathFail,
+                          onChanged: (v) {
+                            h.deathFail = v;
+                            persist();
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        );
+
+    Widget leftColumn() => Column(
+          children: [
+            Wrap(
+              alignment: WrapAlignment.center,
+              spacing: 6,
+              runSpacing: 6,
+              children: abilities.map(statBox).toList(),
+            ),
+            const SizedBox(height: 8),
+            parchmentPanel(
+              child: InkWell(
+                borderRadius: BorderRadius.circular(6),
+                onTap: () {
+                  setState(() {
+                    h.inspiration = !h.inspiration;
+                  });
+                  persist();
+                },
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 2),
+                  child: Row(
                     children: [
-                      Text('TIRI SALVEZZA',
-                          style: Theme.of(context).textTheme.titleMedium),
-                      const SizedBox(height: 4),
-                      ...abilities.map((a) {
-                        final bonus = mod(h.scores[a]!) +
-                            (monkSavingThrows.contains(a) ? h.prof : 0);
-                        return ListTile(
-                          dense: true,
-                          leading: Icon(
-                              monkSavingThrows.contains(a)
-                                  ? Icons.check_circle
-                                  : Icons.circle_outlined,
-                              size: 18),
-                          title: Text(a),
-                          trailing: Text(sign(bonus),
-                              style:
-                                  const TextStyle(fontWeight: FontWeight.bold)),
-                          onTap: () => rollCheck('Tiro salvezza $a', bonus),
-                        );
-                      }),
-                      const Divider(),
-                      Text('ABILITÀ',
-                          style: Theme.of(context).textTheme.titleMedium),
-                      ...skillAbility.entries.map((e) {
-                        final proficient = h.skillProficiencies.contains(e.key);
-                        final bonus =
-                            mod(h.scores[e.value]!) + (proficient ? h.prof : 0);
-                        return ListTile(
-                          dense: true,
-                          leading: Icon(
-                              proficient
-                                  ? Icons.check_circle
-                                  : Icons.circle_outlined,
-                              size: 18),
-                          title: Text(e.key),
-                          subtitle: Text(
-                              proficient ? '${e.value} · Competente' : e.value),
-                          trailing: Text(sign(bonus),
-                              style:
-                                  const TextStyle(fontWeight: FontWeight.bold)),
-                          onTap: () => rollCheck(e.key, bonus),
-                        );
-                      }),
-                    ]),
+                      const Expanded(
+                        child: Text(
+                          'ISPIRAZIONE',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                      Icon(
+                        h.inspiration ? Icons.star : Icons.star_border,
+                      ),
+                    ],
+                  ),
+                ),
               ),
             ),
-            Card(
-                child: Padding(
-                    padding: const EdgeInsets.all(12),
+            const SizedBox(height: 8),
+            parchmentPanel(
+              child: Row(
+                children: [
+                  const Expanded(
+                    child: Text(
+                      'BONUS DI COMPETENZA',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                  Text(
+                    sign(h.prof),
+                    style: const TextStyle(
+                      fontSize: 22,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 8),
+            savingThrowsPanel(),
+            const SizedBox(height: 8),
+            skillsPanel(),
+            const SizedBox(height: 8),
+            parchmentPanel(
+              child: Row(
+                children: [
+                  Text(
+                    '$passivePerception',
+                    style: const TextStyle(
+                      fontSize: 22,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  const Expanded(
+                    child: Text(
+                      'SAGGEZZA (PERCEZIONE) PASSIVA',
+                      style: TextStyle(
+                        fontSize: 11,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        );
+
+    Widget kiPanel() => parchmentPanel(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              sectionTitle('Ki'),
+              Row(
+                children: [
+                  Expanded(
                     child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          '${h.ki} / ${h.maxKi}',
+                          style: const TextStyle(
+                            fontSize: 28,
+                            fontWeight: FontWeight.w900,
+                          ),
+                        ),
+                        const Text(
+                          'PUNTI KI',
+                          style: TextStyle(
+                            fontSize: 11,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  IconButton(
+                    tooltip: 'Spendi 1 Ki',
+                    onPressed: h.ki > 0
+                        ? () {
+                            setState(() {
+                              h.ki = max(0, h.ki - 1);
+                            });
+                            persist();
+                          }
+                        : null,
+                    icon: const Icon(Icons.remove_circle_outline),
+                  ),
+                  IconButton(
+                    tooltip: 'Recupera 1 Ki',
+                    onPressed: h.ki < h.maxKi
+                        ? () {
+                            setState(() {
+                              h.ki = min(h.maxKi, h.ki + 1);
+                            });
+                            persist();
+                          }
+                        : null,
+                    icon: const Icon(Icons.add_circle_outline),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 6),
+              LinearProgressIndicator(
+                value: h.maxKi <= 0 ? 0 : (h.ki / h.maxKi).clamp(0.0, 1.0),
+              ),
+              const SizedBox(height: 6),
+              Text(
+                h.level < 2
+                    ? 'Il Ki diventa disponibile dal 2° livello.'
+                    : 'Il Riposo Breve e il Riposo Lungo ripristinano il Ki.',
+                style: const TextStyle(fontSize: 11),
+              ),
+            ],
+          ),
+        );
+
+    Widget elementalDisciplinesPanel() {
+      final disciplines = knownElementalDisciplines;
+
+      return parchmentPanel(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            sectionTitle('Discipline Elementali'),
+            Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    '${disciplines.length} conosciute',
+                    style: const TextStyle(
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                ),
+                Text(
+                  'CD $elementalDisciplineSaveDc',
+                  style: const TextStyle(
+                    fontWeight: FontWeight.w900,
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Text(
+                  'ATT ${sign(elementalDisciplineAttackBonus)}',
+                  style: const TextStyle(
+                    fontWeight: FontWeight.w900,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 8),
+            ...disciplines.map(
+              (option) {
+                final baseCost = option.cost ?? 0;
+                final usesKi = option.resource == 'ki';
+
+                return Padding(
+                  padding: const EdgeInsets.only(bottom: 6),
+                  child: InkWell(
+                    borderRadius: BorderRadius.circular(8),
+                    onTap: () => useElementalDiscipline(option),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 4,
+                        vertical: 7,
+                      ),
+                      child: Row(
                         children: [
-                          Text('DADI VITA · d8',
-                              style: Theme.of(context).textTheme.titleMedium),
-                          Text(
-                              '${h.hitDiceAvailable} / ${h.level} disponibili'),
-                          const SizedBox(height: 8),
-                          Text('TS CONTRO MORTE',
-                              style: Theme.of(context).textTheme.titleMedium),
-                          DeathRow(
-                              label: 'Successi',
-                              value: h.deathSuccess,
-                              onChanged: (v) {
-                                h.deathSuccess = v;
-                                persist();
-                              }),
-                          DeathRow(
-                              label: 'Fallimenti',
-                              value: h.deathFail,
-                              onChanged: (v) {
-                                h.deathFail = v;
-                                persist();
-                              }),
-                        ]))),
-            Wrap(spacing: 8, runSpacing: 8, children: [
-              OutlinedButton(
-                  onPressed: shortRest, child: const Text('RIPOSO BREVE')),
-              OutlinedButton(
-                  onPressed: longRest, child: const Text('RIPOSO LUNGO')),
-              FilledButton(
-                  onPressed: h.level < 20 ? levelUp : null,
-                  child: Text(h.level < 20
-                      ? 'SALI AL LIVELLO ${h.level + 1}'
-                      : 'LIVELLO 20')),
-            ]),
+                          const Icon(
+                            Icons.auto_awesome,
+                            size: 20,
+                          ),
+                          const SizedBox(width: 9),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  option.name,
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.w900,
+                                  ),
+                                ),
+                                const SizedBox(height: 2),
+                                Text(
+                                  option.description.summary,
+                                  style: const TextStyle(
+                                    fontSize: 12,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          if (usesKi)
+                            Text(
+                              option.allowsAdditionalResource
+                                  ? '$baseCost+ Ki'
+                                  : '$baseCost Ki',
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          const SizedBox(width: 4),
+                          const Icon(
+                            Icons.chevron_right,
+                            size: 20,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                );
+              },
+            ),
           ],
         ),
       );
+    }
+
+    Widget attacksPanel() {
+      final name = h.equippedWeapon;
+      final data = weaponInfo[name];
+
+      final ability = '${data?['ability'] ?? 'DES'}';
+      final attackBonus = weaponAttackBonus(name);
+      final die = weaponDie(name);
+      final damageBonus = mod(h.scores[ability] ?? 10);
+      final damageType = '${data?['damage'] ?? 'contundente'}';
+
+      final damageText = '1d$die${damageBonus == 0 ? '' : sign(damageBonus)}';
+
+      return parchmentPanel(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            sectionTitle('Attacchi'),
+            InkWell(
+              borderRadius: BorderRadius.circular(8),
+              onTap: () => rollWeaponAttack(name),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                  vertical: 8,
+                  horizontal: 2,
+                ),
+                child: Row(
+                  children: [
+                    Expanded(
+                      flex: 5,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            name,
+                            style: const TextStyle(
+                              fontWeight: FontWeight.w900,
+                            ),
+                          ),
+                          const SizedBox(height: 2),
+                          Text(
+                            '$damageText $damageType',
+                            style: const TextStyle(fontSize: 12),
+                          ),
+                          Text(
+                            'Caratteristica: $ability',
+                            style: const TextStyle(fontSize: 11),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Expanded(
+                      flex: 2,
+                      child: Column(
+                        children: [
+                          Text(
+                            sign(attackBonus),
+                            style: const TextStyle(
+                              fontSize: 22,
+                              fontWeight: FontWeight.w900,
+                            ),
+                          ),
+                          const Text(
+                            'ATTACCO',
+                            style: TextStyle(
+                              fontSize: 9,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(width: 4),
+                    const Icon(Icons.casino_outlined),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+
+    Widget centerColumn() => Column(
+          children: [
+            Row(
+              children: [
+                Expanded(child: Metric('CA', '${h.ac}')),
+                Expanded(
+                  child: InkWell(
+                    borderRadius: BorderRadius.circular(8),
+                    onTap: () => rollCheck(
+                      'Iniziativa',
+                      h.initiative,
+                    ),
+                    child: Stack(
+                      alignment: Alignment.center,
+                      children: [
+                        Metric(
+                          'INIZIATIVA',
+                          sign(h.initiative),
+                        ),
+                        const Positioned(
+                          right: 6,
+                          top: 6,
+                          child: Icon(
+                            Icons.casino_outlined,
+                            size: 15,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                Expanded(
+                  child: Metric(
+                    'VELOCITÀ',
+                    '${h.speed} m',
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 8),
+            healthPanel(),
+            const SizedBox(height: 8),
+            kiPanel(),
+            if (h.subclass == 'Via dei Quattro Elementi') ...[
+              const SizedBox(height: 8),
+              elementalDisciplinesPanel(),
+            ],
+            const SizedBox(height: 8),
+            attacksPanel(),
+            const SizedBox(height: 8),
+            parchmentPanel(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  sectionTitle('Riposo e avanzamento'),
+                  Wrap(
+                    spacing: 8,
+                    runSpacing: 8,
+                    alignment: WrapAlignment.center,
+                    children: [
+                      OutlinedButton.icon(
+                        onPressed: shortRest,
+                        icon: const Icon(Icons.hotel),
+                        label: const Text('RIPOSO BREVE'),
+                      ),
+                      OutlinedButton.icon(
+                        onPressed: longRest,
+                        icon: const Icon(Icons.bedtime_outlined),
+                        label: const Text('RIPOSO LUNGO'),
+                      ),
+                      FilledButton.icon(
+                        onPressed: h.level < 20 ? levelUp : null,
+                        icon: const Icon(Icons.arrow_upward),
+                        label: Text(
+                          h.level < 20
+                              ? 'LIVELLO ${h.level + 1}'
+                              : 'LIVELLO 20',
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ],
+        );
+
+    Widget rightColumn() => Column(
+          children: [
+            parchmentPanel(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  sectionTitle('Personaggio'),
+                  Text(
+                    h.story.trim().isEmpty
+                        ? 'Tratti, ideali, legami e difetti saranno '
+                            'integrati qui nella prossima fase.'
+                        : h.story,
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 8),
+            parchmentPanel(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  sectionTitle('Privilegi e capacità'),
+                  Text(
+                    '${h.features.length} privilegi disponibili',
+                  ),
+                  const SizedBox(height: 8),
+                  ...h.features.take(8).map(
+                        (feature) => Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 3),
+                          child: Row(
+                            children: [
+                              const Icon(
+                                Icons.circle,
+                                size: 6,
+                              ),
+                              const SizedBox(width: 7),
+                              Expanded(child: Text(feature)),
+                            ],
+                          ),
+                        ),
+                      ),
+                  if (h.features.length > 8)
+                    Padding(
+                      padding: const EdgeInsets.only(top: 6),
+                      child: Text(
+                        '+ ${h.features.length - 8} altri nella sezione Capacità',
+                        style: const TextStyle(
+                          fontStyle: FontStyle.italic,
+                        ),
+                      ),
+                    ),
+                ],
+              ),
+            ),
+          ],
+        );
+
+    return Container(
+      decoration: const BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [
+            Color(0xfff7efd9),
+            Color(0xffe6d3aa),
+          ],
+        ),
+      ),
+      child: ListView(
+        padding: const EdgeInsets.fromLTRB(12, 12, 12, 96),
+        children: [
+          parchmentPanel(
+            padding: const EdgeInsets.all(14),
+            child: LayoutBuilder(
+              builder: (context, constraints) {
+                final compact = constraints.maxWidth < 650;
+
+                final portrait = Container(
+                  width: compact ? 62 : 78,
+                  height: compact ? 74 : 92,
+                  decoration: BoxDecoration(
+                    color: const Color(0xffe8d7ae),
+                    border: Border.all(
+                      color: const Color(0xff6d4c28),
+                    ),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: const Icon(
+                    Icons.person,
+                    size: 48,
+                  ),
+                );
+
+                final identity = Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      h.name.toUpperCase(),
+                      style:
+                          Theme.of(context).textTheme.headlineSmall?.copyWith(
+                                fontWeight: FontWeight.w900,
+                                letterSpacing: 1,
+                              ),
+                    ),
+                    const Divider(),
+                    Text(
+                      'Monaco ${h.level}'
+                      '${h.subclass == null ? '' : ' · ${h.subclass}'}',
+                    ),
+                    Text(
+                      '${h.background} · ${h.raceLabel}',
+                    ),
+                    Text(
+                      'Bonus di competenza ${sign(h.prof)}',
+                    ),
+                  ],
+                );
+
+                if (compact) {
+                  return Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      portrait,
+                      const SizedBox(width: 12),
+                      Expanded(child: identity),
+                    ],
+                  );
+                }
+
+                return Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    portrait,
+                    const SizedBox(width: 16),
+                    Expanded(child: identity),
+                    const SizedBox(width: 16),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        Text(
+                          h.raceLabel,
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        Text(h.background),
+                        Text(
+                          h.subclass ?? 'Tradizione non scelta',
+                        ),
+                      ],
+                    ),
+                  ],
+                );
+              },
+            ),
+          ),
+          const SizedBox(height: 10),
+          LayoutBuilder(
+            builder: (context, constraints) {
+              final width = constraints.maxWidth;
+
+              if (width >= 1050) {
+                return Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    SizedBox(
+                      width: 310,
+                      child: leftColumn(),
+                    ),
+                    const SizedBox(width: 10),
+                    Expanded(child: centerColumn()),
+                    const SizedBox(width: 10),
+                    SizedBox(
+                      width: 310,
+                      child: rightColumn(),
+                    ),
+                  ],
+                );
+              }
+
+              if (width >= 700) {
+                return Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    SizedBox(
+                      width: 300,
+                      child: leftColumn(),
+                    ),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: Column(
+                        children: [
+                          centerColumn(),
+                          const SizedBox(height: 10),
+                          rightColumn(),
+                        ],
+                      ),
+                    ),
+                  ],
+                );
+              }
+
+              return Column(
+                children: [
+                  leftColumn(),
+                  const SizedBox(height: 10),
+                  centerColumn(),
+                  const SizedBox(height: 10),
+                  rightColumn(),
+                ],
+              );
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
+  List<SubclassOptionDefinition> get knownSubclassOptions {
+    final subclass =
+        h.subclass == null ? null : monkClass.subclasses[h.subclass];
+
+    if (subclass == null) {
+      return const <SubclassOptionDefinition>[];
+    }
+
+    final knownIds = h.subclassOptionIds.toSet();
+
+    final options = subclass.options
+        .where(
+          (option) =>
+              knownIds.contains(option.id) && option.minimumLevel <= h.level,
+        )
+        .toList()
+      ..sort((a, b) {
+        final byLevel = a.minimumLevel.compareTo(b.minimumLevel);
+        if (byLevel != 0) return byLevel;
+        return a.name.compareTo(b.name);
+      });
+
+    return options;
+  }
+
+  Future<void> showSubclassOption(
+    SubclassOptionDefinition option,
+  ) async {
+    final baseCost = option.cost;
+    final usesKi = option.resource == 'ki' && baseCost != null;
+
+    await showModalBottomSheet<void>(
+      context: context,
+      useSafeArea: true,
+      showDragHandle: true,
+      builder: (ctx) => SafeArea(
+        top: false,
+        minimum: const EdgeInsets.only(bottom: 12),
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(20, 8, 20, 24),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Text(
+                option.name,
+                style: Theme.of(ctx).textTheme.headlineSmall,
+              ),
+              const SizedBox(height: 4),
+              Text(
+                'Livello minimo ${option.minimumLevel}'
+                '${baseCost == null ? '' : ' · Costo base $baseCost Ki'}',
+                style: Theme.of(ctx).textTheme.bodySmall,
+              ),
+              const SizedBox(height: 14),
+              Text(
+                option.description.summary,
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              if (option.description.details.isNotEmpty) ...[
+                const SizedBox(height: 8),
+                Text(option.description.details),
+              ],
+              const SizedBox(height: 18),
+
+              // Per ora automatizziamo soltanto il costo base esplicito.
+              // Discipline con costo variabile/incrementabile continueranno
+              // a mostrare la regola senza inventare una spesa automatica.
+              if (usesKi)
+                FilledButton.icon(
+                  onPressed: h.ki >= baseCost
+                      ? () async {
+                          setState(() {
+                            h.ki = max(0, h.ki - baseCost);
+                          });
+                          await persist();
+
+                          if (ctx.mounted) {
+                            Navigator.pop(ctx);
+                          }
+                        }
+                      : null,
+                  icon: const Icon(Icons.bolt),
+                  label: Text(
+                    h.ki >= baseCost
+                        ? 'USA · $baseCost KI'
+                        : 'KI INSUFFICIENTE',
+                  ),
+                ),
+              if (!usesKi)
+                const Text(
+                  'Consulta la descrizione per applicare gli effetti '
+                  'della disciplina.',
+                  style: TextStyle(
+                    fontStyle: FontStyle.italic,
+                  ),
+                ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget subclassOptionsSection() {
+    final options = knownSubclassOptions;
+
+    if (options.isEmpty) {
+      return const SizedBox.shrink();
+    }
+
+    return FantasySection(
+      title: h.subclass == 'Via dei Quattro Elementi'
+          ? 'Discipline Elementali'
+          : 'Opzioni della sottoclasse',
+      child: Column(
+        children: options.map((option) {
+          final cost = option.cost;
+
+          return ListTile(
+            contentPadding: EdgeInsets.zero,
+            leading: Icon(
+              option.grantedAutomatically
+                  ? Icons.auto_awesome
+                  : Icons.local_fire_department_outlined,
+            ),
+            title: Text(option.name),
+            subtitle: Text(
+              option.description.summary,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+            ),
+            trailing: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                if (cost != null) ...[
+                  Text(
+                    '$cost Ki',
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(width: 6),
+                ],
+                const Icon(Icons.chevron_right),
+              ],
+            ),
+            onTap: () => showSubclassOption(option),
+          );
+        }).toList(),
+      ),
+    );
+  }
 
   Widget abilitiesTab() => ListView(
         padding: const EdgeInsets.all(12),
@@ -2249,6 +3302,8 @@ class _SheetPageState extends State<SheetPage> {
                 subtitle: '1 Ki',
                 onTap: () => ability('Raffica di Colpi', 1,
                     'Dopo l’azione Attacco, spendi 1 Ki per effettuare due colpi senz’armi come azione bonus.')),
+            subclassOptionsSection(),
+            if (knownSubclassOptions.isNotEmpty) const SizedBox(height: 12),
             AbilityActionTile(
                 title: 'Difesa Paziente',
                 subtitle: '1 Ki',

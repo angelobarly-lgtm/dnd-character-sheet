@@ -79,6 +79,19 @@ class SubclassOptionDefinition {
   /// Il significato è determinato da [resource].
   final int? cost;
 
+  /// Costo massimo selezionabile, se l'opzione permette di
+  /// aumentare volontariamente la spesa della risorsa.
+  ///
+  /// Se null, [cost] rappresenta un costo fisso.
+  final int? maximumCost;
+
+  /// Indica se l'opzione permette di spendere volontariamente
+  /// una quantità di risorsa superiore al costo base.
+  ///
+  /// L'eventuale limite effettivo può dipendere dalle regole
+  /// della classe, dal livello o da [maximumCost].
+  final bool allowsAdditionalResource;
+
   /// ID stabile della risorsa consumata, per esempio "ki".
   /// Rimane null per opzioni senza costo.
   final String? resource;
@@ -100,6 +113,8 @@ class SubclassOptionDefinition {
     required this.description,
     this.minimumLevel = 1,
     this.cost,
+    this.maximumCost,
+    this.allowsAdditionalResource = false,
     this.resource,
     this.source = '',
     this.sourceRef = '',
@@ -734,6 +749,7 @@ const monkClass =
         minimumLevel: 3,
         cost: 2,
         resource: 'ki',
+        allowsAdditionalResource: true,
         source: 'Manuale del Giocatore',
         sourceRef: 'PHB',
         description: RuleDescription(
@@ -853,6 +869,7 @@ const monkClass =
         minimumLevel: 3,
         cost: 2,
         resource: 'ki',
+        allowsAdditionalResource: true,
         source: 'Manuale del Giocatore',
         sourceRef: 'PHB',
         description: RuleDescription(
@@ -915,6 +932,7 @@ const monkClass =
         minimumLevel: 3,
         cost: 1,
         resource: 'ki',
+        allowsAdditionalResource: true,
         source: 'Manuale del Giocatore',
         sourceRef: 'PHB',
         description: RuleDescription(

@@ -5,7 +5,7 @@ on:
   push:
     branches:
       - main
-        - v0.4
+      - v0.6-mega-update
 
 jobs:
   build:
