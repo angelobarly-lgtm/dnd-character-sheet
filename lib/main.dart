@@ -470,7 +470,7 @@ class HeroData {
     final dwarvenToughness =
         race == 'Nano' && subrace == 'Nano delle Colline' ? level : 0;
     return (max(1, 8 + con) +
-            hpRolls.fold<int>(0, (s, r) => s + max(1, r + con).toInt()) +
+            hpRolls.fold<int>(0, (sum, gainedHp) => sum + gainedHp) +
             dwarvenToughness)
         .toInt();
   }
@@ -2060,13 +2060,26 @@ class _SheetPageState extends State<SheetPage> {
     return (data?['monk'] == true) ? max(base, martial) : base;
   }
 
+  int weaponAttackBonus(String name) {
+    final ability = '${weaponInfo[name]?['ability'] ?? 'DES'}';
+    return mod(h.scores[ability] ?? 10) + h.prof;
+  }
+
   String weaponDamage(String name) {
     final die = weaponDie(name);
-    final bonus = mod(h.scores['DES']!);
+    final ability = '${weaponInfo[name]?['ability'] ?? 'DES'}';
+    final bonus = mod(h.scores[ability] ?? 10);
     final type = weaponInfo[name]?['damage'] == 'marziale'
         ? 'contundente'
         : '${weaponInfo[name]?['damage'] ?? ''}';
     return '1d$die ${sign(bonus)} $type';
+  }
+
+  Future<void> rollWeaponAttack(String name) async {
+    await rollCheck(
+      'Attacco · $name',
+      weaponAttackBonus(name),
+    );
   }
 
   Widget equipmentTab() => ListView(
@@ -2083,7 +2096,12 @@ class _SheetPageState extends State<SheetPage> {
             child: ListTile(
               leading: const Icon(Icons.gavel),
               title: Text(h.equippedWeapon),
-              subtitle: Text('Danno: ${weaponDamage(h.equippedWeapon)}'),
+              subtitle: Text(
+                'Attacco ${sign(weaponAttackBonus(h.equippedWeapon))} · '
+                'Danno: ${weaponDamage(h.equippedWeapon)}',
+              ),
+              trailing: const Icon(Icons.casino),
+              onTap: () => rollWeaponAttack(h.equippedWeapon),
             ),
           ),
           FantasySection(
