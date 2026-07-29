@@ -523,7 +523,7 @@ class HeroData {
     final out = <String>[];
     for (var l = 1; l <= level; l++) {
       out.addAll(
-        (monkFeaturesByLevel[l] ?? const []).where(
+        (monkClass.featuresByLevel[l] ?? const <String>[]).where(
           (f) =>
               f != 'Aumento dei Punteggi di Caratteristica' &&
               f != 'Tradizione Monastica' &&
@@ -531,7 +531,10 @@ class HeroData {
         ),
       );
       if (subclass != null) {
-        out.addAll(subclassFeaturesByLevel[subclass]?[l] ?? const []);
+        out.addAll(
+          monkClass.subclasses[subclass]?.featuresByLevel[l] ??
+              const <String>[],
+        );
       }
     }
     return out;
@@ -2083,16 +2086,28 @@ class _SheetPageState extends State<SheetPage> {
                 title: Text(f),
                 trailing: const Icon(Icons.chevron_right),
                 onTap: () {
-                  final isSubclass = subclassFeaturesByLevel[h.subclass]
-                          ?.values
-                          .expand((x) => x)
-                          .contains(f) ==
-                      true;
-                  final desc = isSubclass
-                      ? (subclassFeatureInfo[f] ??
-                          'Privilegio della tradizione ${h.subclass}.')
-                      : (monkFeatureInfo[f] ??
-                          'Privilegio del Monaco ottenuto con la progressione di classe.');
+                  final subclassDefinition = h.subclass == null
+                      ? null
+                      : monkClass.subclasses[h.subclass];
+
+                  final isSubclass = subclassDefinition?.featuresByLevel.values
+                          .expand((features) => features)
+                          .contains(f) ??
+                      false;
+
+                  final ruleDescription = isSubclass
+                      ? subclassDefinition?.featureDescriptions[f]
+                      : monkClass.featureDescriptions[f];
+
+                  final desc = ruleDescription == null
+                      ? (isSubclass
+                          ? (subclassFeatureInfo[f] ??
+                              'Privilegio della tradizione ${h.subclass}.')
+                          : (monkFeatureInfo[f] ??
+                              'Privilegio del Monaco ottenuto con la progressione di classe.'))
+                      : ruleDescription.details.isNotEmpty
+                          ? ruleDescription.details
+                          : ruleDescription.summary;
                   final cost = <String, int>{
                         'Colpo Stordente': 1,
                         'Anima Adamantina': 1,
