@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'data/class_data.dart';
 
 void main() => runApp(const DndApp());
 
@@ -254,6 +255,15 @@ const backgroundInfo = <String, String>{
   'Soldato':
       'Addestramento militare, disciplina e gerarchia; Atletica, Intimidire e riconoscimento del grado.',
 };
+
+const monkSkillChoices = <String>[
+  'Acrobazia',
+  'Atletica',
+  'Furtività',
+  'Intuizione',
+  'Religione',
+  'Storia',
+];
 
 const backgroundSkills = <String, List<String>>{
   'Accolito': ['Intuizione', 'Religione'],
@@ -528,10 +538,16 @@ class HeroData {
   }
 
   List<String> featuresAtLevel(int targetLevel) {
-    final out = <String>[...?monkFeaturesByLevel[targetLevel]];
+    final definition = classDefinitionFor('Monaco') ?? monkClass;
+    final out = <String>[...?definition.featuresByLevel[targetLevel]];
+
     if (subclass != null) {
-      out.addAll(subclassFeaturesByLevel[subclass]?[targetLevel] ?? const []);
+      out.addAll(
+        definition.subclasses[subclass]?.featuresByLevel[targetLevel] ??
+            const <String>[],
+      );
     }
+
     return out;
   }
 
