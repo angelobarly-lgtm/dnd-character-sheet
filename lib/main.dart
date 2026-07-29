@@ -1560,6 +1560,11 @@ class _CreatorPageState extends State<CreatorPage> {
                     subrace: subrace,
                     name: name.text.trim(),
                     baseScores: base,
+                    skillProficiencies: <String>{
+                      ...?backgroundSkills[background],
+                      ...monkSkills,
+                    }.toList(),
+                    inventory: startingInventoryFor(background),
                   );
                   h.currentHp = h.maxHp;
                   Navigator.pop(context, h);
