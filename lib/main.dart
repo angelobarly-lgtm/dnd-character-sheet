@@ -255,6 +255,22 @@ const backgroundInfo = <String, String>{
       'Addestramento militare, disciplina e gerarchia; Atletica, Intimidire e riconoscimento del grado.',
 };
 
+const backgroundSkills = <String, List<String>>{
+  'Accolito': ['Intuizione', 'Religione'],
+  'Artigiano di Gilda': ['Intuizione', 'Persuasione'],
+  'Ciarlatano': ['Inganno', 'Rapidità di Mano'],
+  'Criminale': ['Inganno', 'Furtività'],
+  'Eremita': ['Medicina', 'Religione'],
+  'Eroe Popolare': ['Addestrare Animali', 'Sopravvivenza'],
+  'Forestiero': ['Atletica', 'Sopravvivenza'],
+  'Intrattenitore': ['Acrobazia', 'Intrattenere'],
+  'Marinaio': ['Atletica', 'Percezione'],
+  'Monello': ['Furtività', 'Rapidità di Mano'],
+  'Nobile': ['Storia', 'Persuasione'],
+  'Sapiente': ['Arcano', 'Storia'],
+  'Soldato': ['Atletica', 'Intimidire'],
+};
+
 const featInfo = <String, String>{
   'Allerta':
       'Migliora la prontezza in combattimento: bonus all’iniziativa e maggiore protezione contro imboscate e attaccanti non visti.',
@@ -1075,6 +1091,7 @@ class CreatorPage extends StatefulWidget {
 }
 
 class _CreatorPageState extends State<CreatorPage> {
+  final Set<String> monkSkills = {'Acrobazia', 'Intuizione'};
   final name = TextEditingController();
   StatMethod method = StatMethod.standard;
   Map<String, int?> assigned = {for (final a in abilities) a: null};
@@ -1281,6 +1298,51 @@ class _CreatorPageState extends State<CreatorPage> {
                             ))
                         .toList(),
                   ),
+                ),
+              ),
+              FantasySection(
+                title: 'Competenze del Monaco',
+                subtitle:
+                    'Scegli 2 competenze di classe. Le competenze già ottenute dal background non possono essere duplicate.',
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Text(
+                      'Scelte: ${monkSkills.length} / 2',
+                      style: const TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(height: 8),
+                    Wrap(
+                      spacing: 6,
+                      runSpacing: 6,
+                      children: monkSkillChoices.map((skill) {
+                        final bgSkills =
+                            backgroundSkills[background] ?? const <String>[];
+                        final fromBackground = bgSkills.contains(skill);
+                        final selected = monkSkills.contains(skill);
+
+                        return FilterChip(
+                          label: Text(
+                            fromBackground ? '$skill · background' : skill,
+                          ),
+                          selected: selected || fromBackground,
+                          onSelected: fromBackground
+                              ? null
+                              : (value) {
+                                  setState(() {
+                                    if (value) {
+                                      if (monkSkills.length < 2) {
+                                        monkSkills.add(skill);
+                                      }
+                                    } else {
+                                      monkSkills.remove(skill);
+                                    }
+                                  });
+                                },
+                        );
+                      }).toList(),
+                    ),
+                  ],
                 ),
               ),
               FantasySection(
