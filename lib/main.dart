@@ -121,9 +121,10 @@ class HeroData {
     final con = mod(scores['COS']!);
     final dwarvenToughness =
         race == 'Nano' && subrace == 'Nano delle Colline' ? level : 0;
-    return max(1, 8 + con).toInt() +
-        hpRolls.fold(0, (s, r) => s + max(1, r + con).toInt()) +
-        dwarvenToughness;
+    return (max(1, 8 + con) +
+            hpRolls.fold<int>(0, (s, r) => s + max(1, r + con).toInt()) +
+            dwarvenToughness)
+        .toInt();
   }
 
   int get ac => 10 + mod(scores['DES']!) + mod(scores['SAG']!);
