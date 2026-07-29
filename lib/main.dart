@@ -73,6 +73,95 @@ const subclassFeaturesByLevel = <String, Map<int, List<String>>>{
   },
 };
 
+
+const raceDescriptions = <String, String>{
+  'Umano': 'Versatile e adattabile. Nella versione 2014 standard aumenta di 1 tutte le caratteristiche.',
+  'Umano Variante': 'Alternativa dell’umano 2014: aumenta di 1 due caratteristiche diverse, ottiene una competenza in un’abilità e un talento al 1° livello.',
+  'Nano': 'Robusto e tenace. Ottiene +2 Costituzione; la sottorazza completa i bonus razziali.',
+  'Elfo': 'Agile e longevo. Ottiene +2 Destrezza, Scurovisione, Sensi Affinati, Retaggio Fatato e Trance.',
+};
+
+const subraceDescriptions = <String, String>{
+  'Nano delle Colline': 'Nano particolarmente resistente e saggio: +1 Saggezza e robustezza nanica.',
+  'Nano delle Montagne': 'Nano abituato a una vita fisicamente impegnativa: +2 Forza e addestramento nelle armature.',
+  'Elfo Alto': 'Elfo legato allo studio e alla magia: +1 Intelligenza, addestramento con alcune armi, un trucchetto da mago e una lingua aggiuntiva.',
+  'Elfo dei Boschi': 'Elfo rapido e furtivo negli ambienti naturali: +1 Saggezza, addestramento con alcune armi, maggiore velocità e capacità di nascondersi nella natura.',
+  'Drow': 'Elfo del sottosuolo: +1 Carisma, Scurovisione superiore, sensibilità alla luce solare, magia drow e addestramento con armi drow.',
+};
+
+const backgroundInfo = <String, String>{
+  'Accolito': 'Servizio presso un tempio o una tradizione religiosa; orientato a Intuizione, Religione, lingue e contatti con la propria fede.',
+  'Artigiano di Gilda': 'Membro di una corporazione professionale; unisce competenze sociali, mestiere e legami con la gilda.',
+  'Ciarlatano': 'Esperto di identità false, raggiri e manipolazione; privilegia Inganno e Rapidità di Mano.',
+  'Criminale': 'Esperienza nel mondo criminale, furtività e contatti clandestini.',
+  'Eremita': 'Anni di isolamento dedicati a studio, contemplazione o ricerca; legato a Medicina, Religione e una scoperta personale.',
+  'Eroe Popolare': 'Persona comune divenuta simbolo della propria gente; pratica, resistente e ben accolta dalla popolazione.',
+  'Forestiero': 'Cresciuto lontano dai centri urbani; esperto di Atletica, Sopravvivenza e territori selvaggi.',
+  'Intrattenitore': 'Artista abituato al pubblico; combina Acrobazia, Intrattenere e capacità di esibirsi.',
+  'Marinaio': 'Esperienza sulle navi e in mare; Atletica, Percezione e familiarità con navigazione e imbarcazioni.',
+  'Monello': 'Cresciuto per strada; furtivo, rapido di mano e capace di muoversi nella città.',
+  'Nobile': 'Educazione privilegiata, storia, persuasione e riconoscimento sociale.',
+  'Sapiente': 'Studioso e ricercatore; Arcano, Storia, lingue e capacità di trovare informazioni.',
+  'Soldato': 'Addestramento militare, disciplina e gerarchia; Atletica, Intimidire e riconoscimento del grado.',
+};
+
+const featInfo = <String, String>{
+  'Allerta': 'Migliora la prontezza in combattimento: bonus all’iniziativa e maggiore protezione contro imboscate e attaccanti non visti.',
+  'Atleta': 'Migliora una caratteristica fisica e rende più efficienti alcuni movimenti, come rialzarsi, saltare e arrampicarsi.',
+  'Fortunato': 'Conferisce una riserva limitata di punti fortuna utilizzabili per influenzare alcuni tiri.',
+  'Mobile': 'Aumenta la velocità e favorisce uno stile di combattimento molto dinamico, riducendo alcuni rischi nel disimpegno.',
+  'Osservatore': 'Migliora attenzione e lettura dei dettagli, con benefici legati a Percezione e Investigazione passive.',
+  'Resiliente': 'Aumenta di 1 una caratteristica scelta e conferisce competenza nel relativo tiro salvezza.',
+  'Robusto': 'Aumenta i punti ferita massimi in funzione del livello del personaggio.',
+};
+
+const weaponInfo = <String, Map<String, dynamic>>{
+  'Colpo senz’armi': {'die': 0, 'damage': 'marziale', 'ability': 'DES', 'monk': true},
+  'Bastone ferrato': {'die': 6, 'versatile': 8, 'damage': 'contundente', 'ability': 'DES', 'monk': true},
+  'Pugnale': {'die': 4, 'damage': 'perforante', 'ability': 'DES', 'monk': true},
+  'Spada corta': {'die': 6, 'damage': 'perforante', 'ability': 'DES', 'monk': true},
+  'Ascia': {'die': 6, 'damage': 'tagliente', 'ability': 'DES', 'monk': true},
+  'Giavellotto': {'die': 6, 'damage': 'perforante', 'ability': 'DES', 'monk': true},
+  'Martello leggero': {'die': 4, 'damage': 'contundente', 'ability': 'DES', 'monk': true},
+  'Lancia': {'die': 6, 'versatile': 8, 'damage': 'perforante', 'ability': 'DES', 'monk': true},
+};
+
+const subclassFeatureInfo = <String, String>{
+  'Tecnica della Mano Aperta': 'Quando usa Raffica di Colpi, il Monaco può aggiungere effetti di controllo ai colpi andati a segno.',
+  'Integrità del Corpo': 'Dal 6° livello la Via della Mano Aperta permette di recuperare PF con un’azione; l’uso torna disponibile dopo un riposo lungo.',
+  'Tranquillità': 'Dall’11° livello, dopo un riposo lungo, il Monaco beneficia di una protezione simile a santuario finché non compie azioni che la interrompono.',
+  'Palmo Tremante': 'Al 17° livello può imprimere vibrazioni letali con un colpo senz’armi e attivarle successivamente.',
+  'Arti dell’Ombra': 'Permette di spendere Ki per tecniche magiche legate a oscurità, silenzio, furtività e ombre.',
+  'Passo d’Ombra': 'Consente di spostarsi rapidamente tra zone di luce fioca o oscurità e favorisce l’attacco successivo.',
+  'Manto d’Ombra': 'Permette di diventare invisibile in condizioni di luce adatte finché l’effetto non viene interrotto.',
+  'Opportunista': 'Consente di sfruttare l’apertura creata dall’attacco di un’altra creatura contro un nemico vicino.',
+  'Discepolo degli Elementi': 'Permette di apprendere discipline elementali alimentate dal Ki; nuove discipline diventano disponibili con la progressione.',
+  'Discipline Elementali Aggiuntive': 'La progressione della Via dei Quattro Elementi amplia le discipline conosciute e consente di sostituirne alcune.',
+  'Competenza Bonus': 'La tradizione del Maestro Ubriaco amplia l’addestramento del Monaco in capacità legate alla performance.',
+  'Tecnica dell’Ubriaco': 'Raffica di Colpi rende il Monaco più mobile e difficile da bloccare.',
+  'Ondeggiamento Barcollante': 'Migliora la capacità di rialzarsi e di deviare alcuni attacchi mancati verso altri bersagli.',
+  'Fortuna dell’Ubriaco': 'Permette di spendere Ki per annullare uno svantaggio su un tiro.',
+  'Frenesia Intossicata': 'Raffica di Colpi può distribuire più attacchi contro bersagli differenti.',
+  'Via del Kensei': 'Specializza il Monaco nell’uso di determinate armi come estensione della propria disciplina marziale.',
+  'Uno con la Lama': 'Rende più efficaci le armi kensei e introduce tecniche offensive alimentate dal Ki.',
+  'Affilare la Lama': 'Permette di spendere Ki per potenziare temporaneamente un’arma kensei idonea.',
+  'Precisione Infallibile': 'Consente di ritentare un attacco mancato con un’arma da Monaco una volta per turno.',
+  'Dardo Solare Radiante': 'Permette di effettuare attacchi a distanza di energia radiante legati alle arti marziali.',
+  'Colpo ad Arco Bruciante': 'Dopo l’azione Attacco consente di usare Ki per scatenare un effetto infuocato.',
+  'Esplosione Solare Rovente': 'Crea un’esplosione radiante a distanza, potenziabile spendendo Ki.',
+  'Scudo Solare': 'Genera un’aura luminosa che può reagire contro chi colpisce il Monaco.',
+  'Braccia del Sé Astrale': 'Evoca braccia astrali spendendo Ki e modifica il modo in cui il Monaco combatte e interagisce a distanza ravvicinata.',
+  'Volto del Sé Astrale': 'Evoca un volto astrale con benefici sensoriali e comunicativi.',
+  'Corpo del Sé Astrale': 'Rafforza la manifestazione astrale quando volto e braccia sono presenti.',
+  'Sé Astrale Risvegliato': 'Porta la manifestazione astrale alla sua forma più completa e potente.',
+  'Strumenti della Misericordia': 'Conferisce competenze adatte al ruolo di guaritore e portatore di misericordia.',
+  'Mani della Guarigione': 'Permette di spendere Ki per curare una creatura toccata.',
+  'Mani del Dolore': 'Permette di spendere Ki per aggiungere danni necrotici a un colpo senz’armi.',
+  'Tocco del Medico': 'Migliora Mani della Guarigione e Mani del Dolore con effetti aggiuntivi.',
+  'Raffica di Guarigione e Dolore': 'Integra guarigione o dolore nella Raffica di Colpi con maggiore efficienza.',
+  'Mano della Misericordia Suprema': 'Permette di riportare in vita una creatura morta di recente spendendo una quantità significativa di Ki.',
+};
+
 class HeroData {
   HeroData({
     required this.name,
@@ -85,6 +174,9 @@ class HeroData {
     this.hitDiceUsed = 0,
     this.subclass,
     this.feat,
+    this.background = 'Soldato',
+    this.equippedWeapon = 'Colpo senz’armi',
+    this.variantBonuses = const [],
     this.deathSuccess = 0,
     this.deathFail = 0,
     this.race = 'Umano',
@@ -98,15 +190,26 @@ class HeroData {
   int level, currentHp, tempHp, ki, hitDiceUsed, deathSuccess, deathFail;
   List<int> hpRolls;
   String? subclass, feat;
+  String background, equippedWeapon;
+  List<String> variantBonuses;
 
   Map<String, int> get scores {
     final out = Map<String, int>.from(baseScores);
     if (race == 'Umano') {
       for (final a in abilities) { out[a] = out[a]! + 1; }
+    } else if (race == 'Umano Variante') {
+      for (final a in variantBonuses.take(2)) {
+        if (out.containsKey(a)) out[a] = out[a]! + 1;
+      }
     } else if (race == 'Nano') {
       out['COS'] = out['COS']! + 2;
       if (subrace == 'Nano delle Colline') out['SAG'] = out['SAG']! + 1;
       if (subrace == 'Nano delle Montagne') out['FOR'] = out['FOR']! + 2;
+    } else if (race == 'Elfo') {
+      out['DES'] = out['DES']! + 2;
+      if (subrace == 'Elfo Alto') out['INT'] = out['INT']! + 1;
+      if (subrace == 'Elfo dei Boschi') out['SAG'] = out['SAG']! + 1;
+      if (subrace == 'Drow') out['CAR'] = out['CAR']! + 1;
     }
     return out;
   }
@@ -172,6 +275,9 @@ class HeroData {
         'hitDiceUsed': hitDiceUsed,
         'subclass': subclass,
         'feat': feat,
+        'background': background,
+        'equippedWeapon': equippedWeapon,
+        'variantBonuses': variantBonuses,
         'deathSuccess': deathSuccess,
         'deathFail': deathFail,
         'race': race,
@@ -189,6 +295,9 @@ class HeroData {
         hitDiceUsed: j['hitDiceUsed'] ?? 0,
         subclass: j['subclass'],
         feat: j['feat'],
+        background: j['background'] ?? 'Soldato',
+        equippedWeapon: j['equippedWeapon'] ?? 'Colpo senz’armi',
+        variantBonuses: List<String>.from(j['variantBonuses'] ?? const []),
         deathSuccess: j['deathSuccess'] ?? 0,
         deathFail: j['deathFail'] ?? 0,
         race: j['race'] ?? 'Umano',
@@ -244,6 +353,12 @@ class Store {
   static Future<HeroData?> load() async {
     final heroes = await loadAll();
     return heroes.isEmpty ? null : heroes.first;
+  }
+
+  static Future<void> delete(HeroData hero) async {
+    final heroes = await loadAll();
+    heroes.removeWhere((h) => h.name == hero.name);
+    await saveAll(heroes);
   }
 
   static Future<void> clear() async {
@@ -334,6 +449,23 @@ class _HomePageState extends State<HomePage> {
 
   Widget _heroCard(HeroData h) => InkWell(
         onTap: () => _openHero(h),
+        onLongPress: () async {
+          final ok = await showDialog<bool>(
+            context: context,
+            builder: (ctx) => AlertDialog(
+              title: const Text('Elimina personaggio'),
+              content: Text('Eliminare definitivamente ${h.name}?'),
+              actions: [
+                TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('ANNULLA')),
+                FilledButton(onPressed: () => Navigator.pop(ctx, true), child: const Text('ELIMINA')),
+              ],
+            ),
+          );
+          if (ok == true) {
+            await Store.delete(h);
+            await _reload();
+          }
+        },
         child: Container(
           margin: const EdgeInsets.only(bottom: 14),
           decoration: BoxDecoration(
@@ -634,13 +766,23 @@ class _CreatorPageState extends State<CreatorPage> {
   Map<String, int> manual = {for (final a in abilities) a: 8};
   String race = 'Umano';
   String? subrace;
+  String background = 'Soldato';
+  String? feat;
+  final Set<String> variantBonuses = {'DES', 'SAG'};
 
   int racialBonus(String a) {
     if (race == 'Umano') return 1;
+    if (race == 'Umano Variante') return variantBonuses.contains(a) ? 1 : 0;
     if (race == 'Nano') {
       if (a == 'COS') return 2;
       if (subrace == 'Nano delle Colline' && a == 'SAG') return 1;
       if (subrace == 'Nano delle Montagne' && a == 'FOR') return 2;
+    }
+    if (race == 'Elfo') {
+      if (a == 'DES') return 2;
+      if (subrace == 'Elfo Alto' && a == 'INT') return 1;
+      if (subrace == 'Elfo dei Boschi' && a == 'SAG') return 1;
+      if (subrace == 'Drow' && a == 'CAR') return 1;
     }
     return 0;
   }
@@ -687,7 +829,7 @@ class _CreatorPageState extends State<CreatorPage> {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-        appBar: AppBar(title: const Text('Creazione · V0.4')),
+        appBar: AppBar(title: const Text('Creazione · V0.5')),
         body: SafeArea(
           child: ListView(
             padding: const EdgeInsets.all(16),
@@ -695,7 +837,7 @@ class _CreatorPageState extends State<CreatorPage> {
               Text('Crea il personaggio',
                   style: Theme.of(context).textTheme.headlineSmall),
               const Text(
-                  'V0.4: creazione del personaggio con scelte più leggibili e stile coerente con la scheda.'),
+                  'V0.5: creazione guidata con razza, sottorazza, background, talenti e caratteristiche.'),
               const SizedBox(height: 14),
               TextField(
                 controller: name,
@@ -705,34 +847,94 @@ class _CreatorPageState extends State<CreatorPage> {
                 ),
               ),
               const SizedBox(height: 12),
-              DropdownButtonFormField<String>(
-                initialValue: race,
-                decoration: const InputDecoration(labelText: 'Razza', border: OutlineInputBorder()),
-                items: const [
-                  DropdownMenuItem(value: 'Umano', child: Text('Umano (2014)')),
-                  DropdownMenuItem(value: 'Nano', child: Text('Nano (2014)')),
-                ],
-                onChanged: (v) => setState(() { race = v ?? 'Umano'; subrace = null; }),
-              ),
-              if (race == 'Nano') ...[
-                const SizedBox(height: 10),
-                DropdownButtonFormField<String>(
-                  initialValue: subrace,
-                  decoration: const InputDecoration(labelText: 'Sottorazza', border: OutlineInputBorder()),
-                  items: const [
-                    DropdownMenuItem(value: 'Nano delle Colline', child: Text('Nano delle Colline')),
-                    DropdownMenuItem(value: 'Nano delle Montagne', child: Text('Nano delle Montagne')),
+              FantasySection(
+                title: 'Razza',
+                subtitle: 'Scegli la stirpe e leggi subito bonus e tratti principali.',
+                child: Column(
+                  children: [
+                    for (final r in ['Umano', 'Umano Variante', 'Nano', 'Elfo'])
+                      RadioListTile<String>(
+                        value: r,
+                        groupValue: race,
+                        title: Text(r),
+                        subtitle: Text(raceDescriptions[r] ?? ''),
+                        onChanged: (v) => setState(() {
+                          race = v ?? 'Umano';
+                          subrace = null;
+                          if (race != 'Umano Variante') feat = null;
+                        }),
+                      ),
+                    if (race == 'Umano Variante') ...[
+                      const Divider(),
+                      const Text('Scegli due caratteristiche diverse da aumentare di +1. Il talento è obbligatorio al 1° livello.'),
+                      Wrap(
+                        spacing: 6,
+                        children: abilities.map((a) => FilterChip(
+                          label: Text('$a +1'),
+                          selected: variantBonuses.contains(a),
+                          onSelected: (selected) => setState(() {
+                            if (selected && variantBonuses.length < 2) variantBonuses.add(a);
+                            if (!selected && variantBonuses.length > 1) variantBonuses.remove(a);
+                          }),
+                        )).toList(),
+                      ),
+                    ],
+                    if (race == 'Nano') ...[
+                      const Divider(),
+                      for (final s in ['Nano delle Colline', 'Nano delle Montagne'])
+                        RadioListTile<String>(
+                          value: s,
+                          groupValue: subrace,
+                          title: Text(s),
+                          subtitle: Text(subraceDescriptions[s]),
+                          onChanged: (v) => setState(() => subrace = v),
+                        ),
+                    ],
+                    if (race == 'Elfo') ...[
+                      const Divider(),
+                      for (final s in ['Elfo Alto', 'Elfo dei Boschi', 'Drow'])
+                        RadioListTile<String>(
+                          value: s,
+                          groupValue: subrace,
+                          title: Text(s),
+                          subtitle: Text(subraceDescriptions[s]),
+                          onChanged: (v) => setState(() => subrace = v),
+                        ),
+                    ],
                   ],
-                  onChanged: (v) => setState(() => subrace = v),
                 ),
-                const Padding(
-                  padding: EdgeInsets.only(top: 8),
-                  child: Text('Nano: +2 COS · Colline: +1 SAG · Montagne: +2 FOR · velocità base 7,5 m.'),
-                ),
-              ],
+              ),
               const InfoTile('Classe', 'Monaco'),
-              const InfoTile(
-                  'Background', 'Soldato · dati completi nelle versioni successive'),
+              FantasySection(
+                title: 'Background',
+                subtitle: 'Il background è una scelta del personaggio e viene salvato nella scheda.',
+                child: Column(
+                  children: backgroundInfo.entries.map((e) => RadioListTile<String>(
+                    value: e.key,
+                    groupValue: background,
+                    title: Text(e.key),
+                    subtitle: Text(e.value),
+                    onChanged: (v) => setState(() => background = v ?? background),
+                  )).toList(),
+                ),
+              ),
+              FantasySection(
+                title: 'Talento',
+                subtitle: race == 'Umano Variante'
+                    ? 'L’Umano Variante sceglie un talento al 1° livello.'
+                    : 'I talenti saranno disponibili quando una regola di avanzamento ne permette la scelta.',
+                child: race == 'Umano Variante'
+                    ? Column(
+                        children: featInfo.entries.map((e) => RadioListTile<String>(
+                          value: e.key,
+                          groupValue: feat,
+                          title: Text(e.key),
+                          subtitle: Text(e.value),
+                          onChanged: (v) => setState(() => feat = v),
+                        )).toList(),
+                      )
+                    : const Text('Nessun talento da scegliere al 1° livello per questa opzione razziale.'),
+              ),
               const Divider(height: 28),
               Text('Caratteristiche',
                   style: Theme.of(context).textTheme.titleLarge),
@@ -891,12 +1093,22 @@ class _CreatorPageState extends State<CreatorPage> {
                     }
                     base = Map.of(manual);
                   }
-                  if (race == 'Nano' && subrace == null) {
-                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Scegli la sottorazza del Nano.')));
+                  if ((race == 'Nano' || race == 'Elfo') && subrace == null) {
+                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Scegli la sottorazza.')));
+                    return;
+                  }
+                  if (race == 'Umano Variante' && (variantBonuses.length != 2 || feat == null)) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('L’Umano Variante deve scegliere due +1 e un talento.')),
+                    );
                     return;
                   }
                   final h = HeroData(
                     race: race,
+                    background: background,
+                    feat: feat,
+                    variantBonuses: variantBonuses.toList(),
+
                     subrace: subrace,
                     name: name.text.trim().isEmpty
                         ? 'Monaco senza nome'
@@ -1043,7 +1255,9 @@ class _SheetPageState extends State<SheetPage> {
             Text(desc),
             const SizedBox(height: 10),
             const Text(
-                'Fonte: Manuale del Giocatore 5e 2014 · pagina da inserire dopo verifica del materiale fornito.'),
+              'Descrizione sintetica delle regole 5e 2014, rielaborata per l’uso nell’app.',
+              style: TextStyle(fontSize: 11, fontStyle: FontStyle.italic),
+            ),
             if (cost > 0) ...[
               const SizedBox(height: 12),
               SizedBox(
@@ -1107,7 +1321,15 @@ class _SheetPageState extends State<SheetPage> {
     await persist();
   }
 
-  Widget sheetTab() => ListView(
+  Widget sheetTab() => Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [Color(0xfff7efd9), Color(0xffe6d3aa)],
+          ),
+        ),
+        child: ListView(
         padding: const EdgeInsets.fromLTRB(12, 12, 12, 96),
         children: [
           Card(
@@ -1155,6 +1377,7 @@ class _SheetPageState extends State<SheetPage> {
             FilledButton(onPressed: h.level < 20 ? levelUp : null, child: Text(h.level < 20 ? 'SALI AL LIVELLO ${h.level+1}' : 'LIVELLO 20')),
           ]),
         ],
+      ),
       );
 
   Widget abilitiesTab() => ListView(
@@ -1191,16 +1414,26 @@ class _SheetPageState extends State<SheetPage> {
               child: ListTile(
                 title: Text(f),
                 trailing: const Icon(Icons.chevron_right),
-                onTap: () => ability(
-                  f,
-                  0,
-                  subclassFeaturesByLevel[h.subclass]?.values
-                              .expand((x) => x)
-                              .contains(f) ==
-                          true
-                      ? 'Capacità della sottoclasse ${h.subclass}.'
-                      : 'Capacità del Monaco ottenuta con la progressione di classe.',
-                ),
+                onTap: () {
+                  final isSubclass = subclassFeaturesByLevel[h.subclass]?.values.expand((x) => x).contains(f) == true;
+                  final desc = isSubclass
+                      ? (subclassFeatureInfo[f] ?? 'Privilegio della tradizione ${h.subclass}.')
+                      : (monkFeatureInfo[f] ?? 'Privilegio del Monaco ottenuto con la progressione di classe.');
+                  final cost = <String, int>{
+                    'Colpo Stordente': 1,
+                    'Anima Adamantina': 1,
+                    'Corpo Vuoto': 4,
+                    'Arti dell’Ombra': 2,
+                    'Affilare la Lama': 1,
+                    'Braccia del Sé Astrale': 1,
+                    'Mani della Guarigione': 1,
+                    'Mani del Dolore': 1,
+                    'Fortuna dell’Ubriaco': 2,
+                    'Esplosione Solare Rovente': 1,
+                    'Mano della Misericordia Suprema': 5,
+                  }[f] ?? 0;
+                  ability(f, cost, desc);
+                },
               ),
             ),
           ),
@@ -1209,34 +1442,73 @@ class _SheetPageState extends State<SheetPage> {
                 title: 'Raffica di Colpi',
                 subtitle: '1 Ki',
                 onTap: () =>
-                    ability('Raffica di Colpi', 1, 'Tecnica Ki del Monaco.')),
+                    ability('Raffica di Colpi', 1, 'Dopo l’azione Attacco, spendi 1 Ki per effettuare due colpi senz’armi come azione bonus.')),
             AbilityActionTile(
                 title: 'Difesa Paziente',
                 subtitle: '1 Ki',
                 onTap: () =>
-                    ability('Difesa Paziente', 1, 'Tecnica Ki del Monaco.')),
+                    ability('Difesa Paziente', 1, 'Spendi 1 Ki per usare Schivare come azione bonus nel tuo turno.')),
             AbilityActionTile(
                 title: 'Passo del Vento',
                 subtitle: '1 Ki',
                 onTap: () =>
-                    ability('Passo del Vento', 1, 'Tecnica Ki del Monaco.')),
+                    ability('Passo del Vento', 1, 'Spendi 1 Ki per Disimpegno o Scatto come azione bonus; la distanza di salto aumenta per il turno.')),
           ],
           const SizedBox(height: 80),
         ],
       );
 
+  int weaponDie(String name) {
+    if (name == 'Colpo senz’armi') {
+      return int.tryParse(h.martialDie.substring(1)) ?? 4;
+    }
+    final data = weaponInfo[name];
+    final base = (data?['die'] as int?) ?? 4;
+    final martial = int.tryParse(h.martialDie.substring(1)) ?? 4;
+    return (data?['monk'] == true) ? max(base, martial) : base;
+  }
+
+  String weaponDamage(String name) {
+    final die = weaponDie(name);
+    final bonus = mod(h.scores['DES']!);
+    final type = weaponInfo[name]?['damage'] == 'marziale'
+        ? 'contundente'
+        : '${weaponInfo[name]?['damage'] ?? ''}';
+    return '1d$die ${sign(bonus)} $type';
+  }
+
   Widget equipmentTab() => ListView(
         padding: const EdgeInsets.all(16),
         children: [
-          Text('Equipaggiamento',
-              style: Theme.of(context).textTheme.headlineSmall),
-          const SizedBox(height: 8),
-          const Card(
+          Text('Equipaggiamento', style: Theme.of(context).textTheme.headlineSmall),
+          const SizedBox(height: 6),
+          const Text('Il Monaco calcola qui il danno delle armi compatibili con le Arti Marziali. Armature e scudi non vengono equipaggiati perché disattivano parti fondamentali della classe.'),
+          const SizedBox(height: 12),
+          FantasySection(
+            title: 'Equipaggiato',
             child: ListTile(
-              leading: Icon(Icons.backpack),
-              title: Text('Sezione attiva'),
-              subtitle: Text(
-                  'La navigazione ora funziona. Inventario, monete, armi e oggetti verranno popolati nelle prossime versioni.'),
+              leading: const Icon(Icons.gavel),
+              title: Text(h.equippedWeapon),
+              subtitle: Text('Danno: ${weaponDamage(h.equippedWeapon)}'),
+            ),
+          ),
+          FantasySection(
+            title: 'Armi',
+            subtitle: 'Tocca un’arma per equipaggiarla; il danno mostrato usa il dado marziale quando applicabile.',
+            child: Column(
+              children: weaponInfo.keys.map((w) {
+                final selected = h.equippedWeapon == w;
+                return ListTile(
+                  leading: Icon(selected ? Icons.check_circle : Icons.circle_outlined),
+                  title: Text(w),
+                  subtitle: Text('Danno: ${weaponDamage(w)}'),
+                  trailing: selected ? const Text('EQUIPAGGIATA') : const Text('EQUIPAGGIA'),
+                  onTap: () async {
+                    h.equippedWeapon = w;
+                    await persist();
+                  },
+                );
+              }).toList(),
             ),
           ),
         ],
@@ -1259,8 +1531,16 @@ class _SheetPageState extends State<SheetPage> {
                     title: const Text('Tradizione'),
                     subtitle: Text(h.subclass ?? 'Non ancora scelta')),
                 ListTile(
+                    title: const Text('Background'),
+                    subtitle: Text(h.background)),
+                ListTile(
                     title: const Text('Talento'),
                     subtitle: Text(h.feat ?? 'Nessuno')),
+                const Divider(),
+                const ListTile(
+                  title: Text('D&D Character Sheet'),
+                  subtitle: Text('Versione 0.5.0 · Build 5'),
+                ),
               ],
             ),
           ),
