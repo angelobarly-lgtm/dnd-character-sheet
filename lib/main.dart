@@ -277,75 +277,6 @@ const weaponInfo = <String, Map<String, dynamic>>{
   },
 };
 
-const subclassFeatureInfo = <String, String>{
-  'Tecnica della Mano Aperta':
-      'Quando usa Raffica di Colpi, il Monaco può aggiungere effetti di controllo ai colpi andati a segno.',
-  'Integrità del Corpo':
-      'Dal 6° livello la Via della Mano Aperta permette di recuperare PF con un’azione; l’uso torna disponibile dopo un riposo lungo.',
-  'Tranquillità':
-      'Dall’11° livello, dopo un riposo lungo, il Monaco beneficia di una protezione simile a santuario finché non compie azioni che la interrompono.',
-  'Palmo Tremante':
-      'Al 17° livello può imprimere vibrazioni letali con un colpo senz’armi e attivarle successivamente.',
-  'Arti dell’Ombra':
-      'Permette di spendere Ki per tecniche magiche legate a oscurità, silenzio, furtività e ombre.',
-  'Passo d’Ombra':
-      'Consente di spostarsi rapidamente tra zone di luce fioca o oscurità e favorisce l’attacco successivo.',
-  'Manto d’Ombra':
-      'Permette di diventare invisibile in condizioni di luce adatte finché l’effetto non viene interrotto.',
-  'Opportunista':
-      'Consente di sfruttare l’apertura creata dall’attacco di un’altra creatura contro un nemico vicino.',
-  'Discepolo degli Elementi':
-      'Permette di apprendere discipline elementali alimentate dal Ki; nuove discipline diventano disponibili con la progressione.',
-  'Discipline Elementali Aggiuntive':
-      'La progressione della Via dei Quattro Elementi amplia le discipline conosciute e consente di sostituirne alcune.',
-  'Competenza Bonus':
-      'La tradizione del Maestro Ubriaco amplia l’addestramento del Monaco in capacità legate alla performance.',
-  'Tecnica dell’Ubriaco':
-      'Raffica di Colpi rende il Monaco più mobile e difficile da bloccare.',
-  'Ondeggiamento Barcollante':
-      'Migliora la capacità di rialzarsi e di deviare alcuni attacchi mancati verso altri bersagli.',
-  'Fortuna dell’Ubriaco':
-      'Permette di spendere Ki per annullare uno svantaggio su un tiro.',
-  'Frenesia Intossicata':
-      'Raffica di Colpi può distribuire più attacchi contro bersagli differenti.',
-  'Via del Kensei':
-      'Specializza il Monaco nell’uso di determinate armi come estensione della propria disciplina marziale.',
-  'Uno con la Lama':
-      'Rende più efficaci le armi kensei e introduce tecniche offensive alimentate dal Ki.',
-  'Affilare la Lama':
-      'Permette di spendere Ki per potenziare temporaneamente un’arma kensei idonea.',
-  'Precisione Infallibile':
-      'Consente di ritentare un attacco mancato con un’arma da Monaco una volta per turno.',
-  'Dardo Solare Radiante':
-      'Permette di effettuare attacchi a distanza di energia radiante legati alle arti marziali.',
-  'Colpo ad Arco Bruciante':
-      'Dopo l’azione Attacco consente di usare Ki per scatenare un effetto infuocato.',
-  'Esplosione Solare Rovente':
-      'Crea un’esplosione radiante a distanza, potenziabile spendendo Ki.',
-  'Scudo Solare':
-      'Genera un’aura luminosa che può reagire contro chi colpisce il Monaco.',
-  'Braccia del Sé Astrale':
-      'Evoca braccia astrali spendendo Ki e modifica il modo in cui il Monaco combatte e interagisce a distanza ravvicinata.',
-  'Volto del Sé Astrale':
-      'Evoca un volto astrale con benefici sensoriali e comunicativi.',
-  'Corpo del Sé Astrale':
-      'Rafforza la manifestazione astrale quando volto e braccia sono presenti.',
-  'Sé Astrale Risvegliato':
-      'Porta la manifestazione astrale alla sua forma più completa e potente.',
-  'Strumenti della Misericordia':
-      'Conferisce competenze adatte al ruolo di guaritore e portatore di misericordia.',
-  'Mani della Guarigione':
-      'Permette di spendere Ki per curare una creatura toccata.',
-  'Mani del Dolore':
-      'Permette di spendere Ki per aggiungere danni necrotici a un colpo senz’armi.',
-  'Tocco del Medico':
-      'Migliora Mani della Guarigione e Mani del Dolore con effetti aggiuntivi.',
-  'Raffica di Guarigione e Dolore':
-      'Integra guarigione o dolore nella Raffica di Colpi con maggiore efficienza.',
-  'Mano della Misericordia Suprema':
-      'Permette di riportare in vita una creatura morta di recente spendendo una quantità significativa di Ki.',
-};
-
 class HeroData {
   HeroData({
     required this.name,
@@ -357,6 +288,7 @@ class HeroData {
     this.ki = 0,
     this.hitDiceUsed = 0,
     this.subclass,
+    this.subclassOptionIds = const [],
     this.feat,
     this.background = 'Soldato',
     this.equippedWeapon = 'Colpo senz’armi',
@@ -382,6 +314,13 @@ class HeroData {
   int level, currentHp, tempHp, ki, hitDiceUsed, deathSuccess, deathFail;
   List<int> hpRolls;
   String? subclass, feat;
+
+  /// ID stabili delle opzioni di sottoclasse scelte dal personaggio.
+  ///
+  /// Per esempio, per la Via dei Quattro Elementi contiene gli ID
+  /// delle discipline elementali selezionate dal giocatore.
+  List<String> subclassOptionIds;
+
   String background, equippedWeapon;
   List<String> variantBonuses;
   List<String> languages;
@@ -500,6 +439,7 @@ class HeroData {
         'ki': ki,
         'hitDiceUsed': hitDiceUsed,
         'subclass': subclass,
+        'subclassOptionIds': subclassOptionIds,
         'feat': feat,
         'background': background,
         'equippedWeapon': equippedWeapon,
@@ -528,6 +468,8 @@ class HeroData {
         ki: j['ki'] ?? 0,
         hitDiceUsed: j['hitDiceUsed'] ?? 0,
         subclass: j['subclass'],
+        subclassOptionIds:
+            List<String>.from(j['subclassOptionIds'] ?? const []),
         feat: j['feat'],
         background: j['background'] ?? 'Soldato',
         equippedWeapon: j['equippedWeapon'] ?? 'Colpo senz’armi',
@@ -1668,6 +1610,97 @@ class _SheetPageState extends State<SheetPage> {
         ),
       );
 
+  Future<SubclassOptionDefinition?> chooseSubclassOption({
+    required SubclassDefinition subclass,
+    required int level,
+    required Set<String> excludedIds,
+    String title = 'Scegli un’opzione',
+  }) async {
+    final available = subclass.options
+        .where(
+          (option) =>
+              !option.grantedAutomatically &&
+              option.minimumLevel <= level &&
+              !excludedIds.contains(option.id),
+        )
+        .toList();
+
+    if (available.isEmpty) return null;
+
+    return showDialog<SubclassOptionDefinition>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text(title),
+        content: SizedBox(
+          width: double.maxFinite,
+          child: ListView(
+            shrinkWrap: true,
+            children: available
+                .map(
+                  (option) => ListTile(
+                    title: Text(option.name),
+                    subtitle: Text(option.description.summary),
+                    trailing: const Icon(Icons.chevron_right),
+                    onTap: () => Navigator.pop(ctx, option),
+                  ),
+                )
+                .toList(),
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: const Text('ANNULLA'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Future<SubclassOptionDefinition?> chooseKnownSubclassOption({
+    required SubclassDefinition subclass,
+    required Set<String> knownIds,
+    String title = 'Scegli l’opzione da sostituire',
+  }) async {
+    final known = subclass.options
+        .where(
+          (option) =>
+              !option.grantedAutomatically && knownIds.contains(option.id),
+        )
+        .toList();
+
+    if (known.isEmpty) return null;
+
+    return showDialog<SubclassOptionDefinition>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text(title),
+        content: SizedBox(
+          width: double.maxFinite,
+          child: ListView(
+            shrinkWrap: true,
+            children: known
+                .map(
+                  (option) => ListTile(
+                    title: Text(option.name),
+                    subtitle: Text(option.description.summary),
+                    trailing: const Icon(Icons.swap_horiz),
+                    onTap: () => Navigator.pop(ctx, option),
+                  ),
+                )
+                .toList(),
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: const Text('ANNULLA'),
+          ),
+        ],
+      ),
+    );
+  }
+
   Future<void> levelUp() async {
     if (h.level >= 20) return;
     final next = h.level + 1;
@@ -1679,12 +1712,156 @@ class _SheetPageState extends State<SheetPage> {
     if (hp == null || !mounted) return;
 
     String? chosenSubclass;
+    var chosenSubclassOptionIds = List<String>.from(h.subclassOptionIds);
+
     if (next == 3) {
       chosenSubclass = await Navigator.push<String>(
         context,
         MaterialPageRoute(builder: (_) => const SubclassPage()),
       );
       if (chosenSubclass == null || !mounted) return;
+
+      final subclassDefinition = monkClass.subclasses[chosenSubclass];
+
+      if (subclassDefinition != null) {
+        final automaticOptions = subclassDefinition.options
+            .where(
+              (option) =>
+                  option.grantedAutomatically && option.minimumLevel <= next,
+            )
+            .map((option) => option.id);
+
+        chosenSubclassOptionIds = {
+          ...chosenSubclassOptionIds,
+          ...automaticOptions,
+        }.toList();
+
+        final progression = subclassDefinition.optionProgression;
+        final selectionsAtLevel = progression?.selectionsByLevel[next] ?? 0;
+
+        final alreadyChosenSelectable = subclassDefinition.options
+            .where(
+              (option) =>
+                  !option.grantedAutomatically &&
+                  chosenSubclassOptionIds.contains(option.id),
+            )
+            .length;
+
+        final choicesNeeded = selectionsAtLevel - alreadyChosenSelectable;
+
+        for (var i = 0; i < choicesNeeded; i++) {
+          final option = await chooseSubclassOption(
+            subclass: subclassDefinition,
+            level: next,
+            excludedIds: chosenSubclassOptionIds.toSet(),
+            title: 'Scegli una disciplina elementale',
+          );
+
+          if (option == null || !mounted) return;
+
+          chosenSubclassOptionIds.add(option.id);
+        }
+      }
+    } else if (h.subclass != null) {
+      final subclassDefinition = monkClass.subclasses[h.subclass];
+      final progression = subclassDefinition?.optionProgression;
+      final selectionsAtLevel = progression?.selectionsByLevel[next];
+
+      if (subclassDefinition != null && selectionsAtLevel != null) {
+        final automaticOptions = subclassDefinition.options
+            .where(
+              (option) =>
+                  option.grantedAutomatically && option.minimumLevel <= next,
+            )
+            .map((option) => option.id);
+
+        chosenSubclassOptionIds = {
+          ...chosenSubclassOptionIds,
+          ...automaticOptions,
+        }.toList();
+
+        final alreadyChosenSelectable = subclassDefinition.options
+            .where(
+              (option) =>
+                  !option.grantedAutomatically &&
+                  chosenSubclassOptionIds.contains(option.id),
+            )
+            .length;
+
+        final choicesNeeded = selectionsAtLevel - alreadyChosenSelectable;
+
+        for (var i = 0; i < choicesNeeded; i++) {
+          final option = await chooseSubclassOption(
+            subclass: subclassDefinition,
+            level: next,
+            excludedIds: chosenSubclassOptionIds.toSet(),
+            title: 'Scegli una nuova disciplina elementale',
+          );
+
+          if (option == null || !mounted) return;
+
+          chosenSubclassOptionIds.add(option.id);
+        }
+
+        if (progression?.canReplaceAtLevel(next) == true) {
+          final replace = await showDialog<bool>(
+            context: context,
+            builder: (ctx) => AlertDialog(
+              title: const Text('Sostituire una disciplina?'),
+              content: const Text(
+                'Puoi sostituire una disciplina elementale già conosciuta '
+                'con un’altra disponibile al tuo livello.',
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(ctx, false),
+                  child: const Text('NO'),
+                ),
+                FilledButton(
+                  onPressed: () => Navigator.pop(ctx, true),
+                  child: const Text('SOSTITUISCI'),
+                ),
+              ],
+            ),
+          );
+
+          if (!mounted) return;
+
+          if (replace == true) {
+            final oldOption = await chooseKnownSubclassOption(
+              subclass: subclassDefinition,
+              knownIds: chosenSubclassOptionIds.toSet(),
+              title: 'Disciplina da sostituire',
+            );
+
+            if (!mounted) return;
+
+            // Annullare questa scelta significa semplicemente
+            // rinunciare alla sostituzione. Il level-up continua.
+            if (oldOption != null) {
+              final idsWithoutOld = Set<String>.from(chosenSubclassOptionIds)
+                ..remove(oldOption.id);
+
+              final replacement = await chooseSubclassOption(
+                subclass: subclassDefinition,
+                level: next,
+                excludedIds: idsWithoutOld,
+                title: 'Scegli la nuova disciplina',
+              );
+
+              if (!mounted) return;
+
+              // Se viene annullata la seconda scelta, conserviamo
+              // la disciplina originale e proseguiamo normalmente.
+              if (replacement != null) {
+                chosenSubclassOptionIds
+                  ..remove(oldOption.id)
+                  ..add(replacement.id);
+              }
+            }
+          }
+        }
+      }
     }
 
     if (const [4, 8, 12, 16, 19].contains(next)) {
@@ -1695,7 +1872,11 @@ class _SheetPageState extends State<SheetPage> {
       if (ok != true || !mounted) return;
     }
 
-    if (chosenSubclass != null) h.subclass = chosenSubclass;
+    if (chosenSubclass != null) {
+      h.subclass = chosenSubclass;
+    }
+
+    h.subclassOptionIds = chosenSubclassOptionIds;
     h.hpRolls = [...h.hpRolls, hp];
     h.level = next;
     h.ki = h.maxKi;
@@ -2037,8 +2218,7 @@ class _SheetPageState extends State<SheetPage> {
 
                   final desc = ruleDescription == null
                       ? (isSubclass
-                          ? (subclassFeatureInfo[f] ??
-                              'Privilegio della tradizione ${h.subclass}.')
+                          ? 'Privilegio della tradizione ${h.subclass}.'
                           : (monkFeatureInfo[f] ??
                               'Privilegio del Monaco ottenuto con la progressione di classe.'))
                       : ruleDescription.details.isNotEmpty

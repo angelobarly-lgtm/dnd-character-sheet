@@ -66,6 +66,76 @@ class ClassDefinition {
   });
 }
 
+class SubclassOptionDefinition {
+  final String id;
+  final String name;
+  final String category;
+  final RuleDescription description;
+
+  /// Livello minimo del personaggio richiesto per scegliere l'opzione.
+  final int minimumLevel;
+
+  /// Costo base dell'opzione, se applicabile.
+  /// Il significato è determinato da [resource].
+  final int? cost;
+
+  /// ID stabile della risorsa consumata, per esempio "ki".
+  /// Rimane null per opzioni senza costo.
+  final String? resource;
+
+  /// Manuale o altra fonte editoriale dell'opzione.
+  final String source;
+
+  /// Riferimento interno alla fonte.
+  final String sourceRef;
+
+  /// True se l'opzione viene ottenuta automaticamente e non
+  /// occupa uno degli slot di scelta del personaggio.
+  final bool grantedAutomatically;
+
+  const SubclassOptionDefinition({
+    required this.id,
+    required this.name,
+    required this.category,
+    required this.description,
+    this.minimumLevel = 1,
+    this.cost,
+    this.resource,
+    this.source = '',
+    this.sourceRef = '',
+    this.grantedAutomatically = false,
+  });
+}
+
+class SubclassOptionProgression {
+  /// Numero totale di opzioni conosciute/selezionabili
+  /// al raggiungimento di ciascun livello.
+  final Map<int, int> selectionsByLevel;
+
+  /// Livelli ai quali, quando si ottiene una nuova opzione,
+  /// il sistema consente anche di sostituirne una già scelta.
+  final Set<int> replacementLevels;
+
+  const SubclassOptionProgression({
+    required this.selectionsByLevel,
+    this.replacementLevels = const {},
+  });
+
+  int selectionsAtLevel(int level) {
+    var result = 0;
+
+    for (final entry in selectionsByLevel.entries) {
+      if (entry.key <= level && entry.value > result) {
+        result = entry.value;
+      }
+    }
+
+    return result;
+  }
+
+  bool canReplaceAtLevel(int level) => replacementLevels.contains(level);
+}
+
 class SubclassDefinition {
   final String name;
   final String description;
@@ -80,6 +150,16 @@ class SubclassDefinition {
   final Map<int, List<String>> featuresByLevel;
   final Map<String, RuleDescription> featureDescriptions;
 
+  /// Opzioni selezionabili appartenenti alla sottoclasse.
+  ///
+  /// Esempi: discipline elementali, manovre, invocazioni
+  /// o altri sistemi equivalenti.
+  final List<SubclassOptionDefinition> options;
+
+  /// Regole di progressione per le opzioni selezionabili.
+  /// Rimane null per le sottoclassi che non usano questo sistema.
+  final SubclassOptionProgression? optionProgression;
+
   const SubclassDefinition({
     required this.name,
     required this.description,
@@ -87,6 +167,8 @@ class SubclassDefinition {
     this.sourceRef = '',
     required this.featuresByLevel,
     this.featureDescriptions = const {},
+    this.options = const [],
+    this.optionProgression,
   });
 }
 
@@ -337,6 +419,58 @@ const monkClass =
       11: ['Tranquillità'],
       17: ['Palmo Tremante'],
     },
+    featureDescriptions: {
+      'Tecnica della Mano Aperta': RuleDescription(
+        summary:
+            'La Raffica di Colpi permette al Monaco di accompagnare i propri colpi con effetti di controllo.',
+        details:
+            'Dal 3° livello, quando colpisce una creatura con uno degli attacchi concessi da Raffica di Colpi, il Monaco può applicare uno degli effetti previsti dalla capacità: sbilanciare il bersaglio, spostarlo oppure impedirgli temporaneamente di effettuare reazioni.',
+        glossaryRefs: [
+          GlossaryRef('ki', 'Ki'),
+          GlossaryRef('raffica_di_colpi', 'Raffica di Colpi'),
+          GlossaryRef('tiro_salvezza', 'Tiro salvezza'),
+          GlossaryRef('prono', 'Prono'),
+          GlossaryRef('reazione', 'Reazione'),
+        ],
+      ),
+      'Integrità del Corpo': RuleDescription(
+        summary:
+            'Il Monaco può utilizzare la propria disciplina per recuperare punti ferita.',
+        details:
+            'Dal 6° livello, il Monaco può usare un’azione per recuperare punti ferita in quantità determinata dal proprio livello da Monaco. Dopo aver utilizzato questa capacità deve completare un riposo lungo prima di poterla usare nuovamente.',
+        glossaryRefs: [
+          GlossaryRef('azione', 'Azione'),
+          GlossaryRef('punti_ferita', 'Punti Ferita'),
+          GlossaryRef('riposo_lungo', 'Riposo lungo'),
+        ],
+      ),
+      'Tranquillità': RuleDescription(
+        summary:
+            'La quiete interiore del Monaco rende più difficile rivolgere direttamente la violenza contro di lui.',
+        details:
+            'Dall’11° livello, al termine di un riposo lungo il Monaco ottiene la protezione prevista dalla capacità. L’effetto permane finché non termina secondo le condizioni indicate dalla regola o fino al successivo riposo lungo.',
+        glossaryRefs: [
+          GlossaryRef('riposo_lungo', 'Riposo lungo'),
+          GlossaryRef('tiro_salvezza', 'Tiro salvezza'),
+          GlossaryRef('incantesimo', 'Incantesimo'),
+        ],
+      ),
+      'Palmo Tremante': RuleDescription(
+        summary:
+            'Il Monaco può imprimere nel corpo di una creatura vibrazioni di Ki potenzialmente letali.',
+        details:
+            'Dal 17° livello, dopo aver colpito una creatura con un colpo senz’armi, il Monaco può spendere Ki per imprimere vibrazioni che rimangono nel bersaglio per la durata prevista. Successivamente può usare un’azione per terminarle, costringendo il bersaglio a subire l’effetto previsto dalla capacità in base al risultato del tiro salvezza.',
+        glossaryRefs: [
+          GlossaryRef('ki', 'Ki'),
+          GlossaryRef('attacco_senz_armi', 'Attacco senz’armi'),
+          GlossaryRef('azione', 'Azione'),
+          GlossaryRef('tiro_salvezza', 'Tiro salvezza'),
+          GlossaryRef('costituzione', 'Costituzione'),
+          GlossaryRef('danno_necrotico', 'Danno necrotico'),
+          GlossaryRef('punti_ferita', 'Punti Ferita'),
+        ],
+      ),
+    },
   ),
   'Via dell’Ombra': SubclassDefinition(
     name: 'Via dell’Ombra',
@@ -349,6 +483,61 @@ const monkClass =
       6: ['Passo d’Ombra'],
       11: ['Manto d’Ombra'],
       17: ['Opportunista'],
+    },
+    featureDescriptions: {
+      'Arti dell’Ombra': RuleDescription(
+        summary:
+            'Il Monaco usa il Ki per produrre effetti soprannaturali legati all’ombra, al silenzio e alla furtività.',
+        details:
+            'Dal 3° livello, il Monaco apprende tecniche magiche proprie della tradizione e può spendere Ki per produrre gli effetti previsti dalla capacità. Saggezza è la caratteristica associata alle capacità magiche della tradizione.',
+        glossaryRefs: [
+          GlossaryRef('ki', 'Ki'),
+          GlossaryRef('incantesimo', 'Incantesimo'),
+          GlossaryRef('saggezza', 'Saggezza'),
+          GlossaryRef('oscurita', 'Oscurità'),
+          GlossaryRef('silenzio', 'Silenzio'),
+          GlossaryRef('furtivita', 'Furtività'),
+        ],
+      ),
+      'Passo d’Ombra': RuleDescription(
+        summary:
+            'Il Monaco può spostarsi istantaneamente tra zone immerse nell’ombra.',
+        details:
+            'Dal 6° livello, quando si trova nelle condizioni di illuminazione previste dalla capacità, il Monaco può usare un’azione bonus per teletrasportarsi in uno spazio idoneo che possa vedere. Questo movimento favorisce inoltre il primo attacco in mischia successivo effettuato nel turno.',
+        glossaryRefs: [
+          GlossaryRef('azione_bonus', 'Azione bonus'),
+          GlossaryRef('teletrasporto', 'Teletrasporto'),
+          GlossaryRef('luce_fioca', 'Luce fioca'),
+          GlossaryRef('oscurita', 'Oscurità'),
+          GlossaryRef('vantaggio', 'Vantaggio'),
+          GlossaryRef('attacco_mischia', 'Attacco in mischia'),
+        ],
+      ),
+      'Manto d’Ombra': RuleDescription(
+        summary:
+            'Il Monaco può confondersi con le ombre fino a scomparire alla vista.',
+        details:
+            'Dall’11° livello, quando si trova nelle condizioni di illuminazione richieste, il Monaco può usare un’azione per diventare invisibile. L’effetto termina quando si verifica una delle condizioni previste dalla capacità.',
+        glossaryRefs: [
+          GlossaryRef('azione', 'Azione'),
+          GlossaryRef('invisibile', 'Invisibile'),
+          GlossaryRef('luce_fioca', 'Luce fioca'),
+          GlossaryRef('oscurita', 'Oscurità'),
+          GlossaryRef('attacco', 'Attacco'),
+          GlossaryRef('incantesimo', 'Incantesimo'),
+        ],
+      ),
+      'Opportunista': RuleDescription(
+        summary:
+            'Il Monaco sfrutta immediatamente un’apertura creata dall’attacco di un’altra creatura.',
+        details:
+            'Dal 17° livello, quando una creatura vicina viene colpita da un attacco effettuato da qualcun altro, il Monaco può usare la propria reazione per effettuare un attacco in mischia contro quella creatura, rispettando le condizioni della capacità.',
+        glossaryRefs: [
+          GlossaryRef('reazione', 'Reazione'),
+          GlossaryRef('attacco', 'Attacco'),
+          GlossaryRef('attacco_mischia', 'Attacco in mischia'),
+        ],
+      ),
     },
   ),
   'Via dei Quattro Elementi': SubclassDefinition(
@@ -363,6 +552,386 @@ const monkClass =
       11: ['Discipline Elementali Aggiuntive'],
       17: ['Discipline Elementali Aggiuntive'],
     },
+    featureDescriptions: {
+      'Discepolo degli Elementi': RuleDescription(
+        summary:
+            'Il Monaco apprende discipline che gli permettono di incanalare il Ki nelle forze elementali.',
+        details:
+            'Dal 3° livello, il Monaco apprende discipline elementali e può utilizzarne gli effetti secondo i rispettivi requisiti e costi in Ki. Con la progressione della tradizione aumenta il numero di discipline conosciute e diventa possibile sostituirne alcune.',
+        glossaryRefs: [
+          GlossaryRef('ki', 'Ki'),
+          GlossaryRef('disciplina_elementale', 'Disciplina elementale'),
+          GlossaryRef('incantesimo', 'Incantesimo'),
+          GlossaryRef('saggezza', 'Saggezza'),
+        ],
+      ),
+      'Discipline Elementali Aggiuntive': RuleDescription(
+        summary:
+            'La progressione della tradizione amplia le discipline elementali conosciute dal Monaco.',
+        details:
+            'Al 6°, 11° e 17° livello la tradizione amplia le opzioni elementali disponibili. Le singole discipline possono avere requisiti di livello, costi in Ki ed effetti differenti; queste scelte saranno rappresentate separatamente dal sistema delle opzioni di sottoclasse.',
+        glossaryRefs: [
+          GlossaryRef('ki', 'Ki'),
+          GlossaryRef('disciplina_elementale', 'Disciplina elementale'),
+          GlossaryRef('livello', 'Livello'),
+        ],
+      ),
+    },
+    optionProgression: SubclassOptionProgression(
+      selectionsByLevel: {
+        3: 1,
+        6: 2,
+        11: 3,
+        17: 4,
+      },
+      replacementLevels: {6, 11, 17},
+    ),
+    options: [
+      SubclassOptionDefinition(
+        id: 'sintonia_elementale',
+        name: 'Sintonia Elementale',
+        category: 'disciplina_elementale',
+        minimumLevel: 3,
+        grantedAutomatically: true,
+        source: 'Manuale del Giocatore',
+        sourceRef: 'PHB',
+        description: RuleDescription(
+          summary:
+              'Il Monaco controlla brevemente piccole manifestazioni delle forze elementali.',
+          details:
+              'Usando un’azione, il Monaco può produrre entro 9 metri piccoli effetti innocui legati ad acqua, aria, fuoco o terra, accendere o spegnere piccole fiamme, riscaldare o raffreddare materiale non vivente oppure generare temporaneamente una piccola quantità o forma elementale.',
+          glossaryRefs: [
+            GlossaryRef('azione', 'Azione'),
+            GlossaryRef('elemento', 'Elemento'),
+          ],
+        ),
+      ),
+      SubclassOptionDefinition(
+        id: 'cavalcare_il_vento',
+        name: 'Cavalcare il Vento',
+        category: 'disciplina_elementale',
+        minimumLevel: 11,
+        cost: 4,
+        resource: 'ki',
+        source: 'Manuale del Giocatore',
+        sourceRef: 'PHB',
+        description: RuleDescription(
+          summary: 'Il Monaco usa il Ki per ottenere la capacità di volare.',
+          details:
+              'Dall’11° livello, il Monaco può spendere 4 punti Ki per lanciare volare bersagliando se stesso.',
+          glossaryRefs: [
+            GlossaryRef('ki', 'Ki'),
+            GlossaryRef('incantesimo', 'Incantesimo'),
+          ],
+        ),
+      ),
+      SubclassOptionDefinition(
+        id: 'colpo_della_cenere_turbinante',
+        name: 'Colpo della Cenere Turbinante',
+        category: 'disciplina_elementale',
+        minimumLevel: 3,
+        cost: 2,
+        resource: 'ki',
+        source: 'Manuale del Giocatore',
+        sourceRef: 'PHB',
+        description: RuleDescription(
+          summary: 'Il Monaco scatena una fiammata attraverso il proprio Ki.',
+          details:
+              'Il Monaco può spendere 2 punti Ki per lanciare mani brucianti.',
+          glossaryRefs: [
+            GlossaryRef('ki', 'Ki'),
+            GlossaryRef('incantesimo', 'Incantesimo'),
+            GlossaryRef('fuoco', 'Fuoco'),
+          ],
+        ),
+      ),
+      SubclassOptionDefinition(
+        id: 'difesa_della_montagna_eterna',
+        name: 'Difesa della Montagna Eterna',
+        category: 'disciplina_elementale',
+        minimumLevel: 17,
+        cost: 5,
+        resource: 'ki',
+        source: 'Manuale del Giocatore',
+        sourceRef: 'PHB',
+        description: RuleDescription(
+          summary:
+              'Il Monaco assume la resistenza soprannaturale della pietra.',
+          details:
+              'Dal 17° livello, il Monaco può spendere 5 punti Ki per lanciare pelle di pietra bersagliando se stesso.',
+          glossaryRefs: [
+            GlossaryRef('ki', 'Ki'),
+            GlossaryRef('incantesimo', 'Incantesimo'),
+          ],
+        ),
+      ),
+      SubclassOptionDefinition(
+        id: 'fiamme_della_fenice',
+        name: 'Fiamme della Fenice',
+        category: 'disciplina_elementale',
+        minimumLevel: 11,
+        cost: 4,
+        resource: 'ki',
+        source: 'Manuale del Giocatore',
+        sourceRef: 'PHB',
+        description: RuleDescription(
+          summary:
+              'Il Monaco concentra il Ki in una potente esplosione di fuoco.',
+          details:
+              'Dall’11° livello, il Monaco può spendere 4 punti Ki per lanciare palla di fuoco.',
+          glossaryRefs: [
+            GlossaryRef('ki', 'Ki'),
+            GlossaryRef('incantesimo', 'Incantesimo'),
+            GlossaryRef('fuoco', 'Fuoco'),
+          ],
+        ),
+      ),
+      SubclassOptionDefinition(
+        id: 'fiume_della_fiamma_famelica',
+        name: 'Fiume della Fiamma Famelica',
+        category: 'disciplina_elementale',
+        minimumLevel: 17,
+        cost: 5,
+        resource: 'ki',
+        source: 'Manuale del Giocatore',
+        sourceRef: 'PHB',
+        description: RuleDescription(
+          summary: 'Il Monaco innalza una barriera di fuoco alimentata dal Ki.',
+          details:
+              'Dal 17° livello, il Monaco può spendere 5 punti Ki per lanciare muro di fuoco.',
+          glossaryRefs: [
+            GlossaryRef('ki', 'Ki'),
+            GlossaryRef('incantesimo', 'Incantesimo'),
+            GlossaryRef('fuoco', 'Fuoco'),
+          ],
+        ),
+      ),
+      SubclassOptionDefinition(
+        id: 'forma_del_fiume_fluente',
+        name: 'Forma del Fiume Fluente',
+        category: 'disciplina_elementale',
+        minimumLevel: 3,
+        cost: 1,
+        resource: 'ki',
+        source: 'Manuale del Giocatore',
+        sourceRef: 'PHB',
+        description: RuleDescription(
+          summary: 'Il Monaco rimodella acqua e ghiaccio attraverso il Ki.',
+          details:
+              'Con un’azione e 1 punto Ki, il Monaco può trasformare acqua in ghiaccio o viceversa e modellare il ghiaccio entro i limiti previsti dalla disciplina, senza usarlo per intrappolare o danneggiare direttamente una creatura.',
+          glossaryRefs: [
+            GlossaryRef('ki', 'Ki'),
+            GlossaryRef('azione', 'Azione'),
+            GlossaryRef('acqua', 'Acqua'),
+            GlossaryRef('ghiaccio', 'Ghiaccio'),
+          ],
+        ),
+      ),
+      SubclassOptionDefinition(
+        id: 'frusta_d_acqua',
+        name: 'Frusta d’Acqua',
+        category: 'disciplina_elementale',
+        minimumLevel: 3,
+        cost: 2,
+        resource: 'ki',
+        source: 'Manuale del Giocatore',
+        sourceRef: 'PHB',
+        description: RuleDescription(
+          summary:
+              'Una frusta d’acqua danneggia e può sbilanciare o trascinare una creatura.',
+          details:
+              'Con un’azione e almeno 2 punti Ki, il Monaco bersaglia una creatura visibile entro 9 metri. Un tiro salvezza su Destrezza determina danni ed effetti; Ki aggiuntivo può aumentare il danno della disciplina.',
+          glossaryRefs: [
+            GlossaryRef('ki', 'Ki'),
+            GlossaryRef('azione', 'Azione'),
+            GlossaryRef('tiro_salvezza', 'Tiro salvezza'),
+            GlossaryRef('destrezza', 'Destrezza'),
+            GlossaryRef('prono', 'Prono'),
+          ],
+        ),
+      ),
+      SubclassOptionDefinition(
+        id: 'gong_della_sommita',
+        name: 'Gong della Sommità',
+        category: 'disciplina_elementale',
+        minimumLevel: 6,
+        cost: 3,
+        resource: 'ki',
+        source: 'Manuale del Giocatore',
+        sourceRef: 'PHB',
+        description: RuleDescription(
+          summary: 'Il Monaco sprigiona una violenta forza sonora.',
+          details:
+              'Dal 6° livello, il Monaco può spendere 3 punti Ki per lanciare frantumare.',
+          glossaryRefs: [
+            GlossaryRef('ki', 'Ki'),
+            GlossaryRef('incantesimo', 'Incantesimo'),
+          ],
+        ),
+      ),
+      SubclassOptionDefinition(
+        id: 'morsa_del_vento_del_nord',
+        name: 'Morsa del Vento del Nord',
+        category: 'disciplina_elementale',
+        minimumLevel: 6,
+        cost: 3,
+        resource: 'ki',
+        source: 'Manuale del Giocatore',
+        sourceRef: 'PHB',
+        description: RuleDescription(
+          summary: 'Il Monaco usa il Ki per immobilizzare una creatura.',
+          details:
+              'Dal 6° livello, il Monaco può spendere 3 punti Ki per lanciare blocca persone.',
+          glossaryRefs: [
+            GlossaryRef('ki', 'Ki'),
+            GlossaryRef('incantesimo', 'Incantesimo'),
+          ],
+        ),
+      ),
+      SubclassOptionDefinition(
+        id: 'onda_della_terra_tumultuosa',
+        name: 'Onda della Terra Tumultuosa',
+        category: 'disciplina_elementale',
+        minimumLevel: 17,
+        cost: 6,
+        resource: 'ki',
+        source: 'Manuale del Giocatore',
+        sourceRef: 'PHB',
+        description: RuleDescription(
+          summary: 'Il Monaco solleva la terra formando una grande barriera.',
+          details:
+              'Dal 17° livello, il Monaco può spendere 6 punti Ki per lanciare muro di pietra.',
+          glossaryRefs: [
+            GlossaryRef('ki', 'Ki'),
+            GlossaryRef('incantesimo', 'Incantesimo'),
+          ],
+        ),
+      ),
+      SubclassOptionDefinition(
+        id: 'postura_della_nebbia',
+        name: 'Postura della Nebbia',
+        category: 'disciplina_elementale',
+        minimumLevel: 11,
+        cost: 4,
+        resource: 'ki',
+        source: 'Manuale del Giocatore',
+        sourceRef: 'PHB',
+        description: RuleDescription(
+          summary:
+              'Il Monaco trasforma il proprio corpo in una forma simile alla nebbia.',
+          details:
+              'Dall’11° livello, il Monaco può spendere 4 punti Ki per lanciare forma gassosa bersagliando se stesso.',
+          glossaryRefs: [
+            GlossaryRef('ki', 'Ki'),
+            GlossaryRef('incantesimo', 'Incantesimo'),
+          ],
+        ),
+      ),
+      SubclassOptionDefinition(
+        id: 'pugno_dei_quattro_tuoni',
+        name: 'Pugno dei Quattro Tuoni',
+        category: 'disciplina_elementale',
+        minimumLevel: 3,
+        cost: 2,
+        resource: 'ki',
+        source: 'Manuale del Giocatore',
+        sourceRef: 'PHB',
+        description: RuleDescription(
+          summary: 'Il Monaco libera una violenta onda di energia tonante.',
+          details:
+              'Il Monaco può spendere 2 punti Ki per lanciare onda tonante.',
+          glossaryRefs: [
+            GlossaryRef('ki', 'Ki'),
+            GlossaryRef('incantesimo', 'Incantesimo'),
+          ],
+        ),
+      ),
+      SubclassOptionDefinition(
+        id: 'pugno_dell_aria_inviolabile',
+        name: 'Pugno dell’Aria Inviolabile',
+        category: 'disciplina_elementale',
+        minimumLevel: 3,
+        cost: 2,
+        resource: 'ki',
+        source: 'Manuale del Giocatore',
+        sourceRef: 'PHB',
+        description: RuleDescription(
+          summary:
+              'Una scarica di aria compressa colpisce, respinge e può abbattere una creatura.',
+          details:
+              'Con un’azione e almeno 2 punti Ki, il Monaco bersaglia una creatura entro 9 metri. La creatura effettua un tiro salvezza su Forza; Ki aggiuntivo può aumentare il danno della disciplina.',
+          glossaryRefs: [
+            GlossaryRef('ki', 'Ki'),
+            GlossaryRef('azione', 'Azione'),
+            GlossaryRef('tiro_salvezza', 'Tiro salvezza'),
+            GlossaryRef('forza', 'Forza'),
+            GlossaryRef('prono', 'Prono'),
+          ],
+        ),
+      ),
+      SubclassOptionDefinition(
+        id: 'soffio_dell_inverno',
+        name: 'Soffio dell’Inverno',
+        category: 'disciplina_elementale',
+        minimumLevel: 17,
+        cost: 6,
+        resource: 'ki',
+        source: 'Manuale del Giocatore',
+        sourceRef: 'PHB',
+        description: RuleDescription(
+          summary: 'Il Monaco scatena una devastante ondata di gelo.',
+          details:
+              'Dal 17° livello, il Monaco può spendere 6 punti Ki per lanciare cono di freddo.',
+          glossaryRefs: [
+            GlossaryRef('ki', 'Ki'),
+            GlossaryRef('incantesimo', 'Incantesimo'),
+            GlossaryRef('freddo', 'Freddo'),
+          ],
+        ),
+      ),
+      SubclassOptionDefinition(
+        id: 'spiriti_della_burrasca_impetuosa',
+        name: 'Spiriti della Burrasca Impetuosa',
+        category: 'disciplina_elementale',
+        minimumLevel: 3,
+        cost: 2,
+        resource: 'ki',
+        source: 'Manuale del Giocatore',
+        sourceRef: 'PHB',
+        description: RuleDescription(
+          summary: 'Il Monaco richiama una potente corrente di vento.',
+          details:
+              'Il Monaco può spendere 2 punti Ki per lanciare folata di vento.',
+          glossaryRefs: [
+            GlossaryRef('ki', 'Ki'),
+            GlossaryRef('incantesimo', 'Incantesimo'),
+          ],
+        ),
+      ),
+      SubclassOptionDefinition(
+        id: 'zanne_del_serpente_di_fuoco',
+        name: 'Zanne del Serpente di Fuoco',
+        category: 'disciplina_elementale',
+        minimumLevel: 3,
+        cost: 1,
+        resource: 'ki',
+        source: 'Manuale del Giocatore',
+        sourceRef: 'PHB',
+        description: RuleDescription(
+          summary:
+              'Il Monaco avvolge pugni e piedi in fiamme, aumentando portata e potenza dei colpi senz’armi.',
+          details:
+              'Quando usa l’azione Attacco nel proprio turno, il Monaco può spendere 1 punto Ki per estendere di 3 metri la portata dei colpi senz’armi per quell’azione e per il resto del turno. I colpi infliggono danni da fuoco e, quando uno colpisce, può spendere altro Ki per aggiungere danni da fuoco.',
+          glossaryRefs: [
+            GlossaryRef('ki', 'Ki'),
+            GlossaryRef('azione_attacco', 'Azione Attacco'),
+            GlossaryRef('attacco_senz_armi', 'Attacco senz’armi'),
+            GlossaryRef('portata', 'Portata'),
+            GlossaryRef('fuoco', 'Fuoco'),
+          ],
+        ),
+      ),
+    ],
   ),
   'Via del Maestro Ubriaco': SubclassDefinition(
     name: 'Via del Maestro Ubriaco',
@@ -372,9 +941,70 @@ const monkClass =
     sourceRef: 'XGE',
     featuresByLevel: {
       3: ['Competenza Bonus', 'Tecnica dell’Ubriaco'],
-      6: ['Oscillazione Barcollante'],
+      6: ['Andatura Ondeggiante'],
       11: ['Fortuna dell’Ubriaco'],
       17: ['Frenesia Intossicata'],
+    },
+    featureDescriptions: {
+      'Competenza Bonus': RuleDescription(
+        summary:
+            'Il Maestro Ubriaco amplia il proprio addestramento con competenze legate alla rappresentazione e alla tradizione del suo stile.',
+        details:
+            'Dal 3° livello, quando sceglie questa tradizione, il Monaco ottiene l’addestramento aggiuntivo previsto dalla capacità, riflettendo l’aspetto teatrale e apparentemente disordinato dello stile del Maestro Ubriaco.',
+        glossaryRefs: [
+          GlossaryRef('competenza', 'Competenza'),
+          GlossaryRef('abilita', 'Abilità'),
+        ],
+      ),
+      'Tecnica dell’Ubriaco': RuleDescription(
+        summary:
+            'La Raffica di Colpi permette al Monaco di muoversi con maggiore libertà durante lo scontro.',
+        details:
+            'Dal 3° livello, quando usa Raffica di Colpi, il Monaco beneficia anche di Disimpegno e aumenta temporaneamente la propria velocità per quel turno.',
+        glossaryRefs: [
+          GlossaryRef('ki', 'Ki'),
+          GlossaryRef('raffica_di_colpi', 'Raffica di Colpi'),
+          GlossaryRef('disimpegno', 'Disimpegno'),
+          GlossaryRef('velocita', 'Velocità'),
+          GlossaryRef('movimento', 'Movimento'),
+        ],
+      ),
+      'Andatura Ondeggiante': RuleDescription(
+        summary:
+            'I movimenti imprevedibili del Maestro Ubriaco diventano strumenti difensivi e tattici.',
+        details:
+            'Dal 6° livello, questa capacità migliora il modo in cui il Monaco si rialza da prono e gli permette, nelle circostanze previste, di sfruttare un attacco in mischia mancato da un avversario indirizzandolo contro un’altra creatura vicina.',
+        glossaryRefs: [
+          GlossaryRef('prono', 'Prono'),
+          GlossaryRef('movimento', 'Movimento'),
+          GlossaryRef('reazione', 'Reazione'),
+          GlossaryRef('attacco_mischia', 'Attacco in mischia'),
+        ],
+      ),
+      'Fortuna dell’Ubriaco': RuleDescription(
+        summary:
+            'Il Monaco può spendere Ki per neutralizzare uno svantaggio su un tiro.',
+        details:
+            'Dall’11° livello, quando effettua un tiro per colpire, una prova di caratteristica o un tiro salvezza con svantaggio, il Monaco può spendere 2 punti Ki per annullare lo svantaggio per quel tiro.',
+        glossaryRefs: [
+          GlossaryRef('ki', 'Ki'),
+          GlossaryRef('svantaggio', 'Svantaggio'),
+          GlossaryRef('tiro_per_colpire', 'Tiro per colpire'),
+          GlossaryRef('prova_caratteristica', 'Prova di caratteristica'),
+          GlossaryRef('tiro_salvezza', 'Tiro salvezza'),
+        ],
+      ),
+      'Frenesia Intossicata': RuleDescription(
+        summary:
+            'La Raffica di Colpi diventa particolarmente efficace quando il Monaco affronta più avversari.',
+        details:
+            'Dal 17° livello, quando usa Raffica di Colpi, il Monaco può ampliare la propria sequenza offensiva distribuendo gli attacchi aggiuntivi contro bersagli differenti secondo i limiti della capacità.',
+        glossaryRefs: [
+          GlossaryRef('ki', 'Ki'),
+          GlossaryRef('raffica_di_colpi', 'Raffica di Colpi'),
+          GlossaryRef('attacco', 'Attacco'),
+        ],
+      ),
     },
   ),
   'Via del Kensei': SubclassDefinition(
@@ -385,9 +1015,60 @@ const monkClass =
     sourceRef: 'XGE',
     featuresByLevel: {
       3: ['Via del Kensei'],
-      6: ['Tutt’Uno con la Lama'],
+      6: ['Tutt’uno con la Lama'],
       11: ['Affilare la Lama'],
       17: ['Precisione Infallibile'],
+    },
+    featureDescriptions: {
+      'Via del Kensei': RuleDescription(
+        summary:
+            'Il Monaco trasforma determinate armi in estensioni della propria disciplina marziale.',
+        details:
+            'Dal 3° livello, il Kensei sviluppa un legame speciale con determinate armi e apprende tecniche che ne ampliano l’impiego. Con la progressione può aggiungere ulteriori armi al proprio repertorio kensei.',
+        glossaryRefs: [
+          GlossaryRef('arma', 'Arma'),
+          GlossaryRef('arma_kensei', 'Arma kensei'),
+          GlossaryRef('competenza', 'Competenza'),
+          GlossaryRef('arti_marziali', 'Arti Marziali'),
+        ],
+      ),
+      'Tutt’uno con la Lama': RuleDescription(
+        summary:
+            'Il legame con le armi kensei permette al Monaco di incanalare il Ki attraverso di esse.',
+        details:
+            'Dal 6° livello, la padronanza delle armi kensei ne migliora l’efficacia secondo le proprietà previste dalla capacità e permette al Monaco di utilizzare il Ki per potenziare la propria offensiva.',
+        glossaryRefs: [
+          GlossaryRef('ki', 'Ki'),
+          GlossaryRef('arma_kensei', 'Arma kensei'),
+          GlossaryRef('attacco', 'Attacco'),
+          GlossaryRef('danno', 'Danno'),
+          GlossaryRef('resistenza', 'Resistenza'),
+          GlossaryRef('immunita', 'Immunità'),
+        ],
+      ),
+      'Affilare la Lama': RuleDescription(
+        summary:
+            'Il Monaco può incanalare Ki in un’arma kensei per potenziarla temporaneamente.',
+        details:
+            'Dall’11° livello, il Monaco può spendere Ki per conferire temporaneamente a un’arma kensei idonea un bonus ai tiri per colpire e ai danni, rispettando i limiti e le incompatibilità previste dalla capacità.',
+        glossaryRefs: [
+          GlossaryRef('ki', 'Ki'),
+          GlossaryRef('arma_kensei', 'Arma kensei'),
+          GlossaryRef('tiro_per_colpire', 'Tiro per colpire'),
+          GlossaryRef('danno', 'Danno'),
+        ],
+      ),
+      'Precisione Infallibile': RuleDescription(
+        summary:
+            'La padronanza del Kensei permette al Monaco di correggere un attacco mancato.',
+        details:
+            'Dal 17° livello, quando manca con un tiro per colpire effettuato con un’arma da Monaco nel proprio turno, può ripetere quel tiro secondo il limite previsto dalla capacità.',
+        glossaryRefs: [
+          GlossaryRef('arma_monaco', 'Arma da Monaco'),
+          GlossaryRef('tiro_per_colpire', 'Tiro per colpire'),
+          GlossaryRef('turno', 'Turno'),
+        ],
+      ),
     },
   ),
   'Via dell’Anima Solare': SubclassDefinition(
@@ -402,6 +1083,56 @@ const monkClass =
       11: ['Esplosione Solare Rovente'],
       17: ['Scudo Solare'],
     },
+    featureDescriptions: {
+      'Dardo Solare Radioso': RuleDescription(
+        summary:
+            'Il Monaco proietta la propria energia interiore sotto forma di attacchi radianti a distanza.',
+        details:
+            'Dal 3° livello, il Monaco ottiene una tecnica offensiva a distanza basata sull’energia radiante e collegata alla propria progressione nelle Arti Marziali. Il Ki può essere utilizzato per ampliare la sequenza offensiva secondo le regole della capacità.',
+        glossaryRefs: [
+          GlossaryRef('ki', 'Ki'),
+          GlossaryRef('arti_marziali', 'Arti Marziali'),
+          GlossaryRef('attacco_distanza', 'Attacco a distanza'),
+          GlossaryRef('danno_radiante', 'Danno radiante'),
+        ],
+      ),
+      'Colpo ad Arco Bruciante': RuleDescription(
+        summary:
+            'Il Monaco accompagna la propria offensiva con una manifestazione di energia infuocata.',
+        details:
+            'Dal 6° livello, dopo aver effettuato l’azione di Attacco nel proprio turno, il Monaco può utilizzare il Ki per produrre l’effetto offensivo previsto dalla capacità e può investirvi ulteriore Ki entro i limiti consentiti.',
+        glossaryRefs: [
+          GlossaryRef('ki', 'Ki'),
+          GlossaryRef('azione_attacco', 'Azione di Attacco'),
+          GlossaryRef('danno_fuoco', 'Danno da fuoco'),
+        ],
+      ),
+      'Esplosione Solare Rovente': RuleDescription(
+        summary:
+            'Il Monaco concentra la propria energia in un’esplosione radiante a distanza.',
+        details:
+            'Dall’11° livello, il Monaco può generare un’esplosione di energia in un punto entro la gittata prevista. Le creature nell’area devono resistere all’effetto della capacità e il Monaco può spendere Ki per aumentarne la potenza.',
+        glossaryRefs: [
+          GlossaryRef('ki', 'Ki'),
+          GlossaryRef('azione', 'Azione'),
+          GlossaryRef('area_effetto', 'Area di effetto'),
+          GlossaryRef('tiro_salvezza', 'Tiro salvezza'),
+          GlossaryRef('danno_radiante', 'Danno radiante'),
+        ],
+      ),
+      'Scudo Solare': RuleDescription(
+        summary:
+            'Il Monaco emana luce e può reagire contro un avversario che riesce a colpirlo.',
+        details:
+            'Dal 17° livello, il Monaco può manifestare un’aura luminosa. Mentre la manifestazione è attiva, può reagire contro una creatura che lo colpisce con un attacco in mischia, applicando l’effetto radiante previsto dalla capacità.',
+        glossaryRefs: [
+          GlossaryRef('luce', 'Luce'),
+          GlossaryRef('reazione', 'Reazione'),
+          GlossaryRef('attacco_mischia', 'Attacco in mischia'),
+          GlossaryRef('danno_radiante', 'Danno radiante'),
+        ],
+      ),
+    },
   ),
   'Via del Sé Astrale': SubclassDefinition(
     name: 'Via del Sé Astrale',
@@ -414,6 +1145,58 @@ const monkClass =
       6: ['Volto del Sé Astrale'],
       11: ['Corpo del Sé Astrale'],
       17: ['Sé Astrale Risvegliato'],
+    },
+    featureDescriptions: {
+      'Braccia del Sé Astrale': RuleDescription(
+        summary:
+            'Il Monaco manifesta braccia spettrali che rappresentano una parte del proprio sé interiore.',
+        details:
+            'Dal 3° livello, il Monaco può spendere Ki per evocare le braccia del proprio Sé Astrale. La manifestazione produce gli effetti iniziali previsti dalla capacità e, mentre permane, modifica alcune possibilità offensive e fisiche del Monaco, permettendogli di affidarsi maggiormente alla propria Saggezza e di estendere la portata dei propri colpi senz’armi.',
+        glossaryRefs: [
+          GlossaryRef('ki', 'Ki'),
+          GlossaryRef('saggezza', 'Saggezza'),
+          GlossaryRef('attacco_senz_armi', 'Attacco senz’armi'),
+          GlossaryRef('portata', 'Portata'),
+          GlossaryRef('danno_forza', 'Danno da forza'),
+        ],
+      ),
+      'Volto del Sé Astrale': RuleDescription(
+        summary:
+            'Il Monaco manifesta il volto del proprio Sé Astrale ottenendo capacità sensoriali e comunicative soprannaturali.',
+        details:
+            'Dal 6° livello, il Monaco può manifestare il volto astrale, separatamente o insieme alle braccia. Finché è presente, ottiene i benefici sensoriali e comunicativi previsti dalla capacità, migliorando la propria percezione e il modo in cui può farsi udire o comunicare.',
+        glossaryRefs: [
+          GlossaryRef('ki', 'Ki'),
+          GlossaryRef('percezione', 'Percezione'),
+          GlossaryRef('sensi', 'Sensi'),
+          GlossaryRef('comunicazione', 'Comunicazione'),
+        ],
+      ),
+      'Corpo del Sé Astrale': RuleDescription(
+        summary:
+            'La manifestazione astrale si estende al corpo del Monaco e ne rafforza le capacità difensive e offensive.',
+        details:
+            'Dall’11° livello, quando il Monaco ha manifestato sia le braccia sia il volto del Sé Astrale, può manifestarne anche il corpo. La forma completa gli concede i benefici difensivi e offensivi previsti dalla capacità, migliorando la sua interazione con determinati tipi di danno e la potenza dei colpi delle braccia astrali.',
+        glossaryRefs: [
+          GlossaryRef('ki', 'Ki'),
+          GlossaryRef('danno', 'Danno'),
+          GlossaryRef('reazione', 'Reazione'),
+          GlossaryRef('attacco_senz_armi', 'Attacco senz’armi'),
+          GlossaryRef('danno_forza', 'Danno da forza'),
+        ],
+      ),
+      'Sé Astrale Risvegliato': RuleDescription(
+        summary:
+            'Il Monaco porta la manifestazione del proprio Sé Astrale alla sua espressione più completa.',
+        details:
+            'Dal 17° livello, il Monaco può manifestare pienamente il Sé Astrale spendendo Ki. Finché la manifestazione permane, ottiene i miglioramenti difensivi e offensivi di massimo livello previsti dalla tradizione, inclusi benefici alla propria protezione e alla sequenza di attacchi effettuati tramite il Sé Astrale.',
+        glossaryRefs: [
+          GlossaryRef('ki', 'Ki'),
+          GlossaryRef('classe_armatura', 'Classe Armatura'),
+          GlossaryRef('attacco', 'Attacco'),
+          GlossaryRef('attacco_senz_armi', 'Attacco senz’armi'),
+        ],
+      ),
     },
   ),
   'Via della Misericordia': SubclassDefinition(
@@ -431,6 +1214,82 @@ const monkClass =
       6: ['Tocco del Medico'],
       11: ['Raffica di Guarigione e Dolore'],
       17: ['Mano della Misericordia Suprema'],
+    },
+    featureDescriptions: {
+      'Strumenti della Misericordia': RuleDescription(
+        summary:
+            'Il Monaco riceve un addestramento adatto a chi porta guarigione, sollievo o una morte misericordiosa.',
+        details:
+            'Dal 3° livello, il Monaco ottiene le competenze previste dalla tradizione e acquisisce gli strumenti simbolici e pratici associati al proprio ruolo di portatore di misericordia.',
+        glossaryRefs: [
+          GlossaryRef('competenza', 'Competenza'),
+          GlossaryRef('medicina', 'Medicina'),
+          GlossaryRef('strumento', 'Strumento'),
+        ],
+      ),
+      'Mani della Guarigione': RuleDescription(
+        summary:
+            'Il Monaco può incanalare il Ki attraverso il contatto per ripristinare i punti ferita di una creatura.',
+        details:
+            'Dal 3° livello, il Monaco può spendere Ki per toccare una creatura e farle recuperare punti ferita in base al proprio dado delle Arti Marziali e al modificatore di Saggezza. La capacità interagisce inoltre con Raffica di Colpi secondo la progressione della tradizione.',
+        glossaryRefs: [
+          GlossaryRef('ki', 'Ki'),
+          GlossaryRef('punti_ferita', 'Punti Ferita'),
+          GlossaryRef('arti_marziali', 'Arti Marziali'),
+          GlossaryRef('saggezza', 'Saggezza'),
+          GlossaryRef('raffica_di_colpi', 'Raffica di Colpi'),
+        ],
+      ),
+      'Mani del Dolore': RuleDescription(
+        summary:
+            'Il Monaco può convogliare il Ki in un colpo per infliggere ulteriore sofferenza al bersaglio.',
+        details:
+            'Dal 3° livello, quando colpisce una creatura con un colpo senz’armi, il Monaco può spendere Ki per infliggere danni necrotici aggiuntivi determinati dal proprio dado delle Arti Marziali e dal modificatore di Saggezza, rispettando il limite d’uso previsto dalla capacità.',
+        glossaryRefs: [
+          GlossaryRef('ki', 'Ki'),
+          GlossaryRef('attacco_senz_armi', 'Attacco senz’armi'),
+          GlossaryRef('arti_marziali', 'Arti Marziali'),
+          GlossaryRef('saggezza', 'Saggezza'),
+          GlossaryRef('danno_necrotico', 'Danno necrotico'),
+        ],
+      ),
+      'Tocco del Medico': RuleDescription(
+        summary:
+            'Le Mani della Guarigione e le Mani del Dolore acquisiscono effetti aggiuntivi.',
+        details:
+            'Dal 6° livello, l’uso di Mani della Guarigione può rimuovere determinate condizioni dalla creatura curata, mentre Mani del Dolore può imporre al bersaglio colpito la condizione prevista dalla capacità fino alla fine del turno successivo del Monaco.',
+        glossaryRefs: [
+          GlossaryRef('mani_della_guarigione', 'Mani della Guarigione'),
+          GlossaryRef('mani_del_dolore', 'Mani del Dolore'),
+          GlossaryRef('condizione', 'Condizione'),
+          GlossaryRef('avvelenato', 'Avvelenato'),
+        ],
+      ),
+      'Raffica di Guarigione e Dolore': RuleDescription(
+        summary:
+            'Il Monaco integra con maggiore efficienza guarigione e dolore nella propria Raffica di Colpi.',
+        details:
+            'Dall’11° livello, quando usa Raffica di Colpi, il Monaco può applicare Mani della Guarigione e Mani del Dolore con l’efficienza e i limiti previsti dalla capacità, riducendo il costo necessario per combinarle con la propria sequenza di colpi.',
+        glossaryRefs: [
+          GlossaryRef('ki', 'Ki'),
+          GlossaryRef('raffica_di_colpi', 'Raffica di Colpi'),
+          GlossaryRef('mani_della_guarigione', 'Mani della Guarigione'),
+          GlossaryRef('mani_del_dolore', 'Mani del Dolore'),
+        ],
+      ),
+      'Mano della Misericordia Suprema': RuleDescription(
+        summary:
+            'La padronanza del Ki permette al Monaco di riportare alla vita una creatura morta di recente.',
+        details:
+            'Dal 17° livello, il Monaco può utilizzare Mani della Guarigione su una creatura morta entro il limite temporale previsto dalla capacità e spendere una quantità significativa di Ki per riportarla in vita, facendole recuperare punti ferita e rimuovendo le condizioni indicate dalla regola. Questa applicazione è soggetta a un limite prima di poter essere usata nuovamente.',
+        glossaryRefs: [
+          GlossaryRef('ki', 'Ki'),
+          GlossaryRef('mani_della_guarigione', 'Mani della Guarigione'),
+          GlossaryRef('punti_ferita', 'Punti Ferita'),
+          GlossaryRef('morte', 'Morte'),
+          GlossaryRef('riposo_lungo', 'Riposo lungo'),
+        ],
+      ),
     },
   ),
 });
