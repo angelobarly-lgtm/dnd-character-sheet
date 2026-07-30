@@ -3650,6 +3650,354 @@ class AbilityActionTile extends StatelessWidget {
       );
 }
 
+Future<void> showGlossaryEntry(
+  BuildContext context,
+  GlossaryRef reference,
+) async {
+  final entry = glossaryEntryFor(reference.id);
+
+  if (entry == null) {
+    ScaffoldMessenger.of(context)
+      ..hideCurrentSnackBar()
+      ..showSnackBar(
+        SnackBar(
+          content: Text(
+            'Voce di glossario non ancora disponibile: ${reference.label}',
+          ),
+        ),
+      );
+    return;
+  }
+
+  await showModalBottomSheet<void>(
+    context: context,
+    useSafeArea: true,
+    showDragHandle: true,
+    isScrollControlled: true,
+    builder: (ctx) => GlossaryEntrySheet(entry: entry),
+  );
+}
+
+class GlossaryEntrySheet extends StatelessWidget {
+  const GlossaryEntrySheet({
+    super.key,
+    required this.entry,
+  });
+
+  final GlossaryEntry entry;
+
+  String get categoryLabel {
+    switch (entry.category) {
+      case GlossaryCategory.regola:
+        return 'Regola';
+      case GlossaryCategory.condizione:
+        return 'Condizione';
+      case GlossaryCategory.risorsa:
+        return 'Risorsa';
+      case GlossaryCategory.azione:
+        return 'Azione';
+      case GlossaryCategory.caratteristica:
+        return 'Caratteristica';
+      case GlossaryCategory.combattimento:
+        return 'Combattimento';
+      case GlossaryCategory.equipaggiamento:
+        return 'Equipaggiamento';
+      case GlossaryCategory.altro:
+        return 'Altro';
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final related = entry.relatedIds
+        .map(glossaryEntryFor)
+        .whereType<GlossaryEntry>()
+        .toList();
+
+    return SafeArea(
+      top: false,
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.fromLTRB(20, 8, 20, 28),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Text(
+              entry.name,
+              style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                    fontWeight: FontWeight.w900,
+                  ),
+            ),
+            const SizedBox(height: 4),
+            Text(
+              categoryLabel.toUpperCase(),
+              style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                    fontWeight: FontWeight.w900,
+                    letterSpacing: 1,
+                  ),
+            ),
+            const SizedBox(height: 16),
+            Text(
+              entry.summary,
+              style: const TextStyle(
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+            if (entry.details.trim().isNotEmpty) ...[
+              const SizedBox(height: 12),
+              Text(entry.details),
+            ],
+            if (related.isNotEmpty) ...[
+              const SizedBox(height: 20),
+              Text(
+                'VOCI CORRELATE',
+                style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                      fontWeight: FontWeight.w900,
+                      letterSpacing: 0.8,
+                    ),
+              ),
+              const SizedBox(height: 8),
+              Wrap(
+                spacing: 6,
+                runSpacing: 6,
+                children: related
+                    .map(
+                      (relatedEntry) => ActionChip(
+                        avatar: const Icon(
+                          Icons.menu_book_outlined,
+                          size: 16,
+                        ),
+                        label: Text(relatedEntry.name),
+                        onPressed: () {
+                          Navigator.pop(context);
+
+                          showGlossaryEntry(
+                            context,
+                            GlossaryRef(
+                              relatedEntry.id,
+                              relatedEntry.name,
+                            ),
+                          );
+                        },
+                      ),
+                    )
+                    .toList(),
+              ),
+            ],
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// Tema visuale centralizzato per tutti i contenuti regolamentari.
+///
+/// I colori appartengono alle famiglie, non ai singoli contenuti.
+/// Gli incantesimi possono sostituire il colore della famiglia
+/// con quello della propria scuola di magia.
+class RuleVisualTheme {
+  const RuleVisualTheme._();
+
+  static Color familyColor(RuleVisualFamily family) {
+    switch (family) {
+      case RuleVisualFamily.classType:
+        return const Color(0xffd8a23d);
+      case RuleVisualFamily.race:
+        return const Color(0xff70a37f);
+      case RuleVisualFamily.background:
+        return const Color(0xffa88bc1);
+      case RuleVisualFamily.feat:
+        return const Color(0xffd17a6f);
+      case RuleVisualFamily.ability:
+        return const Color(0xffdc8d45);
+      case RuleVisualFamily.skill:
+        return const Color(0xff6ea6b8);
+      case RuleVisualFamily.action:
+        return const Color(0xffd5b85a);
+      case RuleVisualFamily.weapon:
+        return const Color(0xffb9b9b9);
+      case RuleVisualFamily.armor:
+        return const Color(0xff8e9aa3);
+      case RuleVisualFamily.equipment:
+        return const Color(0xffa98b6d);
+      case RuleVisualFamily.resource:
+        return const Color(0xff7ca7d8);
+      case RuleVisualFamily.spell:
+        return const Color(0xff9b83c7);
+      case RuleVisualFamily.other:
+        return const Color(0xffb0a99f);
+    }
+  }
+
+  static Color spellSchoolColor(SpellVisualSchool school) {
+    switch (school) {
+      case SpellVisualSchool.abjuration:
+        return const Color(0xff7da7d9);
+      case SpellVisualSchool.conjuration:
+        return const Color(0xffd0a05f);
+      case SpellVisualSchool.divination:
+        return const Color(0xffd7c65c);
+      case SpellVisualSchool.enchantment:
+        return const Color(0xffd58aad);
+      case SpellVisualSchool.evocation:
+        return const Color(0xffd96b5f);
+      case SpellVisualSchool.illusion:
+        return const Color(0xff9b83c7);
+      case SpellVisualSchool.necromancy:
+        return const Color(0xff7f8c72);
+      case SpellVisualSchool.transmutation:
+        return const Color(0xff70ad91);
+    }
+  }
+
+  static Color backgroundFor(RuleVisualIdentity visual) {
+    final school = visual.spellSchool;
+
+    if (visual.family == RuleVisualFamily.spell && school != null) {
+      return spellSchoolColor(school);
+    }
+
+    return familyColor(visual.family);
+  }
+
+  /// Fallback Material usato finché non esiste il pittogramma
+  /// personalizzato corrispondente a iconId.
+  static IconData fallbackIcon(RuleVisualFamily family) {
+    switch (family) {
+      case RuleVisualFamily.classType:
+        return Icons.shield_outlined;
+      case RuleVisualFamily.race:
+        return Icons.groups_outlined;
+      case RuleVisualFamily.background:
+        return Icons.history_edu_outlined;
+      case RuleVisualFamily.feat:
+        return Icons.workspace_premium_outlined;
+      case RuleVisualFamily.ability:
+        return Icons.flash_on_outlined;
+      case RuleVisualFamily.skill:
+        return Icons.psychology_outlined;
+      case RuleVisualFamily.action:
+        return Icons.play_arrow_outlined;
+      case RuleVisualFamily.weapon:
+        return Icons.gavel_outlined;
+      case RuleVisualFamily.armor:
+        return Icons.shield_outlined;
+      case RuleVisualFamily.equipment:
+        return Icons.backpack_outlined;
+      case RuleVisualFamily.resource:
+        return Icons.bolt_outlined;
+      case RuleVisualFamily.spell:
+        return Icons.auto_fix_high_outlined;
+      case RuleVisualFamily.other:
+        return Icons.category_outlined;
+    }
+  }
+}
+
+/// Tessera visuale standard dell'app.
+///
+/// Forma quadrata, sfondo semantico e pittogramma nero.
+/// In futuro iconId verrà risolto verso gli asset grafici originali.
+/// Fino ad allora viene sempre mostrato un fallback coerente.
+class RuleVisualTile extends StatelessWidget {
+  const RuleVisualTile({
+    super.key,
+    required this.visual,
+    this.size = 44,
+    this.borderRadius = 9,
+  });
+
+  final RuleVisualIdentity visual;
+  final double size;
+  final double borderRadius;
+
+  @override
+  Widget build(BuildContext context) {
+    final background = RuleVisualTheme.backgroundFor(visual);
+    final icon = RuleVisualTheme.fallbackIcon(visual.family);
+
+    return Semantics(
+      image: true,
+      label: visual.iconId.isEmpty
+          ? 'Icona ${visual.family.name}'
+          : 'Icona ${visual.iconId}',
+      child: Container(
+        width: size,
+        height: size,
+        decoration: BoxDecoration(
+          color: background,
+          borderRadius: BorderRadius.circular(borderRadius),
+          border: Border.all(
+            color: Colors.black.withValues(alpha: 0.22),
+          ),
+        ),
+        alignment: Alignment.center,
+        child: Icon(
+          icon,
+          color: Colors.black,
+          size: size * 0.58,
+        ),
+      ),
+    );
+  }
+}
+
+/// Determina la famiglia visuale di fallback da RuleContentType.
+///
+/// Serve ai contenuti migrati a RuleContent che non possiedono
+/// ancora un'identità grafica specifica.
+RuleVisualFamily visualFamilyForContentType(RuleContentType type) {
+  switch (type) {
+    case RuleContentType.classFeature:
+    case RuleContentType.subclassFeature:
+    case RuleContentType.subclassOption:
+      return RuleVisualFamily.ability;
+
+    case RuleContentType.race:
+    case RuleContentType.subrace:
+    case RuleContentType.racialTrait:
+      return RuleVisualFamily.race;
+
+    case RuleContentType.background:
+      return RuleVisualFamily.background;
+
+    case RuleContentType.feat:
+      return RuleVisualFamily.feat;
+
+    case RuleContentType.skill:
+      return RuleVisualFamily.skill;
+
+    case RuleContentType.action:
+      return RuleVisualFamily.action;
+
+    case RuleContentType.spell:
+      return RuleVisualFamily.spell;
+
+    case RuleContentType.weapon:
+      return RuleVisualFamily.weapon;
+
+    case RuleContentType.armor:
+      return RuleVisualFamily.armor;
+
+    case RuleContentType.equipment:
+      return RuleVisualFamily.equipment;
+
+    case RuleContentType.resource:
+      return RuleVisualFamily.resource;
+
+    case RuleContentType.other:
+      return RuleVisualFamily.other;
+  }
+}
+
+RuleVisualIdentity visualForRuleContent(RuleContent content) {
+  return content.visual ??
+      RuleVisualIdentity(
+        family: visualFamilyForContentType(content.type),
+        iconId: content.id,
+      );
+}
+
 class RuleDescriptionView extends StatefulWidget {
   const RuleDescriptionView({
     super.key,
@@ -3828,15 +4176,7 @@ class _RuleDescriptionViewState extends State<RuleDescriptionView> {
                           ),
                           label: Text(ref.label),
                           onPressed: () {
-                            ScaffoldMessenger.of(context)
-                              ..hideCurrentSnackBar()
-                              ..showSnackBar(
-                                SnackBar(
-                                  content: Text(
-                                    'Glossario · ${ref.label}',
-                                  ),
-                                ),
-                              );
+                            showGlossaryEntry(context, ref);
                           },
                         ),
                       )

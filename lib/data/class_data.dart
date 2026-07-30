@@ -86,6 +86,72 @@ class RuleSource {
   bool get isEmpty => name.trim().isEmpty && reference.trim().isEmpty;
 }
 
+/// Famiglia visuale utilizzata dall'interfaccia.
+///
+/// La famiglia determina l'aspetto generale dell'elemento.
+/// Il singolo contenuto specifica invece [RuleVisualIdentity.iconId].
+enum RuleVisualFamily {
+  classType,
+  race,
+  background,
+  feat,
+  ability,
+  skill,
+  action,
+  weapon,
+  armor,
+  equipment,
+  resource,
+  spell,
+  other,
+}
+
+/// Scuola di magia utilizzata esclusivamente per la variante
+/// cromatica degli incantesimi.
+///
+/// Rimane null per tutti i contenuti che non sono incantesimi
+/// o per quelli per cui la scuola non è stata ancora definita.
+enum SpellVisualSchool {
+  abjuration,
+  conjuration,
+  divination,
+  enchantment,
+  evocation,
+  illusion,
+  necromancy,
+  transmutation,
+}
+
+/// Identità grafica semantica di un contenuto.
+///
+/// Non contiene colori, widget Flutter o percorsi di file:
+/// questi vengono risolti dal tema visuale dell'app.
+///
+/// Esempi di iconId:
+/// - monk
+/// - dwarf
+/// - dagger
+/// - flurry_of_blows
+/// - ki
+///
+/// Se l'asset specifico non esiste, l'interfaccia usa
+/// automaticamente l'icona fallback della famiglia.
+class RuleVisualIdentity {
+  final RuleVisualFamily family;
+
+  /// ID stabile dell'illustrazione specifica.
+  final String iconId;
+
+  /// Variante opzionale per gli incantesimi.
+  final SpellVisualSchool? spellSchool;
+
+  const RuleVisualIdentity({
+    required this.family,
+    this.iconId = '',
+    this.spellSchool,
+  });
+}
+
 /// Rappresentazione universale di un contenuto dell'app.
 ///
 /// Può descrivere una capacità di classe, un tratto razziale,
@@ -101,6 +167,12 @@ class RuleContent {
   final RuleDescription description;
   final List<RuleMetadata> metadata;
   final RuleSource source;
+
+  /// Identità visuale opzionale.
+  ///
+  /// Se assente, l'interfaccia può dedurre una famiglia fallback
+  /// da [type].
+  final RuleVisualIdentity? visual;
 
   /// Identificatore opzionale dell'elemento proprietario.
   ///
@@ -118,6 +190,7 @@ class RuleContent {
     required this.description,
     this.metadata = const [],
     this.source = const RuleSource(),
+    this.visual,
     this.ownerId = '',
   });
 }
@@ -139,6 +212,18 @@ class GlossaryEntry {
     this.relatedIds = const [],
   });
 }
+
+/// Registry globale del glossario.
+///
+/// Tutti i sistemi dell'app possono riferirsi alle stesse voci tramite
+/// GlossaryRef.id: classi, razze, background, talenti, abilità,
+/// incantesimi, equipaggiamento e qualsiasi contenuto futuro.
+///
+/// Il dataset verrà popolato progressivamente senza modificare
+/// il sistema di visualizzazione.
+const Map<String, GlossaryEntry> glossaryEntries = {};
+
+GlossaryEntry? glossaryEntryFor(String id) => glossaryEntries[id];
 
 class ClassDefinition {
   final String id;
