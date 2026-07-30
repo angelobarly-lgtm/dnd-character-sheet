@@ -3899,6 +3899,74 @@ class RuleVisualTheme {
 /// Forma quadrata, sfondo semantico e pittogramma nero.
 /// In futuro iconId verrà risolto verso gli asset grafici originali.
 /// Fino ad allora viene sempre mostrato un fallback coerente.
+
+/// Registry degli asset visuali specifici.
+///
+/// La chiave è RuleVisualIdentity.iconId.
+/// Il percorso dell'asset rimane confinato qui: i dataset regolamentari
+/// conoscono soltanto l'ID semantico.
+///
+/// Aggiungeremo le voci progressivamente mentre realizziamo
+/// il set grafico originale.
+const Map<String, String> ruleIconAssets = {};
+
+String? ruleIconAssetFor(String iconId) {
+  final normalized = iconId.trim();
+
+  if (normalized.isEmpty) return null;
+
+  return ruleIconAssets[normalized];
+}
+
+/// Pittogramma interno alla tessera.
+///
+/// Se iconId possiede un asset registrato usa l'immagine.
+/// In caso contrario usa sempre il fallback della famiglia,
+/// quindi un contenuto nuovo non rimane mai senza icona.
+class RuleIconGlyph extends StatelessWidget {
+  const RuleIconGlyph({
+    super.key,
+    required this.visual,
+    required this.size,
+  });
+
+  final RuleVisualIdentity visual;
+  final double size;
+
+  @override
+  Widget build(BuildContext context) {
+    final asset = ruleIconAssetFor(visual.iconId);
+
+    if (asset == null) {
+      return Icon(
+        RuleVisualTheme.fallbackIcon(visual.family),
+        color: Colors.black,
+        size: size,
+      );
+    }
+
+    return Image.asset(
+      asset,
+      width: size,
+      height: size,
+      fit: BoxFit.contain,
+
+      // Le icone sorgente saranno nere/trasparenti.
+      // Il filtro garantisce comunque una resa nera uniforme.
+      color: Colors.black,
+      colorBlendMode: BlendMode.srcIn,
+
+      // Se un asset registrato viene accidentalmente rimosso,
+      // l'interfaccia continua a funzionare con il fallback.
+      errorBuilder: (context, error, stackTrace) => Icon(
+        RuleVisualTheme.fallbackIcon(visual.family),
+        color: Colors.black,
+        size: size,
+      ),
+    );
+  }
+}
+
 class RuleVisualTile extends StatelessWidget {
   const RuleVisualTile({
     super.key,
@@ -3914,7 +3982,6 @@ class RuleVisualTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final background = RuleVisualTheme.backgroundFor(visual);
-    final icon = RuleVisualTheme.fallbackIcon(visual.family);
 
     return Semantics(
       image: true,
@@ -3932,10 +3999,9 @@ class RuleVisualTile extends StatelessWidget {
           ),
         ),
         alignment: Alignment.center,
-        child: Icon(
-          icon,
-          color: Colors.black,
-          size: size * 0.58,
+        child: RuleIconGlyph(
+          visual: visual,
+          size: size * 0.62,
         ),
       ),
     );
