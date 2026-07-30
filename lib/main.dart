@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'data/class_data.dart';
 
+import 'data/rule_icon_data.dart';
+
 void main() => runApp(const DndApp());
 
 const abilities = ['FOR', 'DES', 'COS', 'INT', 'SAG', 'CAR'];
@@ -1111,6 +1113,12 @@ class _CreatorPageState extends State<CreatorPage> {
                           ])
                             RadioListTile<String>(
                               value: r,
+                              secondary: RuleVisualTile(
+                                visual: RuleVisualIdentity(
+                                  family: RuleVisualFamily.race,
+                                  iconId: raceIconIdFor(r),
+                                ),
+                              ),
                               title: Text(r),
                               subtitle: Text(raceDescriptions[r] ?? ''),
                             ),
@@ -1184,7 +1192,21 @@ class _CreatorPageState extends State<CreatorPage> {
                   ],
                 ),
               ),
-              const InfoTile('Classe', 'Monaco'),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  RuleVisualTile(
+                    visual: RuleVisualIdentity(
+                      family: RuleVisualFamily.classType,
+                      iconId: classIconIdFor('Monaco'),
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  const Expanded(
+                    child: InfoTile('Classe', 'Monaco'),
+                  ),
+                ],
+              ),
               FantasySection(
                 title: 'Background',
                 subtitle:
@@ -1197,6 +1219,12 @@ class _CreatorPageState extends State<CreatorPage> {
                     children: backgroundInfo.entries
                         .map((e) => RadioListTile<String>(
                               value: e.key,
+                              secondary: RuleVisualTile(
+                                visual: RuleVisualIdentity(
+                                  family: RuleVisualFamily.background,
+                                  iconId: backgroundIconIdFor(e.key),
+                                ),
+                              ),
                               title: Text(e.key),
                               subtitle: Text(e.value),
                             ))
@@ -1262,6 +1290,12 @@ class _CreatorPageState extends State<CreatorPage> {
                           children: featInfo.entries
                               .map((e) => RadioListTile<String>(
                                     value: e.key,
+                                    secondary: RuleVisualTile(
+                                      visual: RuleVisualIdentity(
+                                        family: RuleVisualFamily.feat,
+                                        iconId: featIconIdFor(e.key),
+                                      ),
+                                    ),
                                     title: Text(e.key),
                                     subtitle: Text(e.value),
                                   ))
@@ -3315,6 +3349,10 @@ class _SheetPageState extends State<SheetPage> {
             AbilityActionTile(
                 title: 'Raffica di Colpi',
                 subtitle: '1 Ki',
+                visual: const RuleVisualIdentity(
+                  family: RuleVisualFamily.ability,
+                  iconId: RuleIconIds.flurryOfBlows,
+                ),
                 onTap: () => ability('Raffica di Colpi', 1,
                     'Dopo l’azione Attacco, spendi 1 Ki per effettuare due colpi senz’armi come azione bonus.')),
             subclassOptionsSection(),
@@ -3322,11 +3360,19 @@ class _SheetPageState extends State<SheetPage> {
             AbilityActionTile(
                 title: 'Difesa Paziente',
                 subtitle: '1 Ki',
+                visual: const RuleVisualIdentity(
+                  family: RuleVisualFamily.ability,
+                  iconId: RuleIconIds.patientDefense,
+                ),
                 onTap: () => ability('Difesa Paziente', 1,
                     'Spendi 1 Ki per usare Schivare come azione bonus nel tuo turno.')),
             AbilityActionTile(
                 title: 'Passo del Vento',
                 subtitle: '1 Ki',
+                visual: const RuleVisualIdentity(
+                  family: RuleVisualFamily.ability,
+                  iconId: RuleIconIds.stepOfTheWind,
+                ),
                 onTap: () => ability('Passo del Vento', 1,
                     'Spendi 1 Ki per Disimpegno o Scatto come azione bonus; la distanza di salto aumenta per il turno.')),
           ],
@@ -3631,17 +3677,26 @@ const monkFeatureInfo = <String, String>{
 };
 
 class AbilityActionTile extends StatelessWidget {
-  const AbilityActionTile(
-      {super.key,
-      required this.title,
-      required this.subtitle,
-      required this.onTap});
+  const AbilityActionTile({
+    super.key,
+    required this.title,
+    required this.subtitle,
+    required this.onTap,
+    this.visual,
+  });
+
   final String title, subtitle;
   final VoidCallback onTap;
+  final RuleVisualIdentity? visual;
 
   @override
   Widget build(BuildContext context) => Card(
         child: ListTile(
+          leading: visual == null
+              ? null
+              : RuleVisualTile(
+                  visual: visual!,
+                ),
           title: Text(title),
           subtitle: Text(subtitle),
           trailing: const Icon(Icons.play_arrow),
@@ -3908,8 +3963,6 @@ class RuleVisualTheme {
 ///
 /// Aggiungeremo le voci progressivamente mentre realizziamo
 /// il set grafico originale.
-const Map<String, String> ruleIconAssets = {};
-
 String? ruleIconAssetFor(String iconId) {
   final normalized = iconId.trim();
 
