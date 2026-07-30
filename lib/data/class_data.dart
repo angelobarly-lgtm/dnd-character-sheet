@@ -28,6 +28,100 @@ class RuleDescription {
   });
 }
 
+/// Categoria generale di un contenuto regolamentare.
+///
+/// Non determina come funziona la regola: serve a identificare
+/// e presentare uniformemente contenuti provenienti da sistemi diversi.
+enum RuleContentType {
+  classFeature,
+  subclassFeature,
+  subclassOption,
+  race,
+  subrace,
+  racialTrait,
+  background,
+  feat,
+  skill,
+  action,
+  spell,
+  equipment,
+  weapon,
+  armor,
+  resource,
+  other,
+}
+
+/// Metadato descrittivo associato a un contenuto.
+///
+/// Esempi:
+/// - Livello minimo: 3
+/// - Caratteristica: DES
+/// - Costo: 2 Ki
+/// - Danno: 1d6 perforante
+///
+/// I metadati descrivono il contenuto ma non implementano
+/// direttamente la sua meccanica.
+class RuleMetadata {
+  final String id;
+  final String label;
+  final String value;
+
+  const RuleMetadata({
+    required this.id,
+    required this.label,
+    required this.value,
+  });
+}
+
+/// Identità editoriale opzionale di un contenuto.
+class RuleSource {
+  final String name;
+  final String reference;
+
+  const RuleSource({
+    this.name = '',
+    this.reference = '',
+  });
+
+  bool get isEmpty => name.trim().isEmpty && reference.trim().isEmpty;
+}
+
+/// Rappresentazione universale di un contenuto dell'app.
+///
+/// Può descrivere una capacità di classe, un tratto razziale,
+/// un background, un talento, un'abilità, un incantesimo,
+/// un oggetto o qualsiasi altro elemento regolamentare.
+///
+/// Questo modello contiene identità e presentazione.
+/// Le meccaniche runtime restano nei rispettivi sistemi.
+class RuleContent {
+  final String id;
+  final String name;
+  final RuleContentType type;
+  final RuleDescription description;
+  final List<RuleMetadata> metadata;
+  final RuleSource source;
+
+  /// Identificatore opzionale dell'elemento proprietario.
+  ///
+  /// Esempi:
+  /// monk
+  /// way_of_the_four_elements
+  /// dwarf
+  /// acolyte
+  final String ownerId;
+
+  const RuleContent({
+    required this.id,
+    required this.name,
+    required this.type,
+    required this.description,
+    this.metadata = const [],
+    this.source = const RuleSource(),
+    this.ownerId = '',
+  });
+}
+
 class GlossaryEntry {
   final String id;
   final String name;

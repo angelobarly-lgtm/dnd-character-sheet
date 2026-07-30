@@ -356,6 +356,13 @@ class HeroData {
   }
 
   String get raceLabel => subrace != null ? '$race · $subrace' : race;
+
+  ClassDefinition get classDefinition =>
+      classDefinitionFor('Monaco') ?? monkClass;
+
+  int get hitDie => classDefinition.hitDie;
+  int get averageHitDie => (hitDie ~/ 2) + 1;
+
   int get prof => V06Rules.proficiencyBonus(level);
   int get maxKi => level >= 2 ? level : 0;
   int get hitDiceAvailable => max(0, level - hitDiceUsed);
@@ -370,7 +377,7 @@ class HeroData {
     final con = mod(scores['COS']!);
     final dwarvenToughness =
         race == 'Nano' && subrace == 'Nano delle Colline' ? level : 0;
-    return (max(1, 8 + con) +
+    return (max(1, hitDie + con) +
             hpRolls.fold<int>(0, (sum, gainedHp) => sum + gainedHp) +
             dwarvenToughness)
         .toInt();
@@ -1911,8 +1918,11 @@ class _SheetPageState extends State<SheetPage> {
     final next = h.level + 1;
     final hp = await showDialog<int>(
       context: context,
-      builder: (ctx) =>
-          HpDialog(nextLevel: next, conMod: mod(h.scores['COS']!)),
+      builder: (ctx) => HpDialog(
+        nextLevel: next,
+        conMod: mod(h.scores['COS']!),
+        hitDie: h.hitDie,
+      ),
     );
     if (hp == null || !mounted) return;
 
@@ -2155,17 +2165,21 @@ class _SheetPageState extends State<SheetPage> {
   }
 
   Future<void> shortRest() async {
+    final hitDie = h.hitDie;
     final available = h.hitDiceAvailable;
     final result = await showDialog<int>(
       context: context,
-      builder: (ctx) => HitDiceDialog(available: available),
+      builder: (ctx) => HitDiceDialog(
+        available: available,
+        hitDie: hitDie,
+      ),
     );
     if (result == null) return;
 
     h.ki = h.maxKi;
     if (result > 0) {
       final con = mod(h.scores['COS']!);
-      final rolls = List.generate(result, (_) => Random().nextInt(8) + 1);
+      final rolls = List.generate(result, (_) => Random().nextInt(hitDie) + 1);
       final heal = rolls.fold(0, (sum, roll) => sum + max(0, roll + con));
       h.hitDiceUsed += result;
       h.currentHp = min(h.maxHp, h.currentHp + heal);
@@ -3120,16 +3134,17 @@ class _SheetPageState extends State<SheetPage> {
                 style: Theme.of(ctx).textTheme.bodySmall,
               ),
               const SizedBox(height: 14),
-              Text(
-                option.description.summary,
-                style: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                ),
+              RuleDescriptionView.legacy(
+                description: option.description,
+                source: option.source,
+                sourceRef: option.sourceRef,
+                metadata: [
+                  'Livello minimo ${option.minimumLevel}',
+                  if (baseCost != null) 'Costo base $baseCost Ki',
+                  if (option.allowsAdditionalResource)
+                    'Spesa aggiuntiva consentita',
+                ],
               ),
-              if (option.description.details.isNotEmpty) ...[
-                const SizedBox(height: 8),
-                Text(option.description.details),
-              ],
               const SizedBox(height: 18),
 
               // Per ora automatizziamo soltanto il costo base esplicito.
@@ -3635,45 +3650,360 @@ class AbilityActionTile extends StatelessWidget {
       );
 }
 
+class RuleDescriptionView extends StatefulWidget {
+  const RuleDescriptionView({
+    super.key,
+    required this.content,
+    this.initiallyExpanded = false,
+  })  : description = null,
+        legacyMetadata = const [],
+        legacySource = '',
+        legacySourceRef = '';
+
+  /// Costruttore temporaneo per i contenuti non ancora migrati
+  /// a RuleContent.
+  ///
+  /// Permette di convertire progressivamente razze, background,
+  /// talenti, capacità, abilità, equipaggiamento e altri dataset
+  /// senza duplicare la UI.
+  const RuleDescriptionView.legacy({
+    super.key,
+    required this.description,
+    List<String> metadata = const [],
+    String source = '',
+    String sourceRef = '',
+    this.initiallyExpanded = false,
+  })  : content = null,
+        legacyMetadata = metadata,
+        legacySource = source,
+        legacySourceRef = sourceRef;
+
+  final RuleContent? content;
+
+  final RuleDescription? description;
+  final List<String> legacyMetadata;
+  final String legacySource;
+  final String legacySourceRef;
+
+  final bool initiallyExpanded;
+
+  RuleDescription get resolvedDescription =>
+      content?.description ?? description!;
+
+  List<RuleMetadata> get resolvedMetadata {
+    if (content != null) return content!.metadata;
+
+    return [
+      for (var i = 0; i < legacyMetadata.length; i++)
+        RuleMetadata(
+          id: 'legacy_$i',
+          label: '',
+          value: legacyMetadata[i],
+        ),
+    ];
+  }
+
+  RuleSource get resolvedSource =>
+      content?.source ??
+      RuleSource(
+        name: legacySource,
+        reference: legacySourceRef,
+      );
+
+  @override
+  State<RuleDescriptionView> createState() => _RuleDescriptionViewState();
+}
+
+class _RuleDescriptionViewState extends State<RuleDescriptionView> {
+  late bool expanded;
+
+  @override
+  void initState() {
+    super.initState();
+    expanded = widget.initiallyExpanded;
+  }
+
+  bool get hasMore {
+    final description = widget.resolvedDescription;
+    final source = widget.resolvedSource;
+
+    return description.details.trim().isNotEmpty ||
+        description.glossaryRefs.isNotEmpty ||
+        widget.resolvedMetadata.isNotEmpty ||
+        !source.isEmpty;
+  }
+
+  String metadataLabel(RuleMetadata metadata) {
+    final label = metadata.label.trim();
+    final value = metadata.value.trim();
+
+    if (label.isEmpty) return value;
+    if (value.isEmpty) return label;
+
+    return '$label: $value';
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final description = widget.resolvedDescription;
+    final metadata = widget.resolvedMetadata;
+    final source = widget.resolvedSource;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Text(
+          description.summary,
+          style: const TextStyle(
+            fontWeight: FontWeight.w700,
+          ),
+        ),
+        if (hasMore) ...[
+          const SizedBox(height: 4),
+          Align(
+            alignment: Alignment.centerLeft,
+            child: TextButton.icon(
+              onPressed: () {
+                setState(() {
+                  expanded = !expanded;
+                });
+              },
+              icon: Icon(
+                expanded ? Icons.expand_less : Icons.expand_more,
+              ),
+              label: Text(
+                expanded ? 'MOSTRA MENO' : 'MOSTRA ALTRO',
+              ),
+            ),
+          ),
+        ],
+        AnimatedCrossFade(
+          duration: const Duration(milliseconds: 180),
+          crossFadeState:
+              expanded ? CrossFadeState.showSecond : CrossFadeState.showFirst,
+          firstChild: const SizedBox.shrink(),
+          secondChild: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              if (description.details.trim().isNotEmpty) ...[
+                const SizedBox(height: 4),
+                Text(description.details),
+              ],
+              if (metadata.isNotEmpty) ...[
+                const SizedBox(height: 14),
+                Wrap(
+                  spacing: 6,
+                  runSpacing: 6,
+                  children: metadata
+                      .map(metadataLabel)
+                      .where((item) => item.trim().isNotEmpty)
+                      .map(
+                        (item) => Chip(
+                          visualDensity: VisualDensity.compact,
+                          label: Text(item),
+                        ),
+                      )
+                      .toList(),
+                ),
+              ],
+              if (description.glossaryRefs.isNotEmpty) ...[
+                const SizedBox(height: 14),
+                Text(
+                  'GLOSSARIO',
+                  style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                        fontWeight: FontWeight.w900,
+                        letterSpacing: 0.8,
+                      ),
+                ),
+                const SizedBox(height: 6),
+                Wrap(
+                  spacing: 6,
+                  runSpacing: 6,
+                  children: description.glossaryRefs
+                      .map(
+                        (ref) => ActionChip(
+                          avatar: const Icon(
+                            Icons.menu_book_outlined,
+                            size: 16,
+                          ),
+                          label: Text(ref.label),
+                          onPressed: () {
+                            ScaffoldMessenger.of(context)
+                              ..hideCurrentSnackBar()
+                              ..showSnackBar(
+                                SnackBar(
+                                  content: Text(
+                                    'Glossario · ${ref.label}',
+                                  ),
+                                ),
+                              );
+                          },
+                        ),
+                      )
+                      .toList(),
+                ),
+              ],
+              if (!source.isEmpty) ...[
+                const SizedBox(height: 14),
+                Text(
+                  [
+                    if (source.name.trim().isNotEmpty) source.name.trim(),
+                    if (source.reference.trim().isNotEmpty)
+                      source.reference.trim(),
+                  ].join(' · '),
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        fontStyle: FontStyle.italic,
+                      ),
+                ),
+              ],
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+}
+
 class HpDialog extends StatefulWidget {
-  const HpDialog({super.key, required this.nextLevel, required this.conMod});
-  final int nextLevel, conMod;
+  const HpDialog({
+    super.key,
+    required this.nextLevel,
+    required this.conMod,
+    required this.hitDie,
+  });
+
+  final int nextLevel;
+  final int conMod;
+
+  /// Numero di facce del Dado Vita della classe.
+  /// Esempi: d6 -> 6, d8 -> 8, d10 -> 10, d12 -> 12.
+  final int hitDie;
+
+  /// Valore medio fisso del Dado Vita per l'avanzamento:
+  /// metà del dado + 1.
+  ///
+  /// d6 -> 4
+  /// d8 -> 5
+  /// d10 -> 6
+  /// d12 -> 7
+  int get averageHitDie => (hitDie ~/ 2) + 1;
+
   @override
   State<HpDialog> createState() => _HpDialogState();
 }
 
 class _HpDialogState extends State<HpDialog> {
   int? rolled;
+
+  int gainedHp(int dieValue) => max(1, dieValue + widget.conMod);
+
   @override
   Widget build(BuildContext context) => AlertDialog(
         title: Text('PF · livello ${widget.nextLevel}'),
         content: Column(
           mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            const Text('Scegli come determinare i PF del nuovo livello.'),
-            const SizedBox(height: 10),
-            if (rolled != null)
-              Text(
-                '🎲 d8 = $rolled · COS ${sign(widget.conMod)} → +${max(1, rolled! + widget.conMod)} PF',
-                style: const TextStyle(fontWeight: FontWeight.bold),
+            const Text(
+              'Scegli il valore del Dado Vita per questo livello. '
+              'Il modificatore di Costituzione viene applicato separatamente.',
+            ),
+            const SizedBox(height: 14),
+            Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                border: Border.all(
+                  color: Theme.of(context).colorScheme.outlineVariant,
+                ),
+                borderRadius: BorderRadius.circular(10),
               ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'VALORE MEDIO DEL d${widget.hitDie}',
+                    style: const TextStyle(
+                      fontSize: 11,
+                      fontWeight: FontWeight.w900,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    '+${widget.averageHitDie}',
+                    style: const TextStyle(
+                      fontSize: 28,
+                      fontWeight: FontWeight.w900,
+                    ),
+                  ),
+                  Text('Costituzione: ${sign(widget.conMod)}'),
+                  Text(
+                    'PF ottenuti: +${gainedHp(widget.averageHitDie)}',
+                    style: const TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                ],
+              ),
+            ),
+            if (rolled != null) ...[
+              const SizedBox(height: 12),
+              Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  border: Border.all(
+                    color: Theme.of(context).colorScheme.outlineVariant,
+                  ),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      '🎲 d${widget.hitDie} = $rolled',
+                      style: const TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.w900,
+                      ),
+                    ),
+                    Text('Costituzione: ${sign(widget.conMod)}'),
+                    Text(
+                      'PF ottenuti: +${gainedHp(rolled!)}',
+                      style: const TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+            const SizedBox(height: 10),
+            const Text(
+              'Eventuali bonus aggiuntivi, come la robustezza del Nano '
+              'delle Colline, vengono calcolati separatamente dal Dado Vita.',
+              style: TextStyle(
+                fontSize: 12,
+                fontStyle: FontStyle.italic,
+              ),
+            ),
           ],
         ),
         actions: [
           TextButton(
-            onPressed: () => Navigator.pop(context, max(1, 5 + widget.conMod)),
-            child: Text('VALORE MEDIO: ${max(1, 5 + widget.conMod)} PF'),
+            onPressed: () => Navigator.pop(
+              context,
+              gainedHp(widget.averageHitDie),
+            ),
+            child: Text(
+              'USA VALORE MEDIO +${widget.averageHitDie}',
+            ),
           ),
           FilledButton(
             onPressed: () {
-              setState(() => rolled = Random().nextInt(8) + 1);
+              setState(
+                () => rolled = Random().nextInt(widget.hitDie) + 1,
+              );
             },
-            child: const Text('TIRA d8'),
+            child: Text('TIRA d${widget.hitDie}'),
           ),
           if (rolled != null)
             FilledButton(
-              onPressed: () =>
-                  Navigator.pop(context, max(1, rolled! + widget.conMod)),
+              onPressed: () => Navigator.pop(context, gainedHp(rolled!)),
               child: const Text('USA QUESTO TIRO'),
             ),
         ],
@@ -3681,8 +4011,14 @@ class _HpDialogState extends State<HpDialog> {
 }
 
 class HitDiceDialog extends StatefulWidget {
-  const HitDiceDialog({super.key, required this.available});
+  const HitDiceDialog({
+    super.key,
+    required this.available,
+    required this.hitDie,
+  });
+
   final int available;
+  final int hitDie;
   @override
   State<HitDiceDialog> createState() => _HitDiceDialogState();
 }
@@ -3699,14 +4035,14 @@ class _HitDiceDialogState extends State<HitDiceDialog> {
             const Text(
                 'Il Ki verrà recuperato. Scegli quanti Dadi Vita spendere.'),
             const SizedBox(height: 12),
-            Text('Disponibili: ${widget.available}d8'),
+            Text('Disponibili: ${widget.available}d${widget.hitDie}'),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 IconButton(
                     onPressed: count > 0 ? () => setState(() => count--) : null,
                     icon: const Icon(Icons.remove_circle_outline)),
-                Text('$count d8',
+                Text('$count d${widget.hitDie}',
                     style: const TextStyle(
                         fontSize: 24, fontWeight: FontWeight.bold)),
                 IconButton(
@@ -3723,8 +4059,11 @@ class _HitDiceDialogState extends State<HitDiceDialog> {
               onPressed: () => Navigator.pop(context),
               child: const Text('ANNULLA')),
           FilledButton(
-              onPressed: () => Navigator.pop(context, count),
-              child: Text(count == 0 ? 'SOLO RIPOSO' : 'TIRA $count d8')),
+            onPressed: () => Navigator.pop(context, count),
+            child: Text(
+              count == 0 ? 'SOLO RIPOSO' : 'TIRA $count d${widget.hitDie}',
+            ),
+          ),
         ],
       );
 }
