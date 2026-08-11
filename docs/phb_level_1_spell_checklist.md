@@ -52,11 +52,11 @@ Checklist di lavoro per espandere `lib/data/spell_data.dart`.
 - [x] Raffica di Spine
 - [x] Raggio di Infermità
 - [x] Risata Incontenibile di Tasha
-- [ ] Ritirata Rapida
-- [ ] Saltare
-- [ ] Santuario
-- [ ] Scudo
-- [ ] Scudo della Fede
+- [x] Ritirata Rapida
+- [x] Saltare
+- [x] Santuario
+- [x] Scudo
+- [x] Scudo della Fede
 - [ ] Scritto Illusorio
 - [ ] Servitore Inosservato
 - [ ] Sonno

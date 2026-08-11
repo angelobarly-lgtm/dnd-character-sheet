@@ -1012,6 +1012,9 @@ abstract final class SpellIds {
   static const hailOfThorns = 'hail_of_thorns';
   static const rayOfSickness = 'ray_of_sickness';
   static const tashasHideousLaughter = 'tashas_hideous_laughter';
+  static const expeditiousRetreat = 'expeditious_retreat';
+  static const jump = 'jump';
+  static const sanctuary = 'sanctuary';
 }
 
 const Map<String, SpellDefinition> spellDefinitions = {
@@ -6658,6 +6661,202 @@ const Map<String, SpellDefinition> spellDefinitions = {
     classIds: {
       'bard',
       'wizard',
+    },
+  ),
+  SpellIds.expeditiousRetreat: SpellDefinition(
+    id: SpellIds.expeditiousRetreat,
+    content: RuleContent(
+      id: SpellIds.expeditiousRetreat,
+      name: 'Ritirata Rapida',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Permette all’incantatore di usare Scatto come azione bonus ripetuta.',
+        details:
+            'Questo incantesimo consente all’incantatore di muoversi a una '
+            'velocità straordinaria. Quando lancia l’incantesimo, e poi come '
+            'azione bonus a ogni suo turno finché l’incantesimo non termina, '
+            'l’incantatore può effettuare l’azione di Scatto. L’effetto viene '
+            'lanciato come azione bonus, richiede concentrazione e dura fino a '
+            '10 minuti. Non aumenta direttamente la velocità base: concede '
+            'invece la possibilità di usare Scatto come azione bonus mentre '
+            'l’incantesimo resta attivo.',
+      ),
+      ownerId: SpellIds.expeditiousRetreat,
+    ),
+    level: 1,
+    school: SpellSchool.transmutation,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.bonusAction,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.self,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.minute,
+      amount: 10,
+      concentration: true,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.self,
+      },
+      maximumTargets: 1,
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'expeditious_retreat_bonus_action_dash',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'bonus_action_spell',
+          'caster_can_dash_when_spell_is_cast',
+          'caster_can_dash_as_bonus_action_each_turn',
+          'requires_concentration',
+          'does_not_directly_increase_base_speed',
+        },
+      ),
+    ],
+    classIds: {
+      'sorcerer',
+      'warlock',
+      'wizard',
+    },
+  ),
+  SpellIds.jump: SpellDefinition(
+    id: SpellIds.jump,
+    content: RuleContent(
+      id: SpellIds.jump,
+      name: 'Saltare',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Triplica la distanza coperta dai salti di una creatura toccata.',
+        details: 'L’incantatore tocca una creatura. Finché l’incantesimo non '
+            'termina, la distanza coperta dai salti di quella creatura è '
+            'triplicata. L’effetto dura 1 minuto, non richiede concentrazione e '
+            'modifica la distanza dei salti, non la velocità base della '
+            'creatura. Può essere utile per attraversare ostacoli, superare '
+            'dislivelli, raggiungere appigli o migliorare la mobilità tattica '
+            'in combattimento e in esplorazione.',
+      ),
+      ownerId: SpellIds.jump,
+    ),
+    level: 1,
+    school: SpellSchool.transmutation,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.touch,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+      materials: [
+        SpellMaterialComponent(
+          description: 'La zampa posteriore di una cavalletta.',
+        ),
+      ],
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.minute,
+      amount: 1,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.creature,
+      },
+      maximumTargets: 1,
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'jump_tripled_jump_distance',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'touched_creature_jump_distance_is_tripled',
+          'does_not_require_concentration',
+          'does_not_change_base_speed',
+        },
+      ),
+    ],
+    classIds: {
+      'druid',
+      'ranger',
+      'sorcerer',
+      'wizard',
+    },
+  ),
+  SpellIds.sanctuary: SpellDefinition(
+    id: SpellIds.sanctuary,
+    content: RuleContent(
+      id: SpellIds.sanctuary,
+      name: 'Santuario',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Protegge una creatura costringendo chi la attacca a superare un tiro salvezza.',
+        details:
+            'L’incantatore protegge una creatura entro gittata dagli attacchi. '
+            'Finché l’incantesimo non termina, ogni creatura che bersaglia la '
+            'creatura protetta con un attacco o con un incantesimo che infligge '
+            'danni deve prima effettuare un tiro salvezza su Saggezza. Se lo '
+            'fallisce, deve scegliere un nuovo bersaglio o perdere l’attacco o '
+            'l’incantesimo. Santuario non protegge dagli effetti ad area, come '
+            'l’esplosione di una palla di fuoco. Se la creatura protetta '
+            'effettua un attacco o lancia un incantesimo che influenza una '
+            'creatura nemica, l’incantesimo termina.',
+      ),
+      ownerId: SpellIds.sanctuary,
+    ),
+    level: 1,
+    school: SpellSchool.abjuration,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.bonusAction,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 9,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+      materials: [
+        SpellMaterialComponent(
+          description: 'Uno specchietto d’argento.',
+        ),
+      ],
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.minute,
+      amount: 1,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.creature,
+      },
+      maximumTargets: 1,
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'sanctuary_wisdom_save_before_targeting',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'bonus_action_spell',
+          'protects_one_creature_within_9_meters',
+          'creature_targeting_protected_creature_must_make_wisdom_save',
+          'failed_save_must_choose_new_target_or_lose_attack_or_spell',
+          'does_not_protect_against_area_effects',
+          'ends_if_protected_creature_attacks',
+          'ends_if_protected_creature_casts_spell_affecting_enemy',
+        },
+      ),
+    ],
+    classIds: {
+      'cleric',
     },
   ),
 };
