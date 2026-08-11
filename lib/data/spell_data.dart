@@ -996,6 +996,10 @@ abstract final class SpellIds {
   static const inflictWounds = 'inflict_wounds';
   static const hellishRebuke = 'hellish_rebuke';
   static const entangle = 'entangle';
+  static const faerieFire = 'faerie_fire';
+  static const burningHands = 'burning_hands';
+  static const huntersMark = 'hunters_mark';
+  static const fogCloud = 'fog_cloud';
 }
 
 const Map<String, SpellDefinition> spellDefinitions = {
@@ -5554,6 +5558,267 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ],
     classIds: {
       'druid',
+    },
+  ),
+  SpellIds.faerieFire: SpellDefinition(
+    id: SpellIds.faerieFire,
+    content: RuleContent(
+      id: SpellIds.faerieFire,
+      name: 'Luminescenza',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Evidenzia creature e oggetti con un alone luminoso, rendendoli più facili da colpire.',
+        details:
+            'Ogni oggetto contenuto in un cubo con spigolo di 6 metri entro '
+            'gittata viene evidenziato da un alone di luce blu, verde o viola, '
+            'a scelta dell’incantatore. Ogni creatura situata nell’area quando '
+            'l’incantesimo viene lanciato viene evidenziata dall’alone se '
+            'fallisce un tiro salvezza su Destrezza. Per la durata, gli oggetti '
+            'e le creature influenzate proiettano luce fioca entro 3 metri. '
+            'Ogni tiro per colpire contro una creatura o un oggetto influenzato '
+            'dispone di vantaggio se l’attaccante è in grado di vederlo. Una '
+            'creatura o un oggetto influenzato non trae beneficio '
+            'dall’invisibilità. L’effetto richiede concentrazione.',
+      ),
+      ownerId: SpellIds.faerieFire,
+    ),
+    level: 1,
+    school: SpellSchool.evocation,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 18,
+    ),
+    components: SpellComponents(
+      verbal: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.minute,
+      amount: 1,
+      concentration: true,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.special,
+      },
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'faerie_fire_glowing_targets_advantage',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'affects_objects_in_6_meter_cube',
+          'creatures_in_area_make_dexterity_saving_throw',
+          'failed_save_outlines_creature_with_colored_light',
+          'affected_targets_shed_dim_light_3_meters',
+          'attack_rolls_against_affected_target_have_advantage_if_attacker_can_see_it',
+          'affected_target_gains_no_benefit_from_invisibility',
+          'requires_concentration',
+        },
+      ),
+    ],
+    classIds: {
+      'bard',
+      'druid',
+    },
+  ),
+  SpellIds.burningHands: SpellDefinition(
+    id: SpellIds.burningHands,
+    content: RuleContent(
+      id: SpellIds.burningHands,
+      name: 'Mani Brucianti',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary: 'Sprigiona un cono di fiamme dalle mani dell’incantatore.',
+        details:
+            'L’incantatore apre le mani con i pollici rivolti l’uno contro '
+            'l’altro, sprigionando dalle dita un sottile velo di fiamme. Ogni '
+            'creatura entro un cono di 4,5 metri deve effettuare un tiro '
+            'salvezza su Destrezza. Se fallisce, subisce 3d6 danni da fuoco; '
+            'se lo supera, subisce soltanto metà di quei danni. Il fuoco '
+            'incendia ogni oggetto infiammabile nell’area che non sia indossato '
+            'o trasportato. Usando uno slot di livello superiore al 1°, i danni '
+            'aumentano di 1d6 per ogni livello di slot superiore.',
+      ),
+      ownerId: SpellIds.burningHands,
+    ),
+    level: 1,
+    school: SpellSchool.evocation,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.self,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.instantaneous,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.special,
+      },
+    ),
+    damage: [
+      SpellDamage(
+        dice: '3d6',
+        type: SpellDamageType.fire,
+      ),
+    ],
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'burning_hands_cone_fire_damage',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          '4_5_meter_cone_from_caster',
+          'creatures_in_cone_make_dexterity_saving_throw',
+          'failed_save_deals_3d6_fire_damage',
+          'successful_save_takes_half_damage',
+          'ignites_flammable_objects_not_worn_or_carried',
+          'damage_increases_by_1d6_per_slot_level_above_1',
+        },
+      ),
+    ],
+    classIds: {
+      'sorcerer',
+      'wizard',
+    },
+  ),
+  SpellIds.huntersMark: SpellDefinition(
+    id: SpellIds.huntersMark,
+    content: RuleContent(
+      id: SpellIds.huntersMark,
+      name: 'Marchio del Cacciatore',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Marca una creatura come preda, aumentando i danni e aiutando a rintracciarla.',
+        details:
+            'L’incantatore sceglie una creatura entro gittata che sia in grado '
+            'di vedere e la marchia misticamente come sua preda. Finché '
+            'l’incantesimo dura, l’incantatore infligge 1d6 danni extra al '
+            'bersaglio ogni volta che lo colpisce con un attacco con arma. '
+            'Inoltre dispone di vantaggio alle prove di Saggezza (Percezione) '
+            'e Saggezza (Sopravvivenza) effettuate per trovarlo. Se il '
+            'bersaglio scende a 0 punti ferita prima che l’incantesimo termini, '
+            'l’incantatore può usare un’azione bonus in un turno successivo per '
+            'marchiare una nuova creatura. L’effetto richiede concentrazione. '
+            'Usando slot di 3° o 4° livello, può mantenere la concentrazione '
+            'fino a 8 ore; usando slot di 5° livello o superiore, fino a 24 ore.',
+      ),
+      ownerId: SpellIds.huntersMark,
+    ),
+    level: 1,
+    school: SpellSchool.divination,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.bonusAction,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 27,
+    ),
+    components: SpellComponents(
+      verbal: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.hour,
+      amount: 1,
+      concentration: true,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.creature,
+      },
+      maximumTargets: 1,
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'hunters_mark_marked_prey',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'bonus_action_spell',
+          'marks_visible_creature_within_27_meters',
+          'weapon_hits_against_marked_target_deal_extra_1d6_damage',
+          'advantage_on_wisdom_perception_to_find_target',
+          'advantage_on_wisdom_survival_to_find_target',
+          'can_bonus_action_mark_new_creature_after_target_drops_to_0_hp',
+          'requires_concentration',
+          'slot_level_3_or_4_duration_up_to_8_hours',
+          'slot_level_5_or_higher_duration_up_to_24_hours',
+        },
+      ),
+    ],
+    classIds: {
+      'ranger',
+    },
+  ),
+  SpellIds.fogCloud: SpellDefinition(
+    id: SpellIds.fogCloud,
+    content: RuleContent(
+      id: SpellIds.fogCloud,
+      name: 'Nube di Nebbia',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary: 'Crea una sfera di nebbia che oscura pesantemente l’area.',
+        details: 'L’incantatore crea una sfera di nebbia del raggio di 6 metri '
+            'centrata su un punto entro gittata. La sfera si diffonde oltre gli '
+            'angoli e la sua area risulta pesantemente oscurata. La nebbia '
+            'permane per la durata dell’incantesimo o finché un vento moderato '
+            'o più forte, almeno 15 km/h, non la disperde. L’effetto richiede '
+            'concentrazione. Usando uno slot di livello superiore al 1°, il '
+            'raggio della sfera aumenta di 6 metri per ogni livello di slot '
+            'superiore.',
+      ),
+      ownerId: SpellIds.fogCloud,
+    ),
+    level: 1,
+    school: SpellSchool.conjuration,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 36,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.hour,
+      amount: 1,
+      concentration: true,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.special,
+      },
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'fog_cloud_heavily_obscured_sphere',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'creates_6_meter_radius_fog_sphere',
+          'fog_spreads_around_corners',
+          'area_is_heavily_obscured',
+          'moderate_or_stronger_wind_15_kmh_disperses_fog',
+          'radius_increases_by_6_meters_per_slot_level_above_1',
+          'requires_concentration',
+        },
+      ),
+    ],
+    classIds: {
+      'druid',
+      'ranger',
+      'sorcerer',
+      'wizard',
     },
   ),
 };

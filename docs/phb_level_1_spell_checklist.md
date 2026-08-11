@@ -36,10 +36,10 @@ Checklist di lavoro per espandere `lib/data/spell_data.dart`.
 - [x] Infliggi Ferite
 - [x] Intimorire Infernale
 - [x] Intralciare
-- [ ] Luminescenza
-- [ ] Mani Brucianti
-- [ ] Marchio del Cacciatore
-- [ ] Nube di Nebbia
+- [x] Luminescenza
+- [x] Mani Brucianti
+- [x] Marchio del Cacciatore
+- [x] Nube di Nebbia
 - [ ] Onda Tonante
 - [ ] Parlare con gli Animali
 - [ ] Parola Guaritrice
