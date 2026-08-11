@@ -967,6 +967,10 @@ abstract final class SpellIds {
   static const thaumaturgy = 'thaumaturgy';
   static const trueStrike = 'true_strike';
   static const viciousMockery = 'vicious_mockery';
+  static const alarm = 'alarm';
+  static const animalFriendship = 'animal_friendship';
+  static const bane = 'bane';
+  static const armorOfAgathys = 'armor_of_agathys';
 }
 
 const Map<String, SpellDefinition> spellDefinitions = {
@@ -3566,6 +3570,283 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ],
     classIds: {
       'bard',
+    },
+  ),
+  SpellIds.alarm: SpellDefinition(
+    id: SpellIds.alarm,
+    content: RuleContent(
+      id: SpellIds.alarm,
+      name: 'Allarme',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Predispone un allarme magico su una porta, finestra o piccola area.',
+        details:
+            'L’incantatore protegge una porta, una finestra o un’area entro '
+            'gittata non più grande di un cubo con spigolo di 6 metri. Al '
+            'momento del lancio sceglie quali creature non faranno scattare '
+            'l’allarme e decide se l’avviso sarà mentale o udibile. Per tutta '
+            'la durata, quando una creatura di taglia Minuscola o superiore '
+            'tocca l’area protetta o vi entra senza essere esclusa, l’allarme '
+            'si attiva. L’allarme mentale avverte l’incantatore nella sua mente '
+            'se si trova entro 1,5 km e lo sveglia se sta dormendo. L’allarme '
+            'udibile produce il suono di una campana per 10 secondi entro '
+            '18 metri dall’area protetta. Può essere lanciato come rituale.',
+      ),
+      ownerId: SpellIds.alarm,
+    ),
+    level: 1,
+    ritual: true,
+    school: SpellSchool.abjuration,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.minute,
+      amount: 1,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 9,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+      materials: [
+        SpellMaterialComponent(
+          description:
+              'Una campanella e un frammento di un sottile cavo d’argento.',
+        ),
+      ],
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.hour,
+      amount: 8,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.special,
+      },
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'alarm_warded_area',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'ward_door_window_or_area_up_to_6_meter_cube',
+          'caster_designates_excluded_creatures',
+          'tiny_or_larger_creature_triggers_alarm',
+          'mental_alarm_within_1_5_km_or_audible_bell_within_18_meters',
+          'ritual_spell',
+        },
+      ),
+    ],
+    classIds: {
+      'ranger',
+      'wizard',
+    },
+  ),
+  SpellIds.animalFriendship: SpellDefinition(
+    id: SpellIds.animalFriendship,
+    content: RuleContent(
+      id: SpellIds.animalFriendship,
+      name: 'Amicizia con gli Animali',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Convince una bestia che l’incantatore non intende farle del male.',
+        details:
+            'L’incantatore sceglie una bestia entro gittata che sia in grado '
+            'di vedere. La bestia deve vedere e sentire l’incantatore. Se la '
+            'sua Intelligenza è pari o superiore a 4, l’incantesimo fallisce. '
+            'Altrimenti la bestia effettua un tiro salvezza su Saggezza; se lo '
+            'fallisce, è affascinata dall’incantatore per la durata. '
+            'L’effetto termina anticipatamente se l’incantatore o uno dei suoi '
+            'compagni infligge danni al bersaglio. Usando uno slot di livello '
+            'superiore al 1°, l’incantatore può influenzare una bestia '
+            'aggiuntiva per ogni livello di slot superiore.',
+      ),
+      ownerId: SpellIds.animalFriendship,
+    ),
+    level: 1,
+    school: SpellSchool.enchantment,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 9,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+      materials: [
+        SpellMaterialComponent(
+          description: 'Un boccone di cibo.',
+        ),
+      ],
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.hour,
+      amount: 24,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.creature,
+      },
+      maximumTargets: 1,
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'animal_friendship_charmed_beast',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'targets_beast_that_can_see_and_hear_caster',
+          'fails_if_beast_intelligence_4_or_higher',
+          'target_makes_wisdom_saving_throw',
+          'failed_save_charms_beast',
+          'ends_if_caster_or_companions_damage_target',
+          'one_additional_beast_per_slot_level_above_1',
+        },
+      ),
+    ],
+    classIds: {
+      'bard',
+      'druid',
+      'ranger',
+    },
+  ),
+  SpellIds.bane: SpellDefinition(
+    id: SpellIds.bane,
+    content: RuleContent(
+      id: SpellIds.bane,
+      name: 'Anatema',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Indebolisce fino a tre creature, penalizzando attacchi e tiri salvezza.',
+        details:
+            'L’incantatore sceglie fino a tre creature entro gittata che sia '
+            'in grado di vedere. Ogni bersaglio deve effettuare un tiro '
+            'salvezza su Carisma. Quando una creatura fallisce il tiro salvezza, '
+            'per tutta la durata dell’incantesimo deve tirare 1d4 e sottrarre '
+            'il risultato ogni volta che effettua un tiro per colpire o un tiro '
+            'salvezza. L’effetto richiede concentrazione. Usando uno slot di '
+            'livello superiore al 1°, l’incantatore può bersagliare una '
+            'creatura aggiuntiva per ogni livello di slot superiore.',
+      ),
+      ownerId: SpellIds.bane,
+    ),
+    level: 1,
+    school: SpellSchool.enchantment,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 9,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+      materials: [
+        SpellMaterialComponent(
+          description: 'Una goccia di sangue.',
+        ),
+      ],
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.minute,
+      amount: 1,
+      concentration: true,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.creature,
+      },
+      maximumTargets: 3,
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'bane_attack_and_save_penalty',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'up_to_three_visible_creatures',
+          'targets_make_charisma_saving_throw',
+          'failed_save_subtracts_1d4_from_attack_rolls_and_saving_throws',
+          'requires_concentration',
+          'one_additional_target_per_slot_level_above_1',
+        },
+      ),
+    ],
+    classIds: {
+      'bard',
+      'cleric',
+    },
+  ),
+  SpellIds.armorOfAgathys: SpellDefinition(
+    id: SpellIds.armorOfAgathys,
+    content: RuleContent(
+      id: SpellIds.armorOfAgathys,
+      name: 'Armatura di Agathys',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Avvolge l’incantatore in gelo protettivo che ferisce chi lo colpisce.',
+        details: 'Una forza magica protettiva circonda l’incantatore come una '
+            'patina di gelo spettrale che ricopre lui e il suo equipaggiamento. '
+            'L’incantatore ottiene 5 punti ferita temporanei per la durata. '
+            'Finché possiede quei punti ferita temporanei, una creatura che lo '
+            'colpisce con un attacco in mischia subisce 5 danni da freddo. '
+            'Usando uno slot di livello superiore al 1°, sia i punti ferita '
+            'temporanei sia i danni da freddo aumentano di 5 per ogni livello '
+            'di slot superiore.',
+      ),
+      ownerId: SpellIds.armorOfAgathys,
+    ),
+    level: 1,
+    school: SpellSchool.abjuration,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.self,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+      materials: [
+        SpellMaterialComponent(
+          description: 'Una coppa d’acqua.',
+        ),
+      ],
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.hour,
+      amount: 1,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.self,
+      },
+      maximumTargets: 1,
+    ),
+    damage: [
+      SpellDamage(
+        dice: '5',
+        type: SpellDamageType.cold,
+      ),
+    ],
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'armor_of_agathys_temporary_hit_points_and_cold_retribution',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'caster_gains_5_temporary_hit_points',
+          'melee_attacker_takes_5_cold_damage_while_temp_hp_remain',
+          'temporary_hit_points_and_cold_damage_increase_by_5_per_slot_level_above_1',
+        },
+      ),
+    ],
+    classIds: {
+      'warlock',
     },
   ),
 };

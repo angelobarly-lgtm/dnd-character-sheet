@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  test('PHB cantrip catalog is complete and structurally valid', () {
+  test('spell catalog entries are structurally valid', () {
     final text = File('lib/data/spell_data.dart').readAsStringSync();
 
     final idRegex = RegExp(r"static\s+const\s+(\w+)\s*=\s*'([^']+)';");
@@ -13,8 +13,8 @@ void main() {
     final idValues = idRegex.allMatches(text).map((m) => m.group(2)!).toList();
     final defs = defRegex.allMatches(text).map((m) => m.group(1)!).toList();
 
-    expect(ids.length, 35);
-    expect(defs.length, 35);
+    expect(ids, isNotEmpty);
+    expect(defs.length, ids.length);
 
     expect(ids.toSet().length, ids.length, reason: 'Duplicate SpellIds names');
     expect(
@@ -27,8 +27,8 @@ void main() {
     final missing = ids.where((id) => !defs.contains(id)).toList();
     final extra = defs.where((id) => !ids.contains(id)).toList();
 
-    expect(missing, isEmpty, reason: 'Missing PHB cantrip definitions');
-    expect(extra, isEmpty, reason: 'Extra PHB cantrip definitions');
+    expect(missing, isEmpty, reason: 'Missing spell definitions');
+    expect(extra, isEmpty, reason: 'Extra spell definitions');
 
     for (final spell in defs) {
       final start = text.indexOf('SpellIds.$spell: SpellDefinition(');

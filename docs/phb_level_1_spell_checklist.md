@@ -4,10 +4,10 @@ Checklist di lavoro per espandere `lib/data/spell_data.dart`.
 
 ## Da verificare/inserire
 
-- [ ] Allarme
-- [ ] Amicizia con gli Animali
-- [ ] Anatema
-- [ ] Armatura di Agathys
+- [x] Allarme
+- [x] Amicizia con gli Animali
+- [x] Anatema
+- [x] Armatura di Agathys
 - [ ] Armatura Magica
 - [ ] Bacche Benefiche
 - [ ] Benedizione
