@@ -44,10 +44,10 @@ Checklist di lavoro per espandere `lib/data/spell_data.dart`.
 - [x] Parlare con gli Animali
 - [x] Parola Guaritrice
 - [x] Passo Veloce
-- [ ] Protezione dal Bene e dal Male
-- [ ] Punizione Collerica
-- [ ] Punizione Incandescente
-- [ ] Punizione Tonante
+- [x] Protezione dal Bene e dal Male
+- [x] Punizione Collerica
+- [x] Punizione Incandescente
+- [x] Punizione Tonante
 - [ ] Purificare Cibo e Bevande
 - [ ] Raffica di Spine
 - [ ] Raggio di Infermità

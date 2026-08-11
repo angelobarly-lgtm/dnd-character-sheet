@@ -1004,6 +1004,10 @@ abstract final class SpellIds {
   static const speakWithAnimals = 'speak_with_animals';
   static const healingWord = 'healing_word';
   static const longstrider = 'longstrider';
+  static const protectionFromEvilAndGood = 'protection_from_evil_and_good';
+  static const wrathfulSmite = 'wrathful_smite';
+  static const searingSmite = 'searing_smite';
+  static const thunderousSmite = 'thunderous_smite';
 }
 
 const Map<String, SpellDefinition> spellDefinitions = {
@@ -6083,6 +6087,294 @@ const Map<String, SpellDefinition> spellDefinitions = {
       'druid',
       'ranger',
       'wizard',
+    },
+  ),
+  SpellIds.protectionFromEvilAndGood: SpellDefinition(
+    id: SpellIds.protectionFromEvilAndGood,
+    content: RuleContent(
+      id: SpellIds.protectionFromEvilAndGood,
+      name: 'Protezione dal Bene e dal Male',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Protegge una creatura consenziente da aberrazioni, celestiali, elementali, folletti, immondi e non morti.',
+        details: 'L’incantatore tocca una creatura consenziente. Finché '
+            'l’incantesimo non termina, il bersaglio è protetto da aberrazioni, '
+            'celestiali, elementali, folletti, immondi e non morti. Le creature '
+            'di quei tipi subiscono svantaggio ai tiri per colpire contro il '
+            'bersaglio. Inoltre, il bersaglio non può essere affascinato, '
+            'posseduto o spaventato da quelle creature. Se il bersaglio è già '
+            'affascinato, posseduto o spaventato da una di quelle creature, '
+            'dispone di vantaggio al nuovo tiro salvezza contro l’effetto '
+            'rilevante. L’incantesimo richiede concentrazione e consuma la '
+            'componente materiale.',
+      ),
+      ownerId: SpellIds.protectionFromEvilAndGood,
+    ),
+    level: 1,
+    school: SpellSchool.abjuration,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.touch,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+      materials: [
+        SpellMaterialComponent(
+          description:
+              'Acqua santa o polvere d’argento e di ferro, consumata dall’incantesimo.',
+          consumed: true,
+        ),
+      ],
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.minute,
+      amount: 10,
+      concentration: true,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.willingCreature,
+      },
+      maximumTargets: 1,
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'protection_from_evil_and_good_ward',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'protects_against_aberrations_celestials_elementals_fey_fiends_and_undead',
+          'protected_creature_is_willing_touched_target',
+          'listed_creature_types_have_disadvantage_on_attack_rolls_against_target',
+          'target_cannot_be_charmed_frightened_or_possessed_by_listed_creature_types',
+          'target_has_advantage_on_new_save_against_existing_relevant_effect',
+          'requires_concentration',
+          'material_component_is_consumed',
+        },
+      ),
+    ],
+    classIds: {
+      'cleric',
+      'paladin',
+      'warlock',
+      'wizard',
+    },
+  ),
+  SpellIds.wrathfulSmite: SpellDefinition(
+    id: SpellIds.wrathfulSmite,
+    content: RuleContent(
+      id: SpellIds.wrathfulSmite,
+      name: 'Punizione Collerica',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Il prossimo colpo in mischia infligge danni psichici e può spaventare il bersaglio.',
+        details:
+            'La prossima volta che l’incantatore colpisce con un attacco con '
+            'un’arma da mischia prima che l’incantesimo termini, l’attacco '
+            'infligge 1d6 danni psichici extra. Inoltre, se il bersaglio è una '
+            'creatura, deve superare un tiro salvezza su Saggezza o essere '
+            'spaventato dall’incantatore finché l’incantesimo non termina. '
+            'Con un’azione, la creatura può effettuare una prova di Saggezza '
+            'contro la CD del tiro salvezza dell’incantesimo per rafforzare la '
+            'propria determinazione e terminare l’incantesimo. L’effetto viene '
+            'lanciato come azione bonus e richiede concentrazione.',
+      ),
+      ownerId: SpellIds.wrathfulSmite,
+    ),
+    level: 1,
+    school: SpellSchool.evocation,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.bonusAction,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.self,
+    ),
+    components: SpellComponents(
+      verbal: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.minute,
+      amount: 1,
+      concentration: true,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.self,
+      },
+      maximumTargets: 1,
+    ),
+    damage: [
+      SpellDamage(
+        dice: '1d6',
+        type: SpellDamageType.psychic,
+      ),
+    ],
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'wrathful_smite_psychic_frightened',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'bonus_action_spell',
+          'next_melee_weapon_hit_before_spell_ends_triggers_effect',
+          'hit_deals_extra_1d6_psychic_damage',
+          'creature_target_makes_wisdom_saving_throw',
+          'failed_save_target_frightened_of_caster',
+          'frightened_target_can_use_action_wisdom_check_to_end_spell',
+          'requires_concentration',
+        },
+      ),
+    ],
+    classIds: {
+      'paladin',
+    },
+  ),
+  SpellIds.searingSmite: SpellDefinition(
+    id: SpellIds.searingSmite,
+    content: RuleContent(
+      id: SpellIds.searingSmite,
+      name: 'Punizione Incandescente',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Il prossimo colpo in mischia incendia il bersaglio e infligge danni da fuoco continuati.',
+        details:
+            'La prossima volta che l’incantatore colpisce una creatura con un '
+            'attacco con un’arma da mischia prima che l’incantesimo termini, '
+            'l’arma diventa incandescente e l’attacco infligge 1d6 danni da '
+            'fuoco extra, oltre a incendiare il bersaglio. All’inizio di ogni '
+            'turno del bersaglio, finché l’incantesimo non termina, il '
+            'bersaglio effettua un tiro salvezza su Costituzione. Se fallisce, '
+            'subisce 1d6 danni da fuoco; se lo supera, l’incantesimo termina. '
+            'Anche il bersaglio o una creatura entro 1,5 metri può usare '
+            'un’azione per estinguere le fiamme, terminando l’incantesimo; '
+            'l’effetto termina anche se le fiamme vengono soppresse in altro '
+            'modo, per esempio immergendo il bersaglio in acqua. Usando slot '
+            'superiori al 1°, i danni extra iniziali aumentano di 1d6 per ogni '
+            'livello di slot superiore.',
+      ),
+      ownerId: SpellIds.searingSmite,
+    ),
+    level: 1,
+    school: SpellSchool.evocation,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.bonusAction,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.self,
+    ),
+    components: SpellComponents(
+      verbal: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.minute,
+      amount: 1,
+      concentration: true,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.self,
+      },
+      maximumTargets: 1,
+    ),
+    damage: [
+      SpellDamage(
+        dice: '1d6',
+        type: SpellDamageType.fire,
+      ),
+    ],
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'searing_smite_fire_and_burning',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'bonus_action_spell',
+          'next_melee_weapon_hit_against_creature_before_spell_ends_triggers_effect',
+          'hit_deals_extra_1d6_fire_damage',
+          'target_is_ignited',
+          'target_makes_constitution_save_at_start_of_each_turn',
+          'failed_save_deals_1d6_fire_damage',
+          'successful_save_ends_spell',
+          'target_or_adjacent_creature_can_use_action_to_extinguish_flames',
+          'water_or_other_flame_suppression_ends_spell',
+          'initial_extra_damage_increases_by_1d6_per_slot_level_above_1',
+          'requires_concentration',
+        },
+      ),
+    ],
+    classIds: {
+      'paladin',
+    },
+  ),
+  SpellIds.thunderousSmite: SpellDefinition(
+    id: SpellIds.thunderousSmite,
+    content: RuleContent(
+      id: SpellIds.thunderousSmite,
+      name: 'Punizione Tonante',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Il prossimo colpo in mischia esplode con tuono, danni extra e possibile spinta.',
+        details:
+            'La prossima volta che l’incantatore colpisce con un attacco con '
+            'un’arma da mischia prima che l’incantesimo termini, la sua arma '
+            'vibra con un rombo di tuono udibile entro 90 metri e l’attacco '
+            'infligge 2d6 danni da tuono extra al bersaglio. Inoltre, se il '
+            'bersaglio è una creatura, deve superare un tiro salvezza su Forza '
+            'o essere spinto di 3 metri più lontano dall’incantatore e buttato '
+            'a terra prono. L’effetto viene lanciato come azione bonus e '
+            'richiede concentrazione fino all’attacco o al termine della durata.',
+      ),
+      ownerId: SpellIds.thunderousSmite,
+    ),
+    level: 1,
+    school: SpellSchool.evocation,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.bonusAction,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.self,
+    ),
+    components: SpellComponents(
+      verbal: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.minute,
+      amount: 1,
+      concentration: true,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.self,
+      },
+      maximumTargets: 1,
+    ),
+    damage: [
+      SpellDamage(
+        dice: '2d6',
+        type: SpellDamageType.thunder,
+      ),
+    ],
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'thunderous_smite_thunder_push_prone',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'bonus_action_spell',
+          'next_melee_weapon_hit_before_spell_ends_triggers_effect',
+          'hit_deals_extra_2d6_thunder_damage',
+          'thunderous_boom_audible_within_90_meters',
+          'creature_target_makes_strength_saving_throw',
+          'failed_save_pushes_target_3_meters_and_knocks_prone',
+          'requires_concentration',
+        },
+      ),
+    ],
+    classIds: {
+      'paladin',
     },
   ),
 };
