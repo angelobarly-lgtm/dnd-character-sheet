@@ -22,3 +22,7 @@ v04-*.txt
 main_v*.txt
 
 archive/
+
+# IDE
+.idea/
+*.iml
