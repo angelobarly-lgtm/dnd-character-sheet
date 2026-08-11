@@ -1459,6 +1459,19 @@ const Map<String, SpellDefinition> spellDefinitions = {
         additionalProjectilesPerSlotLevel: 1,
       ),
     ],
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'magic_missile_automatic_force_darts',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'creates_three_darts_of_magical_force',
+          'each_dart_hits_automatically',
+          'each_dart_deals_1d4_plus_1_force_damage',
+          'darts_can_target_one_or_more_creatures',
+          'one_additional_dart_per_slot_level_above_1',
+        },
+      ),
+    ],
     classIds: {
       'sorcerer',
       'wizard',
@@ -1696,6 +1709,19 @@ const Map<String, SpellDefinition> spellDefinitions = {
       maximumTargets: 1,
     ),
     ritual: true,
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'identify_item_or_creature_information',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'reveals_magic_item_properties_and_how_to_use_them',
+          'reveals_attunement_requirement',
+          'reveals_number_of_charges',
+          'reveals_spells_affecting_item_or_creature',
+          'can_identify_spell_that_created_item',
+        },
+      ),
+    ],
     classIds: {
       'bard',
       'wizard',
@@ -1762,6 +1788,20 @@ const Map<String, SpellDefinition> spellDefinitions = {
       ability: SpellSavingThrowAbility.strength,
       onSuccess: SpellSaveSuccess.negates,
     ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'gust_of_wind_line_push_and_difficult_movement',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'creates_line_of_strong_wind',
+          'creatures_starting_turn_in_line_make_strength_save',
+          'failed_save_pushes_creature_4_5_meters_away',
+          'movement_toward_caster_costs_extra_movement',
+          'disperses_gas_or_vapor',
+          'can_change_direction_as_bonus_action',
+        },
+      ),
+    ],
     classIds: {
       'druid',
       'sorcerer',
@@ -1964,6 +2004,19 @@ const Map<String, SpellDefinition> spellDefinitions = {
         SpellTargetType.special,
       },
     ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'minor_illusion_sound_or_image',
+        type: SpellPersistentEffectType.createdObject,
+        ruleTags: {
+          'creates_sound_or_image_within_range',
+          'image_fits_within_1_5_meter_cube',
+          'image_cannot_create_sound_light_smell_or_sensory_effect',
+          'physical_interaction_reveals_illusion',
+          'investigation_check_can_reveal_illusion',
+        },
+      ),
+    ],
     classIds: {
       'bard',
       'sorcerer',
