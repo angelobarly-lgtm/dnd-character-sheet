@@ -1028,6 +1028,10 @@ abstract final class SpellIds {
   static const phantasmalForce = 'phantasmal_force';
   static const alterSelf = 'alter_self';
   static const animalMessenger = 'animal_messenger';
+  static const magicWeapon = 'magic_weapon';
+  static const spiritualWeapon = 'spiritual_weapon';
+  static const nystulsMagicAura = 'nystuls_magic_aura';
+  static const moonbeam = 'moonbeam';
 }
 
 const Map<String, SpellDefinition> spellDefinitions = {
@@ -7846,6 +7850,308 @@ const Map<String, SpellDefinition> spellDefinitions = {
       'bard',
       'druid',
       'ranger',
+    },
+  ),
+  SpellIds.magicWeapon: SpellDefinition(
+    id: SpellIds.magicWeapon,
+    content: RuleContent(
+      id: SpellIds.magicWeapon,
+      name: 'Arma Magica',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Trasforma temporaneamente un’arma non magica in arma magica con bonus a colpire e danni.',
+        details:
+            'L’incantatore tocca un’arma non magica. Finché l’incantesimo non '
+            'termina, quell’arma diventa magica e ottiene un bonus di +1 ai '
+            'tiri per colpire e ai tiri per i danni. L’incantesimo viene '
+            'lanciato come azione bonus, richiede concentrazione e può durare '
+            'fino a 1 ora. Usando uno slot di 4° livello o superiore, il bonus '
+            'diventa +2; usando uno slot di 6° livello o superiore, il bonus '
+            'diventa +3.',
+      ),
+      ownerId: SpellIds.magicWeapon,
+    ),
+    level: 2,
+    school: SpellSchool.transmutation,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.bonusAction,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.touch,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.hour,
+      amount: 1,
+      concentration: true,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.object,
+      },
+      maximumTargets: 1,
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'magic_weapon_plus_bonus',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'bonus_action_spell',
+          'touched_nonmagical_weapon_becomes_magical',
+          'weapon_gains_plus_1_attack_and_damage_bonus',
+          'requires_concentration',
+          'slot_level_4_or_higher_bonus_plus_2',
+          'slot_level_6_or_higher_bonus_plus_3',
+        },
+      ),
+    ],
+    classIds: {
+      'paladin',
+      'wizard',
+    },
+  ),
+  SpellIds.spiritualWeapon: SpellDefinition(
+    id: SpellIds.spiritualWeapon,
+    content: RuleContent(
+      id: SpellIds.spiritualWeapon,
+      name: 'Arma Spirituale',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Crea un’arma spettrale fluttuante che attacca come azione bonus.',
+        details:
+            'L’incantatore crea un’arma fluttuante spettrale entro gittata. '
+            'L’arma permane per la durata dell’incantesimo o finché '
+            'l’incantatore non lancia di nuovo questo incantesimo. Quando lo '
+            'lancia, può effettuare un attacco in mischia con questo '
+            'incantesimo contro una creatura entro 1,5 metri dall’arma. Se '
+            'colpisce, il bersaglio subisce 1d8 danni da forza + il '
+            'modificatore della caratteristica da incantatore. Come azione '
+            'bonus nei turni successivi, l’incantatore può muovere l’arma fino '
+            'a 6 metri e ripetere l’attacco contro una creatura entro 1,5 metri '
+            'da essa. L’arma può assumere la forma preferita '
+            'dall’incantatore. Non richiede concentrazione. Usando uno slot di '
+            '4° livello o superiore, i danni aumentano di 1d8 per ogni due '
+            'livelli di slot superiori al 2°.',
+      ),
+      ownerId: SpellIds.spiritualWeapon,
+    ),
+    level: 2,
+    school: SpellSchool.evocation,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.bonusAction,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 18,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.minute,
+      amount: 1,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.special,
+      },
+    ),
+    attackType: SpellAttackType.melee,
+    damage: [
+      SpellDamage(
+        dice: '1d8',
+        type: SpellDamageType.force,
+      ),
+    ],
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'spiritual_weapon_spectral_attack',
+        type: SpellPersistentEffectType.createdObject,
+        ruleTags: {
+          'bonus_action_spell',
+          'creates_floating_spectral_weapon_within_18_meters',
+          'on_cast_can_make_melee_spell_attack_from_weapon',
+          'target_must_be_within_1_5_meters_of_weapon',
+          'hit_deals_1d8_force_plus_spellcasting_modifier',
+          'caster_can_bonus_action_move_weapon_6_meters_and_attack_again',
+          'weapon_shape_chosen_by_caster',
+          'does_not_require_concentration',
+          'spell_ends_if_cast_again',
+          'damage_increases_by_1d8_for_every_two_slot_levels_above_2',
+        },
+      ),
+    ],
+    classIds: {
+      'cleric',
+    },
+  ),
+  SpellIds.nystulsMagicAura: SpellDefinition(
+    id: SpellIds.nystulsMagicAura,
+    content: RuleContent(
+      id: SpellIds.nystulsMagicAura,
+      name: 'Aura Magica di Nystul',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Maschera una creatura o un oggetto affinché le divinazioni ricevano informazioni false.',
+        details:
+            'L’incantatore pone un’illusione su una creatura o un oggetto che '
+            'tocca, così che gli incantesimi di divinazione rivelino '
+            'informazioni false su quel bersaglio. Il bersaglio può essere una '
+            'creatura consenziente o un oggetto non indossato né trasportato. '
+            'Al lancio l’incantatore sceglie uno o entrambi gli effetti. Con '
+            'Falsa Aura, cambia il modo in cui il bersaglio appare agli effetti '
+            'che individuano le aure magiche: un oggetto non magico può '
+            'sembrare magico, un oggetto magico può sembrare non magico, o '
+            'l’aura può apparire appartenere a una scuola scelta. Con Maschera, '
+            'cambia il modo in cui il bersaglio appare agli effetti che '
+            'individuano tipi di creature o allineamenti, facendolo risultare '
+            'come un tipo o allineamento scelto. Se l’incantesimo viene lanciato '
+            'sullo stesso bersaglio ogni giorno per 30 giorni con lo stesso '
+            'effetto, l’illusione permane finché non viene dissolta.',
+      ),
+      ownerId: SpellIds.nystulsMagicAura,
+    ),
+    level: 2,
+    school: SpellSchool.illusion,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.touch,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+      materials: [
+        SpellMaterialComponent(
+          description: 'Un pezzo quadrato di seta.',
+        ),
+      ],
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.hour,
+      amount: 24,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.creature,
+        SpellTargetType.object,
+      },
+      maximumTargets: 1,
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'nystuls_magic_aura_false_divination_info',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'touched_willing_creature_or_unworn_uncontrolled_object',
+          'divination_spells_reveal_false_information',
+          'caster_can_choose_false_aura_effect',
+          'false_aura_changes_detected_magic_presence_or_school',
+          'caster_can_make_nonmagical_object_appear_magical',
+          'caster_can_make_magical_object_appear_nonmagical',
+          'caster_can_choose_mask_effect',
+          'mask_changes_detected_creature_type_or_alignment',
+          'same_effect_every_day_for_30_days_becomes_until_dispelled',
+        },
+      ),
+    ],
+    classIds: {
+      'wizard',
+    },
+  ),
+  SpellIds.moonbeam: SpellDefinition(
+    id: SpellIds.moonbeam,
+    content: RuleContent(
+      id: SpellIds.moonbeam,
+      name: 'Bagliore Lunare',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Crea un cilindro di luce lunare che infligge danni radiosi e ostacola i mutaforma.',
+        details:
+            'Un bagliore argentato di luce pallida forma un cilindro del raggio '
+            'di 1,5 metri e alto 12 metri, centrato su un punto entro gittata. '
+            'Per la durata, il cilindro è pervaso di luce fioca. Quando una '
+            'creatura entra nell’area dell’incantesimo per la prima volta in un '
+            'turno o vi inizia il proprio turno, deve effettuare un tiro '
+            'salvezza su Costituzione. Se fallisce, subisce 2d10 danni radiosi; '
+            'se supera il tiro salvezza, subisce metà danni. Un mutaforma ha '
+            'svantaggio a questo tiro salvezza e, se lo fallisce, riassume '
+            'istantaneamente la sua forma originale e non può assumere una forma '
+            'diversa finché non esce dalla luce dell’incantesimo. Nei turni '
+            'successivi al lancio, l’incantatore può usare un’azione per '
+            'muovere il bagliore fino a 18 metri in qualsiasi direzione. '
+            'Richiede concentrazione. Usando uno slot di livello superiore al '
+            '2°, i danni aumentano di 1d10 per ogni livello di slot superiore.',
+      ),
+      ownerId: SpellIds.moonbeam,
+    ),
+    level: 2,
+    school: SpellSchool.evocation,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 36,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+      materials: [
+        SpellMaterialComponent(
+          description:
+              'Alcuni semi di qualsiasi pianta a chicchi e un frammento di feldspato opalescente.',
+        ),
+      ],
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.minute,
+      amount: 1,
+      concentration: true,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.special,
+      },
+    ),
+    damage: [
+      SpellDamage(
+        dice: '2d10',
+        type: SpellDamageType.radiant,
+      ),
+    ],
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'moonbeam_radiant_cylinder_shapeshifter',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'creates_1_5_meter_radius_12_meter_high_cylinder',
+          'cylinder_centered_on_point_within_36_meters',
+          'area_filled_with_dim_light',
+          'creature_entering_area_first_time_on_turn_makes_constitution_save',
+          'creature_starting_turn_in_area_makes_constitution_save',
+          'failed_save_deals_2d10_radiant_damage',
+          'successful_save_takes_half_damage',
+          'shapechanger_has_disadvantage_on_save',
+          'failed_save_shapechanger_reverts_to_original_form',
+          'shapechanger_cannot_assume_different_form_until_leaving_light',
+          'caster_can_use_action_to_move_beam_18_meters',
+          'damage_increases_by_1d10_per_slot_level_above_2',
+          'requires_concentration',
+        },
+      ),
+    ],
+    classIds: {
+      'druid',
     },
   ),
 };

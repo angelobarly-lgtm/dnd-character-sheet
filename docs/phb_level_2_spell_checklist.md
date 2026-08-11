@@ -6,10 +6,10 @@ Checklist di lavoro per espandere `lib/data/spell_data.dart` con gli incantesimi
 - [x] Allucinazione di Forza
 - [x] Alterare Se Stesso
 - [x] Animale Messaggero
-- [ ] Arma Magica
-- [ ] Arma Spirituale
-- [ ] Aura Magica di Nystul
-- [ ] Bagliore Lunare
+- [x] Arma Magica
+- [x] Arma Spirituale
+- [x] Aura Magica di Nystul
+- [x] Bagliore Lunare
 - [ ] Blocca Persone
 - [ ] Bocca Magica
 - [ ] Calmare Emozioni
