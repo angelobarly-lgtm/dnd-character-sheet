@@ -1,0 +1,68 @@
+# PHB 2014 — Incantesimi di 1° Livello
+
+Checklist di lavoro per espandere `lib/data/spell_data.dart`.
+
+## Da verificare/inserire
+
+- [ ] Allarme
+- [ ] Amicizia con gli Animali
+- [ ] Anatema
+- [ ] Armatura di Agathys
+- [ ] Armatura Magica
+- [ ] Bacche Benefiche
+- [ ] Benedizione
+- [ ] Braccia di Hadar
+- [ ] Caduta Morbida
+- [ ] Camuffare Se Stesso
+- [ ] Charme su Persone
+- [ ] Colpo Intrappolante
+- [ ] Comando
+- [ ] Comprensione dei Linguaggi
+- [ ] Creare o Distruggere Acqua
+- [ ] Cura Ferite
+- [ ] Dardo Incantato
+- [ ] Dardo Stregato
+- [ ] Dardo Tracciante
+- [ ] Disco Fluttuante di Tenser
+- [ ] Duello Obbligato
+- [ ] Eroismo
+- [ ] Favore Divino
+- [ ] Globo Cromatico
+- [ ] Identificare
+- [ ] Immagine Silenziosa
+- [ ] Individuazione del Bene e del Male
+- [ ] Individuazione del Magico
+- [ ] Individuazione delle Malattie e dei Veleni
+- [ ] Infliggi Ferite
+- [ ] Intimorire Infernale
+- [ ] Intralciare
+- [ ] Luminescenza
+- [ ] Mani Brucianti
+- [ ] Marchio del Cacciatore
+- [ ] Nube di Nebbia
+- [ ] Onda Tonante
+- [ ] Parlare con gli Animali
+- [ ] Parola Guaritrice
+- [ ] Passo Veloce
+- [ ] Protezione dal Bene e dal Male
+- [ ] Punizione Collerica
+- [ ] Punizione Incandescente
+- [ ] Punizione Tonante
+- [ ] Purificare Cibo e Bevande
+- [ ] Raffica di Spine
+- [ ] Raggio di Infermità
+- [ ] Risata Incontenibile di Tasha
+- [ ] Ritirata Rapida
+- [ ] Saltare
+- [ ] Santuario
+- [ ] Scudo
+- [ ] Scudo della Fede
+- [ ] Scritto Illusorio
+- [ ] Servitore Inosservato
+- [ ] Sonno
+- [ ] Sortilegio
+- [ ] Spruzzo Colorato
+- [ ] Sussurri Dissonanti
+- [ ] Trova Famiglio
+- [ ] Unto
+- [ ] Vita Falsata
