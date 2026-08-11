@@ -32,10 +32,10 @@ Checklist di lavoro per espandere `lib/data/spell_data.dart`.
 - [x] Immagine Silenziosa
 - [x] Individuazione del Bene e del Male
 - [x] Individuazione del Magico
-- [ ] Individuazione delle Malattie e dei Veleni
-- [ ] Infliggi Ferite
-- [ ] Intimorire Infernale
-- [ ] Intralciare
+- [x] Individuazione delle Malattie e dei Veleni
+- [x] Infliggi Ferite
+- [x] Intimorire Infernale
+- [x] Intralciare
 - [ ] Luminescenza
 - [ ] Mani Brucianti
 - [ ] Marchio del Cacciatore

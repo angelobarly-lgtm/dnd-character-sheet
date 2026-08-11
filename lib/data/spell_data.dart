@@ -992,6 +992,10 @@ abstract final class SpellIds {
   static const silentImage = 'silent_image';
   static const detectEvilAndGood = 'detect_evil_and_good';
   static const detectMagic = 'detect_magic';
+  static const detectPoisonAndDisease = 'detect_poison_and_disease';
+  static const inflictWounds = 'inflict_wounds';
+  static const hellishRebuke = 'hellish_rebuke';
+  static const entangle = 'entangle';
 }
 
 const Map<String, SpellDefinition> spellDefinitions = {
@@ -5285,6 +5289,271 @@ const Map<String, SpellDefinition> spellDefinitions = {
       'ranger',
       'sorcerer',
       'wizard',
+    },
+  ),
+  SpellIds.detectPoisonAndDisease: SpellDefinition(
+    id: SpellIds.detectPoisonAndDisease,
+    content: RuleContent(
+      id: SpellIds.detectPoisonAndDisease,
+      name: 'Individuazione delle Malattie e dei Veleni',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Rileva veleni, creature velenose e malattie vicine, identificandone il tipo.',
+        details:
+            'Per la durata dell’incantesimo, l’incantatore può percepire la '
+            'presenza e l’ubicazione di veleni, creature velenose e malattie '
+            'situate entro 9 metri da lui. In ciascun caso è anche in grado di '
+            'identificare il tipo di veleno, creatura velenosa o malattia. '
+            'L’effetto richiede concentrazione e può essere lanciato come '
+            'rituale. L’incantesimo può penetrare la maggior parte delle '
+            'barriere, ma è bloccato da 30 cm di pietra, 2,5 cm di metallo '
+            'comune, una sottile lamina di piombo o 90 cm di legno o terriccio.',
+      ),
+      ownerId: SpellIds.detectPoisonAndDisease,
+    ),
+    level: 1,
+    ritual: true,
+    school: SpellSchool.divination,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.self,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+      materials: [
+        SpellMaterialComponent(
+          description: 'Una foglia di tasso.',
+        ),
+      ],
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.minute,
+      amount: 10,
+      concentration: true,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.self,
+      },
+      maximumTargets: 1,
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'detect_poison_and_disease_presence_location_type',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'detects_poisons_poisonous_creatures_and_diseases_within_9_meters',
+          'reveals_location_of_detected_poison_creature_or_disease',
+          'identifies_type_of_poison_poisonous_creature_or_disease',
+          'blocked_by_30_cm_stone',
+          'blocked_by_2_5_cm_common_metal',
+          'blocked_by_thin_sheet_of_lead',
+          'blocked_by_90_cm_wood_or_dirt',
+          'requires_concentration',
+          'ritual_spell',
+        },
+      ),
+    ],
+    classIds: {
+      'cleric',
+      'druid',
+      'paladin',
+      'ranger',
+    },
+  ),
+  SpellIds.inflictWounds: SpellDefinition(
+    id: SpellIds.inflictWounds,
+    content: RuleContent(
+      id: SpellIds.inflictWounds,
+      name: 'Infliggi Ferite',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary: 'Colpisce una creatura a contatto con energia necrotica.',
+        details: 'L’incantatore effettua un attacco in mischia con questo '
+            'incantesimo contro una creatura entro la sua portata. Se il colpo '
+            'va a segno, il bersaglio subisce 3d10 danni necrotici. '
+            'L’incantesimo ha durata istantanea e non richiede concentrazione. '
+            'Usando uno slot di livello superiore al 1°, i danni aumentano di '
+            '1d10 per ogni livello di slot superiore.',
+      ),
+      ownerId: SpellIds.inflictWounds,
+    ),
+    level: 1,
+    school: SpellSchool.necromancy,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.touch,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.instantaneous,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.creature,
+      },
+      maximumTargets: 1,
+    ),
+    attackType: SpellAttackType.melee,
+    damage: [
+      SpellDamage(
+        dice: '3d10',
+        type: SpellDamageType.necrotic,
+      ),
+    ],
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'inflict_wounds_melee_spell_attack_necrotic',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'melee_spell_attack_against_creature_in_reach',
+          'hit_deals_3d10_necrotic_damage',
+          'damage_increases_by_1d10_per_slot_level_above_1',
+        },
+      ),
+    ],
+    classIds: {
+      'cleric',
+    },
+  ),
+  SpellIds.hellishRebuke: SpellDefinition(
+    id: SpellIds.hellishRebuke,
+    content: RuleContent(
+      id: SpellIds.hellishRebuke,
+      name: 'Intimorire Infernale',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Reagisce a un danno subito avvolgendo l’aggressore in fiamme infernali.',
+        details: 'L’incantatore può lanciare questo incantesimo come reazione '
+            'quando subisce danni da una creatura entro 18 metri che sia in '
+            'grado di vedere. Punta l’indice contro la creatura che lo ha '
+            'danneggiato, e quella creatura viene momentaneamente avviluppata '
+            'da fiamme infernali. Il bersaglio deve effettuare un tiro salvezza '
+            'su Destrezza. Se lo fallisce, subisce 2d10 danni da fuoco; se lo '
+            'supera, subisce soltanto metà di quei danni. Usando uno slot di '
+            'livello superiore al 1°, i danni aumentano di 1d10 per ogni '
+            'livello di slot superiore.',
+      ),
+      ownerId: SpellIds.hellishRebuke,
+    ),
+    level: 1,
+    school: SpellSchool.evocation,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.reaction,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 18,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.instantaneous,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.creature,
+      },
+      maximumTargets: 1,
+    ),
+    damage: [
+      SpellDamage(
+        dice: '2d10',
+        type: SpellDamageType.fire,
+      ),
+    ],
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'hellish_rebuke_reaction_fire_damage',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'reaction_when_damaged_by_visible_creature_within_18_meters',
+          'target_makes_dexterity_saving_throw',
+          'failed_save_deals_2d10_fire_damage',
+          'successful_save_takes_half_damage',
+          'damage_increases_by_1d10_per_slot_level_above_1',
+        },
+      ),
+    ],
+    classIds: {
+      'warlock',
+    },
+  ),
+  SpellIds.entangle: SpellDefinition(
+    id: SpellIds.entangle,
+    content: RuleContent(
+      id: SpellIds.entangle,
+      name: 'Intralciare',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Fa spuntare vegetali intralcianti che rendono difficile l’area e trattengono creature.',
+        details:
+            'Erbacce e rampicanti spuntano dal terreno in un quadrato con lato '
+            'di 6 metri a partire da un punto entro gittata. Per la durata, i '
+            'vegetali trasformano l’area in terreno difficile. Una creatura '
+            'presente nell’area quando l’incantesimo viene lanciato deve '
+            'superare un tiro salvezza su Forza o essere trattenuta dai '
+            'vegetali intralcianti fino al termine dell’incantesimo. Una '
+            'creatura trattenuta può usare la sua azione per effettuare una '
+            'prova di Forza contro la CD del tiro salvezza dell’incantesimo; '
+            'se ha successo, si libera. Quando l’incantesimo termina, i '
+            'vegetali evocati avvizziscono.',
+      ),
+      ownerId: SpellIds.entangle,
+    ),
+    level: 1,
+    school: SpellSchool.conjuration,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 27,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.minute,
+      amount: 1,
+      concentration: true,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.special,
+      },
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'entangle_restraining_plants',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'creates_6_meter_square_of_plants',
+          'area_becomes_difficult_terrain',
+          'creatures_in_area_make_strength_saving_throw',
+          'failed_save_restrained_by_plants',
+          'restrained_creature_can_use_action_strength_check_to_escape',
+          'plants_wither_when_spell_ends',
+          'requires_concentration',
+        },
+      ),
+    ],
+    classIds: {
+      'druid',
     },
   ),
 };
