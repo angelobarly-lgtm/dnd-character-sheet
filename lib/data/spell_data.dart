@@ -1040,6 +1040,9 @@ abstract final class SpellIds {
   static const cordonOfArrows = 'cordon_of_arrows';
   static const crownOfMadness = 'crown_of_madness';
   static const spikeGrowth = 'spike_growth';
+  static const enthrall = 'enthrall';
+  static const continualFlame = 'continual_flame';
+  static const shatter = 'shatter';
 }
 
 const Map<String, SpellDefinition> spellDefinitions = {
@@ -8783,6 +8786,223 @@ const Map<String, SpellDefinition> spellDefinitions = {
     classIds: {
       'druid',
       'ranger',
+    },
+  ),
+  SpellIds.enthrall: SpellDefinition(
+    id: SpellIds.enthrall,
+    content: RuleContent(
+      id: SpellIds.enthrall,
+      name: 'Estasiare',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Distrarre creature visibili con parole frastornanti, penalizzando la loro Percezione verso altri.',
+        details:
+            'L’incantatore pronuncia una sequenza di parole frastornante e '
+            'costringe le creature a sua scelta entro gittata e che sia in '
+            'grado di vedere a effettuare un tiro salvezza su Saggezza. Una '
+            'creatura che non può essere affascinata supera automaticamente il '
+            'tiro salvezza; una creatura contro cui l’incantatore o i suoi '
+            'compagni stanno combattendo dispone di vantaggio. Se una creatura '
+            'fallisce, subisce svantaggio alle prove di Saggezza (Percezione) '
+            'effettuate per percepire qualsiasi creatura diversa '
+            'dall’incantatore. L’effetto dura finché l’incantesimo termina, '
+            'finché il bersaglio non è più in grado di sentire l’incantatore, '
+            'finché l’incantatore diventa incapacitato o finché non è più in '
+            'grado di parlare.',
+      ),
+      ownerId: SpellIds.enthrall,
+    ),
+    level: 2,
+    school: SpellSchool.enchantment,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 18,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.minute,
+      amount: 1,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.creatures,
+      },
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'enthrall_wisdom_perception_distraction',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'targets_chosen_visible_creatures_within_18_meters',
+          'targets_make_wisdom_saving_throw',
+          'creatures_that_cannot_be_charmed_automatically_succeed',
+          'creatures_fighting_caster_or_allies_have_advantage_on_save',
+          'failed_save_disadvantage_on_wisdom_perception_to_perceive_others',
+          'disadvantage_applies_to_creatures_other_than_caster',
+          'effect_ends_if_target_can_no_longer_hear_caster',
+          'spell_ends_if_caster_incapacitated',
+          'spell_ends_if_caster_can_no_longer_speak',
+          'does_not_require_concentration',
+        },
+      ),
+    ],
+    classIds: {
+      'bard',
+      'warlock',
+    },
+  ),
+  SpellIds.continualFlame: SpellDefinition(
+    id: SpellIds.continualFlame,
+    content: RuleContent(
+      id: SpellIds.continualFlame,
+      name: 'Fiamma Perenne',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Crea su un oggetto una fiamma magica permanente, luminosa ma priva di calore.',
+        details:
+            'Una fiamma di intensità equivalente a quella di una torcia si '
+            'sprigiona da un oggetto toccato dall’incantatore. L’effetto appare '
+            'come una fiamma normale, ma non produce calore e non consuma '
+            'ossigeno. La fiamma perenne può essere coperta o nascosta, ma non '
+            'può essere soffocata o estinta con mezzi ordinari. L’incantesimo '
+            'dura finché non viene dissolto e consuma polvere di rubino del '
+            'valore richiesto.',
+      ),
+      ownerId: SpellIds.continualFlame,
+    ),
+    level: 2,
+    school: SpellSchool.evocation,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.touch,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+      materials: [
+        SpellMaterialComponent(
+          description:
+              'Polvere di rubino del valore di almeno 50 mo, consumata dall’incantesimo.',
+          minimumCostGp: 50,
+          consumed: true,
+        ),
+      ],
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.untilDispelled,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.object,
+      },
+      maximumTargets: 1,
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'continual_flame_torch_light_no_heat',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'creates_flame_on_touched_object',
+          'flame_brightness_equivalent_to_torch',
+          'flame_looks_normal_but_produces_no_heat',
+          'flame_does_not_consume_oxygen',
+          'flame_can_be_covered_or_hidden',
+          'flame_cannot_be_smothered_or_extinguished_normally',
+          'duration_until_dispelled',
+          'ruby_dust_worth_50_gp_is_consumed',
+        },
+      ),
+    ],
+    classIds: {
+      'cleric',
+      'wizard',
+    },
+  ),
+  SpellIds.shatter: SpellDefinition(
+    id: SpellIds.shatter,
+    content: RuleContent(
+      id: SpellIds.shatter,
+      name: 'Frantumare',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Produce un rumore assordante che infligge danni da tuono in una piccola area.',
+        details: 'Un rumore improvviso, assordante e dolorosamente intenso si '
+            'diffonde da un punto scelto dall’incantatore entro gittata. Ogni '
+            'creatura entro una sfera del raggio di 3 metri centrata su quel '
+            'punto deve effettuare un tiro salvezza su Costituzione. Se '
+            'fallisce, subisce 3d8 danni da tuono; se supera il tiro salvezza, '
+            'subisce metà danni. Una creatura fatta di materiale inorganico '
+            'come pietra, cristallo o metallo subisce svantaggio a questo tiro '
+            'salvezza. Anche un oggetto non magico che non sia indossato o '
+            'trasportato subisce i danni se si trova nell’area. Usando uno slot '
+            'di livello superiore al 2°, i danni aumentano di 1d8 per ogni '
+            'livello di slot superiore.',
+      ),
+      ownerId: SpellIds.shatter,
+    ),
+    level: 2,
+    school: SpellSchool.evocation,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 18,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+      materials: [
+        SpellMaterialComponent(
+          description: 'Un frammento di mica.',
+        ),
+      ],
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.instantaneous,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.area,
+      },
+    ),
+    damage: [
+      SpellDamage(
+        dice: '3d8',
+        type: SpellDamageType.thunder,
+      ),
+    ],
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'shatter_constitution_save_thunder_burst',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          '3_meter_radius_sphere_centered_on_point_within_18_meters',
+          'creatures_in_area_make_constitution_saving_throw',
+          'failed_save_deals_3d8_thunder_damage',
+          'successful_save_takes_half_damage',
+          'inorganic_creatures_have_disadvantage_on_save',
+          'nonmagical_unworn_unheld_objects_in_area_take_damage',
+          'damage_increases_by_1d8_per_slot_level_above_2',
+        },
+      ),
+    ],
+    classIds: {
+      'bard',
+      'sorcerer',
+      'warlock',
+      'wizard',
     },
   ),
 };

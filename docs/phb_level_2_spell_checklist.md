@@ -18,10 +18,10 @@ Checklist di lavoro per espandere `lib/data/spell_data.dart` con gli incantesimi
 - [x] Cordone di Frecce
 - [x] Corona di Follia
 - [x] Crescita di Spine
-- [ ] Estasiare
-- [ ] Fiamma Perenne
-- [ ] Folata di Vento
-- [ ] Frantumare
+- [x] Estasiare
+- [x] Fiamma Perenne
+- [x] Folata di Vento
+- [x] Frantumare
 - [ ] Freccia Acida di Melf
 - [ ] Immagine Speculare
 - [ ] Individuazione dei Pensieri
