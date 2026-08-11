@@ -1019,6 +1019,9 @@ abstract final class SpellIds {
   static const illusoryScript = 'illusory_script';
   static const unseenServant = 'unseen_servant';
   static const sleep = 'sleep';
+  static const hex = 'hex';
+  static const colorSpray = 'color_spray';
+  static const dissonantWhispers = 'dissonant_whispers';
 }
 
 const Map<String, SpellDefinition> spellDefinitions = {
@@ -7164,6 +7167,236 @@ const Map<String, SpellDefinition> spellDefinitions = {
       'bard',
       'sorcerer',
       'wizard',
+    },
+  ),
+  SpellIds.hex: SpellDefinition(
+    id: SpellIds.hex,
+    content: RuleContent(
+      id: SpellIds.hex,
+      name: 'Sortilegio',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Maledice una creatura, aumentando i danni dell’incantatore e ostacolando una caratteristica.',
+        details: 'L’incantatore scaglia una maledizione su una creatura entro '
+            'gittata che sia in grado di vedere. Finché l’incantesimo non '
+            'termina, l’incantatore infligge 1d6 danni necrotici extra al '
+            'bersaglio ogni volta che lo colpisce con un attacco. Inoltre, '
+            'quando lancia l’incantesimo, sceglie una caratteristica: il '
+            'bersaglio subisce svantaggio alle prove di caratteristica '
+            'effettuate con quella caratteristica. Se il bersaglio scende a 0 '
+            'punti ferita prima che l’incantesimo termini, l’incantatore può '
+            'usare un’azione bonus in un suo turno successivo per maledire una '
+            'nuova creatura. Un incantesimo Rimuovi Maledizione lanciato sul '
+            'bersaglio termina Sortilegio prematuramente. Usando slot di 3° o '
+            '4° livello, la concentrazione può durare fino a 8 ore; usando uno '
+            'slot di 5° livello o superiore, fino a 24 ore.',
+      ),
+      ownerId: SpellIds.hex,
+    ),
+    level: 1,
+    school: SpellSchool.enchantment,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.bonusAction,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 27,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+      materials: [
+        SpellMaterialComponent(
+          description: 'L’occhio pietrificato di un girino.',
+        ),
+      ],
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.hour,
+      amount: 1,
+      concentration: true,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.creature,
+      },
+      maximumTargets: 1,
+    ),
+    damage: [
+      SpellDamage(
+        dice: '1d6',
+        type: SpellDamageType.necrotic,
+      ),
+    ],
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'hex_curse_extra_necrotic_damage',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'bonus_action_spell',
+          'curses_visible_creature_within_27_meters',
+          'caster_deals_extra_1d6_necrotic_damage_when_hitting_cursed_target_with_attack',
+          'caster_chooses_one_ability_score',
+          'target_has_disadvantage_on_ability_checks_with_chosen_ability',
+          'caster_can_bonus_action_move_curse_after_target_drops_to_0_hp',
+          'remove_curse_ends_spell_on_target',
+          'requires_concentration',
+          'slot_level_3_or_4_duration_up_to_8_hours',
+          'slot_level_5_or_higher_duration_up_to_24_hours',
+        },
+      ),
+    ],
+    classIds: {
+      'warlock',
+    },
+  ),
+  SpellIds.colorSpray: SpellDefinition(
+    id: SpellIds.colorSpray,
+    content: RuleContent(
+      id: SpellIds.colorSpray,
+      name: 'Spruzzo Colorato',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Acceca temporaneamente creature in un cono usando un totale di punti ferita influenzabili.',
+        details:
+            'Dalla mano dell’incantatore si sprigiona un lampo abbagliante di '
+            'luce multicolore. L’incantatore tira 6d10: il totale indica quanti '
+            'punti ferita di creature possono essere influenzati. Le creature '
+            'entro un cono di 4,5 metri originato dall’incantatore sono '
+            'influenzate in ordine crescente dei loro punti ferita attuali, '
+            'ignorando le creature prive di sensi e quelle che non sono in '
+            'grado di vedere. A partire dalla creatura con meno punti ferita, '
+            'ogni creatura influenzata è accecata finché l’incantesimo non '
+            'termina. I punti ferita di ogni creatura vengono sottratti dal '
+            'totale prima di passare alla successiva; una creatura è '
+            'influenzata solo se i suoi punti ferita sono pari o inferiori al '
+            'totale rimanente. Usando slot superiori al 1°, si tirano 2d10 '
+            'aggiuntivi per ogni livello di slot superiore.',
+      ),
+      ownerId: SpellIds.colorSpray,
+    ),
+    level: 1,
+    school: SpellSchool.illusion,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.self,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+      materials: [
+        SpellMaterialComponent(
+          description:
+              'Un pizzico di sabbia o di polvere colorata di rosso, giallo e blu.',
+        ),
+      ],
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.round,
+      amount: 1,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.special,
+      },
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'color_spray_blinding_hp_pool',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          '4_5_meter_cone_originating_from_caster',
+          'roll_6d10_to_determine_total_hit_points_affected',
+          'affects_creatures_in_ascending_current_hit_points',
+          'ignores_unconscious_creatures',
+          'ignores_creatures_that_cannot_see',
+          'affected_creatures_are_blinded_until_spell_ends',
+          'subtract_each_affected_creature_hp_from_total',
+          'creature_must_have_hp_less_than_or_equal_to_remaining_total',
+          'adds_2d10_per_slot_level_above_1',
+        },
+      ),
+    ],
+    classIds: {
+      'sorcerer',
+      'wizard',
+    },
+  ),
+  SpellIds.dissonantWhispers: SpellDefinition(
+    id: SpellIds.dissonantWhispers,
+    content: RuleContent(
+      id: SpellIds.dissonantWhispers,
+      name: 'Sussurri Dissonanti',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Infligge dolore psichico a una creatura e può costringerla ad allontanarsi.',
+        details:
+            'L’incantatore sussurra una melodia dissonante udibile solo da una '
+            'creatura scelta entro gittata, causandole dolore lancinante. Il '
+            'bersaglio deve effettuare un tiro salvezza su Saggezza. Se '
+            'fallisce, subisce 3d6 danni psichici e, se disponibile, deve usare '
+            'immediatamente la sua reazione per muoversi il più lontano '
+            'possibile dall’incantatore entro la propria velocità. La creatura '
+            'non si muove su terreno palesemente pericoloso, come un incendio o '
+            'una fossa. Se supera il tiro salvezza, subisce metà dei danni e '
+            'non deve allontanarsi. Una creatura assordata supera '
+            'automaticamente il tiro salvezza. Usando slot superiori al 1°, i '
+            'danni aumentano di 1d6 per ogni livello di slot superiore.',
+      ),
+      ownerId: SpellIds.dissonantWhispers,
+    ),
+    level: 1,
+    school: SpellSchool.enchantment,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 18,
+    ),
+    components: SpellComponents(
+      verbal: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.instantaneous,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.creature,
+      },
+      maximumTargets: 1,
+    ),
+    damage: [
+      SpellDamage(
+        dice: '3d6',
+        type: SpellDamageType.psychic,
+      ),
+    ],
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'dissonant_whispers_wisdom_save_forced_movement',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'target_one_creature_within_18_meters',
+          'only_target_can_hear_whisper',
+          'target_makes_wisdom_saving_throw',
+          'failed_save_deals_3d6_psychic_damage',
+          'failed_save_target_uses_reaction_to_move_away_if_available',
+          'forced_movement_uses_targets_speed',
+          'target_does_not_move_into_obvious_hazard',
+          'successful_save_takes_half_damage_and_does_not_move',
+          'deafened_creature_automatically_succeeds_save',
+          'damage_increases_by_1d6_per_slot_level_above_1',
+        },
+      ),
+    ],
+    classIds: {
+      'bard',
     },
   ),
 };

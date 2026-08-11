@@ -60,9 +60,9 @@ Checklist di lavoro per espandere `lib/data/spell_data.dart`.
 - [x] Scritto Illusorio
 - [x] Servitore Inosservato
 - [x] Sonno
-- [ ] Sortilegio
-- [ ] Spruzzo Colorato
-- [ ] Sussurri Dissonanti
-- [ ] Trova Famiglio
+- [x] Sortilegio
+- [x] Spruzzo Colorato
+- [x] Sussurri Dissonanti
+- [x] Trova Famiglio
 - [ ] Unto
 - [ ] Vita Falsata
