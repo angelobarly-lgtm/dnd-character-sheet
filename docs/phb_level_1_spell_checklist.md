@@ -64,5 +64,5 @@ Checklist di lavoro per espandere `lib/data/spell_data.dart`.
 - [x] Spruzzo Colorato
 - [x] Sussurri Dissonanti
 - [x] Trova Famiglio
-- [ ] Unto
-- [ ] Vita Falsata
+- [x] Unto
+- [x] Vita Falsata

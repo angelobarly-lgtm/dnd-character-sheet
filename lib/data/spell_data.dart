@@ -1022,6 +1022,8 @@ abstract final class SpellIds {
   static const hex = 'hex';
   static const colorSpray = 'color_spray';
   static const dissonantWhispers = 'dissonant_whispers';
+  static const grease = 'grease';
+  static const falseLife = 'false_life';
 }
 
 const Map<String, SpellDefinition> spellDefinitions = {
@@ -7397,6 +7399,138 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ],
     classIds: {
       'bard',
+    },
+  ),
+  SpellIds.grease: SpellDefinition(
+    id: SpellIds.grease,
+    content: RuleContent(
+      id: SpellIds.grease,
+      name: 'Unto',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Ricopre il terreno di unto, creando terreno difficile e facendo cadere prone le creature.',
+        details:
+            'Una patina viscida di unto ricopre un quadrato di terreno con '
+            'lato di 3 metri, centrato in un punto entro gittata. Per la '
+            'durata dell’incantesimo, l’area diventa terreno difficile. Quando '
+            'l’unto compare, ogni creatura che si trova nell’area deve '
+            'superare un tiro salvezza su Destrezza o cadere a terra prona. '
+            'Anche una creatura che entra nell’area o vi termina il proprio '
+            'turno deve superare un tiro salvezza su Destrezza o cade prona. '
+            'L’incantesimo dura 1 minuto e non richiede concentrazione.',
+      ),
+      ownerId: SpellIds.grease,
+    ),
+    level: 1,
+    school: SpellSchool.conjuration,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 18,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+      materials: [
+        SpellMaterialComponent(
+          description: 'Un frammento di grasso di maiale o di burro.',
+        ),
+      ],
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.minute,
+      amount: 1,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.special,
+      },
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'grease_slippery_difficult_terrain',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'creates_3_meter_square_of_grease',
+          'area_is_difficult_terrain',
+          'creatures_in_area_when_cast_make_dexterity_saving_throw',
+          'failed_save_falls_prone',
+          'creature_entering_area_makes_dexterity_saving_throw',
+          'creature_ending_turn_in_area_makes_dexterity_saving_throw',
+          'does_not_require_concentration',
+        },
+      ),
+    ],
+    classIds: {
+      'wizard',
+    },
+  ),
+  SpellIds.falseLife: SpellDefinition(
+    id: SpellIds.falseLife,
+    content: RuleContent(
+      id: SpellIds.falseLife,
+      name: 'Vita Falsata',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Rafforza l’incantatore con punti ferita temporanei necromantici.',
+        details:
+            'L’incantatore si rafforza con un duplicato necromantico di vita e '
+            'ottiene 1d4 + 4 punti ferita temporanei per la durata '
+            'dell’incantesimo. L’effetto dura 1 ora, ha gittata personale e non '
+            'richiede concentrazione. I punti ferita temporanei proteggono '
+            'l’incantatore finché durano o finché vengono consumati dai danni, '
+            'secondo le regole normali dei punti ferita temporanei. Usando uno '
+            'slot di livello superiore al 1°, l’incantatore ottiene 5 punti '
+            'ferita temporanei aggiuntivi per ogni livello di slot superiore.',
+      ),
+      ownerId: SpellIds.falseLife,
+    ),
+    level: 1,
+    school: SpellSchool.necromancy,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.self,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+      materials: [
+        SpellMaterialComponent(
+          description: 'Una piccola quantità di alcol o di liquore distillato.',
+        ),
+      ],
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.hour,
+      amount: 1,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.self,
+      },
+      maximumTargets: 1,
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'false_life_temporary_hit_points',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'caster_gains_1d4_plus_4_temporary_hit_points',
+          'temporary_hit_points_last_for_spell_duration_or_until_lost',
+          'does_not_require_concentration',
+          'adds_5_temporary_hit_points_per_slot_level_above_1',
+        },
+      ),
+    ],
+    classIds: {
+      'sorcerer',
+      'wizard',
     },
   ),
 };
