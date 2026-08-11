@@ -1,0 +1,63 @@
+# PHB livello 2 - checklist incantesimi
+
+Checklist di lavoro per espandere `lib/data/spell_data.dart` con gli incantesimi PHB di 2° livello.
+
+- [x] Aiuto
+- [x] Allucinazione di Forza
+- [x] Alterare Se Stesso
+- [x] Animale Messaggero
+- [ ] Arma Magica
+- [ ] Arma Spirituale
+- [ ] Aura Magica di Nystul
+- [ ] Bagliore Lunare
+- [ ] Blocca Persone
+- [ ] Bocca Magica
+- [ ] Calmare Emozioni
+- [ ] Caratteristica Potenziata
+- [ ] Cecità/Sordità
+- [ ] Cordone di Frecce
+- [ ] Corona di Follia
+- [ ] Crescita di Spine
+- [ ] Estasiare
+- [ ] Fiamma Perenne
+- [ ] Folata di Vento
+- [ ] Frantumare
+- [ ] Freccia Acida di Melf
+- [ ] Immagine Speculare
+- [ ] Individuazione dei Pensieri
+- [ ] Ingrandire/Ridurre
+- [ ] Invisibilità
+- [ ] Lama Infuocata
+- [ ] Levitazione
+- [ ] Localizza Animali o Vegetali
+- [ ] Localizza Oggetto
+- [ ] Movimenti del Ragno
+- [ ] Nube di Pugnali
+- [ ] Oscurità
+- [ ] Passare Senza Tracce
+- [ ] Passo Velato
+- [ ] Pelle Coriacea
+- [ ] Percezione delle Bestie
+- [ ] Preghiera di Guarigione
+- [ ] Presagio
+- [ ] Protezione dai Veleni
+- [ ] Punizione Marchiante
+- [ ] Raggio di Affaticamento
+- [ ] Raggio Rovente
+- [ ] Ragnatela
+- [ ] Riposo Inviolato
+- [ ] Riscaldare il Metallo
+- [ ] Ristorare Inferiore
+- [ ] Scassinare
+- [ ] Scopri Trappole
+- [ ] Scurovisione
+- [ ] Serratura Arcana
+- [ ] Sfera Infuocata
+- [ ] Sfocatura
+- [ ] Silenzio
+- [ ] Suggestione
+- [ ] Trova Cavalcatura
+- [ ] Trucco della Corda
+- [ ] Vedere Invisibilità
+- [ ] Vincolo di Interdizione
+- [ ] Zona di Verità

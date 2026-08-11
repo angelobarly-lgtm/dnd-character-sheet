@@ -1024,6 +1024,10 @@ abstract final class SpellIds {
   static const dissonantWhispers = 'dissonant_whispers';
   static const grease = 'grease';
   static const falseLife = 'false_life';
+  static const aid = 'aid';
+  static const phantasmalForce = 'phantasmal_force';
+  static const alterSelf = 'alter_self';
+  static const animalMessenger = 'animal_messenger';
 }
 
 const Map<String, SpellDefinition> spellDefinitions = {
@@ -7531,6 +7535,317 @@ const Map<String, SpellDefinition> spellDefinitions = {
     classIds: {
       'sorcerer',
       'wizard',
+    },
+  ),
+  SpellIds.aid: SpellDefinition(
+    id: SpellIds.aid,
+    content: RuleContent(
+      id: SpellIds.aid,
+      name: 'Aiuto',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Rafforza fino a tre creature aumentando i loro punti ferita attuali e massimi.',
+        details: 'L’incantatore rafforza il vigore e la determinazione degli '
+            'alleati. Sceglie fino a tre creature entro gittata. Per la durata '
+            'dell’incantesimo, il massimo dei punti ferita e i punti ferita '
+            'attuali di ogni bersaglio aumentano di 5. L’effetto dura 8 ore, '
+            'non richiede concentrazione e non è una normale guarigione: '
+            'aumenta direttamente sia il valore massimo sia i punti ferita '
+            'attuali. Usando uno slot di livello superiore al 2°, l’aumento dei '
+            'punti ferita cresce di altri 5 per ogni livello di slot superiore.',
+      ),
+      ownerId: SpellIds.aid,
+    ),
+    level: 2,
+    school: SpellSchool.abjuration,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 9,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+      materials: [
+        SpellMaterialComponent(
+          description: 'Una minuscola striscia di tessuto bianco.',
+        ),
+      ],
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.hour,
+      amount: 8,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.creature,
+      },
+      maximumTargets: 3,
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'aid_current_and_max_hp_increase',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'up_to_three_creatures_within_9_meters',
+          'each_target_current_hp_increases_by_5',
+          'each_target_max_hp_increases_by_5',
+          'does_not_require_concentration',
+          'duration_8_hours',
+          'increase_grows_by_5_per_slot_level_above_2',
+        },
+      ),
+    ],
+    classIds: {
+      'cleric',
+      'paladin',
+    },
+  ),
+  SpellIds.phantasmalForce: SpellDefinition(
+    id: SpellIds.phantasmalForce,
+    content: RuleContent(
+      id: SpellIds.phantasmalForce,
+      name: 'Allucinazione di Forza',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Crea nella mente di una creatura un’illusione percepita come reale.',
+        details:
+            'L’incantatore crea un’allucinazione radicata nella mente di una '
+            'creatura entro gittata e che egli sia in grado di vedere. Il '
+            'bersaglio effettua un tiro salvezza su Intelligenza. Se fallisce, '
+            'percepisce un oggetto, una creatura o un altro fenomeno fittizio '
+            'scelto dall’incantatore, non più grande di un cubo con spigolo di '
+            '3 metri. L’allucinazione è percepibile solo dal bersaglio e può '
+            'includere suoni, temperature e altri stimoli analoghi. Costrutti e '
+            'non morti non sono influenzati. Il bersaglio può usare la sua '
+            'azione per esaminare l’allucinazione con una prova di Intelligenza '
+            '(Indagare) contro la CD del tiro salvezza dell’incantesimo; se ha '
+            'successo, riconosce l’illusione e l’incantesimo termina. Finché è '
+            'influenzato, il bersaglio razionalizza gli esiti illogici e la '
+            'tratta come reale. Se l’allucinazione rappresenta una creatura o '
+            'un pericolo capace logicamente di ferire, può infliggere 1d6 danni '
+            'psichici al bersaglio nel turno dell’incantatore quando il '
+            'bersaglio si trova nella sua area o entro 1,5 metri da essa. '
+            'Richiede concentrazione.',
+      ),
+      ownerId: SpellIds.phantasmalForce,
+    ),
+    level: 2,
+    school: SpellSchool.illusion,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 18,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+      materials: [
+        SpellMaterialComponent(
+          description: 'Un ciuffo di lana.',
+        ),
+      ],
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.minute,
+      amount: 1,
+      concentration: true,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.creature,
+      },
+      maximumTargets: 1,
+    ),
+    damage: [
+      SpellDamage(
+        dice: '1d6',
+        type: SpellDamageType.psychic,
+      ),
+    ],
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'phantasmal_force_mind_illusion',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'visible_creature_within_18_meters',
+          'target_makes_intelligence_saving_throw',
+          'failed_save_creates_illusion_only_target_perceives',
+          'illusion_up_to_3_meter_cube',
+          'illusion_can_include_sound_temperature_and_similar_stimuli',
+          'constructs_and_undead_unaffected',
+          'target_can_use_action_investigation_check_to_end_spell',
+          'target_treats_illusion_as_real_and_rationalizes_contradictions',
+          'illusion_can_deal_1d6_psychic_damage_per_round_if_logically_harmful',
+          'requires_concentration',
+        },
+      ),
+    ],
+    classIds: {
+      'bard',
+      'sorcerer',
+      'wizard',
+    },
+  ),
+  SpellIds.alterSelf: SpellDefinition(
+    id: SpellIds.alterSelf,
+    content: RuleContent(
+      id: SpellIds.alterSelf,
+      name: 'Alterare Se Stesso',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Permette all’incantatore di adattare il corpo, cambiare aspetto o generare armi naturali.',
+        details: 'L’incantatore assume una forma diversa scegliendo una delle '
+            'opzioni disponibili al momento del lancio. Finché l’incantesimo '
+            'permane, può terminare un’opzione con un’azione per ottenere i '
+            'benefici di un’altra. Con Adattamento Acquatico sviluppa branchie '
+            'e membrane tra le dita, può respirare sott’acqua e ottiene una '
+            'velocità di nuotare pari alla sua velocità base sul terreno. Con '
+            'Armi Naturali sviluppa artigli, zanne, spine, corna o un’altra '
+            'arma naturale: i suoi colpi senz’armi infliggono 1d6 danni '
+            'contundenti, perforanti o taglienti appropriati alla forma scelta, '
+            'l’incantatore è competente con quei colpi, l’arma naturale è '
+            'magica e ottiene +1 ai tiri per colpire e ai danni effettuati con '
+            'essa. Con Cambiare Aspetto modifica altezza, peso, lineamenti, '
+            'voce, capelli, carnagione e tratti distintivi; può sembrare membro '
+            'di un’altra razza, ma le statistiche non cambiano, la taglia resta '
+            'la stessa e la forma base rimane compatibile. Richiede '
+            'concentrazione.',
+      ),
+      ownerId: SpellIds.alterSelf,
+    ),
+    level: 2,
+    school: SpellSchool.transmutation,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.self,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.hour,
+      amount: 1,
+      concentration: true,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.self,
+      },
+      maximumTargets: 1,
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'alter_self_body_options',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'caster_chooses_aquatic_adaptation_natural_weapons_or_change_appearance',
+          'caster_can_use_action_to_change_option_during_duration',
+          'aquatic_adaptation_grants_underwater_breathing',
+          'aquatic_adaptation_grants_swim_speed_equal_to_walking_speed',
+          'natural_weapons_unarmed_strikes_deal_1d6_bludgeoning_piercing_or_slashing',
+          'natural_weapons_are_magical',
+          'natural_weapons_grant_plus_1_to_attack_and_damage_rolls',
+          'change_appearance_alters_visible_body_and_voice_details',
+          'change_appearance_does_not_change_statistics',
+          'change_appearance_does_not_change_size',
+          'requires_concentration',
+        },
+      ),
+    ],
+    classIds: {
+      'sorcerer',
+      'wizard',
+    },
+  ),
+  SpellIds.animalMessenger: SpellDefinition(
+    id: SpellIds.animalMessenger,
+    content: RuleContent(
+      id: SpellIds.animalMessenger,
+      name: 'Animale Messaggero',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Usa una bestia Minuscola come messaggero verso un luogo visitato dall’incantatore.',
+        details:
+            'L’incantatore sceglie una bestia Minuscola entro gittata che sia '
+            'in grado di vedere, come uno scoiattolo, una ghiandaia o un '
+            'pipistrello. Specifica un luogo che ha già visitato e un '
+            'destinatario descritto genericamente. Pronuncia inoltre un '
+            'messaggio di massimo venticinque parole. La bestia viaggia per la '
+            'durata verso il luogo indicato, coprendo circa 75 km in 24 ore se '
+            'volante o 37,5 km se non volante. Quando arriva, trasmette il '
+            'messaggio alla creatura corrispondente alla descrizione, replicando '
+            'il suono scelto dall’incantatore. Se non raggiunge la destinazione '
+            'prima della fine dell’incantesimo, il messaggio è perduto e la '
+            'bestia ritorna verso il punto in cui l’incantesimo è stato '
+            'lanciato. Può essere lanciato come rituale. Usando slot superiori '
+            'al 2°, la durata aumenta di 48 ore per ogni livello di slot '
+            'superiore.',
+      ),
+      ownerId: SpellIds.animalMessenger,
+    ),
+    level: 2,
+    ritual: true,
+    school: SpellSchool.enchantment,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 9,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+      materials: [
+        SpellMaterialComponent(
+          description: 'Un boccone di cibo.',
+        ),
+      ],
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.hour,
+      amount: 24,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.creature,
+      },
+      maximumTargets: 1,
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'animal_messenger_tiny_beast_message',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'ritual_spell',
+          'targets_tiny_beast_within_9_meters',
+          'caster_must_see_target_beast',
+          'destination_must_be_place_caster_has_visited',
+          'recipient_can_be_generic_description',
+          'message_maximum_25_words',
+          'flying_messenger_travels_about_75_km_per_24_hours',
+          'other_messenger_travels_about_37_5_km_per_24_hours',
+          'message_lost_if_destination_not_reached_before_spell_ends',
+          'duration_increases_by_48_hours_per_slot_level_above_2',
+        },
+      ),
+    ],
+    classIds: {
+      'bard',
+      'druid',
+      'ranger',
     },
   ),
 };
