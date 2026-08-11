@@ -8,10 +8,10 @@ Checklist di lavoro per espandere `lib/data/spell_data.dart`.
 - [x] Amicizia con gli Animali
 - [x] Anatema
 - [x] Armatura di Agathys
-- [ ] Armatura Magica
-- [ ] Bacche Benefiche
-- [ ] Benedizione
-- [ ] Braccia di Hadar
+- [x] Armatura Magica
+- [x] Bacche Benefiche
+- [x] Benedizione
+- [x] Braccia di Hadar
 - [ ] Caduta Morbida
 - [ ] Camuffare Se Stesso
 - [ ] Charme su Persone

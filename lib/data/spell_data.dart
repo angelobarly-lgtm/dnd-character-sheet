@@ -971,6 +971,10 @@ abstract final class SpellIds {
   static const animalFriendship = 'animal_friendship';
   static const bane = 'bane';
   static const armorOfAgathys = 'armor_of_agathys';
+  static const mageArmor = 'mage_armor';
+  static const goodberry = 'goodberry';
+  static const bless = 'bless';
+  static const armsOfHadar = 'arms_of_hadar';
 }
 
 const Map<String, SpellDefinition> spellDefinitions = {
@@ -3842,6 +3846,266 @@ const Map<String, SpellDefinition> spellDefinitions = {
           'caster_gains_5_temporary_hit_points',
           'melee_attacker_takes_5_cold_damage_while_temp_hp_remain',
           'temporary_hit_points_and_cold_damage_increase_by_5_per_slot_level_above_1',
+        },
+      ),
+    ],
+    classIds: {
+      'warlock',
+    },
+  ),
+  SpellIds.mageArmor: SpellDefinition(
+    id: SpellIds.mageArmor,
+    content: RuleContent(
+      id: SpellIds.mageArmor,
+      name: 'Armatura Magica',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Protegge magicamente una creatura consenziente che non indossa armatura.',
+        details:
+            'L’incantatore tocca una creatura consenziente che non indossa '
+            'un’armatura. Una forza magica protettiva circonda il bersaglio '
+            'fino al termine dell’incantesimo. Per la durata, la Classe '
+            'Armatura base del bersaglio diventa 13 + il suo modificatore di '
+            'Destrezza. L’incantesimo termina anticipatamente se il bersaglio '
+            'indossa un’armatura o se l’incantatore lo interrompe usando '
+            'un’azione. Non fornisce punti ferita temporanei e non si cumula '
+            'con altre formule alternative di calcolo della CA base.',
+      ),
+      ownerId: SpellIds.mageArmor,
+    ),
+    level: 1,
+    school: SpellSchool.abjuration,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.touch,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+      materials: [
+        SpellMaterialComponent(
+          description: 'Un pezzo di cuoio trattato.',
+        ),
+      ],
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.hour,
+      amount: 8,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.willingCreature,
+      },
+      maximumTargets: 1,
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'mage_armor_base_ac',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'target_must_be_willing_creature_not_wearing_armor',
+          'base_ac_becomes_13_plus_dexterity_modifier',
+          'ends_if_target_dons_armor',
+          'caster_can_dismiss_as_action',
+          'does_not_stack_with_other_base_ac_formulas',
+        },
+      ),
+    ],
+    classIds: {
+      'sorcerer',
+      'wizard',
+    },
+  ),
+  SpellIds.goodberry: SpellDefinition(
+    id: SpellIds.goodberry,
+    content: RuleContent(
+      id: SpellIds.goodberry,
+      name: 'Bacche Benefiche',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary: 'Crea fino a dieci bacche magiche che curano e nutrono.',
+        details:
+            'Fino a dieci bacche compaiono nella mano dell’incantatore e sono '
+            'pervase di magia. Una creatura può usare la sua azione per '
+            'mangiare una bacca. Mangiare una bacca ripristina 1 punto ferita '
+            'e fornisce nutrimento sufficiente a sfamare una creatura per un '
+            'giorno. Le bacche non curano automaticamente: devono essere '
+            'mangiate usando un’azione. Le bacche perdono il loro potere se '
+            'non vengono consumate entro 24 ore dal lancio dell’incantesimo.',
+      ),
+      ownerId: SpellIds.goodberry,
+    ),
+    level: 1,
+    school: SpellSchool.transmutation,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.touch,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+      materials: [
+        SpellMaterialComponent(
+          description: 'Un rametto di vischio.',
+        ),
+      ],
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.instantaneous,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.special,
+      },
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'goodberry_magical_berries',
+        type: SpellPersistentEffectType.createdObject,
+        ruleTags: {
+          'creates_up_to_ten_magical_berries',
+          'creature_uses_action_to_eat_one_berry',
+          'each_berry_restores_1_hit_point',
+          'each_berry_provides_one_day_nourishment',
+          'berries_lose_power_after_24_hours',
+        },
+      ),
+    ],
+    classIds: {
+      'druid',
+      'ranger',
+    },
+  ),
+  SpellIds.bless: SpellDefinition(
+    id: SpellIds.bless,
+    content: RuleContent(
+      id: SpellIds.bless,
+      name: 'Benedizione',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Benedice fino a tre creature, migliorando attacchi e tiri salvezza.',
+        details:
+            'L’incantatore benedice fino a tre creature a sua scelta entro '
+            'gittata. Per la durata dell’incantesimo, ogni volta che un '
+            'bersaglio effettua un tiro per colpire o un tiro salvezza può '
+            'tirare 1d4 e aggiungere il risultato al tiro. L’effetto richiede '
+            'concentrazione e si applica solo prima che l’incantesimo termini. '
+            'Usando uno slot di livello superiore al 1°, l’incantatore può '
+            'bersagliare una creatura aggiuntiva per ogni livello di slot '
+            'superiore.',
+      ),
+      ownerId: SpellIds.bless,
+    ),
+    level: 1,
+    school: SpellSchool.enchantment,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 9,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+      materials: [
+        SpellMaterialComponent(
+          description: 'Uno spruzzo di acqua santa.',
+        ),
+      ],
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.minute,
+      amount: 1,
+      concentration: true,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.creature,
+      },
+      maximumTargets: 3,
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'bless_attack_and_save_bonus',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'up_to_three_targets',
+          'targets_add_1d4_to_attack_rolls_and_saving_throws',
+          'requires_concentration',
+          'one_additional_target_per_slot_level_above_1',
+        },
+      ),
+    ],
+    classIds: {
+      'cleric',
+      'paladin',
+    },
+  ),
+  SpellIds.armsOfHadar: SpellDefinition(
+    id: SpellIds.armsOfHadar,
+    content: RuleContent(
+      id: SpellIds.armsOfHadar,
+      name: 'Braccia di Hadar',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Tentacoli di energia oscura colpiscono le creature attorno all’incantatore.',
+        details:
+            'L’incantatore invoca il potere di Hadar, la Fame Oscura. Dalla '
+            'sua persona si protendono tentacoli di energia oscura che '
+            'tempestano di colpi tutte le creature entro 3 metri da lui. Ogni '
+            'creatura nell’area deve effettuare un tiro salvezza su Forza. Se '
+            'fallisce, subisce 2d6 danni necrotici e non può effettuare '
+            'reazioni fino al suo turno successivo. Se supera il tiro salvezza, '
+            'subisce soltanto metà dei danni e non subisce l’effetto sulle '
+            'reazioni. Usando uno slot di livello superiore al 1°, i danni '
+            'aumentano di 1d6 per ogni livello di slot superiore.',
+      ),
+      ownerId: SpellIds.armsOfHadar,
+    ),
+    level: 1,
+    school: SpellSchool.conjuration,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.self,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.instantaneous,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.creature,
+      },
+    ),
+    damage: [
+      SpellDamage(
+        dice: '2d6',
+        type: SpellDamageType.necrotic,
+      ),
+    ],
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'arms_of_hadar_strength_save_no_reactions',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'affects_all_creatures_within_3_meters_of_caster',
+          'targets_make_strength_saving_throw',
+          'failed_save_deals_2d6_necrotic_and_prevents_reactions',
+          'successful_save_takes_half_damage_only',
+          'damage_increases_by_1d6_per_slot_level_above_1',
         },
       ),
     ],
