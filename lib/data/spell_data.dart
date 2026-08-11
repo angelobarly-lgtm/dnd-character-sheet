@@ -1032,6 +1032,10 @@ abstract final class SpellIds {
   static const spiritualWeapon = 'spiritual_weapon';
   static const nystulsMagicAura = 'nystuls_magic_aura';
   static const moonbeam = 'moonbeam';
+  static const holdPerson = 'hold_person';
+  static const magicMouth = 'magic_mouth';
+  static const calmEmotions = 'calm_emotions';
+  static const enhanceAbility = 'enhance_ability';
 }
 
 const Map<String, SpellDefinition> spellDefinitions = {
@@ -8152,6 +8156,321 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ],
     classIds: {
       'druid',
+    },
+  ),
+  SpellIds.holdPerson: SpellDefinition(
+    id: SpellIds.holdPerson,
+    content: RuleContent(
+      id: SpellIds.holdPerson,
+      name: 'Blocca Persone',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Paralizza un umanoide se fallisce il tiro salvezza su Saggezza.',
+        details: 'L’incantatore sceglie un umanoide entro gittata e che sia in '
+            'grado di vedere. Il bersaglio deve superare un tiro salvezza su '
+            'Saggezza o essere paralizzato per la durata dell’incantesimo. Alla '
+            'fine di ogni suo turno, il bersaglio può effettuare un nuovo tiro '
+            'salvezza su Saggezza; se lo supera, l’incantesimo termina su di '
+            'esso. Richiede concentrazione. Usando uno slot di livello '
+            'superiore al 2°, può bersagliare un umanoide aggiuntivo per ogni '
+            'livello di slot superiore, purché gli umanoidi siano entro 9 metri '
+            'l’uno dall’altro quando vengono bersagliati.',
+      ),
+      ownerId: SpellIds.holdPerson,
+    ),
+    level: 2,
+    school: SpellSchool.enchantment,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 18,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+      materials: [
+        SpellMaterialComponent(
+          description: 'Una piccola sbarra di ferro.',
+        ),
+      ],
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.minute,
+      amount: 1,
+      concentration: true,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.creature,
+      },
+      maximumTargets: 1,
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'hold_person_wisdom_save_paralyzed',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'targets_visible_humanoid_within_18_meters',
+          'target_makes_wisdom_saving_throw',
+          'failed_save_target_paralyzed',
+          'target_repeats_wisdom_save_at_end_of_each_turn',
+          'successful_repeat_save_ends_spell_on_target',
+          'requires_concentration',
+          'one_additional_humanoid_per_slot_level_above_2',
+          'additional_targets_must_be_within_9_meters_of_each_other',
+        },
+      ),
+    ],
+    classIds: {
+      'bard',
+      'cleric',
+      'druid',
+      'sorcerer',
+      'warlock',
+      'wizard',
+    },
+  ),
+  SpellIds.magicMouth: SpellDefinition(
+    id: SpellIds.magicMouth,
+    content: RuleContent(
+      id: SpellIds.magicMouth,
+      name: 'Bocca Magica',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Inserisce in un oggetto un messaggio che viene pronunciato al verificarsi di un innesco.',
+        details:
+            'L’incantatore inserisce un messaggio in un oggetto entro gittata. '
+            'Sceglie un oggetto che sia in grado di vedere e che non sia '
+            'indossato o trasportato da un’altra creatura. Pronuncia un '
+            'messaggio di massimo venticinque parole, che può essere ripetuto '
+            'per un massimo di 10 minuti, e stabilisce la circostanza che farà '
+            'apparire la bocca magica e pronunciare il messaggio. Quando la '
+            'circostanza si verifica, la bocca appare sull’oggetto e recita il '
+            'messaggio con la voce e il volume usati al lancio. Se l’oggetto ha '
+            'una bocca o qualcosa di simile, l’illusione può apparire lì. Al '
+            'lancio l’incantatore decide se l’incantesimo termina dopo il primo '
+            'messaggio o se si ripete quando l’innesco si ripresenta. L’innesco '
+            'può essere generale o dettagliato, ma deve basarsi su condizioni '
+            'visibili o udibili entro 9 metri dall’oggetto. Può essere lanciato '
+            'come rituale e dura finché non viene dissolto.',
+      ),
+      ownerId: SpellIds.magicMouth,
+    ),
+    level: 2,
+    ritual: true,
+    school: SpellSchool.illusion,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.minute,
+      amount: 1,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 9,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+      materials: [
+        SpellMaterialComponent(
+          description:
+              'Un frammento di un favo e polvere di giada del valore di almeno 10 mo, consumata dall’incantesimo.',
+          minimumCostGp: 10,
+          consumed: true,
+        ),
+      ],
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.untilDispelled,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.object,
+      },
+      maximumTargets: 1,
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'magic_mouth_triggered_message',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'ritual_spell',
+          'places_message_in_visible_object_within_9_meters',
+          'object_must_not_be_worn_or_carried',
+          'message_maximum_25_words',
+          'message_can_be_repeated_for_up_to_10_minutes',
+          'caster_sets_visible_or_audible_trigger_within_9_meters_of_object',
+          'magic_mouth_appears_when_trigger_occurs',
+          'mouth_recites_message_in_casters_voice_and_original_volume',
+          'caster_chooses_one_time_or_repeating_trigger',
+          'duration_until_dispelled',
+          'jade_dust_worth_at_least_10_gp_is_consumed',
+        },
+      ),
+    ],
+    classIds: {
+      'bard',
+      'wizard',
+    },
+  ),
+  SpellIds.calmEmotions: SpellDefinition(
+    id: SpellIds.calmEmotions,
+    content: RuleContent(
+      id: SpellIds.calmEmotions,
+      name: 'Calmare Emozioni',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Sopprime paura o fascino, oppure rende temporaneamente indifferenti creature ostili.',
+        details:
+            'L’incantatore tenta di sopprimere le emozioni più intense in un '
+            'gruppo di persone. Ogni umanoide entro una sfera del raggio di 6 '
+            'metri centrata su un punto entro gittata deve effettuare un tiro '
+            'salvezza su Carisma; una creatura può scegliere di fallirlo. Per '
+            'ogni creatura che fallisce, l’incantatore sceglie uno fra due '
+            'effetti. Può sopprimere qualsiasi effetto che renda il bersaglio '
+            'affascinato o spaventato; quando l’incantesimo termina, gli '
+            'effetti soppressi tornano ad applicarsi se la loro durata non è '
+            'scaduta. In alternativa, può rendere il bersaglio indifferente a '
+            'creature scelte dall’incantatore verso cui sarebbe ostile. Questa '
+            'indifferenza termina se il bersaglio viene attaccato, danneggiato '
+            'da un incantesimo o vede un suo alleato subire danni. Quando '
+            'l’incantesimo termina, la creatura torna ostile salvo decisione '
+            'diversa del DM. Richiede concentrazione.',
+      ),
+      ownerId: SpellIds.calmEmotions,
+    ),
+    level: 2,
+    school: SpellSchool.enchantment,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 18,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.minute,
+      amount: 1,
+      concentration: true,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.area,
+      },
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'calm_emotions_suppression_or_indifference',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'affects_humanoids_in_6_meter_radius_sphere',
+          'sphere_centered_on_point_within_18_meters',
+          'targets_make_charisma_saving_throw',
+          'target_can_choose_to_fail_save',
+          'failed_save_caster_chooses_effect_per_target',
+          'can_suppress_charmed_or_frightened_effects',
+          'suppressed_effects_resume_after_spell_if_duration_remains',
+          'can_make_target_indifferent_to_chosen_creatures',
+          'indifference_ends_if_target_is_attacked_or_damaged_by_spell',
+          'indifference_ends_if_target_sees_friend_damaged',
+          'requires_concentration',
+        },
+      ),
+    ],
+    classIds: {
+      'bard',
+      'cleric',
+    },
+  ),
+  SpellIds.enhanceAbility: SpellDefinition(
+    id: SpellIds.enhanceAbility,
+    content: RuleContent(
+      id: SpellIds.enhanceAbility,
+      name: 'Caratteristica Potenziata',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Conferisce a una creatura un potenziamento magico legato a una caratteristica.',
+        details:
+            'L’incantatore tocca una creatura e le conferisce un potenziamento '
+            'magico scegliendo un effetto che permane finché l’incantesimo non '
+            'termina. Astuzia della Volpe concede vantaggio alle prove di '
+            'Intelligenza. Forza del Toro concede vantaggio alle prove di Forza '
+            'e raddoppia la capacità di trasporto. Grazia del Gatto concede '
+            'vantaggio alle prove di Destrezza e impedisce danni da cadute di '
+            '6 metri o meno se il bersaglio non è incapacitato. Resistenza '
+            'dell’Orso concede vantaggio alle prove di Costituzione e 2d6 punti '
+            'ferita temporanei, che vengono persi al termine dell’incantesimo. '
+            'Saggezza del Gufo concede vantaggio alle prove di Saggezza. '
+            'Splendore dell’Aquila concede vantaggio alle prove di Carisma. '
+            'Richiede concentrazione. Usando uno slot di livello superiore al '
+            '2°, può bersagliare una creatura aggiuntiva per ogni livello di '
+            'slot superiore.',
+      ),
+      ownerId: SpellIds.enhanceAbility,
+    ),
+    level: 2,
+    school: SpellSchool.transmutation,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.touch,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+      materials: [
+        SpellMaterialComponent(
+          description: 'Peli o piume strappati a una bestia.',
+        ),
+      ],
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.hour,
+      amount: 1,
+      concentration: true,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.creature,
+      },
+      maximumTargets: 1,
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'enhance_ability_choose_ability_boost',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'touched_creature_receives_one_chosen_enhancement',
+          'foxs_cunning_advantage_on_intelligence_checks',
+          'bulls_strength_advantage_on_strength_checks',
+          'bulls_strength_carrying_capacity_doubles',
+          'cats_grace_advantage_on_dexterity_checks',
+          'cats_grace_no_damage_from_falls_6_meters_or_less_if_not_incapacitated',
+          'bears_endurance_advantage_on_constitution_checks',
+          'bears_endurance_grants_2d6_temporary_hit_points',
+          'bears_endurance_temp_hp_lost_when_spell_ends',
+          'owls_wisdom_advantage_on_wisdom_checks',
+          'eagles_splendor_advantage_on_charisma_checks',
+          'one_additional_target_per_slot_level_above_2',
+          'requires_concentration',
+        },
+      ),
+    ],
+    classIds: {
+      'bard',
+      'cleric',
+      'druid',
+      'sorcerer',
     },
   ),
 };

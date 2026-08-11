@@ -10,10 +10,10 @@ Checklist di lavoro per espandere `lib/data/spell_data.dart` con gli incantesimi
 - [x] Arma Spirituale
 - [x] Aura Magica di Nystul
 - [x] Bagliore Lunare
-- [ ] Blocca Persone
-- [ ] Bocca Magica
-- [ ] Calmare Emozioni
-- [ ] Caratteristica Potenziata
+- [x] Blocca Persone
+- [x] Bocca Magica
+- [x] Calmare Emozioni
+- [x] Caratteristica Potenziata
 - [ ] Cecità/Sordità
 - [ ] Cordone di Frecce
 - [ ] Corona di Follia
