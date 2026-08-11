@@ -221,9 +221,6 @@ class GlossaryEntry {
 ///
 /// Il dataset verrà popolato progressivamente senza modificare
 /// il sistema di visualizzazione.
-const Map<String, GlossaryEntry> glossaryEntries = {};
-
-GlossaryEntry? glossaryEntryFor(String id) => glossaryEntries[id];
 
 class ClassDefinition {
   final String id;

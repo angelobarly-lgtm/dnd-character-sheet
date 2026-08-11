@@ -1,0 +1,72 @@
+enum AmmunitionCategory {
+  arrow,
+  bolt,
+  slingBullet,
+  blowgunNeedle,
+}
+
+class AmmunitionDefinition {
+  final String id;
+  final String name;
+  final AmmunitionCategory category;
+  final int bundleSize;
+  final int cost;
+  final String currency;
+  final double weight;
+
+  const AmmunitionDefinition({
+    required this.id,
+    required this.name,
+    required this.category,
+    required this.bundleSize,
+    required this.cost,
+    required this.currency,
+    required this.weight,
+  });
+}
+
+class AmmunitionIds {
+  static const arrows = 'arrows';
+  static const crossbowBolts = 'crossbow_bolts';
+  static const slingBullets = 'sling_bullets';
+  static const blowgunNeedles = 'blowgun_needles';
+}
+
+final ammunitionDefinitions = <String, AmmunitionDefinition>{
+  AmmunitionIds.arrows: const AmmunitionDefinition(
+    id: AmmunitionIds.arrows,
+    name: "Frecce (20)",
+    category: AmmunitionCategory.arrow,
+    bundleSize: 20,
+    cost: 1,
+    currency: "gp",
+    weight: 1,
+  ),
+  AmmunitionIds.crossbowBolts: const AmmunitionDefinition(
+    id: AmmunitionIds.crossbowBolts,
+    name: "Quadrelli (20)",
+    category: AmmunitionCategory.bolt,
+    bundleSize: 20,
+    cost: 1,
+    currency: "gp",
+    weight: 1.5,
+  ),
+  AmmunitionIds.slingBullets: const AmmunitionDefinition(
+    id: AmmunitionIds.slingBullets,
+    name: "Proiettili per Fionda (20)",
+    category: AmmunitionCategory.slingBullet,
+    bundleSize: 20,
+    cost: 4,
+    currency: "cp",
+    weight: 1.5,
+  ),
+  AmmunitionIds.blowgunNeedles: const AmmunitionDefinition(
+    id: AmmunitionIds.blowgunNeedles,
+    name: "Aghi per Cerbottana (50)",
+    category: AmmunitionCategory.blowgunNeedle,
+    bundleSize: 50,
+    cost: 1,
+    currency: "gp",
+    weight: 1,
+  ),
+};

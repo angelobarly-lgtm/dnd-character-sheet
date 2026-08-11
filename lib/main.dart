@@ -3,6 +3,11 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'data/class_data.dart';
+import 'data/glossary_data.dart';
+import 'data/character_data.dart';
+import 'data/feat_data.dart';
+import 'data/race_data.dart';
+import 'services/character_builder.dart';
 
 import 'data/rule_icon_data.dart';
 
@@ -219,23 +224,6 @@ const backgroundSkills = <String, List<String>>{
   'Soldato': ['Atletica', 'Intimidire'],
 };
 
-const featInfo = <String, String>{
-  'Allerta':
-      'Migliora la prontezza in combattimento: bonus all’iniziativa e maggiore protezione contro imboscate e attaccanti non visti.',
-  'Atleta':
-      'Migliora una caratteristica fisica e rende più efficienti alcuni movimenti, come rialzarsi, saltare e arrampicarsi.',
-  'Fortunato':
-      'Conferisce una riserva limitata di punti fortuna utilizzabili per influenzare alcuni tiri.',
-  'Mobile':
-      'Aumenta la velocità e favorisce uno stile di combattimento molto dinamico, riducendo alcuni rischi nel disimpegno.',
-  'Osservatore':
-      'Migliora attenzione e lettura dei dettagli, con benefici legati a Percezione e Investigazione passive.',
-  'Resiliente':
-      'Aumenta di 1 una caratteristica scelta e conferisce competenza nel relativo tiro salvezza.',
-  'Robusto':
-      'Aumenta i punti ferita massimi in funzione del livello del personaggio.',
-};
-
 const weaponInfo = <String, Map<String, dynamic>>{
   'Colpo senz’armi': {
     'die': 0,
@@ -299,6 +287,10 @@ class HeroData {
     this.deathFail = 0,
     this.race = 'Umano',
     this.subrace,
+    this.raceId,
+    this.subraceId,
+    this.raceChoices = const {},
+    this.featChoices = const {},
     this.languages = const ['Comune'],
     this.skillProficiencies = const [],
     this.coins = const {'MR': 0, 'MA': 0, 'ME': 0, 'MO': 0, 'MP': 0},
@@ -312,6 +304,25 @@ class HeroData {
   String name;
   String race;
   String? subrace;
+
+  /// ID stabile della razza nel dataset universale.
+  ///
+  /// Null identifica un salvataggio legacy non ancora migrato.
+  String? raceId;
+
+  /// ID stabile della sottorazza nel dataset universale.
+  String? subraceId;
+
+  /// Selezioni razziali persistenti.
+  ///
+  /// La chiave è l'ID di CharacterChoiceDefinition.
+  final Map<String, List<String>> raceChoices;
+
+  /// Selezioni interne del talento.
+  ///
+  /// La chiave è l'ID della CharacterChoiceDefinition del talento.
+  final Map<String, List<String>> featChoices;
+
   Map<String, int> baseScores;
   int level, currentHp, tempHp, ki, hitDiceUsed, deathSuccess, deathFail;
   List<int> hpRolls;
@@ -334,26 +345,225 @@ class HeroData {
   List<Map<String, dynamic>> inventory;
   Map<String, int> spellSlots;
 
+  String get resolvedRaceId {
+    if (raceId != null && raceId!.isNotEmpty) {
+      return raceId!;
+    }
+
+    switch (race) {
+      case 'Umano Variante':
+        return HumanVariantIds.variant;
+      case 'Nano':
+        return RaceIds.dwarf;
+      case 'Elfo':
+        return RaceIds.elf;
+      case 'Halfling':
+        return RaceIds.halfling;
+      case 'Dragonide':
+        return RaceIds.dragonborn;
+      case 'Gnomo':
+        return RaceIds.gnome;
+      case 'Mezzelfo':
+        return RaceIds.halfElf;
+      case 'Mezzorco':
+        return RaceIds.halfOrc;
+      case 'Tiefling':
+        return RaceIds.tiefling;
+      case 'Umano':
+      default:
+        return RaceIds.human;
+    }
+  }
+
+  String? get resolvedSubraceId {
+    if (subraceId != null && subraceId!.isNotEmpty) {
+      return subraceId;
+    }
+
+    switch (subrace) {
+      case 'Nano delle Colline':
+        return SubraceIds.hillDwarf;
+      case 'Nano delle Montagne':
+        return SubraceIds.mountainDwarf;
+      case 'Elfo Alto':
+        return SubraceIds.highElf;
+      case 'Elfo dei Boschi':
+        return SubraceIds.woodElf;
+      case 'Drow':
+        return SubraceIds.drow;
+      case 'Halfling Piedelesto':
+        return SubraceIds.lightfootHalfling;
+      case 'Halfling Tozzo':
+        return SubraceIds.stoutHalfling;
+      case 'Gnomo delle Foreste':
+        return SubraceIds.forestGnome;
+      case 'Gnomo delle Rocce':
+        return SubraceIds.rockGnome;
+      default:
+        return null;
+    }
+  }
+
+  CharacterChoiceState get resolvedRaceChoices {
+    final selections = <String, List<String>>{
+      for (final entry in raceChoices.entries)
+        entry.key: List<String>.from(entry.value),
+    };
+
+    // Compatibilità con i personaggi Umano Variante creati
+    // prima dell'introduzione di CharacterChoiceState.
+    //
+    // Questi valori verranno sostituiti dagli ID reali delle choice
+    // quando il creator dinamico 2C.3B sarà collegato.
+    if (resolvedRaceId == HumanVariantIds.variant) {
+      if (variantBonuses.isNotEmpty &&
+          !selections.containsKey('human_variant_ability_bonuses')) {
+        selections['human_variant_ability_bonuses'] =
+            variantBonuses.take(2).toList();
+      }
+
+      if (feat != null &&
+          feat!.isNotEmpty &&
+          !selections.containsKey('human_variant_feat')) {
+        selections['human_variant_feat'] = [feat!];
+      }
+    }
+
+    return CharacterChoiceState(
+      selections: selections,
+    );
+  }
+
+  ResolvedRaceEffects get resolvedRaceEffects => resolveRaceEffects(
+        raceId: resolvedRaceId,
+        subraceId: resolvedSubraceId,
+        characterLevel: level,
+        choices: resolvedRaceChoices,
+      );
+
+  /// Competenze nelle abilità effettivamente possedute.
+  ///
+  /// Il campo persistente conserva per ora le competenze legacy
+  /// provenienti da classe/background; quelle razziali sono derivate.
+  Set<String> get effectiveSavingThrowProficiencies => {
+        ...resolvedRaceEffects.effects.savingThrowProficiencies,
+        ...?resolvedFeatEffects?.effects.savingThrowProficiencies,
+      };
+
+  Set<String> get effectiveSkillProficiencies => {
+        ...skillProficiencies,
+        ...resolvedRaceEffects.effects.skillProficiencies,
+      };
+
+  /// Lingue effettivamente conosciute.
+  Set<String> get effectiveLanguages => {
+        ...languages,
+        ...resolvedRaceEffects.effects.languages,
+      };
+
+  /// Competenze nelle armi concesse dalla razza.
+  ///
+  /// Le competenze di classe verranno unite qui quando il dataset
+  /// universale delle classi sarà collegato al runtime.
+  Set<String> get effectiveWeaponProficiencies => {
+        ...resolvedRaceEffects.effects.weaponProficiencies,
+      };
+
+  /// Competenze nelle armature concesse dalla razza.
+  Set<String> get effectiveArmorProficiencies => {
+        ...resolvedRaceEffects.effects.armorProficiencies,
+      };
+
+  /// Competenze negli strumenti concesse dalla razza.
+  Set<String> get effectiveToolProficiencies => {
+        ...resolvedRaceEffects.effects.toolProficiencies,
+      };
+
+  Set<String> get damageResistances => {
+        ...resolvedRaceEffects.effects.damageResistances,
+      };
+
+  Set<String> get racialSavingThrowAdvantages => {
+        ...resolvedRaceEffects.effects.savingThrowAdvantageAgainst,
+      };
+
+  Set<String> get conditionImmunities => {
+        ...resolvedRaceEffects.effects.conditionImmunities,
+      };
+
+  double? get darkvisionRange => resolvedRaceEffects.effects.darkvisionRange;
+
+  Set<String> get racialFeatureIds => {
+        ...resolvedRaceEffects.effects.grantedFeatureIds,
+      };
+
+  Set<String> get racialFeatIds => {
+        ...resolvedRaceEffects.effects.grantedFeatIds,
+      };
+
+  Set<String> get racialSpellIds => {
+        ...resolvedRaceEffects.effects.grantedSpellIds,
+      };
+
+  Set<String> get racialCantripIds => {
+        ...resolvedRaceEffects.effects.grantedCantripIds,
+      };
+
+  Set<String> get racialEquipmentIds => {
+        ...resolvedRaceEffects.effects.grantedEquipmentIds,
+      };
+
+  /// Talento effettivamente concesso dalle regole strutturate.
+  ///
+  /// I salvataggi legacy possono ancora usare `feat`; i nuovi personaggi
+  /// ricavano invece l'ID da grantedFeatIds del resolver razziale.
+  String? get resolvedFeatId {
+    final granted = resolvedRaceEffects.effects.grantedFeatIds;
+
+    if (granted.isNotEmpty) {
+      return granted.first;
+    }
+
+    // Compatibilità temporanea con salvataggi legacy.
+    if (feat != null && feat!.isNotEmpty) {
+      for (final entry in featDefinitions.entries) {
+        if (entry.value.name == feat || entry.key == feat) {
+          return entry.key;
+        }
+      }
+    }
+
+    return null;
+  }
+
+  ResolvedFeatEffects? get resolvedFeatEffects {
+    final id = resolvedFeatId;
+    if (id == null) return null;
+
+    return resolveFeatEffects(
+      featId: id,
+      selections: featChoices,
+    );
+  }
+
   Map<String, int> get scores {
     final out = Map<String, int>.from(baseScores);
-    if (race == 'Umano') {
-      for (final a in abilities) {
-        out[a] = out[a]! + 1;
+
+    for (final bonus in resolvedRaceEffects.effects.abilityBonuses) {
+      if (out.containsKey(bonus.ability)) {
+        out[bonus.ability] = out[bonus.ability]! + bonus.amount;
       }
-    } else if (race == 'Umano Variante') {
-      for (final a in variantBonuses.take(2)) {
-        if (out.containsKey(a)) out[a] = out[a]! + 1;
-      }
-    } else if (race == 'Nano') {
-      out['COS'] = out['COS']! + 2;
-      if (subrace == 'Nano delle Colline') out['SAG'] = out['SAG']! + 1;
-      if (subrace == 'Nano delle Montagne') out['FOR'] = out['FOR']! + 2;
-    } else if (race == 'Elfo') {
-      out['DES'] = out['DES']! + 2;
-      if (subrace == 'Elfo Alto') out['INT'] = out['INT']! + 1;
-      if (subrace == 'Elfo dei Boschi') out['SAG'] = out['SAG']! + 1;
-      if (subrace == 'Drow') out['CAR'] = out['CAR']! + 1;
     }
+
+    final featEffects = resolvedFeatEffects?.effects;
+    if (featEffects != null) {
+      for (final bonus in featEffects.abilityBonuses) {
+        if (out.containsKey(bonus.ability)) {
+          out[bonus.ability] = out[bonus.ability]! + bonus.amount;
+        }
+      }
+    }
+
     return out;
   }
 
@@ -377,18 +587,35 @@ class HeroData {
               : 'd10';
   int get maxHp {
     final con = mod(scores['COS']!);
-    final dwarvenToughness =
-        race == 'Nano' && subrace == 'Nano delle Colline' ? level : 0;
+    final racialHpBonus =
+        resolvedRaceEffects.effects.hitPointsPerLevelBonus * level;
+    final featHpBonus =
+        (resolvedFeatEffects?.effects.hitPointsPerLevelBonus ?? 0) * level;
+
     return (max(1, hitDie + con) +
             hpRolls.fold<int>(0, (sum, gainedHp) => sum + gainedHp) +
-            dwarvenToughness)
+            racialHpBonus +
+            featHpBonus)
         .toInt();
   }
 
-  int get ac => 10 + mod(scores['DES']!) + mod(scores['SAG']!);
-  int get initiative => mod(scores['DES']!);
-  int get speed {
-    final base = race == 'Nano' ? 7.5 : 9.0;
+  int get ac =>
+      10 +
+      mod(scores['DES']!) +
+      mod(scores['SAG']!) +
+      resolvedRaceEffects.effects.armorClassBonus +
+      (resolvedFeatEffects?.effects.armorClassBonus ?? 0);
+  int get initiative =>
+      mod(scores['DES']!) +
+      resolvedRaceEffects.effects.initiativeBonus +
+      (resolvedFeatEffects?.effects.initiativeBonus ?? 0);
+  double get speed {
+    final raceDefinition = phbRaceDefinitionFor(resolvedRaceId);
+
+    final base = resolvedRaceEffects.effects.walkingSpeedOverride ??
+        raceDefinition?.speed ??
+        9.0;
+
     final bonus = level >= 2
         ? (level >= 18
             ? 9
@@ -400,7 +627,9 @@ class HeroData {
                         ? 4.5
                         : 3)
         : 0;
-    return (base + bonus).round();
+    return (base + bonus).round() +
+        resolvedRaceEffects.effects.walkingSpeedBonus +
+        (resolvedFeatEffects?.effects.walkingSpeedBonus ?? 0);
   }
 
   List<String> get features {
@@ -457,6 +686,10 @@ class HeroData {
         'deathFail': deathFail,
         'race': race,
         'subrace': subrace,
+        'raceId': raceId,
+        'subraceId': subraceId,
+        'raceChoices': raceChoices,
+        'featChoices': featChoices,
         'languages': languages,
         'skillProficiencies': skillProficiencies,
         'coins': coins,
@@ -487,6 +720,22 @@ class HeroData {
         deathFail: j['deathFail'] ?? 0,
         race: j['race'] ?? 'Umano',
         subrace: j['subrace'],
+        raceId: j['raceId'] as String?,
+        subraceId: j['subraceId'] as String?,
+        raceChoices:
+            (j['raceChoices'] as Map? ?? const {}).map<String, List<String>>(
+          (key, value) => MapEntry(
+            key.toString(),
+            List<String>.from(value as List? ?? const []),
+          ),
+        ),
+        featChoices:
+            (j['featChoices'] as Map? ?? const {}).map<String, List<String>>(
+          (key, value) => MapEntry(
+            key.toString(),
+            List<String>.from(value as List? ?? const []),
+          ),
+        ),
         languages: List<String>.from(j['languages'] ?? const ['Comune']),
         skillProficiencies:
             List<String>.from(j['skillProficiencies'] ?? const []),
@@ -1005,32 +1254,614 @@ class _CreatorPageState extends State<CreatorPage> {
   Map<String, int> manual = {for (final a in abilities) a: 8};
   String race = 'Umano';
   String? subrace;
+
+  String raceId = RaceIds.human;
+  String? subraceId;
+
+  /// Stato universale delle scelte razziali del creator.
+  final Map<String, List<String>> raceChoices = {};
+  final Map<String, List<String>> featChoices = {};
+
   String background = 'Soldato';
   String? feat;
   final Set<String> variantBonuses = {'DES', 'SAG'};
 
-  int racialBonus(String a) {
-    if (race == 'Umano') return 1;
-    if (race == 'Umano Variante') return variantBonuses.contains(a) ? 1 : 0;
-    if (race == 'Nano') {
-      if (a == 'COS') return 2;
-      if (subrace == 'Nano delle Colline' && a == 'SAG') return 1;
-      if (subrace == 'Nano delle Montagne' && a == 'FOR') return 2;
+  List<RaceDefinition> get creatorRaceDefinitions => [
+        ...phbRaceDefinitions.values,
+        humanVariantDefinition,
+      ];
+
+  RaceDefinition get selectedRaceDefinition =>
+      phbRaceDefinitionFor(raceId) ?? phbRaceDefinitions[RaceIds.human]!;
+
+  SubraceDefinition? get selectedSubraceDefinition {
+    final id = subraceId;
+    if (id == null) return null;
+    return selectedRaceDefinition.subraces[id];
+  }
+
+  String? get creatorSelectedFeatId {
+    final selected = raceChoices['human_variant_feat'];
+
+    if (selected == null || selected.isEmpty) {
+      return null;
     }
-    if (race == 'Elfo') {
-      if (a == 'DES') return 2;
-      if (subrace == 'Elfo Alto' && a == 'INT') return 1;
-      if (subrace == 'Elfo dei Boschi' && a == 'SAG') return 1;
-      if (subrace == 'Drow' && a == 'CAR') return 1;
+
+    final id = selected.first;
+
+    return featDefinitions.containsKey(id) ? id : null;
+  }
+
+  FeatDefinition? get creatorSelectedFeatDefinition {
+    final id = creatorSelectedFeatId;
+    return id == null ? null : featDefinitionFor(id);
+  }
+
+  List<CharacterChoiceDefinition> get activeFeatChoices =>
+      creatorSelectedFeatDefinition?.effects.choices ??
+      const <CharacterChoiceDefinition>[];
+
+  Set<String> get creatorOwnedProficiencies {
+    final raceEffects = creatorResolvedRaceEffects.effects;
+
+    return <String>{
+      ...raceEffects.skillProficiencies,
+      ...raceEffects.savingThrowProficiencies,
+      ...raceEffects.weaponProficiencies,
+      ...raceEffects.armorProficiencies,
+      ...raceEffects.toolProficiencies,
+      ...?backgroundSkills[background],
+      ...monkSkills,
+    };
+  }
+
+  CharacterEligibilityState get creatorEligibilityState {
+    return CharacterEligibilityState(
+      abilityScores: {
+        for (final ability in abilities) ability: creatorAbilityScore(ability),
+      },
+      raceId: raceId,
+      proficiencies: creatorOwnedProficiencies,
+
+      // Il creator attuale è ancora Monaco di 1° livello e non possiede
+      // spellcasting di classe. Gli effetti razziali che concedono
+      // cantrip/spell non equivalgono automaticamente alla feature
+      // Spellcasting.
+      canCastSpells: false,
+    );
+  }
+
+  CharacterEligibilityResult? get creatorSelectedFeatEligibility {
+    final definition = creatorSelectedFeatDefinition;
+
+    if (definition == null) {
+      return null;
     }
-    return 0;
+
+    return evaluateFeatEligibility(
+      feat: definition,
+      state: creatorEligibilityState,
+    );
+  }
+
+  List<CharacterChoiceDefinition> get activeRaceChoices => [
+        ...selectedRaceDefinition.effects.choices,
+        if (selectedSubraceDefinition != null)
+          ...selectedSubraceDefinition!.effects.choices,
+      ];
+
+  CharacterChoiceState get creatorRaceChoiceState => CharacterChoiceState(
+        selections: {
+          for (final entry in raceChoices.entries)
+            entry.key: List<String>.from(entry.value),
+        },
+      );
+
+  ResolvedRaceEffects get creatorResolvedRaceEffects => resolveRaceEffects(
+        raceId: raceId,
+        subraceId: subraceId,
+        characterLevel: 1,
+        choices: creatorRaceChoiceState,
+      );
+
+  List<CharacterChoiceOptionDefinition> structuredOptionsFor(
+    CharacterChoiceDefinition choice,
+  ) =>
+      choice.options;
+
+  List<String> featOptionIdsFor(
+    CharacterChoiceDefinition choice,
+  ) {
+    if (choice.id == 'skilled_proficiencies') {
+      return [
+        for (final id in characterSkillIds) 'skill:$id',
+        for (final id in characterToolIds) 'tool:$id',
+      ];
+    }
+
+    if (choice.options.isNotEmpty) {
+      return choice.options.map((option) => option.id).toList(growable: false);
+    }
+
+    if (choice.optionIds.isNotEmpty) {
+      return choice.optionIds;
+    }
+
+    switch (choice.type) {
+      case CharacterChoiceType.ability:
+        return const ['FOR', 'DES', 'COS', 'INT', 'SAG', 'CAR'];
+
+      case CharacterChoiceType.skill:
+        return characterSkillIds;
+
+      case CharacterChoiceType.language:
+        return characterLanguageIds;
+
+      case CharacterChoiceType.feat:
+        return featDefinitions.keys.toList(growable: false);
+
+      case CharacterChoiceType.tool:
+      case CharacterChoiceType.weapon:
+      case CharacterChoiceType.armor:
+      case CharacterChoiceType.equipment:
+      case CharacterChoiceType.spell:
+      case CharacterChoiceType.cantrip:
+      case CharacterChoiceType.subclass:
+      case CharacterChoiceType.other:
+        return const [];
+    }
+  }
+
+  String featOptionLabel(
+    CharacterChoiceDefinition choice,
+    String id,
+  ) {
+    for (final option in choice.options) {
+      if (option.id == id) {
+        return option.label;
+      }
+    }
+
+    const abilityLabels = {
+      'FOR': 'Forza',
+      'DES': 'Destrezza',
+      'COS': 'Costituzione',
+      'INT': 'Intelligenza',
+      'SAG': 'Saggezza',
+      'CAR': 'Carisma',
+    };
+
+    return abilityLabels[id] ?? id;
+  }
+
+  List<String> simpleOptionIdsFor(
+    CharacterChoiceDefinition choice,
+  ) {
+    if (choice.optionIds.isNotEmpty) {
+      return choice.optionIds;
+    }
+
+    switch (choice.type) {
+      case CharacterChoiceType.skill:
+        return characterSkillIds;
+
+      case CharacterChoiceType.language:
+        // Una choice "lingua extra" non deve proporre lingue che
+        // la razza possiede già automaticamente.
+        final alreadyKnown = creatorResolvedRaceEffects.effects.languages;
+
+        return characterLanguageIds
+            .where((id) => !alreadyKnown.contains(id))
+            .toList();
+
+      case CharacterChoiceType.ability:
+      case CharacterChoiceType.tool:
+      case CharacterChoiceType.weapon:
+      case CharacterChoiceType.armor:
+      case CharacterChoiceType.equipment:
+      case CharacterChoiceType.feat:
+        return featDefinitions.keys.toList(growable: false);
+
+      case CharacterChoiceType.spell:
+      case CharacterChoiceType.cantrip:
+      case CharacterChoiceType.subclass:
+      case CharacterChoiceType.other:
+        return const [];
+    }
+  }
+
+  bool choiceHasAvailableDomain(
+    CharacterChoiceDefinition choice,
+  ) =>
+      choice.options.isNotEmpty || simpleOptionIdsFor(choice).isNotEmpty;
+
+  String choiceOptionLabel(
+    CharacterChoiceDefinition choice,
+    String id,
+  ) {
+    for (final option in choice.options) {
+      if (option.id == id) return option.label;
+    }
+
+    // Etichette comuni dei domini semplici già utilizzati dal progetto.
+    const abilityLabels = {
+      'FOR': 'Forza',
+      'DES': 'Destrezza',
+      'COS': 'Costituzione',
+      'INT': 'Intelligenza',
+      'SAG': 'Saggezza',
+      'CAR': 'Carisma',
+    };
+
+    if (choice.type == CharacterChoiceType.feat) {
+      return featNameFor(id);
+    }
+
+    return abilityLabels[id] ?? id;
+  }
+
+  void clearInactiveRaceChoices() {
+    final activeIds = activeRaceChoices.map((choice) => choice.id).toSet();
+
+    raceChoices.removeWhere(
+      (choiceId, _) => !activeIds.contains(choiceId),
+    );
+  }
+
+  void setRaceChoiceSelection(
+    CharacterChoiceDefinition choice,
+    String optionId,
+    bool selected,
+  ) {
+    final current = List<String>.from(raceChoices[choice.id] ?? const []);
+
+    if (selected) {
+      if (choice.unique && current.contains(optionId)) {
+        return;
+      }
+
+      if (choice.maximumSelections == 1) {
+        current
+          ..clear()
+          ..add(optionId);
+      } else if (current.length < choice.maximumSelections) {
+        current.add(optionId);
+      }
+    } else {
+      current.remove(optionId);
+    }
+
+    if (current.isEmpty) {
+      raceChoices.remove(choice.id);
+    } else {
+      raceChoices[choice.id] = current;
+    }
+  }
+
+  List<String> get incompleteFeatChoiceIds {
+    final incomplete = <String>[];
+
+    for (final choice in activeFeatChoices) {
+      final selected = featChoices[choice.id] ?? const <String>[];
+
+      if (selected.length < choice.minimumSelections ||
+          selected.length > choice.maximumSelections) {
+        incomplete.add(choice.id);
+      }
+    }
+
+    return incomplete;
+  }
+
+  bool featChoiceOptionAlreadyOwned(
+    CharacterChoiceDefinition choice,
+    String optionId,
+  ) {
+    if (!choice.requireNewAcquisition) {
+      return false;
+    }
+
+    String proficiencyId = optionId;
+
+    if (optionId.startsWith('skill:')) {
+      proficiencyId = optionId.substring('skill:'.length);
+    } else if (optionId.startsWith('tool:')) {
+      proficiencyId = optionId.substring('tool:'.length);
+    }
+
+    return creatorOwnedProficiencies.contains(proficiencyId);
+  }
+
+  Widget buildFeatChoice(
+    CharacterChoiceDefinition choice,
+  ) {
+    final selected = featChoices[choice.id] ?? const <String>[];
+
+    final optionIds = featOptionIdsFor(choice);
+
+    return FantasySection(
+      title: choice.label,
+      subtitle: choice.minimumSelections == choice.maximumSelections
+          ? 'Scegli ${choice.minimumSelections}.'
+          : 'Scegli da ${choice.minimumSelections} a '
+              '${choice.maximumSelections}.',
+      child: Wrap(
+        spacing: 6,
+        runSpacing: 6,
+        children: optionIds.map((id) {
+          final isSelected = selected.contains(id);
+          final alreadyOwned = featChoiceOptionAlreadyOwned(choice, id);
+
+          return FilterChip(
+            label: Text(
+              alreadyOwned
+                  ? '${featOptionLabel(choice, id)} · già posseduta'
+                  : featOptionLabel(choice, id),
+            ),
+            selected: isSelected,
+            onSelected: alreadyOwned
+                ? null
+                : (value) {
+                    setState(() {
+                      final current = List<String>.from(
+                        featChoices[choice.id] ?? const <String>[],
+                      );
+
+                      if (value) {
+                        if (!current.contains(id) &&
+                            current.length < choice.maximumSelections) {
+                          current.add(id);
+                        }
+                      } else {
+                        current.remove(id);
+                      }
+
+                      if (current.isEmpty) {
+                        featChoices.remove(choice.id);
+                      } else {
+                        featChoices[choice.id] = current;
+                      }
+                    });
+                  },
+          );
+        }).toList(),
+      ),
+    );
+  }
+
+  Widget buildFeatEligibilityPanel(String featId) {
+    final definition = featDefinitionFor(featId);
+
+    if (definition == null) {
+      return const SizedBox.shrink();
+    }
+
+    final eligibility = evaluateFeatEligibility(
+      feat: definition,
+      state: creatorEligibilityState,
+    );
+
+    final description = definition.content.description;
+
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            description.summary,
+            style: Theme.of(context).textTheme.bodyMedium,
+          ),
+          if (description.details.isNotEmpty) ...[
+            const SizedBox(height: 4),
+            Text(description.details),
+          ],
+          const SizedBox(height: 8),
+          Text(
+            definition.prerequisites.isEmpty
+                ? 'Nessun prerequisito.'
+                : eligibility.canSelect
+                    ? 'Requisiti soddisfatti'
+                    : 'Requisiti non soddisfatti',
+            style: const TextStyle(
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          if (eligibility.requirements.isNotEmpty) ...[
+            const SizedBox(height: 4),
+            for (final result in eligibility.requirements)
+              Padding(
+                padding: const EdgeInsets.only(bottom: 3),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Icon(
+                      result.satisfied
+                          ? Icons.check_circle_outline
+                          : Icons.cancel_outlined,
+                      size: 18,
+                    ),
+                    const SizedBox(width: 6),
+                    Expanded(
+                      child: Text(
+                        '${result.label} — ${result.detail}',
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+          ],
+        ],
+      ),
+    );
+  }
+
+  Widget buildRaceChoice(
+    CharacterChoiceDefinition choice,
+  ) {
+    final selected = raceChoices[choice.id] ?? const <String>[];
+
+    final structured = structuredOptionsFor(choice);
+    final simple = simpleOptionIdsFor(choice);
+
+    final optionIds = structured.isNotEmpty
+        ? structured.map((option) => option.id).toList()
+        : simple;
+
+    final requiredText = choice.minimumSelections == choice.maximumSelections
+        ? 'Scegli ${choice.minimumSelections}'
+        : 'Scegli da ${choice.minimumSelections} '
+            'a ${choice.maximumSelections}';
+
+    if (optionIds.isEmpty) {
+      return Card(
+        child: ListTile(
+          title: Text(choice.label),
+          subtitle: Text(
+            '$requiredText. '
+            'Il catalogo ${choice.type.name} sarà collegato '
+            'nel prossimo popolamento dati.',
+          ),
+          trailing: const Icon(Icons.pending_outlined),
+        ),
+      );
+    }
+
+    if (choice.maximumSelections == 1) {
+      return Card(
+        child: Padding(
+          padding: const EdgeInsets.all(12),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                choice.label,
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(height: 4),
+              Text(requiredText),
+              const SizedBox(height: 8),
+              RadioGroup<String>(
+                groupValue: selected.isEmpty ? null : selected.first,
+                onChanged: (value) {
+                  if (value == null) return;
+
+                  setState(() {
+                    setRaceChoiceSelection(
+                      choice,
+                      value,
+                      true,
+                    );
+                  });
+                },
+                child: Column(
+                  children: [
+                    for (final optionId in optionIds)
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          RadioListTile<String>(
+                            value: optionId,
+                            title: Text(
+                              choiceOptionLabel(
+                                choice,
+                                optionId,
+                              ),
+                            ),
+                          ),
+                          if (choice.type == CharacterChoiceType.feat)
+                            buildFeatEligibilityPanel(optionId),
+                        ],
+                      ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(12),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              choice.label,
+              style: const TextStyle(
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(height: 4),
+            Text(
+              '$requiredText '
+              '(${selected.length}/${choice.maximumSelections})',
+            ),
+            const SizedBox(height: 8),
+            Wrap(
+              spacing: 6,
+              runSpacing: 6,
+              children: [
+                for (final optionId in optionIds)
+                  FilterChip(
+                    label: Text(
+                      choiceOptionLabel(
+                        choice,
+                        optionId,
+                      ),
+                    ),
+                    selected: selected.contains(optionId),
+                    onSelected: (value) {
+                      setState(() {
+                        setRaceChoiceSelection(
+                          choice,
+                          optionId,
+                          value,
+                        );
+                      });
+                    },
+                  ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  int creatorAbilityScore(String ability) {
+    final int base;
+
+    if (method == StatMethod.standard) {
+      base = assigned[ability] ?? 0;
+    } else {
+      base = manual[ability] ?? 8;
+    }
+
+    return base + racialBonus(ability);
+  }
+
+  int racialBonus(String ability) {
+    return creatorResolvedRaceEffects.effects.abilityBonuses
+        .where((bonus) => bonus.ability == ability)
+        .fold<int>(
+          0,
+          (sum, bonus) => sum + bonus.amount,
+        );
   }
 
   String bonusText(String a) {
     final b = racialBonus(a);
-    return b == 0
-        ? 'nessun bonus'
-        : '${race == 'Nano' ? (subrace ?? race) : race} +$b';
+    if (b == 0) return 'nessun bonus';
+
+    final source =
+        selectedSubraceDefinition?.name ?? selectedRaceDefinition.name;
+
+    return '$source +$b';
   }
 
   int pointCost(int s) =>
@@ -1095,99 +1926,94 @@ class _CreatorPageState extends State<CreatorPage> {
                 child: Column(
                   children: [
                     RadioGroup<String>(
-                      groupValue: race,
-                      onChanged: (v) => setState(() {
-                        race = v ?? 'Umano';
-                        subrace = null;
-                        if (race != 'Umano Variante') {
-                          feat = null;
-                        }
-                      }),
+                      groupValue: raceId,
+                      onChanged: (value) {
+                        if (value == null) return;
+
+                        final definition = phbRaceDefinitionFor(value);
+                        if (definition == null) return;
+
+                        setState(() {
+                          raceId = definition.id;
+                          race = definition.name;
+
+                          subraceId = null;
+                          subrace = null;
+
+                          raceChoices.clear();
+                          featChoices.clear();
+                        });
+                      },
                       child: Column(
                         children: [
-                          for (final r in [
-                            'Umano',
-                            'Umano Variante',
-                            'Nano',
-                            'Elfo'
-                          ])
+                          for (final definition in creatorRaceDefinitions)
                             RadioListTile<String>(
-                              value: r,
+                              value: definition.id,
                               secondary: RuleVisualTile(
                                 visual: RuleVisualIdentity(
                                   family: RuleVisualFamily.race,
-                                  iconId: raceIconIdFor(r),
+                                  iconId: raceIconIdFor(definition.name),
                                 ),
                               ),
-                              title: Text(r),
-                              subtitle: Text(raceDescriptions[r] ?? ''),
+                              title: Text(definition.name),
+                              subtitle:
+                                  Text(definition.content.description.summary),
                             ),
                         ],
                       ),
                     ),
-                    if (race == 'Umano Variante') ...[
+                    if (selectedRaceDefinition.subraces.isNotEmpty) ...[
                       const Divider(),
-                      const Text(
-                          'Scegli due caratteristiche diverse da aumentare di +1. Il talento è obbligatorio al 1° livello.'),
-                      Wrap(
-                        spacing: 6,
-                        children: abilities
-                            .map((a) => FilterChip(
-                                  label: Text('$a +1'),
-                                  selected: variantBonuses.contains(a),
-                                  onSelected: (selected) => setState(() {
-                                    if (selected && variantBonuses.length < 2) {
-                                      variantBonuses.add(a);
-                                    }
-                                    if (!selected &&
-                                        variantBonuses.length > 1) {
-                                      variantBonuses.remove(a);
-                                    }
-                                  }),
-                                ))
-                            .toList(),
+                      Text(
+                        'Sottorazza',
+                        style: Theme.of(context).textTheme.titleMedium,
                       ),
-                    ],
-                    if (race == 'Nano') ...[
-                      const Divider(),
+                      const SizedBox(height: 6),
                       RadioGroup<String>(
-                        groupValue: subrace,
-                        onChanged: (v) => setState(() => subrace = v),
+                        groupValue: subraceId,
+                        onChanged: (value) {
+                          if (value == null) return;
+
+                          final definition =
+                              selectedRaceDefinition.subraces[value];
+
+                          if (definition == null) return;
+
+                          setState(() {
+                            subraceId = definition.id;
+                            subrace = definition.name;
+                            clearInactiveRaceChoices();
+                          });
+                        },
                         child: Column(
                           children: [
-                            for (final s in [
-                              'Nano delle Colline',
-                              'Nano delle Montagne'
-                            ])
+                            for (final definition
+                                in selectedRaceDefinition.subraces.values)
                               RadioListTile<String>(
-                                value: s,
-                                title: Text(s),
-                                subtitle: Text(subraceDescriptions[s] ?? ''),
+                                value: definition.id,
+                                title: Text(definition.name),
+                                subtitle: Text(
+                                  definition.content.description.summary,
+                                ),
                               ),
                           ],
                         ),
                       ),
                     ],
-                    if (race == 'Elfo') ...[
+                    if (activeRaceChoices.isNotEmpty) ...[
                       const Divider(),
-                      RadioGroup<String>(
-                        groupValue: subrace,
-                        onChanged: (v) => setState(() => subrace = v),
-                        child: Column(
-                          children: [
-                            for (final s in [
-                              'Elfo Alto',
-                              'Elfo dei Boschi',
-                              'Drow'
-                            ])
-                              RadioListTile<String>(
-                                value: s,
-                                title: Text(s),
-                                subtitle: Text(subraceDescriptions[s] ?? ''),
-                              ),
-                          ],
-                        ),
+                      Text(
+                        'Scelte razziali',
+                        style: Theme.of(context).textTheme.titleMedium,
                       ),
+                      const SizedBox(height: 8),
+                      for (final choice in activeRaceChoices)
+                        buildRaceChoice(choice),
+                      if (activeFeatChoices.isNotEmpty) ...[
+                        const SizedBox(height: 12),
+                        for (final choice in activeFeatChoices)
+                          buildFeatChoice(choice),
+                      ],
                     ],
                   ],
                 ),
@@ -1276,34 +2102,6 @@ class _CreatorPageState extends State<CreatorPage> {
                     ),
                   ],
                 ),
-              ),
-              FantasySection(
-                title: 'Talento',
-                subtitle: race == 'Umano Variante'
-                    ? 'L’Umano Variante sceglie un talento al 1° livello.'
-                    : 'I talenti saranno disponibili quando una regola di avanzamento ne permette la scelta.',
-                child: race == 'Umano Variante'
-                    ? RadioGroup<String>(
-                        groupValue: feat,
-                        onChanged: (v) => setState(() => feat = v),
-                        child: Column(
-                          children: featInfo.entries
-                              .map((e) => RadioListTile<String>(
-                                    value: e.key,
-                                    secondary: RuleVisualTile(
-                                      visual: RuleVisualIdentity(
-                                        family: RuleVisualFamily.feat,
-                                        iconId: featIconIdFor(e.key),
-                                      ),
-                                    ),
-                                    title: Text(e.key),
-                                    subtitle: Text(e.value),
-                                  ))
-                              .toList(),
-                        ),
-                      )
-                    : const Text(
-                        'Nessun talento da scegliere al 1° livello per questa opzione razziale.'),
               ),
               const Divider(height: 28),
               Text('Caratteristiche',
@@ -1469,17 +2267,32 @@ class _CreatorPageState extends State<CreatorPage> {
                     }
                     base = Map.of(manual);
                   }
-                  if ((race == 'Nano' || race == 'Elfo') && subrace == null) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Scegli la sottorazza.')));
-                    return;
-                  }
-                  if (race == 'Umano Variante' &&
-                      (variantBonuses.length != 2 || feat == null)) {
+                  if (selectedRaceDefinition.subraces.isNotEmpty &&
+                      subraceId == null) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
-                          content: Text(
-                              'L’Umano Variante deve scegliere due +1 e un talento.')),
+                        content: Text('Scegli la sottorazza.'),
+                      ),
+                    );
+                    return;
+                  }
+
+                  final raceResolution = creatorResolvedRaceEffects;
+
+                  if (!raceResolution.choiceValidation.canFinalize) {
+                    final missing =
+                        raceResolution.choiceValidation.incompleteChoiceIds;
+
+                    final issues = raceResolution.choiceValidation.issues;
+
+                    final message = issues.isNotEmpty
+                        ? issues.first.message
+                        : missing.isNotEmpty
+                            ? 'Completa tutte le scelte razziali obbligatorie.'
+                            : 'Controlla le scelte razziali.';
+
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text(message)),
                     );
                     return;
                   }
@@ -1490,19 +2303,69 @@ class _CreatorPageState extends State<CreatorPage> {
                     );
                     return;
                   }
+                  if (incompleteFeatChoiceIds.isNotEmpty) {
+                    final missingLabels = activeFeatChoices
+                        .where(
+                          (choice) =>
+                              incompleteFeatChoiceIds.contains(choice.id),
+                        )
+                        .map((choice) => choice.label)
+                        .join(', ');
+
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(
+                          'Completa le scelte del talento: $missingLabels.',
+                        ),
+                      ),
+                    );
+                    return;
+                  }
+
+                  final featEligibility = creatorSelectedFeatEligibility;
+
+                  if (featEligibility?.canSelect == false) {
+                    final missing = featEligibility!.requirements
+                        .where((result) => !result.satisfied)
+                        .map(
+                          (result) => '${result.label}: ${result.detail}',
+                        )
+                        .join('\n');
+
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(
+                          'Il talento selezionato non soddisfa '
+                          'tutti i prerequisiti.\n$missing',
+                        ),
+                      ),
+                    );
+                    return;
+                  }
+
                   final h = HeroData(
                     race: race,
+                    raceId: raceId,
+                    subrace: subrace,
+                    subraceId: subraceId,
+                    raceChoices: {
+                      for (final entry in raceChoices.entries)
+                        entry.key: List<String>.from(entry.value),
+                    },
+                    featChoices: {
+                      for (final entry in featChoices.entries)
+                        entry.key: List<String>.from(entry.value),
+                    },
                     background: background,
                     feat: feat,
                     variantBonuses: variantBonuses.toList(),
-                    subrace: subrace,
                     name: name.text.trim(),
                     baseScores: base,
                     skillProficiencies: <String>{
                       ...?backgroundSkills[background],
                       ...monkSkills,
                     }.toList(),
-                    inventory: startingInventoryFor(background),
+                    inventory: const CharacterBuilder().buildLegacyInventory(),
                   );
                   h.currentHp = h.maxHp;
                   Navigator.pop(context, h);
