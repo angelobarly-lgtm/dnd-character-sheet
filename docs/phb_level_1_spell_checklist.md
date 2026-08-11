@@ -20,10 +20,10 @@ Checklist di lavoro per espandere `lib/data/spell_data.dart`.
 - [x] Comprensione dei Linguaggi
 - [x] Creare o Distruggere Acqua
 - [x] Cura Ferite
-- [ ] Dardo Incantato
-- [ ] Dardo Stregato
-- [ ] Dardo Tracciante
-- [ ] Disco Fluttuante di Tenser
+- [x] Dardo Incantato
+- [x] Dardo Stregato
+- [x] Dardo Tracciante
+- [x] Disco Fluttuante di Tenser
 - [ ] Duello Obbligato
 - [ ] Eroismo
 - [ ] Favore Divino

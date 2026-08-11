@@ -983,6 +983,8 @@ abstract final class SpellIds {
   static const comprehendLanguages = 'comprehend_languages';
   static const createOrDestroyWater = 'create_or_destroy_water';
   static const cureWounds = 'cure_wounds';
+  static const guidingBolt = 'guiding_bolt';
+  static const tensersFloatingDisk = 'tensers_floating_disk';
 }
 
 const Map<String, SpellDefinition> spellDefinitions = {
@@ -4661,6 +4663,149 @@ const Map<String, SpellDefinition> spellDefinitions = {
       'druid',
       'paladin',
       'ranger',
+    },
+  ),
+  SpellIds.guidingBolt: SpellDefinition(
+    id: SpellIds.guidingBolt,
+    content: RuleContent(
+      id: SpellIds.guidingBolt,
+      name: 'Dardo Tracciante',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Colpisce con luce radiosa e facilita il prossimo attacco contro il bersaglio.',
+        details:
+            'Un lampo di luce sfreccia verso una creatura entro gittata scelta '
+            'dall’incantatore. L’incantatore effettua un attacco a distanza '
+            'con questo incantesimo contro il bersaglio. Se colpisce, il '
+            'bersaglio subisce 4d6 danni radiosi. Inoltre, il successivo tiro '
+            'per colpire effettuato contro quel bersaglio entro la fine del '
+            'turno successivo dell’incantatore dispone di vantaggio, grazie '
+            'all’alone mistico di luce fioca che lo avvolge fino ad allora. '
+            'Usando slot superiori al 1°, i danni aumentano di 1d6 per ogni '
+            'livello di slot superiore.',
+      ),
+      ownerId: SpellIds.guidingBolt,
+    ),
+    level: 1,
+    school: SpellSchool.evocation,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 36,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.round,
+      amount: 1,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.creature,
+      },
+      maximumTargets: 1,
+    ),
+    attackType: SpellAttackType.ranged,
+    damage: [
+      SpellDamage(
+        dice: '4d6',
+        type: SpellDamageType.radiant,
+      ),
+    ],
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'guiding_bolt_advantage_on_next_attack',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'ranged_spell_attack_against_one_creature',
+          'hit_deals_4d6_radiant_damage',
+          'next_attack_roll_against_target_has_advantage_until_end_of_casters_next_turn',
+          'target_glows_with_dim_mystical_light',
+          'damage_increases_by_1d6_per_slot_level_above_1',
+        },
+      ),
+    ],
+    classIds: {
+      'cleric',
+    },
+  ),
+  SpellIds.tensersFloatingDisk: SpellDefinition(
+    id: SpellIds.tensersFloatingDisk,
+    content: RuleContent(
+      id: SpellIds.tensersFloatingDisk,
+      name: 'Disco Fluttuante di Tenser',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Crea un disco di forza che fluttua e trasporta peso seguendo l’incantatore.',
+        details:
+            'L’incantatore crea un piano circolare e orizzontale di forza, '
+            'del diametro di 90 cm e dello spessore di 2,5 cm, che fluttua a '
+            '90 cm dal terreno in uno spazio libero entro gittata che egli sia '
+            'in grado di vedere. Il disco dura 1 ora e può sostenere fino a '
+            '250 kg; se viene caricato con peso superiore, l’incantesimo '
+            'termina e tutto ciò che si trovava sul disco cade a terra. Il '
+            'disco resta immobile finché l’incantatore si trova entro 6 metri. '
+            'Se l’incantatore si allontana oltre 6 metri, il disco lo segue '
+            'per restare entro 6 metri da lui. Può muoversi su terreno '
+            'dissestato, scale e pendii, ma non può superare cambi di '
+            'elevazione pari o superiori a 3 metri. Se l’incantatore si muove '
+            'a più di 30 metri dal disco, l’incantesimo termina. Può essere '
+            'lanciato come rituale.',
+      ),
+      ownerId: SpellIds.tensersFloatingDisk,
+    ),
+    level: 1,
+    ritual: true,
+    school: SpellSchool.conjuration,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 9,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+      materials: [
+        SpellMaterialComponent(
+          description: 'Una goccia di mercurio.',
+        ),
+      ],
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.hour,
+      amount: 1,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.special,
+      },
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'tensers_floating_disk_force_platform',
+        type: SpellPersistentEffectType.createdObject,
+        ruleTags: {
+          'creates_90_cm_diameter_force_disk_90_cm_above_ground',
+          'disk_can_hold_up_to_250_kg',
+          'overloading_disk_ends_spell_and_drops_contents',
+          'disk_is_stationary_while_caster_within_6_meters',
+          'disk_follows_caster_to_remain_within_6_meters',
+          'cannot_cross_elevation_change_3_meters_or_more',
+          'spell_ends_if_caster_more_than_30_meters_from_disk',
+          'ritual_spell',
+        },
+      ),
+    ],
+    classIds: {
+      'wizard',
     },
   ),
 };
