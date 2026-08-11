@@ -985,6 +985,10 @@ abstract final class SpellIds {
   static const cureWounds = 'cure_wounds';
   static const guidingBolt = 'guiding_bolt';
   static const tensersFloatingDisk = 'tensers_floating_disk';
+  static const compelledDuel = 'compelled_duel';
+  static const heroism = 'heroism';
+  static const divineFavor = 'divine_favor';
+  static const chromaticOrb = 'chromatic_orb';
 }
 
 const Map<String, SpellDefinition> spellDefinitions = {
@@ -4805,6 +4809,268 @@ const Map<String, SpellDefinition> spellDefinitions = {
       ),
     ],
     classIds: {
+      'wizard',
+    },
+  ),
+  SpellIds.compelledDuel: SpellDefinition(
+    id: SpellIds.compelledDuel,
+    content: RuleContent(
+      id: SpellIds.compelledDuel,
+      name: 'Duello Obbligato',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Obbliga una creatura a concentrarsi sull’incantatore in un duello.',
+        details:
+            'L’incantatore tenta di obbligare una creatura entro gittata e che '
+            'sia in grado di vedere a partecipare a un duello. Il bersaglio '
+            'deve effettuare un tiro salvezza su Saggezza. Se fallisce, è '
+            'spinto dall’imposizione divina dell’incantatore ad avvicinarsi a '
+            'lui. Per la durata, il bersaglio subisce svantaggio ai tiri per '
+            'colpire contro creature diverse dall’incantatore. Inoltre deve '
+            'effettuare un tiro salvezza ogni volta che tenta di muoversi in '
+            'uno spazio più lontano di 9 metri dall’incantatore; se lo supera, '
+            'quel turno non è limitato nei movimenti. L’incantesimo termina se '
+            'l’incantatore attacca un’altra creatura, se lancia un incantesimo '
+            'dannoso contro un’altra creatura, se una creatura amichevole '
+            'dell’incantatore danneggia il bersaglio o lancia un incantesimo '
+            'dannoso su di esso, oppure se l’incantatore termina il turno a più '
+            'di 9 metri dal bersaglio.',
+      ),
+      ownerId: SpellIds.compelledDuel,
+    ),
+    level: 1,
+    school: SpellSchool.enchantment,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.bonusAction,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 9,
+    ),
+    components: SpellComponents(
+      verbal: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.minute,
+      amount: 1,
+      concentration: true,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.creature,
+      },
+      maximumTargets: 1,
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'compelled_duel_wisdom_save_duel_focus',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'bonus_action_spell',
+          'target_visible_creature_within_9_meters',
+          'target_makes_wisdom_saving_throw',
+          'failed_save_compels_target_toward_caster',
+          'target_has_disadvantage_attacking_creatures_other_than_caster',
+          'target_must_save_to_move_more_than_9_meters_from_caster',
+          'requires_concentration',
+          'ends_if_caster_attacks_or_harms_other_creature',
+          'ends_if_casters_ally_harms_target',
+          'ends_if_caster_ends_turn_more_than_9_meters_from_target',
+        },
+      ),
+    ],
+    classIds: {
+      'paladin',
+    },
+  ),
+  SpellIds.heroism: SpellDefinition(
+    id: SpellIds.heroism,
+    content: RuleContent(
+      id: SpellIds.heroism,
+      name: 'Eroismo',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Infondere coraggio a una creatura consenziente, proteggendola dalla paura.',
+        details: 'L’incantatore tocca una creatura consenziente e la anima con '
+            'grande coraggio. Finché l’incantesimo dura, il bersaglio è immune '
+            'alla condizione spaventato. Inoltre, all’inizio di ogni suo turno, '
+            'ottiene punti ferita temporanei pari al modificatore della '
+            'caratteristica da incantatore dell’incantatore. Quando '
+            'l’incantesimo termina, il bersaglio perde tutti i punti ferita '
+            'temporanei rimanenti forniti da questo incantesimo. Richiede '
+            'concentrazione. Usando uno slot di livello superiore al 1°, '
+            'l’incantatore può bersagliare una creatura aggiuntiva per ogni '
+            'livello di slot superiore.',
+      ),
+      ownerId: SpellIds.heroism,
+    ),
+    level: 1,
+    school: SpellSchool.enchantment,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.touch,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.minute,
+      amount: 1,
+      concentration: true,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.willingCreature,
+      },
+      maximumTargets: 1,
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'heroism_fear_immunity_and_temp_hp',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'target_willing_creature_touched',
+          'target_immune_to_frightened_condition',
+          'target_gains_temp_hp_equal_to_spellcasting_modifier_at_start_of_each_turn',
+          'temp_hp_from_spell_lost_when_spell_ends',
+          'requires_concentration',
+          'one_additional_target_per_slot_level_above_1',
+        },
+      ),
+    ],
+    classIds: {
+      'bard',
+      'paladin',
+    },
+  ),
+  SpellIds.divineFavor: SpellDefinition(
+    id: SpellIds.divineFavor,
+    content: RuleContent(
+      id: SpellIds.divineFavor,
+      name: 'Favore Divino',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Avvolge l’incantatore di luce divina, potenziando i suoi attacchi con arma.',
+        details:
+            'Intonando una preghiera, l’incantatore viene pervaso da un alone '
+            'radioso di luce divina. Finché l’incantesimo non termina, i suoi '
+            'attacchi con le armi infliggono 1d4 danni radiosi extra quando '
+            'colpiscono. L’effetto richiede concentrazione e si applica solo '
+            'agli attacchi con arma dell’incantatore effettuati mentre '
+            'l’incantesimo è attivo. Non crea un attacco separato e non cambia '
+            'il tipo di danno dell’arma: aggiunge danni radiosi extra al colpo.',
+      ),
+      ownerId: SpellIds.divineFavor,
+    ),
+    level: 1,
+    school: SpellSchool.evocation,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.bonusAction,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.self,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.minute,
+      amount: 1,
+      concentration: true,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.self,
+      },
+      maximumTargets: 1,
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'divine_favor_weapon_attack_radiant_damage',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'bonus_action_spell',
+          'caster_weapon_attacks_deal_extra_1d4_radiant_damage_on_hit',
+          'requires_concentration',
+          'does_not_create_separate_attack',
+          'does_not_replace_weapon_damage_type',
+        },
+      ),
+    ],
+    classIds: {
+      'paladin',
+    },
+  ),
+  SpellIds.chromaticOrb: SpellDefinition(
+    id: SpellIds.chromaticOrb,
+    content: RuleContent(
+      id: SpellIds.chromaticOrb,
+      name: 'Globo Cromatico',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary: 'Scaglia una sfera elementale scegliendo il tipo di danno.',
+        details: 'L’incantatore scaglia una sfera del diametro di circa 10 cm '
+            'contro una creatura entro gittata che sia in grado di vedere. '
+            'Prima dell’attacco sceglie il tipo di globo tra acido, freddo, '
+            'fulmine, fuoco, tuono o veleno. Effettua poi un attacco a distanza '
+            'con questo incantesimo contro il bersaglio. Se l’attacco colpisce, '
+            'la creatura subisce 3d8 danni del tipo scelto. Usando uno slot di '
+            'livello superiore al 1°, i danni aumentano di 1d8 per ogni livello '
+            'di slot superiore. Richiede come componente materiale un diamante '
+            'del valore minimo indicato.',
+      ),
+      ownerId: SpellIds.chromaticOrb,
+    ),
+    level: 1,
+    school: SpellSchool.evocation,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 27,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+      materials: [
+        SpellMaterialComponent(
+          description: 'Un diamante del valore di almeno 50 mo.',
+        ),
+      ],
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.instantaneous,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.creature,
+      },
+      maximumTargets: 1,
+    ),
+    attackType: SpellAttackType.ranged,
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'chromatic_orb_chosen_element_damage',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'ranged_spell_attack_against_visible_creature',
+          'caster_chooses_acid_cold_fire_lightning_poison_or_thunder',
+          'hit_deals_3d8_chosen_damage_type',
+          'damage_increases_by_1d8_per_slot_level_above_1',
+          'requires_diamond_worth_at_least_50_gp',
+        },
+      ),
+    ],
+    classIds: {
+      'sorcerer',
       'wizard',
     },
   ),

@@ -24,10 +24,10 @@ Checklist di lavoro per espandere `lib/data/spell_data.dart`.
 - [x] Dardo Stregato
 - [x] Dardo Tracciante
 - [x] Disco Fluttuante di Tenser
-- [ ] Duello Obbligato
-- [ ] Eroismo
-- [ ] Favore Divino
-- [ ] Globo Cromatico
+- [x] Duello Obbligato
+- [x] Eroismo
+- [x] Favore Divino
+- [x] Globo Cromatico
 - [ ] Identificare
 - [ ] Immagine Silenziosa
 - [ ] Individuazione del Bene e del Male
