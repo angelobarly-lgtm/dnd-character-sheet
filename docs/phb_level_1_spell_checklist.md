@@ -16,10 +16,10 @@ Checklist di lavoro per espandere `lib/data/spell_data.dart`.
 - [x] Camuffare Se Stesso
 - [x] Charme su Persone
 - [x] Colpo Intrappolante
-- [ ] Comando
-- [ ] Comprensione dei Linguaggi
-- [ ] Creare o Distruggere Acqua
-- [ ] Cura Ferite
+- [x] Comando
+- [x] Comprensione dei Linguaggi
+- [x] Creare o Distruggere Acqua
+- [x] Cura Ferite
 - [ ] Dardo Incantato
 - [ ] Dardo Stregato
 - [ ] Dardo Tracciante

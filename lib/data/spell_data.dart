@@ -979,6 +979,10 @@ abstract final class SpellIds {
   static const disguiseSelf = 'disguise_self';
   static const charmPerson = 'charm_person';
   static const ensnaringStrike = 'ensnaring_strike';
+  static const command = 'command';
+  static const comprehendLanguages = 'comprehend_languages';
+  static const createOrDestroyWater = 'create_or_destroy_water';
+  static const cureWounds = 'cure_wounds';
 }
 
 const Map<String, SpellDefinition> spellDefinitions = {
@@ -4390,6 +4394,272 @@ const Map<String, SpellDefinition> spellDefinitions = {
       ),
     ],
     classIds: {
+      'ranger',
+    },
+  ),
+  SpellIds.command: SpellDefinition(
+    id: SpellIds.command,
+    content: RuleContent(
+      id: SpellIds.command,
+      name: 'Comando',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Impone a una creatura un comando di una parola per il suo turno successivo.',
+        details:
+            'L’incantatore rivolge un comando di una parola a una creatura '
+            'entro gittata che sia in grado di vedere. Il bersaglio deve '
+            'superare un tiro salvezza su Saggezza o obbedire al comando nel '
+            'proprio turno successivo. L’incantesimo non ha effetto sui non '
+            'morti, su creature che non comprendono il linguaggio '
+            'dell’incantatore o se il comando è direttamente dannoso per il '
+            'bersaglio. Comandi tipici includono: avvicinarsi '
+            'all’incantatore, restare fermo senza muoversi né agire, fuggire '
+            'nel modo più rapido possibile, lasciare cadere ciò che si impugna '
+            'o gettarsi prono supplicando. Il DM determina gli effetti di '
+            'comandi diversi. Se il bersaglio non può eseguire il comando, '
+            'l’incantesimo termina. Usando slot superiori al 1°, può '
+            'influenzare una creatura aggiuntiva per ogni livello di slot '
+            'superiore; le creature devono trovarsi entro 9 metri l’una '
+            'dall’altra quando vengono bersagliate.',
+      ),
+      ownerId: SpellIds.command,
+    ),
+    level: 1,
+    school: SpellSchool.enchantment,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 18,
+    ),
+    components: SpellComponents(
+      verbal: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.round,
+      amount: 1,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.creature,
+      },
+      maximumTargets: 1,
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'command_one_word_order',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'target_visible_creature_within_18_meters',
+          'target_makes_wisdom_saving_throw',
+          'failed_save_obeys_one_word_command_next_turn',
+          'no_effect_on_undead',
+          'no_effect_if_target_does_not_understand_caster_language',
+          'no_effect_if_command_is_directly_harmful',
+          'examples_approach_drop_flee_grovel_halt',
+          'one_additional_target_per_slot_level_above_1',
+          'additional_targets_must_be_within_9_meters_of_each_other',
+        },
+      ),
+    ],
+    classIds: {
+      'cleric',
+      'paladin',
+    },
+  ),
+  SpellIds.comprehendLanguages: SpellDefinition(
+    id: SpellIds.comprehendLanguages,
+    content: RuleContent(
+      id: SpellIds.comprehendLanguages,
+      name: 'Comprensione dei Linguaggi',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Permette all’incantatore di comprendere il significato letterale dei linguaggi.',
+        details: 'Per la durata dell’incantesimo, l’incantatore comprende il '
+            'significato letterale di qualsiasi linguaggio parlato che sia in '
+            'grado di sentire. Comprende anche ogni linguaggio scritto che sia '
+            'in grado di vedere, ma deve toccare la superficie su cui sono '
+            'scritte le parole. Serve circa 1 minuto per leggere una pagina di '
+            'testo. L’incantesimo non decodifica messaggi segreti, cifrari, '
+            'glifi o sigilli arcani che non facciano parte di un linguaggio '
+            'scritto. Può essere lanciato come rituale.',
+      ),
+      ownerId: SpellIds.comprehendLanguages,
+    ),
+    level: 1,
+    ritual: true,
+    school: SpellSchool.divination,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.self,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+      materials: [
+        SpellMaterialComponent(
+          description: 'Un pizzico di fuliggine e di sale.',
+        ),
+      ],
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.hour,
+      amount: 1,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.self,
+      },
+      maximumTargets: 1,
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'comprehend_languages_literal_meaning',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'understands_literal_meaning_of_spoken_languages_heard',
+          'understands_written_languages_seen_and_touched',
+          'takes_about_1_minute_to_read_one_page',
+          'does_not_decode_secret_messages_or_ciphers',
+          'ritual_spell',
+        },
+      ),
+    ],
+    classIds: {
+      'bard',
+      'sorcerer',
+      'warlock',
+      'wizard',
+    },
+  ),
+  SpellIds.createOrDestroyWater: SpellDefinition(
+    id: SpellIds.createOrDestroyWater,
+    content: RuleContent(
+      id: SpellIds.createOrDestroyWater,
+      name: 'Creare o Distruggere Acqua',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Crea o distrugge acqua, oppure produce pioggia o dissolve nebbia.',
+        details: 'L’incantatore sceglie se creare o distruggere acqua. Creando '
+            'acqua, può generare fino a 40 litri di acqua pulita in un '
+            'contenitore aperto entro gittata; in alternativa l’acqua cade '
+            'come pioggia in un cubo con spigolo di 9 metri entro gittata, '
+            'estinguendo le fiamme nell’area. Distruggendo acqua, può '
+            'eliminare fino a 40 litri d’acqua in un contenitore aperto entro '
+            'gittata; in alternativa può distruggere la nebbia all’interno di '
+            'un cubo con spigolo di 9 metri. Usando slot superiori al 1°, la '
+            'quantità d’acqua creata o distrutta aumenta di 40 litri, oppure '
+            'lo spigolo del cubo aumenta di 1,5 metri, per ogni livello di '
+            'slot superiore.',
+      ),
+      ownerId: SpellIds.createOrDestroyWater,
+    ),
+    level: 1,
+    school: SpellSchool.transmutation,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 9,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+      materials: [
+        SpellMaterialComponent(
+          description:
+              'Una goccia d’acqua per creare acqua o alcuni granelli di sabbia per distruggerla.',
+        ),
+      ],
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.instantaneous,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.special,
+      },
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'create_or_destroy_water',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'creates_up_to_40_liters_clean_water_in_open_container',
+          'or_creates_rain_in_9_meter_cube_extinguishing_flames',
+          'destroys_up_to_40_liters_water_in_open_container',
+          'or_destroys_fog_in_9_meter_cube',
+          'adds_40_liters_or_1_5_meter_cube_edge_per_slot_level_above_1',
+        },
+      ),
+    ],
+    classIds: {
+      'cleric',
+      'druid',
+    },
+  ),
+  SpellIds.cureWounds: SpellDefinition(
+    id: SpellIds.cureWounds,
+    content: RuleContent(
+      id: SpellIds.cureWounds,
+      name: 'Cura Ferite',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary: 'Cura una creatura toccata dall’incantatore.',
+        details:
+            'L’incantatore tocca una creatura, che recupera un numero di punti '
+            'ferita pari a 1d8 + il modificatore della caratteristica da '
+            'incantatore. L’incantesimo ha effetto istantaneo e non richiede '
+            'concentrazione. Non ha effetto sui costrutti o sui non morti. '
+            'Usando uno slot di livello superiore al 1°, la guarigione aumenta '
+            'di 1d8 per ogni livello di slot superiore.',
+      ),
+      ownerId: SpellIds.cureWounds,
+    ),
+    level: 1,
+    school: SpellSchool.evocation,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.touch,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.instantaneous,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.creature,
+      },
+      maximumTargets: 1,
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'cure_wounds_touch_healing',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'touched_creature_regains_1d8_plus_spellcasting_modifier_hit_points',
+          'no_effect_on_constructs_or_undead',
+          'healing_increases_by_1d8_per_slot_level_above_1',
+        },
+      ),
+    ],
+    classIds: {
+      'bard',
+      'cleric',
+      'druid',
+      'paladin',
       'ranger',
     },
   ),
