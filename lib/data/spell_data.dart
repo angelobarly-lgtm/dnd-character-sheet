@@ -1036,6 +1036,10 @@ abstract final class SpellIds {
   static const magicMouth = 'magic_mouth';
   static const calmEmotions = 'calm_emotions';
   static const enhanceAbility = 'enhance_ability';
+  static const blindnessDeafness = 'blindness_deafness';
+  static const cordonOfArrows = 'cordon_of_arrows';
+  static const crownOfMadness = 'crown_of_madness';
+  static const spikeGrowth = 'spike_growth';
 }
 
 const Map<String, SpellDefinition> spellDefinitions = {
@@ -8471,6 +8475,314 @@ const Map<String, SpellDefinition> spellDefinitions = {
       'cleric',
       'druid',
       'sorcerer',
+    },
+  ),
+  SpellIds.blindnessDeafness: SpellDefinition(
+    id: SpellIds.blindnessDeafness,
+    content: RuleContent(
+      id: SpellIds.blindnessDeafness,
+      name: 'Cecità/Sordità',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Acceca o assorda una creatura se fallisce il tiro salvezza su Costituzione.',
+        details:
+            'L’incantatore sceglie una creatura entro gittata e che sia in '
+            'grado di vedere, decidendo se tentare di accecarla o assordarla. '
+            'Il bersaglio deve effettuare un tiro salvezza su Costituzione. Se '
+            'lo fallisce, subisce la condizione scelta dall’incantatore per la '
+            'durata dell’incantesimo. Alla fine di ogni suo turno, il bersaglio '
+            'può effettuare un nuovo tiro salvezza su Costituzione; se lo '
+            'supera, l’incantesimo termina. L’effetto dura 1 minuto e non '
+            'richiede concentrazione. Usando uno slot di livello superiore al '
+            '2°, l’incantatore può bersagliare una creatura aggiuntiva per ogni '
+            'livello di slot superiore.',
+      ),
+      ownerId: SpellIds.blindnessDeafness,
+    ),
+    level: 2,
+    school: SpellSchool.necromancy,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 9,
+    ),
+    components: SpellComponents(
+      verbal: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.minute,
+      amount: 1,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.creature,
+      },
+      maximumTargets: 1,
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'blindness_deafness_constitution_save_condition',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'targets_visible_creature_within_9_meters',
+          'caster_chooses_blinded_or_deafened',
+          'target_makes_constitution_saving_throw',
+          'failed_save_applies_chosen_condition',
+          'target_repeats_constitution_save_at_end_of_each_turn',
+          'successful_repeat_save_ends_spell',
+          'does_not_require_concentration',
+          'one_additional_target_per_slot_level_above_2',
+        },
+      ),
+    ],
+    classIds: {
+      'bard',
+      'cleric',
+      'sorcerer',
+      'warlock',
+      'wizard',
+    },
+  ),
+  SpellIds.cordonOfArrows: SpellDefinition(
+    id: SpellIds.cordonOfArrows,
+    content: RuleContent(
+      id: SpellIds.cordonOfArrows,
+      name: 'Cordone di Frecce',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Incanta munizioni piantate nel terreno affinché colpiscano creature che si avvicinano.',
+        details:
+            'L’incantatore colloca quattro munizioni non magiche, come frecce o '
+            'quadrelli, nel terreno entro gittata e le rende magiche per '
+            'proteggere l’area. Finché l’incantesimo non termina, ogni volta '
+            'che una creatura diversa dall’incantatore arriva entro 9 metri '
+            'dalle munizioni per la prima volta in un turno o vi termina il '
+            'proprio turno, una delle munizioni vola per colpirla. La creatura '
+            'deve superare un tiro salvezza su Destrezza o subire 1d6 danni '
+            'perforanti. La munizione viene poi distrutta. L’incantesimo termina '
+            'quando non rimangono più munizioni. Al momento del lancio, '
+            'l’incantatore può designare qualsiasi numero di creature che '
+            'verranno ignorate dall’incantesimo. Usando uno slot di livello '
+            'superiore al 2°, il numero di munizioni influenzabili aumenta di '
+            'due per ogni livello di slot superiore.',
+      ),
+      ownerId: SpellIds.cordonOfArrows,
+    ),
+    level: 2,
+    school: SpellSchool.transmutation,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 1.5,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+      materials: [
+        SpellMaterialComponent(
+          description: 'Quattro o più frecce o quadrelli.',
+        ),
+      ],
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.hour,
+      amount: 8,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.special,
+      },
+    ),
+    damage: [
+      SpellDamage(
+        dice: '1d6',
+        type: SpellDamageType.piercing,
+      ),
+    ],
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'cordon_of_arrows_guarding_ammunition',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'places_four_or_more_nonmagical_arrows_or_bolts_in_ground',
+          'ammunition_becomes_magical_guard',
+          'triggers_when_non_ignored_creature_enters_within_9_meters_first_time_on_turn',
+          'triggers_when_non_ignored_creature_ends_turn_within_9_meters',
+          'triggered_creature_makes_dexterity_saving_throw',
+          'failed_save_deals_1d6_piercing_damage',
+          'one_piece_of_ammunition_is_destroyed_after_trigger',
+          'spell_ends_when_no_ammunition_remains',
+          'caster_can_designate_any_number_of_ignored_creatures',
+          'two_additional_ammunition_per_slot_level_above_2',
+          'does_not_require_concentration',
+        },
+      ),
+    ],
+    classIds: {
+      'ranger',
+    },
+  ),
+  SpellIds.crownOfMadness: SpellDefinition(
+    id: SpellIds.crownOfMadness,
+    content: RuleContent(
+      id: SpellIds.crownOfMadness,
+      name: 'Corona di Follia',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Affascina un umanoide e può costringerlo ad attaccare una creatura scelta dall’incantatore.',
+        details:
+            'L’incantatore sceglie un umanoide entro gittata e che sia in grado '
+            'di vedere. Il bersaglio deve superare un tiro salvezza su Saggezza '
+            'o essere affascinato dall’incantatore per la durata. Mentre è '
+            'affascinato in questo modo, sul bersaglio compare una corona di '
+            'ferro deforme e tagliente, e nei suoi occhi brilla un bagliore di '
+            'follia. In ciascuno dei suoi turni, prima di muoversi, il bersaglio '
+            'affascinato deve usare la sua azione per effettuare un attacco in '
+            'mischia contro una creatura diversa da sé stesso scelta '
+            'mentalmente dall’incantatore. Se l’incantatore non sceglie alcuna '
+            'creatura o nessuna creatura è entro portata del bersaglio, il '
+            'bersaglio agisce normalmente. Nei turni successivi, l’incantatore '
+            'deve usare la sua azione per mantenere il controllo, altrimenti '
+            'l’incantesimo termina. Il bersaglio può effettuare un nuovo tiro '
+            'salvezza su Saggezza alla fine di ogni suo turno; se lo supera, '
+            'l’incantesimo termina. Richiede concentrazione.',
+      ),
+      ownerId: SpellIds.crownOfMadness,
+    ),
+    level: 2,
+    school: SpellSchool.enchantment,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 36,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.minute,
+      amount: 1,
+      concentration: true,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.creature,
+      },
+      maximumTargets: 1,
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'crown_of_madness_charmed_forced_attack',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'targets_visible_humanoid_within_36_meters',
+          'target_makes_wisdom_saving_throw',
+          'failed_save_target_charmed_by_caster',
+          'charmed_target_has_visible_iron_crown_and_madness_glow',
+          'target_must_use_action_before_moving_to_make_melee_attack',
+          'attack_target_chosen_mentally_by_caster',
+          'forced_attack_must_target_creature_other_than_itself',
+          'target_acts_normally_if_no_creature_is_chosen_or_in_reach',
+          'caster_must_use_action_on_later_turns_to_maintain_control',
+          'spell_ends_if_caster_does_not_use_action_to_maintain_control',
+          'target_repeats_wisdom_save_at_end_of_each_turn',
+          'successful_repeat_save_ends_spell',
+          'requires_concentration',
+        },
+      ),
+    ],
+    classIds: {
+      'bard',
+      'sorcerer',
+      'warlock',
+      'wizard',
+    },
+  ),
+  SpellIds.spikeGrowth: SpellDefinition(
+    id: SpellIds.spikeGrowth,
+    content: RuleContent(
+      id: SpellIds.spikeGrowth,
+      name: 'Crescita di Spine',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Trasforma il terreno in un’area di spine mimetizzate, difficile e dannosa da attraversare.',
+        details:
+            'Spine e spuntoni nascono dal terreno entro un raggio di 6 metri '
+            'centrato su un punto situato entro gittata. Per la durata '
+            'dell’incantesimo, l’area diventa terreno difficile. Quando una '
+            'creatura entra nell’area o si muove al suo interno, subisce 2d4 '
+            'danni perforanti per ogni 1,5 metri percorsi. La trasformazione '
+            'del terreno è mimetizzata in modo da sembrare naturale. Una '
+            'creatura che non ha osservato l’area al momento del lancio deve '
+            'superare una prova di Saggezza (Percezione) contro la CD del tiro '
+            'salvezza dell’incantesimo per riconoscere il pericolo prima di '
+            'entrarvi. Richiede concentrazione.',
+      ),
+      ownerId: SpellIds.spikeGrowth,
+    ),
+    level: 2,
+    school: SpellSchool.transmutation,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 45,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+      materials: [
+        SpellMaterialComponent(
+          description: 'Sette spine aguzze o sette rametti appuntiti.',
+        ),
+      ],
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.minute,
+      amount: 10,
+      concentration: true,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.area,
+      },
+    ),
+    damage: [
+      SpellDamage(
+        dice: '2d4',
+        type: SpellDamageType.piercing,
+      ),
+    ],
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'spike_growth_hidden_piercing_terrain',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'creates_6_meter_radius_area_centered_on_point_within_45_meters',
+          'area_is_difficult_terrain',
+          'creature_entering_area_takes_2d4_piercing_per_1_5_meters_moved',
+          'creature_moving_within_area_takes_2d4_piercing_per_1_5_meters_moved',
+          'terrain_transformation_is_camouflaged_as_natural',
+          'creature_that_did_not_observe_casting_makes_wisdom_perception_check_to_notice_danger',
+          'requires_concentration',
+        },
+      ),
+    ],
+    classIds: {
+      'druid',
+      'ranger',
     },
   ),
 };

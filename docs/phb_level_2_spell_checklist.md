@@ -14,10 +14,10 @@ Checklist di lavoro per espandere `lib/data/spell_data.dart` con gli incantesimi
 - [x] Bocca Magica
 - [x] Calmare Emozioni
 - [x] Caratteristica Potenziata
-- [ ] Cecità/Sordità
-- [ ] Cordone di Frecce
-- [ ] Corona di Follia
-- [ ] Crescita di Spine
+- [x] Cecità/Sordità
+- [x] Cordone di Frecce
+- [x] Corona di Follia
+- [x] Crescita di Spine
 - [ ] Estasiare
 - [ ] Fiamma Perenne
 - [ ] Folata di Vento
