@@ -22,6 +22,12 @@ Il Manuale del Giocatore 2014 contiene incantesimi di livello 0-9. Il prossimo l
 4. aggiornare gli audit;
 5. solo dopo passare a Xanathar e Tasha.
 
+## Standard qualità
+
+Ogni incantesimo deve rispettare `docs/spell_definition_quality_standard.md`.
+
+In particolare, non basta inserire nome, livello e componenti: ogni definizione deve contenere descrizione dettagliata, funzionamento meccanico, bersagli, tiri salvezza o attacchi, danni/guarigione/scaling, limitazioni ed effetti speciali quando presenti.
+
 ## Ordine di lavoro
 
 1. PHB livello 1

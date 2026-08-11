@@ -3273,9 +3273,14 @@ const Map<String, SpellDefinition> spellDefinitions = {
       type: RuleContentType.spell,
       description: RuleDescription(
         summary: 'Stabilizza una creatura vivente a 0 punti ferita.',
-        details: 'L’incantatore tocca una creatura vivente a 0 punti ferita. '
-            'Quella creatura diventa stabile. Questo incantesimo non ha '
-            'effetto sui costrutti o sui non morti.',
+        details:
+            'L’incantatore tocca una creatura vivente che si trova a 0 punti '
+            'ferita. Il bersaglio diventa stabile: non deve continuare a '
+            'effettuare tiri salvezza contro morte a meno che non subisca '
+            'nuovi danni o un altro effetto lo riporti in pericolo. '
+            'L’incantesimo non cura punti ferita, non rende cosciente la '
+            'creatura e non le permette di agire; impedisce soltanto che '
+            'continui a morire. Non ha effetto sui costrutti o sui non morti.',
       ),
       ownerId: SpellIds.spareTheDying,
     ),
