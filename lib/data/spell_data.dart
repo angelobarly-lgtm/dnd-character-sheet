@@ -1015,6 +1015,10 @@ abstract final class SpellIds {
   static const expeditiousRetreat = 'expeditious_retreat';
   static const jump = 'jump';
   static const sanctuary = 'sanctuary';
+  static const shieldOfFaith = 'shield_of_faith';
+  static const illusoryScript = 'illusory_script';
+  static const unseenServant = 'unseen_servant';
+  static const sleep = 'sleep';
 }
 
 const Map<String, SpellDefinition> spellDefinitions = {
@@ -6857,6 +6861,309 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ],
     classIds: {
       'cleric',
+    },
+  ),
+  SpellIds.shieldOfFaith: SpellDefinition(
+    id: SpellIds.shieldOfFaith,
+    content: RuleContent(
+      id: SpellIds.shieldOfFaith,
+      name: 'Scudo della Fede',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Conferisce a una creatura un campo scintillante che aumenta la Classe Armatura.',
+        details:
+            'Un campo di energia scintillante si materializza attorno a una '
+            'creatura scelta dall’incantatore entro gittata. Per la durata '
+            'dell’incantesimo, il bersaglio ottiene un bonus di +2 alla Classe '
+            'Armatura. L’incantesimo viene lanciato come azione bonus, richiede '
+            'concentrazione e può essere mantenuto fino a 10 minuti. Il bonus '
+            'rimane attivo solo finché la concentrazione continua e si applica '
+            'alla creatura scelta, non all’intero gruppo.',
+      ),
+      ownerId: SpellIds.shieldOfFaith,
+    ),
+    level: 1,
+    school: SpellSchool.abjuration,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.bonusAction,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 18,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+      materials: [
+        SpellMaterialComponent(
+          description:
+              'Una piccola pergamena su cui sia scritto un frammento di un testo sacro.',
+        ),
+      ],
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.minute,
+      amount: 10,
+      concentration: true,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.creature,
+      },
+      maximumTargets: 1,
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'shield_of_faith_plus_2_ac',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'bonus_action_spell',
+          'chosen_creature_within_18_meters_gains_plus_2_ac',
+          'requires_concentration',
+          'duration_up_to_10_minutes',
+        },
+      ),
+    ],
+    classIds: {
+      'cleric',
+      'paladin',
+    },
+  ),
+  SpellIds.illusoryScript: SpellDefinition(
+    id: SpellIds.illusoryScript,
+    content: RuleContent(
+      id: SpellIds.illusoryScript,
+      name: 'Scritto Illusorio',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Nasconde un testo dietro un’illusione leggibile solo dalle creature designate.',
+        details:
+            'L’incantatore scrive su carta, pergamena o altro materiale adatto '
+            'e infonde nello scritto una potente illusione che dura 10 giorni. '
+            'Agli occhi dell’incantatore e delle creature designate al momento '
+            'del lancio, lo scritto appare normale, nella calligrafia '
+            'dell’incantatore e con il significato voluto. Per tutti gli altri, '
+            'il messaggio appare come un linguaggio magico o ignoto impossibile '
+            'da decifrare, oppure come un messaggio completamente diverso in '
+            'una calligrafia e in un linguaggio conosciuto dall’incantatore. '
+            'Se l’incantesimo viene dissolto, scompaiono sia il messaggio '
+            'originale sia l’illusione. Una creatura dotata di vista pura può '
+            'leggere il messaggio nascosto. Può essere lanciato come rituale e '
+            'consuma l’inchiostro richiesto.',
+      ),
+      ownerId: SpellIds.illusoryScript,
+    ),
+    level: 1,
+    ritual: true,
+    school: SpellSchool.illusion,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.minute,
+      amount: 1,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.touch,
+    ),
+    components: SpellComponents(
+      somatic: true,
+      materials: [
+        SpellMaterialComponent(
+          description:
+              'Inchiostro a base di piombo del valore di almeno 10 mo, consumato dall’incantesimo.',
+          consumed: true,
+        ),
+      ],
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.day,
+      amount: 10,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.object,
+      },
+      maximumTargets: 1,
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'illusory_script_hidden_message',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'ritual_spell',
+          'caster_writes_on_suitable_writing_material',
+          'designated_creatures_see_true_message',
+          'others_see_unknown_magical_language_or_false_message',
+          'false_message_must_use_language_known_by_caster',
+          'dispel_magic_removes_original_message_and_illusion',
+          'truesight_can_read_hidden_message',
+          'lead_based_ink_worth_at_least_10_gp_is_consumed',
+          'duration_10_days',
+        },
+      ),
+    ],
+    classIds: {
+      'bard',
+      'warlock',
+      'wizard',
+    },
+  ),
+  SpellIds.unseenServant: SpellDefinition(
+    id: SpellIds.unseenServant,
+    content: RuleContent(
+      id: SpellIds.unseenServant,
+      name: 'Servitore Inosservato',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Crea una forza invisibile che esegue semplici compiti su ordine dell’incantatore.',
+        details:
+            'L’incantesimo crea una forza invisibile, amorfa e priva di volontà '
+            'propria che svolge compiti semplici finché l’incantesimo non '
+            'termina. Il servitore appare sul terreno in uno spazio libero '
+            'entro gittata, ha CA 10, 1 punto ferita, Forza 2 e non può '
+            'attaccare. Se scende a 0 punti ferita, l’incantesimo termina. '
+            'Una volta per turno, come azione bonus, l’incantatore può '
+            'ordinargli mentalmente di muoversi fino a 4,5 metri e interagire '
+            'con un oggetto. Può portare oggetti, pulire, riparare, ripiegare '
+            'abiti, accendere fuochi, servire pietanze, versare vino e compiti '
+            'simili. Dopo aver completato l’ordine, attende il comando '
+            'successivo. Se riceve un compito che lo porterebbe oltre 18 metri '
+            'dall’incantatore, l’incantesimo termina. Può essere lanciato come '
+            'rituale.',
+      ),
+      ownerId: SpellIds.unseenServant,
+    ),
+    level: 1,
+    ritual: true,
+    school: SpellSchool.conjuration,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 18,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+      materials: [
+        SpellMaterialComponent(
+          description: 'Un filo di spago e un pezzo di legno.',
+        ),
+      ],
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.hour,
+      amount: 1,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.special,
+      },
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'unseen_servant_invisible_force',
+        type: SpellPersistentEffectType.createdObject,
+        ruleTags: {
+          'ritual_spell',
+          'creates_invisible_mindless_amorphous_force',
+          'servant_appears_on_ground_in_unoccupied_space_within_18_meters',
+          'servant_has_ac_10_1_hp_strength_2',
+          'servant_cannot_attack',
+          'spell_ends_if_servant_reaches_0_hp',
+          'caster_can_bonus_action_command_servant_each_turn',
+          'servant_can_move_4_5_meters_and_interact_with_object',
+          'servant_can_perform_simple_tasks',
+          'spell_ends_if_task_takes_servant_more_than_18_meters_from_caster',
+        },
+      ),
+    ],
+    classIds: {
+      'bard',
+      'warlock',
+      'wizard',
+    },
+  ),
+  SpellIds.sleep: SpellDefinition(
+    id: SpellIds.sleep,
+    content: RuleContent(
+      id: SpellIds.sleep,
+      name: 'Sonno',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Addormenta magicamente creature entro un’area, partendo da quelle con meno punti ferita.',
+        details:
+            'L’incantatore tira 5d8: il totale ottenuto indica quanti punti '
+            'ferita di creature possono essere influenzati. Le creature entro '
+            '6 metri da un punto scelto entro gittata sono influenzate in '
+            'ordine crescente dei loro punti ferita attuali, ignorando le '
+            'creature già prive di sensi. Partendo dalla creatura con meno '
+            'punti ferita, ogni creatura influenzata cade priva di sensi finché '
+            'l’incantesimo non termina, finché subisce danni o finché qualcuno '
+            'usa un’azione per scuoterla o schiaffeggiarla e svegliarla. I '
+            'punti ferita di ogni creatura influenzata vengono sottratti dal '
+            'totale prima di passare alla successiva; una creatura è '
+            'influenzata solo se i suoi punti ferita sono pari o inferiori al '
+            'totale rimanente. Non morti e creature immuni all’essere '
+            'affascinate non sono influenzati. Usando slot superiori al 1°, si '
+            'tirano 2d8 aggiuntivi per ogni livello di slot superiore.',
+      ),
+      ownerId: SpellIds.sleep,
+    ),
+    level: 1,
+    school: SpellSchool.enchantment,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 27,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+      materials: [
+        SpellMaterialComponent(
+          description:
+              'Un pizzico di sabbia finissima, petali di rosa o un grillo.',
+        ),
+      ],
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.minute,
+      amount: 1,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.special,
+      },
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'sleep_magical_unconscious_pool',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'roll_5d8_to_determine_total_hit_points_affected',
+          'affects_creatures_within_6_meters_of_chosen_point',
+          'affects_creatures_in_ascending_current_hit_points',
+          'ignores_unconscious_creatures',
+          'affected_creatures_fall_unconscious',
+          'sleep_ends_for_creature_if_damaged',
+          'sleep_ends_for_creature_if_action_used_to_wake_it',
+          'creature_must_have_hp_less_than_or_equal_to_remaining_total',
+          'undead_are_not_affected',
+          'creatures_immune_to_charmed_are_not_affected',
+          'adds_2d8_per_slot_level_above_1',
+        },
+      ),
+    ],
+    classIds: {
+      'bard',
+      'sorcerer',
+      'wizard',
     },
   ),
 };

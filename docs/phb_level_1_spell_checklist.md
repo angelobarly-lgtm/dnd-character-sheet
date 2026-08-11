@@ -57,9 +57,9 @@ Checklist di lavoro per espandere `lib/data/spell_data.dart`.
 - [x] Santuario
 - [x] Scudo
 - [x] Scudo della Fede
-- [ ] Scritto Illusorio
-- [ ] Servitore Inosservato
-- [ ] Sonno
+- [x] Scritto Illusorio
+- [x] Servitore Inosservato
+- [x] Sonno
 - [ ] Sortilegio
 - [ ] Spruzzo Colorato
 - [ ] Sussurri Dissonanti
