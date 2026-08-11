@@ -1008,6 +1008,10 @@ abstract final class SpellIds {
   static const wrathfulSmite = 'wrathful_smite';
   static const searingSmite = 'searing_smite';
   static const thunderousSmite = 'thunderous_smite';
+  static const purifyFoodAndDrink = 'purify_food_and_drink';
+  static const hailOfThorns = 'hail_of_thorns';
+  static const rayOfSickness = 'ray_of_sickness';
+  static const tashasHideousLaughter = 'tashas_hideous_laughter';
 }
 
 const Map<String, SpellDefinition> spellDefinitions = {
@@ -6375,6 +6379,285 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ],
     classIds: {
       'paladin',
+    },
+  ),
+  SpellIds.purifyFoodAndDrink: SpellDefinition(
+    id: SpellIds.purifyFoodAndDrink,
+    content: RuleContent(
+      id: SpellIds.purifyFoodAndDrink,
+      name: 'Purificare Cibo e Bevande',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Purifica cibi e bevande non magici in una piccola area, rimuovendo veleni e malattie.',
+        details:
+            'Tutti i cibi e le bevande non magici entro una sfera del raggio '
+            'di 1,5 metri centrata su un punto scelto dall’incantatore entro '
+            'gittata vengono purificati e liberati da veleni e malattie. '
+            'L’incantesimo ha effetto istantaneo, non richiede concentrazione '
+            'e può essere lanciato come rituale. Non crea nuovo cibo o nuova '
+            'acqua: modifica soltanto cibi e bevande non magici già presenti '
+            'nell’area.',
+      ),
+      ownerId: SpellIds.purifyFoodAndDrink,
+    ),
+    level: 1,
+    ritual: true,
+    school: SpellSchool.transmutation,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 3,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.instantaneous,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.special,
+      },
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'purify_food_and_drink_cleanse',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'affects_nonmagical_food_and_drink_in_1_5_meter_radius_sphere',
+          'sphere_center_point_within_3_meters',
+          'purifies_food_and_drink',
+          'removes_poisons_and_diseases',
+          'does_not_create_food_or_water',
+          'ritual_spell',
+        },
+      ),
+    ],
+    classIds: {
+      'cleric',
+      'druid',
+      'paladin',
+    },
+  ),
+  SpellIds.hailOfThorns: SpellDefinition(
+    id: SpellIds.hailOfThorns,
+    content: RuleContent(
+      id: SpellIds.hailOfThorns,
+      name: 'Raffica di Spine',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Il prossimo colpo con arma a distanza esplode in spine attorno al bersaglio.',
+        details:
+            'La prossima volta che l’incantatore colpisce una creatura con '
+            'un’arma a distanza prima che l’incantesimo termini, una raffica '
+            'di spine si sprigiona dalla sua arma a distanza o dalle sue '
+            'munizioni. Oltre al normale effetto dell’attacco, il bersaglio e '
+            'ogni creatura entro 1,5 metri da esso devono effettuare un tiro '
+            'salvezza su Destrezza. Chi fallisce subisce 1d10 danni perforanti; '
+            'chi supera il tiro salvezza subisce soltanto metà di quei danni. '
+            'L’effetto richiede concentrazione e viene lanciato come azione '
+            'bonus. Usando slot superiori al 1°, i danni aumentano di 1d10 per '
+            'ogni livello di slot superiore, fino a un massimo di 6d10.',
+      ),
+      ownerId: SpellIds.hailOfThorns,
+    ),
+    level: 1,
+    school: SpellSchool.conjuration,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.bonusAction,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.self,
+    ),
+    components: SpellComponents(
+      verbal: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.minute,
+      amount: 1,
+      concentration: true,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.self,
+      },
+      maximumTargets: 1,
+    ),
+    damage: [
+      SpellDamage(
+        dice: '1d10',
+        type: SpellDamageType.piercing,
+      ),
+    ],
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'hail_of_thorns_ranged_weapon_burst',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'bonus_action_spell',
+          'next_ranged_weapon_hit_before_spell_ends_triggers_effect',
+          'target_and_creatures_within_1_5_meters_make_dexterity_saving_throw',
+          'failed_save_deals_1d10_piercing_damage',
+          'successful_save_takes_half_damage',
+          'normal_weapon_attack_effect_still_applies',
+          'damage_increases_by_1d10_per_slot_level_above_1',
+          'maximum_damage_6d10',
+          'requires_concentration',
+        },
+      ),
+    ],
+    classIds: {
+      'ranger',
+    },
+  ),
+  SpellIds.rayOfSickness: SpellDefinition(
+    id: SpellIds.rayOfSickness,
+    content: RuleContent(
+      id: SpellIds.rayOfSickness,
+      name: 'Raggio di Infermità',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Colpisce una creatura con un raggio velenoso che può avvelenarla temporaneamente.',
+        details: 'Un raggio di nauseante energia verdastra sfreccia verso una '
+            'creatura entro gittata. L’incantatore effettua un attacco a '
+            'distanza con questo incantesimo contro il bersaglio. Se colpisce, '
+            'il bersaglio subisce 2d8 danni da veleno e deve effettuare un '
+            'tiro salvezza su Costituzione. Se fallisce, è avvelenato fino alla '
+            'fine del turno successivo dell’incantatore. Usando uno slot di '
+            'livello superiore al 1°, i danni aumentano di 1d8 per ogni livello '
+            'di slot superiore.',
+      ),
+      ownerId: SpellIds.rayOfSickness,
+    ),
+    level: 1,
+    school: SpellSchool.necromancy,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 18,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.instantaneous,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.creature,
+      },
+      maximumTargets: 1,
+    ),
+    attackType: SpellAttackType.ranged,
+    damage: [
+      SpellDamage(
+        dice: '2d8',
+        type: SpellDamageType.poison,
+      ),
+    ],
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'ray_of_sickness_poisoned_condition',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'ranged_spell_attack_against_creature',
+          'hit_deals_2d8_poison_damage',
+          'hit_target_makes_constitution_saving_throw',
+          'failed_save_target_poisoned_until_end_of_casters_next_turn',
+          'damage_increases_by_1d8_per_slot_level_above_1',
+        },
+      ),
+    ],
+    classIds: {
+      'sorcerer',
+      'wizard',
+    },
+  ),
+  SpellIds.tashasHideousLaughter: SpellDefinition(
+    id: SpellIds.tashasHideousLaughter,
+    content: RuleContent(
+      id: SpellIds.tashasHideousLaughter,
+      name: 'Risata Incontenibile di Tasha',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Fa cadere una creatura in una risata spasmodica, rendendola prona e incapacitata.',
+        details:
+            'Una creatura scelta dall’incantatore, entro gittata e che egli sia '
+            'in grado di vedere, percepisce ogni cosa come esilarante ed è '
+            'scossa da una risata spasmodica se l’incantesimo la influenza. Il '
+            'bersaglio deve superare un tiro salvezza su Saggezza o cadere a '
+            'terra prono, diventare incapacitato e non essere in grado di '
+            'rialzarsi per la durata dell’incantesimo. Una creatura con '
+            'Intelligenza pari o inferiore a 4 non è influenzata. Alla fine di '
+            'ogni suo turno e ogni volta che subisce danni, il bersaglio può '
+            'effettuare un altro tiro salvezza su Saggezza. Se il tiro salvezza '
+            'è innescato dai danni, il bersaglio dispone di vantaggio. In caso '
+            'di successo, l’incantesimo termina. Richiede concentrazione.',
+      ),
+      ownerId: SpellIds.tashasHideousLaughter,
+    ),
+    level: 1,
+    school: SpellSchool.enchantment,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 9,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+      materials: [
+        SpellMaterialComponent(
+          description:
+              'Una manciata di briciole e una piuma da agitare in aria.',
+        ),
+      ],
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.minute,
+      amount: 1,
+      concentration: true,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.creature,
+      },
+      maximumTargets: 1,
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'tashas_hideous_laughter_prone_incapacitated',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'visible_creature_within_9_meters',
+          'target_makes_wisdom_saving_throw',
+          'failed_save_target_falls_prone',
+          'failed_save_target_is_incapacitated',
+          'failed_save_target_cannot_stand_up',
+          'creature_with_intelligence_4_or_lower_unaffected',
+          'target_repeats_wisdom_save_at_end_of_each_turn',
+          'target_repeats_wisdom_save_when_taking_damage',
+          'save_triggered_by_damage_has_advantage',
+          'successful_repeat_save_ends_spell',
+          'requires_concentration',
+        },
+      ),
+    ],
+    classIds: {
+      'bard',
+      'wizard',
     },
   ),
 };

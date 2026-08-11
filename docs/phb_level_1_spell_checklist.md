@@ -48,10 +48,10 @@ Checklist di lavoro per espandere `lib/data/spell_data.dart`.
 - [x] Punizione Collerica
 - [x] Punizione Incandescente
 - [x] Punizione Tonante
-- [ ] Purificare Cibo e Bevande
-- [ ] Raffica di Spine
-- [ ] Raggio di Infermità
-- [ ] Risata Incontenibile di Tasha
+- [x] Purificare Cibo e Bevande
+- [x] Raffica di Spine
+- [x] Raggio di Infermità
+- [x] Risata Incontenibile di Tasha
 - [ ] Ritirata Rapida
 - [ ] Saltare
 - [ ] Santuario
