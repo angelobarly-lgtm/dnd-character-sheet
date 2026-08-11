@@ -40,10 +40,10 @@ Checklist di lavoro per espandere `lib/data/spell_data.dart`.
 - [x] Mani Brucianti
 - [x] Marchio del Cacciatore
 - [x] Nube di Nebbia
-- [ ] Onda Tonante
-- [ ] Parlare con gli Animali
-- [ ] Parola Guaritrice
-- [ ] Passo Veloce
+- [x] Onda Tonante
+- [x] Parlare con gli Animali
+- [x] Parola Guaritrice
+- [x] Passo Veloce
 - [ ] Protezione dal Bene e dal Male
 - [ ] Punizione Collerica
 - [ ] Punizione Incandescente

@@ -1000,6 +1000,10 @@ abstract final class SpellIds {
   static const burningHands = 'burning_hands';
   static const huntersMark = 'hunters_mark';
   static const fogCloud = 'fog_cloud';
+  static const thunderwave = 'thunderwave';
+  static const speakWithAnimals = 'speak_with_animals';
+  static const healingWord = 'healing_word';
+  static const longstrider = 'longstrider';
 }
 
 const Map<String, SpellDefinition> spellDefinitions = {
@@ -5818,6 +5822,266 @@ const Map<String, SpellDefinition> spellDefinitions = {
       'druid',
       'ranger',
       'sorcerer',
+      'wizard',
+    },
+  ),
+  SpellIds.thunderwave: SpellDefinition(
+    id: SpellIds.thunderwave,
+    content: RuleContent(
+      id: SpellIds.thunderwave,
+      name: 'Onda Tonante',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Propaga dall’incantatore un’onda di energia tonante che danneggia e spinge.',
+        details:
+            'Un’ondata di energia tonante si propaga dall’incantatore. Ogni '
+            'creatura entro un cubo con spigolo di 4,5 metri originato '
+            'dall’incantatore deve effettuare un tiro salvezza su Costituzione. '
+            'Se fallisce, subisce 2d8 danni da tuono e viene spinta di 3 metri '
+            'più lontano dall’incantatore; se supera il tiro salvezza, subisce '
+            'metà dei danni e non viene spinta. Gli oggetti non fissati e '
+            'completamente situati nell’area vengono automaticamente spinti di '
+            '3 metri più lontano dall’incantatore. L’incantesimo emette un '
+            'rombo tonante udibile fino a 90 metri. Usando uno slot superiore '
+            'al 1°, i danni aumentano di 1d8 per ogni livello di slot '
+            'superiore.',
+      ),
+      ownerId: SpellIds.thunderwave,
+    ),
+    level: 1,
+    school: SpellSchool.evocation,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.self,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.instantaneous,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.special,
+      },
+    ),
+    damage: [
+      SpellDamage(
+        dice: '2d8',
+        type: SpellDamageType.thunder,
+      ),
+    ],
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'thunderwave_constitution_save_push',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          '4_5_meter_cube_originating_from_caster',
+          'creatures_in_area_make_constitution_saving_throw',
+          'failed_save_deals_2d8_thunder_damage_and_pushes_3_meters',
+          'successful_save_takes_half_damage_and_is_not_pushed',
+          'unsecured_objects_in_area_are_pushed_3_meters',
+          'audible_thunderous_boom_out_to_90_meters',
+          'damage_increases_by_1d8_per_slot_level_above_1',
+        },
+      ),
+    ],
+    classIds: {
+      'bard',
+      'druid',
+      'sorcerer',
+      'wizard',
+    },
+  ),
+  SpellIds.speakWithAnimals: SpellDefinition(
+    id: SpellIds.speakWithAnimals,
+    content: RuleContent(
+      id: SpellIds.speakWithAnimals,
+      name: 'Parlare con gli Animali',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Permette all’incantatore di comprendere le bestie e parlare con loro.',
+        details:
+            'Per la durata dell’incantesimo, l’incantatore ottiene la capacità '
+            'di comprendere le bestie e comunicare verbalmente con loro. Le '
+            'conoscenze e la consapevolezza di molte bestie restano limitate '
+            'dalla loro intelligenza, ma l’incantatore può ottenere almeno '
+            'informazioni sui luoghi o sui mostri nelle vicinanze, o su ciò che '
+            'le bestie percepiscono o hanno percepito nell’ultimo giorno. '
+            'L’incantatore potrebbe anche persuadere una bestia a compiere un '
+            'piccolo favore, a discrezione del DM. Può essere lanciato come '
+            'rituale.',
+      ),
+      ownerId: SpellIds.speakWithAnimals,
+    ),
+    level: 1,
+    ritual: true,
+    school: SpellSchool.divination,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.self,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.minute,
+      amount: 10,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.self,
+      },
+      maximumTargets: 1,
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'speak_with_animals_communication',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'caster_understands_beasts',
+          'caster_can_communicate_verbally_with_beasts',
+          'beast_knowledge_limited_by_intelligence',
+          'can_learn_information_about_nearby_locations_or_monsters',
+          'can_learn_what_beasts_perceived_within_last_day',
+          'may_persuade_beast_to_do_small_favor_at_dm_discretion',
+          'ritual_spell',
+        },
+      ),
+    ],
+    classIds: {
+      'bard',
+      'druid',
+      'ranger',
+    },
+  ),
+  SpellIds.healingWord: SpellDefinition(
+    id: SpellIds.healingWord,
+    content: RuleContent(
+      id: SpellIds.healingWord,
+      name: 'Parola Guaritrice',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Guarisce a distanza una creatura visibile con una parola risanante.',
+        details:
+            'Una creatura scelta dall’incantatore entro gittata e che egli sia '
+            'in grado di vedere recupera punti ferita pari a 1d4 + il '
+            'modificatore della caratteristica da incantatore. L’incantesimo '
+            'ha durata istantanea, richiede solo componente verbale e viene '
+            'lanciato come azione bonus. Non ha effetto sui costrutti o sui non '
+            'morti. Usando uno slot di livello superiore al 1°, la guarigione '
+            'aumenta di 1d4 punti ferita per ogni livello di slot superiore.',
+      ),
+      ownerId: SpellIds.healingWord,
+    ),
+    level: 1,
+    school: SpellSchool.evocation,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.bonusAction,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 18,
+    ),
+    components: SpellComponents(
+      verbal: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.instantaneous,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.creature,
+      },
+      maximumTargets: 1,
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'healing_word_bonus_action_healing',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'bonus_action_spell',
+          'visible_creature_within_18_meters_regains_1d4_plus_spellcasting_modifier_hp',
+          'no_effect_on_constructs_or_undead',
+          'healing_increases_by_1d4_per_slot_level_above_1',
+        },
+      ),
+    ],
+    classIds: {
+      'bard',
+      'cleric',
+      'druid',
+    },
+  ),
+  SpellIds.longstrider: SpellDefinition(
+    id: SpellIds.longstrider,
+    content: RuleContent(
+      id: SpellIds.longstrider,
+      name: 'Passo Veloce',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary: 'Aumenta la velocità di una creatura toccata.',
+        details: 'L’incantatore tocca una creatura. Finché l’incantesimo non '
+            'termina, la velocità del bersaglio aumenta di 3 metri. '
+            'L’incantesimo dura 1 ora, non richiede concentrazione e può essere '
+            'usato per potenziare la mobilità del bersaglio durante '
+            'esplorazione, inseguimenti o combattimento. Usando uno slot di '
+            'livello superiore al 1°, l’incantatore può bersagliare una '
+            'creatura aggiuntiva per ogni livello di slot superiore.',
+      ),
+      ownerId: SpellIds.longstrider,
+    ),
+    level: 1,
+    school: SpellSchool.transmutation,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.touch,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+      materials: [
+        SpellMaterialComponent(
+          description: 'Un pizzico di terriccio.',
+        ),
+      ],
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.hour,
+      amount: 1,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.creature,
+      },
+      maximumTargets: 1,
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'longstrider_speed_increase',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'touched_creature_speed_increases_by_3_meters',
+          'does_not_require_concentration',
+          'one_additional_target_per_slot_level_above_1',
+        },
+      ),
+    ],
+    classIds: {
+      'bard',
+      'druid',
+      'ranger',
       'wizard',
     },
   ),
