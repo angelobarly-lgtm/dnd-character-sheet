@@ -28,10 +28,10 @@ Checklist di lavoro per espandere `lib/data/spell_data.dart`.
 - [x] Eroismo
 - [x] Favore Divino
 - [x] Globo Cromatico
-- [ ] Identificare
-- [ ] Immagine Silenziosa
-- [ ] Individuazione del Bene e del Male
-- [ ] Individuazione del Magico
+- [x] Identificare
+- [x] Immagine Silenziosa
+- [x] Individuazione del Bene e del Male
+- [x] Individuazione del Magico
 - [ ] Individuazione delle Malattie e dei Veleni
 - [ ] Infliggi Ferite
 - [ ] Intimorire Infernale

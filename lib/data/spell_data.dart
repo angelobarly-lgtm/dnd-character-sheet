@@ -989,6 +989,9 @@ abstract final class SpellIds {
   static const heroism = 'heroism';
   static const divineFavor = 'divine_favor';
   static const chromaticOrb = 'chromatic_orb';
+  static const silentImage = 'silent_image';
+  static const detectEvilAndGood = 'detect_evil_and_good';
+  static const detectMagic = 'detect_magic';
 }
 
 const Map<String, SpellDefinition> spellDefinitions = {
@@ -5070,6 +5073,216 @@ const Map<String, SpellDefinition> spellDefinitions = {
       ),
     ],
     classIds: {
+      'sorcerer',
+      'wizard',
+    },
+  ),
+  SpellIds.silentImage: SpellDefinition(
+    id: SpellIds.silentImage,
+    content: RuleContent(
+      id: SpellIds.silentImage,
+      name: 'Immagine Silenziosa',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Crea un’immagine visiva illusoria che può essere spostata con un’azione.',
+        details:
+            'L’incantatore crea l’immagine di un oggetto, una creatura o un '
+            'altro fenomeno visibile non più grande di un cubo con spigolo di '
+            '4,5 metri. L’immagine appare in un punto entro gittata e permane '
+            'per la durata. È puramente visiva: non produce suoni, odori o '
+            'altri effetti sensoriali. L’incantatore può usare la sua azione '
+            'per spostare l’immagine in un altro punto entro gittata e può '
+            'modificarne l’aspetto affinché il movimento sembri naturale. '
+            'Un’interazione fisica rivela che si tratta di un’illusione, perché '
+            'gli oggetti la attraversano. Una creatura può esaminare '
+            'l’immagine e, se supera la prova prevista contro la CD '
+            'dell’incantesimo, la riconosce come illusione.',
+      ),
+      ownerId: SpellIds.silentImage,
+    ),
+    level: 1,
+    school: SpellSchool.illusion,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 18,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+      materials: [
+        SpellMaterialComponent(
+          description: 'Un ciuffo di lana.',
+        ),
+      ],
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.minute,
+      amount: 10,
+      concentration: true,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.special,
+      },
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'silent_image_visual_illusion',
+        type: SpellPersistentEffectType.createdObject,
+        ruleTags: {
+          'creates_visual_illusion_up_to_4_5_meter_cube',
+          'illusion_has_no_sound_smell_or_other_sensory_effects',
+          'caster_can_use_action_to_move_image_within_range',
+          'caster_can_change_appearance_to_make_movement_natural',
+          'physical_interaction_reveals_illusion',
+          'investigation_check_can_reveal_illusion',
+          'requires_concentration',
+        },
+      ),
+    ],
+    classIds: {
+      'bard',
+      'sorcerer',
+      'wizard',
+    },
+  ),
+  SpellIds.detectEvilAndGood: SpellDefinition(
+    id: SpellIds.detectEvilAndGood,
+    content: RuleContent(
+      id: SpellIds.detectEvilAndGood,
+      name: 'Individuazione del Bene e del Male',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Rileva creature sovrannaturali e luoghi o oggetti consacrati o dissacrati.',
+        details:
+            'Per la durata dell’incantesimo, l’incantatore sa se entro 9 metri '
+            'da lui è presente un’aberrazione, un celestiale, un elementale, un '
+            'folletto, un immondo o un non morto, e ne conosce la posizione '
+            'esatta. Sa anche se entro 9 metri è presente un luogo o un oggetto '
+            'consacrato o dissacrato magicamente. L’incantesimo richiede '
+            'concentrazione. Può penetrare la maggior parte delle barriere, ma '
+            'è bloccato da 30 cm di pietra, 2,5 cm di metallo comune, una '
+            'sottile lamina di piombo o 90 cm di legno o terriccio.',
+      ),
+      ownerId: SpellIds.detectEvilAndGood,
+    ),
+    level: 1,
+    school: SpellSchool.divination,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.self,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.minute,
+      amount: 10,
+      concentration: true,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.self,
+      },
+      maximumTargets: 1,
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'detect_evil_and_good_presence_and_location',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'detects_aberration_celestial_elemental_fey_fiend_or_undead_within_9_meters',
+          'reveals_exact_location_of_detected_creature',
+          'detects_magically_consecrated_or_desecrated_place_or_object_within_9_meters',
+          'blocked_by_30_cm_stone',
+          'blocked_by_2_5_cm_common_metal',
+          'blocked_by_thin_sheet_of_lead',
+          'blocked_by_90_cm_wood_or_dirt',
+          'requires_concentration',
+        },
+      ),
+    ],
+    classIds: {
+      'cleric',
+      'paladin',
+    },
+  ),
+  SpellIds.detectMagic: SpellDefinition(
+    id: SpellIds.detectMagic,
+    content: RuleContent(
+      id: SpellIds.detectMagic,
+      name: 'Individuazione del Magico',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Percepisce la presenza di magia vicina e può rivelarne aura e scuola.',
+        details: 'Per la durata dell’incantesimo, l’incantatore percepisce la '
+            'presenza della magia entro 9 metri da lui. Se percepisce magia, '
+            'può usare la sua azione per vedere una debole aura attorno a ogni '
+            'creatura o oggetto visibile nell’area che contenga magia, e '
+            'apprende la scuola di magia, se presente. L’effetto richiede '
+            'concentrazione e può essere lanciato come rituale. Può penetrare '
+            'la maggior parte delle barriere, ma è bloccato da 30 cm di pietra, '
+            '2,5 cm di metallo comune, una sottile lamina di piombo o 90 cm di '
+            'legno o terriccio.',
+      ),
+      ownerId: SpellIds.detectMagic,
+    ),
+    level: 1,
+    ritual: true,
+    school: SpellSchool.divination,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.self,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.minute,
+      amount: 10,
+      concentration: true,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.self,
+      },
+      maximumTargets: 1,
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'detect_magic_aura_and_school',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'detects_presence_of_magic_within_9_meters',
+          'caster_can_use_action_to_see_faint_aura_around_visible_magical_creature_or_object',
+          'reveals_school_of_magic_if_any',
+          'blocked_by_30_cm_stone',
+          'blocked_by_2_5_cm_common_metal',
+          'blocked_by_thin_sheet_of_lead',
+          'blocked_by_90_cm_wood_or_dirt',
+          'requires_concentration',
+          'ritual_spell',
+        },
+      ),
+    ],
+    classIds: {
+      'bard',
+      'cleric',
+      'druid',
+      'paladin',
+      'ranger',
       'sorcerer',
       'wizard',
     },
