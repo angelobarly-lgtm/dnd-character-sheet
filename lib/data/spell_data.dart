@@ -975,6 +975,10 @@ abstract final class SpellIds {
   static const goodberry = 'goodberry';
   static const bless = 'bless';
   static const armsOfHadar = 'arms_of_hadar';
+  static const featherFall = 'feather_fall';
+  static const disguiseSelf = 'disguise_self';
+  static const charmPerson = 'charm_person';
+  static const ensnaringStrike = 'ensnaring_strike';
 }
 
 const Map<String, SpellDefinition> spellDefinitions = {
@@ -4111,6 +4115,282 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ],
     classIds: {
       'warlock',
+    },
+  ),
+  SpellIds.featherFall: SpellDefinition(
+    id: SpellIds.featherFall,
+    content: RuleContent(
+      id: SpellIds.featherFall,
+      name: 'Caduta Morbida',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary: 'Rallenta la caduta di un massimo di cinque creature vicine.',
+        details: 'L’incantatore può lanciare questo incantesimo come reazione '
+            'quando lui o una creatura entro 18 metri cade. Sceglie fino a '
+            'cinque creature in caduta entro gittata. Per la durata, la '
+            'velocità di discesa di ogni bersaglio rallenta fino a 18 metri '
+            'per round. Se una creatura atterra prima che l’incantesimo '
+            'termini, non subisce danni da caduta, può atterrare in piedi e '
+            'l’incantesimo termina per quella creatura. L’effetto non cura '
+            'danni già subiti e serve specificamente a modificare una caduta '
+            'in corso.',
+      ),
+      ownerId: SpellIds.featherFall,
+    ),
+    level: 1,
+    school: SpellSchool.transmutation,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.reaction,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 18,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      materials: [
+        SpellMaterialComponent(
+          description: 'Una piccola piuma.',
+        ),
+      ],
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.minute,
+      amount: 1,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.creature,
+      },
+      maximumTargets: 5,
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'feather_fall_slow_falling_creatures',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'reaction_when_caster_or_creature_within_18_meters_falls',
+          'targets_up_to_five_falling_creatures',
+          'falling_speed_reduced_to_18_meters_per_round',
+          'no_falling_damage_if_lands_before_spell_ends',
+          'target_can_land_on_feet',
+          'spell_ends_for_target_after_landing',
+        },
+      ),
+    ],
+    classIds: {
+      'bard',
+      'sorcerer',
+      'wizard',
+    },
+  ),
+  SpellIds.disguiseSelf: SpellDefinition(
+    id: SpellIds.disguiseSelf,
+    content: RuleContent(
+      id: SpellIds.disguiseSelf,
+      name: 'Camuffare Se Stesso',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Cambia illusoriamente l’aspetto dell’incantatore e del suo equipaggiamento.',
+        details: 'L’incantatore assume un aspetto diverso per la durata '
+            'dell’incantesimo, includendo abiti, armatura, armi e altri '
+            'oggetti personali presenti sulla sua persona. Può apparire circa '
+            '30 centimetri più alto o più basso, più magro, più grasso o di '
+            'corporatura normale, ma non può cambiare il proprio tipo di corpo '
+            'e deve mantenere la stessa disposizione basilare degli arti. '
+            'I cambiamenti sono illusori e non superano un’ispezione fisica: '
+            'oggetti aggiunti dall’illusione non possono essere toccati e un '
+            'contatto fisico può rivelare la discrepanza. L’incantatore può '
+            'terminare l’incantesimo usando un’azione.',
+      ),
+      ownerId: SpellIds.disguiseSelf,
+    ),
+    level: 1,
+    school: SpellSchool.illusion,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.self,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.hour,
+      amount: 1,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.self,
+      },
+      maximumTargets: 1,
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'disguise_self_illusory_appearance',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'changes_casters_appearance_and_equipment_illusorily',
+          'can_appear_30_cm_taller_or_shorter',
+          'cannot_change_body_type_or_limb_arrangement',
+          'physical_inspection_reveals_illusion',
+          'caster_can_dismiss_as_action',
+        },
+      ),
+    ],
+    classIds: {
+      'bard',
+      'sorcerer',
+      'wizard',
+    },
+  ),
+  SpellIds.charmPerson: SpellDefinition(
+    id: SpellIds.charmPerson,
+    content: RuleContent(
+      id: SpellIds.charmPerson,
+      name: 'Charme su Persone',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Tenta di affascinare un umanoide rendendolo amichevole verso l’incantatore.',
+        details:
+            'L’incantatore tenta di affascinare un umanoide entro gittata che '
+            'sia in grado di vedere. Il bersaglio effettua un tiro salvezza su '
+            'Saggezza e dispone di vantaggio se l’incantatore o i suoi compagni '
+            'stanno combattendo contro di lui. Se fallisce, il bersaglio è '
+            'affascinato dall’incantatore finché l’incantesimo non termina o '
+            'finché l’incantatore o i suoi compagni non lo danneggiano. La '
+            'creatura affascinata considera l’incantatore una figura conosciuta '
+            'e amichevole. Quando l’incantesimo termina, la creatura capisce di '
+            'essere stata affascinata. Usando slot superiori al 1°, può '
+            'bersagliare una creatura aggiuntiva per ogni livello di slot '
+            'superiore; le creature devono trovarsi entro 9 metri l’una '
+            'dall’altra.',
+      ),
+      ownerId: SpellIds.charmPerson,
+    ),
+    level: 1,
+    school: SpellSchool.enchantment,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 9,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.hour,
+      amount: 1,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.creature,
+      },
+      maximumTargets: 1,
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'charm_person_wisdom_save_charmed_humanoid',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'targets_visible_humanoid',
+          'target_makes_wisdom_saving_throw',
+          'target_has_advantage_if_fighting_caster_or_companions',
+          'failed_save_charms_target',
+          'ends_if_caster_or_companions_damage_target',
+          'target_knows_it_was_charmed_when_spell_ends',
+          'one_additional_target_per_slot_level_above_1',
+          'additional_targets_must_be_within_9_meters_of_each_other',
+        },
+      ),
+    ],
+    classIds: {
+      'bard',
+      'druid',
+      'sorcerer',
+      'warlock',
+      'wizard',
+    },
+  ),
+  SpellIds.ensnaringStrike: SpellDefinition(
+    id: SpellIds.ensnaringStrike,
+    content: RuleContent(
+      id: SpellIds.ensnaringStrike,
+      name: 'Colpo Intrappolante',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Il prossimo colpo con arma evoca rampicanti che trattengono il bersaglio.',
+        details:
+            'La prossima volta che l’incantatore colpisce una creatura con un '
+            'attacco con un’arma prima che l’incantesimo termini, rampicanti '
+            'spinosi appaiono nel punto d’impatto. Il bersaglio effettua un '
+            'tiro salvezza su Forza; una creatura di taglia Grande o superiore '
+            'dispone di vantaggio. Se fallisce, è trattenuto dai rampicanti '
+            'magici fino al termine dell’incantesimo e subisce 1d6 danni '
+            'perforanti all’inizio di ogni suo turno. Il bersaglio trattenuto '
+            'o un’altra creatura in grado di toccarlo può usare un’azione per '
+            'effettuare una prova di Forza contro la CD del tiro salvezza '
+            'dell’incantesimo, liberando il bersaglio in caso di successo. Se '
+            'il tiro salvezza iniziale riesce, i rampicanti si ritraggono e '
+            'avvizziscono. Usando slot superiori al 1°, i danni aumentano di '
+            '1d6 per ogni livello di slot superiore.',
+      ),
+      ownerId: SpellIds.ensnaringStrike,
+    ),
+    level: 1,
+    school: SpellSchool.conjuration,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.bonusAction,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.self,
+    ),
+    components: SpellComponents(
+      verbal: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.minute,
+      amount: 1,
+      concentration: true,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.self,
+      },
+      maximumTargets: 1,
+    ),
+    damage: [
+      SpellDamage(
+        dice: '1d6',
+        type: SpellDamageType.piercing,
+      ),
+    ],
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'ensnaring_strike_restrained_vines',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'next_weapon_hit_before_spell_ends_triggers_vines',
+          'target_makes_strength_saving_throw',
+          'large_or_larger_target_has_advantage_on_save',
+          'failed_save_restrained_by_magical_vines',
+          'restrained_target_takes_1d6_piercing_at_start_of_each_turn',
+          'target_or_adjacent_creature_can_use_action_strength_check_to_free',
+          'damage_increases_by_1d6_per_slot_level_above_1',
+          'requires_concentration',
+        },
+      ),
+    ],
+    classIds: {
+      'ranger',
     },
   ),
 };

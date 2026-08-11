@@ -12,10 +12,10 @@ Checklist di lavoro per espandere `lib/data/spell_data.dart`.
 - [x] Bacche Benefiche
 - [x] Benedizione
 - [x] Braccia di Hadar
-- [ ] Caduta Morbida
-- [ ] Camuffare Se Stesso
-- [ ] Charme su Persone
-- [ ] Colpo Intrappolante
+- [x] Caduta Morbida
+- [x] Camuffare Se Stesso
+- [x] Charme su Persone
+- [x] Colpo Intrappolante
 - [ ] Comando
 - [ ] Comprensione dei Linguaggi
 - [ ] Creare o Distruggere Acqua
