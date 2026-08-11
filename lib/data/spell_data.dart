@@ -1971,6 +1971,1545 @@ const Map<String, SpellDefinition> spellDefinitions = {
       'wizard',
     },
   ),
+  SpellIds.bladeWard: SpellDefinition(
+    id: SpellIds.bladeWard,
+    content: RuleContent(
+      id: SpellIds.bladeWard,
+      name: 'Interdizione alle Lame',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Traccia un simbolo di interdizione che protegge dagli attacchi con armi.',
+        details: 'L’incantatore protende la mano e traccia un simbolo di '
+            'interdizione nell’aria. Fino alla fine del suo turno successivo '
+            'possiede resistenza ai danni contundenti, perforanti e taglienti '
+            'inflitti dagli attacchi con armi.',
+      ),
+      ownerId: SpellIds.bladeWard,
+    ),
+    level: 0,
+    school: SpellSchool.abjuration,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.self,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.round,
+      amount: 1,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.self,
+      },
+      maximumTargets: 1,
+    ),
+    defensiveEffects: [
+      SpellDefensiveEffect(
+        resistances: [
+          SpellDamageResistance(
+            damageTypes: {
+              SpellDamageType.bludgeoning,
+              SpellDamageType.piercing,
+              SpellDamageType.slashing,
+            },
+            sourceRestriction: SpellDamageSourceRestriction.weaponAttack,
+          ),
+        ],
+        expiry: SpellDefensiveEffectExpiry.endOfCastersNextTurn,
+      ),
+    ],
+    classIds: {
+      'bard',
+      'sorcerer',
+      'warlock',
+      'wizard',
+    },
+  ),
+  SpellIds.chillTouch: SpellDefinition(
+    id: SpellIds.chillTouch,
+    content: RuleContent(
+      id: SpellIds.chillTouch,
+      name: 'Tocco Gelido',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Crea una mano spettrale che assale una creatura e ostacola la guarigione.',
+        details:
+            'L’incantatore crea una mano scheletrica e spettrale nello spazio '
+            'di una creatura entro gittata ed effettua un attacco a distanza '
+            'con incantesimo. Se colpisce, il bersaglio subisce 1d8 danni '
+            'necrotici e non può recuperare punti ferita fino all’inizio del '
+            'turno successivo dell’incantatore. Se il bersaglio è un non '
+            'morto, subisce anche svantaggio ai tiri per colpire contro '
+            'l’incantatore fino alla fine del turno successivo '
+            'dell’incantatore. I danni aumentano a 2d8 al 5° livello, '
+            '3d8 all’11° livello e 4d8 al 17° livello.',
+      ),
+      ownerId: SpellIds.chillTouch,
+    ),
+    level: 0,
+    school: SpellSchool.necromancy,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 36,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.instantaneous,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.creature,
+      },
+      maximumTargets: 1,
+    ),
+    attackType: SpellAttackType.ranged,
+    damage: [
+      SpellDamage(
+        dice: '1d8',
+        type: SpellDamageType.necrotic,
+      ),
+    ],
+    scaling: SpellScaling(
+      type: SpellScalingType.characterLevel,
+      steps: [
+        SpellScalingStep(
+          threshold: 5,
+          damageDice: '2d8',
+        ),
+        SpellScalingStep(
+          threshold: 11,
+          damageDice: '3d8',
+        ),
+        SpellScalingStep(
+          threshold: 17,
+          damageDice: '4d8',
+        ),
+      ],
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'chill_touch_no_healing_until_next_turn',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'target_cannot_regain_hit_points_until_start_of_casters_next_turn',
+          'undead_target_disadvantage_on_attacks_against_caster',
+        },
+      ),
+    ],
+    classIds: {
+      'sorcerer',
+      'warlock',
+      'wizard',
+    },
+  ),
+  SpellIds.dancingLights: SpellDefinition(
+    id: SpellIds.dancingLights,
+    content: RuleContent(
+      id: SpellIds.dancingLights,
+      name: 'Luci Danzanti',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary: 'Crea fino a quattro luci magiche che illuminano l’area.',
+        details:
+            'L’incantatore crea fino a quattro luci delle dimensioni di una '
+            'torcia entro gittata. Le luci possono apparire come torce, '
+            'lanterne o globi luminosi fluttuanti, oppure combinarsi in una '
+            'forma luminosa vagamente umanoide. Ogni luce diffonde luce fioca '
+            'entro 3 metri. Come azione bonus l’incantatore può muovere le '
+            'luci fino a 18 metri, rispettando la gittata e mantenendole entro '
+            '6 metri l’una dall’altra.',
+      ),
+      ownerId: SpellIds.dancingLights,
+    ),
+    level: 0,
+    school: SpellSchool.evocation,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 36,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+      materials: [
+        SpellMaterialComponent(
+          description:
+              'Un pezzetto di fosforo, di legno stregato o una lucciola.',
+        ),
+      ],
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.minute,
+      amount: 1,
+      concentration: true,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.special,
+      },
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'dancing_lights_luminous_objects',
+        type: SpellPersistentEffectType.createdObject,
+        ruleTags: {
+          'creates_up_to_four_dim_lights',
+          'bonus_action_move_lights',
+          'lights_must_remain_within_range_and_within_6_meters_each_other',
+        },
+      ),
+    ],
+    classIds: {
+      'bard',
+      'sorcerer',
+      'wizard',
+    },
+  ),
+  SpellIds.druidcraft: SpellDefinition(
+    id: SpellIds.druidcraft,
+    content: RuleContent(
+      id: SpellIds.druidcraft,
+      name: 'Arte Druidica',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary: 'Produce un piccolo effetto naturale o sensoriale.',
+        details:
+            'L’incantatore crea uno dei piccoli effetti concessi dalla magia '
+            'druidica: predice il tempo atmosferico locale per le successive '
+            '24 ore, fa sbocciare o maturare istantaneamente un fiore, un '
+            'seme o un baccello, crea un effetto sensoriale naturale '
+            'innocuo oppure accende o spegne una candela, una torcia o un '
+            'piccolo fuoco da campo.',
+      ),
+      ownerId: SpellIds.druidcraft,
+    ),
+    level: 0,
+    school: SpellSchool.transmutation,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 9,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.instantaneous,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.special,
+      },
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'druidcraft_minor_nature_effect',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'predict_weather_24_hours',
+          'open_or_close_plant',
+          'harmless_natural_sensory_effect',
+          'light_or_extinguish_small_flame',
+        },
+      ),
+    ],
+    classIds: {
+      'druid',
+    },
+  ),
+  SpellIds.eldritchBlast: SpellDefinition(
+    id: SpellIds.eldritchBlast,
+    content: RuleContent(
+      id: SpellIds.eldritchBlast,
+      name: 'Deflagrazione Occulta',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Un raggio di energia crepitante colpisce una creatura entro gittata.',
+        details:
+            'L’incantatore scaglia un raggio di energia crepitante contro una '
+            'creatura entro gittata ed effettua un attacco a distanza con '
+            'incantesimo. Se colpisce, il bersaglio subisce 1d10 danni da '
+            'forza. L’incantesimo crea più raggi ai livelli superiori: due '
+            'raggi al 5° livello, tre all’11° livello e quattro al 17° livello. '
+            'Ogni raggio richiede un tiro per colpire separato e può bersagliare '
+            'la stessa creatura o creature diverse.',
+      ),
+      ownerId: SpellIds.eldritchBlast,
+    ),
+    level: 0,
+    school: SpellSchool.evocation,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 36,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.instantaneous,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.creature,
+      },
+      maximumTargets: 1,
+    ),
+    attackType: SpellAttackType.ranged,
+    damage: [
+      SpellDamage(
+        dice: '1d10',
+        type: SpellDamageType.force,
+      ),
+    ],
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'eldritch_blast_multiple_beams',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'beam_count_1_base_2_at_5_3_at_11_4_at_17',
+          'separate_attack_roll_for_each_beam',
+          'beams_can_target_same_or_different_creatures',
+        },
+      ),
+    ],
+    classIds: {
+      'warlock',
+    },
+  ),
+  SpellIds.friends: SpellDefinition(
+    id: SpellIds.friends,
+    content: RuleContent(
+      id: SpellIds.friends,
+      name: 'Amicizia',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Conferisce vantaggio alle prove di Carisma contro una creatura non ostile.',
+        details:
+            'Per la durata dell’incantesimo l’incantatore dispone di vantaggio '
+            'alle prove di Carisma rivolte contro una creatura a sua scelta '
+            'che non sia ostile nei suoi confronti. Quando l’incantesimo '
+            'termina, la creatura capisce che l’incantatore ha usato la magia '
+            'per influenzare il suo umore e potrebbe diventare ostile.',
+      ),
+      ownerId: SpellIds.friends,
+    ),
+    level: 0,
+    school: SpellSchool.enchantment,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.self,
+    ),
+    components: SpellComponents(
+      somatic: true,
+      materials: [
+        SpellMaterialComponent(
+          description: 'Una piccola quantità di trucco da applicare al volto.',
+        ),
+      ],
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.minute,
+      amount: 1,
+      concentration: true,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.self,
+      },
+      maximumTargets: 1,
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'friends_charisma_advantage',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'advantage_on_charisma_checks_against_one_nonhostile_creature',
+          'target_knows_magic_was_used_when_spell_ends',
+          'target_may_become_hostile_after_spell_ends',
+        },
+      ),
+    ],
+    classIds: {
+      'bard',
+      'sorcerer',
+      'warlock',
+      'wizard',
+    },
+  ),
+  SpellIds.guidance: SpellDefinition(
+    id: SpellIds.guidance,
+    content: RuleContent(
+      id: SpellIds.guidance,
+      name: 'Guida',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Concede a una creatura un bonus di 1d4 a una prova di caratteristica.',
+        details:
+            'L’incantatore tocca una creatura consenziente. Una volta prima '
+            'che l’incantesimo termini, il bersaglio può tirare 1d4 e '
+            'aggiungere il risultato a una prova di caratteristica a sua '
+            'scelta. Può tirare il dado prima o dopo avere effettuato la '
+            'prova, poi l’incantesimo termina.',
+      ),
+      ownerId: SpellIds.guidance,
+    ),
+    level: 0,
+    school: SpellSchool.divination,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.touch,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.minute,
+      amount: 1,
+      concentration: true,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.willingCreature,
+      },
+      maximumTargets: 1,
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'guidance_ability_check_bonus',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'target_adds_1d4_to_one_ability_check',
+          'can_roll_before_or_after_ability_check',
+          'spell_ends_after_bonus_is_used',
+        },
+      ),
+    ],
+    classIds: {
+      'cleric',
+      'druid',
+    },
+  ),
+  SpellIds.light: SpellDefinition(
+    id: SpellIds.light,
+    content: RuleContent(
+      id: SpellIds.light,
+      name: 'Luce',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary: 'Fa risplendere un oggetto e illumina l’area circostante.',
+        details:
+            'L’incantatore tocca un oggetto non più grande di 3 metri in ogni '
+            'dimensione. Finché l’incantesimo non termina, l’oggetto emana luce '
+            'intensa entro 6 metri e luce fioca per altri 6 metri. La luce può '
+            'essere colorata a scelta dell’incantatore. Coprire completamente '
+            'l’oggetto con qualcosa di opaco blocca la luce. L’incantesimo '
+            'termina se viene lanciato di nuovo o se l’incantatore lo interrompe '
+            'con un’azione. Se l’oggetto è impugnato o posseduto da una creatura '
+            'ostile, quella creatura può effettuare un tiro salvezza su '
+            'Destrezza per evitare l’incantesimo.',
+      ),
+      ownerId: SpellIds.light,
+    ),
+    level: 0,
+    school: SpellSchool.evocation,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.touch,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      materials: [
+        SpellMaterialComponent(
+          description: 'Una lucciola o del muschio fosforescente.',
+        ),
+      ],
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.hour,
+      amount: 1,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.object,
+      },
+      maximumTargets: 1,
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'light_illuminated_object',
+        type: SpellPersistentEffectType.createdObject,
+        ruleTags: {
+          'object_sheds_bright_light_6_meters_and_dim_light_6_meters',
+          'opaque_cover_blocks_light',
+          'hostile_holder_gets_dexterity_save',
+          'ends_if_cast_again_or_dismissed_as_action',
+        },
+      ),
+    ],
+    classIds: {
+      'bard',
+      'cleric',
+      'sorcerer',
+      'wizard',
+    },
+  ),
+  SpellIds.mageHand: SpellDefinition(
+    id: SpellIds.mageHand,
+    content: RuleContent(
+      id: SpellIds.mageHand,
+      name: 'Mano Magica',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Crea una mano spettrale fluttuante che può manipolare oggetti.',
+        details:
+            'Una mano spettrale fluttuante appare in un punto entro gittata. '
+            'La mano permane per la durata dell’incantesimo o finché '
+            'l’incantatore non la congeda con un’azione. La mano svanisce se '
+            'si trova a più di 9 metri dall’incantatore o se l’incantesimo '
+            'viene lanciato di nuovo. L’incantatore può usare la sua azione '
+            'per controllarla, manipolare un oggetto, aprire una porta o un '
+            'contenitore non chiuso a chiave, recuperare o riporre un oggetto '
+            'da un contenitore aperto o versare il contenuto di una fiala. '
+            'La mano non può attaccare, attivare oggetti magici o trasportare '
+            'più di 5 kg.',
+      ),
+      ownerId: SpellIds.mageHand,
+    ),
+    level: 0,
+    school: SpellSchool.conjuration,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 9,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.minute,
+      amount: 1,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.special,
+      },
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'mage_hand_spectral_hand',
+        type: SpellPersistentEffectType.createdObject,
+        ruleTags: {
+          'creates_spectral_hand_within_range',
+          'caster_can_control_hand_with_action',
+          'hand_cannot_attack_activate_magic_items_or_carry_more_than_5_kg',
+          'hand_vanishes_if_more_than_9_meters_from_caster_or_spell_recast',
+        },
+      ),
+    ],
+    classIds: {
+      'bard',
+      'sorcerer',
+      'warlock',
+      'wizard',
+    },
+  ),
+  SpellIds.mending: SpellDefinition(
+    id: SpellIds.mending,
+    content: RuleContent(
+      id: SpellIds.mending,
+      name: 'Riparare',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary: 'Ripara una singola crepa o uno squarcio in un oggetto.',
+        details:
+            'Questo incantesimo ripara una singola crepa o uno squarcio in '
+            'un oggetto toccato dall’incantatore, purché la rottura non sia '
+            'più grande di 30 cm in ogni dimensione. L’incantesimo può '
+            'riparare fisicamente un oggetto magico o un costrutto, ma non '
+            'può ripristinare la magia di un simile oggetto.',
+      ),
+      ownerId: SpellIds.mending,
+    ),
+    level: 0,
+    school: SpellSchool.transmutation,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.minute,
+      amount: 1,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.touch,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+      materials: [
+        SpellMaterialComponent(
+          description: 'Due calamite.',
+        ),
+      ],
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.instantaneous,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.object,
+      },
+      maximumTargets: 1,
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'mending_repair_break',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'repairs_single_break_or_tear_up_to_30_cm',
+          'can_physically_repair_magic_item_or_construct',
+          'does_not_restore_magic',
+        },
+      ),
+    ],
+    classIds: {
+      'bard',
+      'cleric',
+      'druid',
+      'sorcerer',
+      'wizard',
+    },
+  ),
+  SpellIds.message: SpellDefinition(
+    id: SpellIds.message,
+    content: RuleContent(
+      id: SpellIds.message,
+      name: 'Messaggio',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary: 'Invia un sussurro magico a una creatura entro gittata.',
+        details:
+            'L’incantatore punta l’indice verso una creatura entro gittata e '
+            'sussurra un messaggio. Il bersaglio, e soltanto il bersaglio, '
+            'sente il messaggio e può rispondere con un sussurro udibile solo '
+            'dall’incantatore. L’incantesimo può attraversare ostacoli, ma è '
+            'bloccato da silenzio magico, 30 cm di pietra, 2,5 cm di metallo '
+            'comune, una sottile lamina di piombo o 90 cm di legno.',
+      ),
+      ownerId: SpellIds.message,
+    ),
+    level: 0,
+    school: SpellSchool.transmutation,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 36,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+      materials: [
+        SpellMaterialComponent(
+          description: 'Un frammento di un filo di rame.',
+        ),
+      ],
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.round,
+      amount: 1,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.creature,
+      },
+      maximumTargets: 1,
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'message_private_whisper',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'target_hears_message_and_can_reply_privately',
+          'can_pass_through_some_barriers',
+          'blocked_by_magical_silence_stone_metal_lead_or_wood_limits',
+        },
+      ),
+    ],
+    classIds: {
+      'bard',
+      'sorcerer',
+      'wizard',
+    },
+  ),
+  SpellIds.poisonSpray: SpellDefinition(
+    id: SpellIds.poisonSpray,
+    content: RuleContent(
+      id: SpellIds.poisonSpray,
+      name: 'Spruzzo Velenoso',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary: 'Proietta veleno contro una creatura vicina.',
+        details:
+            'L’incantatore allunga la mano verso una creatura entro gittata e '
+            'proietta uno sbuffo di gas nocivo dal palmo. La creatura deve '
+            'superare un tiro salvezza su Costituzione o subire 1d12 danni da '
+            'veleno. I danni aumentano a 2d12 al 5° livello, 3d12 all’11° '
+            'livello e 4d12 al 17° livello.',
+      ),
+      ownerId: SpellIds.poisonSpray,
+    ),
+    level: 0,
+    school: SpellSchool.conjuration,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 3,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.instantaneous,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.creature,
+      },
+      maximumTargets: 1,
+    ),
+    damage: [
+      SpellDamage(
+        dice: '1d12',
+        type: SpellDamageType.poison,
+      ),
+    ],
+    scaling: SpellScaling(
+      type: SpellScalingType.characterLevel,
+      steps: [
+        SpellScalingStep(
+          threshold: 5,
+          damageDice: '2d12',
+        ),
+        SpellScalingStep(
+          threshold: 11,
+          damageDice: '3d12',
+        ),
+        SpellScalingStep(
+          threshold: 17,
+          damageDice: '4d12',
+        ),
+      ],
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'poison_spray_constitution_save',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'target_makes_constitution_saving_throw',
+          'no_damage_on_success',
+        },
+      ),
+    ],
+    classIds: {
+      'druid',
+      'sorcerer',
+      'warlock',
+      'wizard',
+    },
+  ),
+  SpellIds.prestidigitation: SpellDefinition(
+    id: SpellIds.prestidigitation,
+    content: RuleContent(
+      id: SpellIds.prestidigitation,
+      name: 'Prestidigitazione',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary: 'Produce piccoli effetti magici innocui e temporanei.',
+        details:
+            'Questo incantesimo è un trucco magico minore. L’incantatore crea '
+            'un effetto magico entro gittata: un effetto sensoriale innocuo, '
+            'accende o spegne una piccola fiamma, pulisce o sporca un oggetto '
+            'non più grande di 30 dm cubi, raffredda, riscalda o insaporisce '
+            'materiale non vivente, fa comparire un colore, marchio o simbolo '
+            'per 1 ora, oppure crea un piccolo gingillo non magico o immagine '
+            'illusoria che dura fino alla fine del turno successivo. Può avere '
+            'fino a tre effetti non istantanei attivi alla volta.',
+      ),
+      ownerId: SpellIds.prestidigitation,
+    ),
+    level: 0,
+    school: SpellSchool.transmutation,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 3,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.hour,
+      amount: 1,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.special,
+      },
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'prestidigitation_minor_magic_effects',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'harmless_sensory_effect',
+          'light_or_extinguish_small_flame',
+          'clean_or_soil_small_object',
+          'chill_warm_or_flavor_nonliving_material',
+          'mark_symbol_or_color_for_1_hour',
+          'create_small_nonmagical_trinket_or_illusory_image',
+          'up_to_three_non_instantaneous_effects_active',
+        },
+      ),
+    ],
+    classIds: {
+      'bard',
+      'sorcerer',
+      'warlock',
+      'wizard',
+    },
+  ),
+  SpellIds.produceFlame: SpellDefinition(
+    id: SpellIds.produceFlame,
+    content: RuleContent(
+      id: SpellIds.produceFlame,
+      name: 'Produrre Fiamma',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Crea una fiamma nella mano che illumina e può essere scagliata.',
+        details:
+            'Una fiamma tremolante compare nella mano dell’incantatore. La '
+            'fiamma resta per la durata, non danneggia l’incantatore o il suo '
+            'equipaggiamento e produce luce intensa entro 3 metri e luce fioca '
+            'per altri 3 metri. L’incantatore può usare l’azione per scagliare '
+            'la fiamma contro una creatura entro 9 metri, effettuando un '
+            'attacco a distanza con incantesimo. Se colpisce, il bersaglio '
+            'subisce 1d8 danni da fuoco. I danni aumentano a 2d8 al 5° '
+            'livello, 3d8 all’11° livello e 4d8 al 17° livello.',
+      ),
+      ownerId: SpellIds.produceFlame,
+    ),
+    level: 0,
+    school: SpellSchool.conjuration,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.self,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.minute,
+      amount: 10,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.self,
+      },
+      maximumTargets: 1,
+    ),
+    attackType: SpellAttackType.ranged,
+    damage: [
+      SpellDamage(
+        dice: '1d8',
+        type: SpellDamageType.fire,
+      ),
+    ],
+    scaling: SpellScaling(
+      type: SpellScalingType.characterLevel,
+      steps: [
+        SpellScalingStep(
+          threshold: 5,
+          damageDice: '2d8',
+        ),
+        SpellScalingStep(
+          threshold: 11,
+          damageDice: '3d8',
+        ),
+        SpellScalingStep(
+          threshold: 17,
+          damageDice: '4d8',
+        ),
+      ],
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'produce_flame_hand_flame',
+        type: SpellPersistentEffectType.createdObject,
+        ruleTags: {
+          'flame_in_casters_hand',
+          'bright_light_3_meters_dim_light_3_meters',
+          'can_hurl_flame_as_ranged_spell_attack_to_9_meters',
+          'spell_ends_when_flame_is_hurled_or_recast',
+        },
+      ),
+    ],
+    classIds: {
+      'druid',
+    },
+  ),
+  SpellIds.rayOfFrost: SpellDefinition(
+    id: SpellIds.rayOfFrost,
+    content: RuleContent(
+      id: SpellIds.rayOfFrost,
+      name: 'Raggio di Gelo',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Un raggio gelido danneggia una creatura e ne riduce la velocità.',
+        details:
+            'Un raggio gelido di luce azzurra e biancastra sfreccia verso una '
+            'creatura entro gittata. L’incantatore effettua un attacco a '
+            'distanza con incantesimo. Se colpisce, il bersaglio subisce 1d8 '
+            'danni da freddo e la sua velocità è ridotta di 3 metri fino '
+            'all’inizio del turno successivo dell’incantatore. I danni '
+            'aumentano a 2d8 al 5° livello, 3d8 all’11° livello e 4d8 al '
+            '17° livello.',
+      ),
+      ownerId: SpellIds.rayOfFrost,
+    ),
+    level: 0,
+    school: SpellSchool.evocation,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 18,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.instantaneous,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.creature,
+      },
+      maximumTargets: 1,
+    ),
+    attackType: SpellAttackType.ranged,
+    damage: [
+      SpellDamage(
+        dice: '1d8',
+        type: SpellDamageType.cold,
+      ),
+    ],
+    scaling: SpellScaling(
+      type: SpellScalingType.characterLevel,
+      steps: [
+        SpellScalingStep(
+          threshold: 5,
+          damageDice: '2d8',
+        ),
+        SpellScalingStep(
+          threshold: 11,
+          damageDice: '3d8',
+        ),
+        SpellScalingStep(
+          threshold: 17,
+          damageDice: '4d8',
+        ),
+      ],
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'ray_of_frost_speed_reduction',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'target_speed_reduced_by_3_meters_until_start_of_casters_next_turn',
+        },
+      ),
+    ],
+    classIds: {
+      'sorcerer',
+      'wizard',
+    },
+  ),
+  SpellIds.resistance: SpellDefinition(
+    id: SpellIds.resistance,
+    content: RuleContent(
+      id: SpellIds.resistance,
+      name: 'Resistenza',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary: 'Concede a una creatura un bonus di 1d4 a un tiro salvezza.',
+        details:
+            'L’incantatore tocca una creatura consenziente. Una volta prima '
+            'che l’incantesimo termini, il bersaglio può tirare 1d4 e '
+            'aggiungere il risultato a un tiro salvezza a sua scelta. Può '
+            'tirare il dado prima o dopo avere effettuato il tiro salvezza, '
+            'poi l’incantesimo termina.',
+      ),
+      ownerId: SpellIds.resistance,
+    ),
+    level: 0,
+    school: SpellSchool.abjuration,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.touch,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+      materials: [
+        SpellMaterialComponent(
+          description: 'Un mantello in miniatura.',
+        ),
+      ],
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.minute,
+      amount: 1,
+      concentration: true,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.willingCreature,
+      },
+      maximumTargets: 1,
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'resistance_saving_throw_bonus',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'target_adds_1d4_to_one_saving_throw',
+          'can_roll_before_or_after_saving_throw',
+          'spell_ends_after_bonus_is_used',
+        },
+      ),
+    ],
+    classIds: {
+      'cleric',
+      'druid',
+    },
+  ),
+  SpellIds.sacredFlame: SpellDefinition(
+    id: SpellIds.sacredFlame,
+    content: RuleContent(
+      id: SpellIds.sacredFlame,
+      name: 'Fiamma Sacra',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Un bagliore simile a una fiamma colpisce una creatura visibile.',
+        details:
+            'Un bagliore simile a una fiamma scende fino a una creatura entro '
+            'gittata che l’incantatore sia in grado di vedere. Il bersaglio '
+            'deve superare un tiro salvezza su Destrezza o subire 1d8 danni '
+            'radianti. Il bersaglio non trae beneficio dalla copertura per '
+            'questo tiro salvezza. I danni aumentano a 2d8 al 5° livello, '
+            '3d8 all’11° livello e 4d8 al 17° livello.',
+      ),
+      ownerId: SpellIds.sacredFlame,
+    ),
+    level: 0,
+    school: SpellSchool.evocation,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 18,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.instantaneous,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.creature,
+      },
+      maximumTargets: 1,
+    ),
+    damage: [
+      SpellDamage(
+        dice: '1d8',
+        type: SpellDamageType.radiant,
+      ),
+    ],
+    scaling: SpellScaling(
+      type: SpellScalingType.characterLevel,
+      steps: [
+        SpellScalingStep(
+          threshold: 5,
+          damageDice: '2d8',
+        ),
+        SpellScalingStep(
+          threshold: 11,
+          damageDice: '3d8',
+        ),
+        SpellScalingStep(
+          threshold: 17,
+          damageDice: '4d8',
+        ),
+      ],
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'sacred_flame_dexterity_save_no_cover',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'target_makes_dexterity_saving_throw',
+          'target_gets_no_benefit_from_cover_for_save',
+          'no_damage_on_success',
+        },
+      ),
+    ],
+    classIds: {
+      'cleric',
+    },
+  ),
+  SpellIds.shillelagh: SpellDefinition(
+    id: SpellIds.shillelagh,
+    content: RuleContent(
+      id: SpellIds.shillelagh,
+      name: 'Randello Incantato',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Potenzia magicamente un randello o bastone ferrato impugnato.',
+        details: 'Il legno di un randello o di un bastone ferrato impugnato '
+            'dall’incantatore viene infuso del potere della natura. Per la '
+            'durata dell’incantesimo l’incantatore può usare la propria '
+            'caratteristica da incantatore invece di Forza per i tiri per '
+            'colpire e per i danni degli attacchi in mischia con quell’arma, '
+            'il dado dei danni dell’arma diventa un d8 e l’arma diventa '
+            'magica. L’incantesimo termina se viene lanciato di nuovo o se '
+            'l’incantatore lascia andare l’arma.',
+      ),
+      ownerId: SpellIds.shillelagh,
+    ),
+    level: 0,
+    school: SpellSchool.transmutation,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.bonusAction,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.touch,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+      materials: [
+        SpellMaterialComponent(
+          description:
+              'Vischio, una foglia di trifoglio e un randello o un bastone ferrato.',
+        ),
+      ],
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.minute,
+      amount: 1,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.object,
+      },
+      maximumTargets: 1,
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'shillelagh_empowered_weapon',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'club_or_quarterstaff_becomes_magical',
+          'weapon_damage_die_becomes_d8',
+          'use_spellcasting_ability_for_attack_and_damage',
+          'ends_if_cast_again_or_caster_lets_go_of_weapon',
+        },
+      ),
+    ],
+    classIds: {
+      'druid',
+    },
+  ),
+  SpellIds.shockingGrasp: SpellDefinition(
+    id: SpellIds.shockingGrasp,
+    content: RuleContent(
+      id: SpellIds.shockingGrasp,
+      name: 'Stretta Folgorante',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Un fulmine scaturisce dalla mano e impedisce reazioni al bersaglio.',
+        details:
+            'Un fulmine si sprigiona dalla mano dell’incantatore contro una '
+            'creatura toccata. L’incantatore effettua un attacco in mischia '
+            'con incantesimo, con vantaggio se il bersaglio indossa '
+            'un’armatura di metallo. Se colpisce, il bersaglio subisce 1d8 '
+            'danni da fulmine e non può effettuare reazioni fino all’inizio '
+            'del suo turno successivo. I danni aumentano a 2d8 al 5° livello, '
+            '3d8 all’11° livello e 4d8 al 17° livello.',
+      ),
+      ownerId: SpellIds.shockingGrasp,
+    ),
+    level: 0,
+    school: SpellSchool.evocation,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.touch,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.instantaneous,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.creature,
+      },
+      maximumTargets: 1,
+    ),
+    attackType: SpellAttackType.melee,
+    damage: [
+      SpellDamage(
+        dice: '1d8',
+        type: SpellDamageType.lightning,
+      ),
+    ],
+    scaling: SpellScaling(
+      type: SpellScalingType.characterLevel,
+      steps: [
+        SpellScalingStep(
+          threshold: 5,
+          damageDice: '2d8',
+        ),
+        SpellScalingStep(
+          threshold: 11,
+          damageDice: '3d8',
+        ),
+        SpellScalingStep(
+          threshold: 17,
+          damageDice: '4d8',
+        ),
+      ],
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'shocking_grasp_no_reactions',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'advantage_if_target_wears_metal_armor',
+          'target_cannot_take_reactions_until_start_of_its_next_turn',
+        },
+      ),
+    ],
+    classIds: {
+      'sorcerer',
+      'wizard',
+    },
+  ),
+  SpellIds.spareTheDying: SpellDefinition(
+    id: SpellIds.spareTheDying,
+    content: RuleContent(
+      id: SpellIds.spareTheDying,
+      name: 'Salvare i Morenti',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary: 'Stabilizza una creatura vivente a 0 punti ferita.',
+        details: 'L’incantatore tocca una creatura vivente a 0 punti ferita. '
+            'Quella creatura diventa stabile. Questo incantesimo non ha '
+            'effetto sui costrutti o sui non morti.',
+      ),
+      ownerId: SpellIds.spareTheDying,
+    ),
+    level: 0,
+    school: SpellSchool.necromancy,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.touch,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.instantaneous,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.creature,
+      },
+      maximumTargets: 1,
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'spare_the_dying_stabilize',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'stabilizes_living_creature_at_0_hit_points',
+          'no_effect_on_constructs_or_undead',
+        },
+      ),
+    ],
+    classIds: {
+      'cleric',
+    },
+  ),
+  SpellIds.thaumaturgy: SpellDefinition(
+    id: SpellIds.thaumaturgy,
+    content: RuleContent(
+      id: SpellIds.thaumaturgy,
+      name: 'Taumaturgia',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary: 'Genera una piccola manifestazione di potere soprannaturale.',
+        details:
+            'L’incantatore genera una meraviglia minore entro gittata: la sua '
+            'voce può risuonare più forte, le fiamme possono tremolare, '
+            'illuminarsi, affievolirsi o cambiare colore, il terreno può '
+            'tremare, può creare un suono istantaneo, far aprire o chiudere '
+            'di colpo una porta o una finestra non chiusa a chiave, oppure '
+            'alterare temporaneamente l’aspetto dei propri occhi. Può avere '
+            'fino a tre effetti da 1 minuto attivi alla volta.',
+      ),
+      ownerId: SpellIds.thaumaturgy,
+    ),
+    level: 0,
+    school: SpellSchool.transmutation,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 9,
+    ),
+    components: SpellComponents(
+      verbal: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.minute,
+      amount: 1,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.special,
+      },
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'thaumaturgy_minor_wonder',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'booming_voice',
+          'alter_flames',
+          'harmless_tremors',
+          'instantaneous_sound',
+          'open_or_close_unlocked_door_or_window',
+          'alter_eye_appearance',
+          'up_to_three_one_minute_effects_active',
+        },
+      ),
+    ],
+    classIds: {
+      'cleric',
+    },
+  ),
+  SpellIds.trueStrike: SpellDefinition(
+    id: SpellIds.trueStrike,
+    content: RuleContent(
+      id: SpellIds.trueStrike,
+      name: 'Colpo Accurato',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Concede vantaggio al prossimo attacco contro un bersaglio scelto.',
+        details:
+            'L’incantatore punta il dito contro un bersaglio entro gittata. '
+            'La magia gli conferisce una fugace percezione delle difese del '
+            'bersaglio. Nel turno successivo dell’incantatore, il suo primo '
+            'tiro per colpire contro quel bersaglio dispone di vantaggio, '
+            'purché l’incantesimo non sia terminato.',
+      ),
+      ownerId: SpellIds.trueStrike,
+    ),
+    level: 0,
+    school: SpellSchool.divination,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 9,
+    ),
+    components: SpellComponents(
+      somatic: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.round,
+      amount: 1,
+      concentration: true,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.creature,
+      },
+      maximumTargets: 1,
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'true_strike_next_attack_advantage',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'first_attack_roll_next_turn_against_target_has_advantage',
+          'requires_concentration_until_next_turn',
+        },
+      ),
+    ],
+    classIds: {
+      'bard',
+      'sorcerer',
+      'warlock',
+      'wizard',
+    },
+  ),
+  SpellIds.viciousMockery: SpellDefinition(
+    id: SpellIds.viciousMockery,
+    content: RuleContent(
+      id: SpellIds.viciousMockery,
+      name: 'Beffa Crudele',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Insulti incantati danneggiano la mente e ostacolano il prossimo attacco.',
+        details: 'L’incantatore pronuncia una sequenza di insulti mescolati a '
+            'sottili ammaliamenti contro una creatura entro gittata che sia '
+            'in grado di vedere. Se il bersaglio può udire l’incantatore, deve '
+            'superare un tiro salvezza su Saggezza o subire 1d4 danni psichici '
+            'e avere svantaggio al prossimo tiro per colpire che effettua '
+            'prima della fine del suo turno successivo. I danni aumentano a '
+            '2d4 al 5° livello, 3d4 all’11° livello e 4d4 al 17° livello.',
+      ),
+      ownerId: SpellIds.viciousMockery,
+    ),
+    level: 0,
+    school: SpellSchool.enchantment,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 18,
+    ),
+    components: SpellComponents(
+      verbal: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.instantaneous,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.creature,
+      },
+      maximumTargets: 1,
+    ),
+    damage: [
+      SpellDamage(
+        dice: '1d4',
+        type: SpellDamageType.psychic,
+      ),
+    ],
+    scaling: SpellScaling(
+      type: SpellScalingType.characterLevel,
+      steps: [
+        SpellScalingStep(
+          threshold: 5,
+          damageDice: '2d4',
+        ),
+        SpellScalingStep(
+          threshold: 11,
+          damageDice: '3d4',
+        ),
+        SpellScalingStep(
+          threshold: 17,
+          damageDice: '4d4',
+        ),
+      ],
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'vicious_mockery_wisdom_save_disadvantage',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'target_must_hear_caster',
+          'target_makes_wisdom_saving_throw',
+          'disadvantage_on_next_attack_before_end_of_next_turn',
+          'no_damage_on_success',
+        },
+      ),
+    ],
+    classIds: {
+      'bard',
+    },
+  ),
 };
 
 SpellDefinition? spellDefinitionFor(String id) => spellDefinitions[id];
