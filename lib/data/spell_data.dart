@@ -1129,6 +1129,10 @@ abstract final class SpellIds {
   static const hypnoticPattern = 'hypnotic_pattern';
   static const haste = 'haste';
   static const fly = 'fly';
+  static const phantasmalKiller = 'phantasmal_killer';
+  static const auraOfPurity = 'aura_of_purity';
+  static const auraOfLife = 'aura_of_life';
+  static const compulsion = 'compulsion';
 }
 
 const Map<String, SpellDefinition> spellDefinitions = {
@@ -15383,6 +15387,276 @@ const Map<String, SpellDefinition> spellDefinitions = {
       'sorcerer',
       'warlock',
       'wizard',
+    },
+  ),
+  SpellIds.phantasmalKiller: SpellDefinition(
+    id: SpellIds.phantasmalKiller,
+    content: RuleContent(
+      id: SpellIds.phantasmalKiller,
+      name: 'Allucinazione Mortale',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Trasforma gli incubi di una creatura in un’illusione terrificante che può infliggere danni psichici.',
+        details:
+            'L’incantatore attinge agli incubi di una creatura entro gittata '
+            'che sia in grado di vedere, creando una manifestazione illusoria '
+            'delle sue paure più profonde, visibile soltanto al bersaglio. La '
+            'creatura deve effettuare un tiro salvezza su Saggezza. Se lo '
+            'fallisce, diventa spaventata per la durata dell’incantesimo. Alla '
+            'fine di ogni suo turno deve superare un nuovo tiro salvezza su '
+            'Saggezza, altrimenti subisce 4d10 danni psichici. Se supera il '
+            'tiro salvezza, l’incantesimo termina. Usando uno slot di 5° '
+            'livello o superiore, i danni aumentano di 1d10 per ogni livello '
+            'di slot superiore al 4°.',
+      ),
+      ownerId: SpellIds.phantasmalKiller,
+    ),
+    level: 4,
+    school: SpellSchool.illusion,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 36,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.minute,
+      amount: 1,
+      concentration: true,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.creature,
+      },
+      maximumTargets: 1,
+    ),
+    damage: [
+      SpellDamage(
+        dice: '4d10',
+        type: SpellDamageType.psychic,
+      ),
+    ],
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'phantasmal_killer_manifested_nightmare',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'targets_one_creature_seen_within_range',
+          'illusion_is_visible_only_to_target',
+          'target_makes_wisdom_save',
+          'failed_initial_save_frightens_target',
+          'target_repeats_wisdom_save_at_end_of_each_turn',
+          'failed_repeat_save_deals_4d10_psychic_damage',
+          'successful_repeat_save_ends_spell',
+          'slot_level_above_4_increases_damage_by_1d10_per_slot_level',
+          'requires_concentration',
+        },
+      ),
+    ],
+    classIds: {
+      'wizard',
+    },
+  ),
+  SpellIds.auraOfPurity: SpellDefinition(
+    id: SpellIds.auraOfPurity,
+    content: RuleContent(
+      id: SpellIds.auraOfPurity,
+      name: 'Aura di Purezza',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Emana un’aura purificatrice che protegge gli alleati da veleno, malattie e numerose condizioni.',
+        details:
+            'L’incantatore emana un’aura di energia purificatrice entro un '
+            'raggio di 9 metri. L’aura è centrata su di lui e si muove assieme '
+            'a lui. Ogni creatura non ostile entro l’aura, incluso '
+            'l’incantatore, non può diventare malata, dispone di resistenza ai '
+            'danni da veleno e ha vantaggio ai tiri salvezza contro gli effetti '
+            'che provocano le condizioni accecato, affascinato, assordato, '
+            'avvelenato, paralizzato, spaventato o stordito.',
+      ),
+      ownerId: SpellIds.auraOfPurity,
+    ),
+    level: 4,
+    school: SpellSchool.abjuration,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.self,
+    ),
+    components: SpellComponents(
+      verbal: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.minute,
+      amount: 10,
+      concentration: true,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.self,
+        SpellTargetType.creatures,
+        SpellTargetType.area,
+      },
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'aura_of_purity_protective_aura',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'creates_9_meter_radius_aura_centered_on_caster',
+          'aura_moves_with_caster',
+          'affects_caster_and_non_hostile_creatures_in_aura',
+          'affected_creatures_cannot_become_diseased',
+          'affected_creatures_have_resistance_to_poison_damage',
+          'advantage_on_saves_against_blinded_charmed_deafened_poisoned_paralyzed_frightened_or_stunned',
+          'requires_concentration',
+        },
+      ),
+    ],
+    classIds: {
+      'paladin',
+    },
+  ),
+  SpellIds.auraOfLife: SpellDefinition(
+    id: SpellIds.auraOfLife,
+    content: RuleContent(
+      id: SpellIds.auraOfLife,
+      name: 'Aura di Vita',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Emana un’aura che protegge gli alleati dai danni necrotici e sostiene chi cade a 0 punti ferita.',
+        details:
+            'L’incantatore emana un’aura che preserva la vita entro un raggio '
+            'di 9 metri. L’aura è centrata su di lui e si muove assieme a lui. '
+            'Ogni creatura non ostile entro l’aura, incluso l’incantatore, '
+            'dispone di resistenza ai danni necrotici e il suo massimo dei '
+            'punti ferita non può essere ridotto. Inoltre, ogni creatura '
+            'vivente non ostile recupera 1 punto ferita quando inizia il '
+            'proprio turno entro l’aura con 0 punti ferita.',
+      ),
+      ownerId: SpellIds.auraOfLife,
+    ),
+    level: 4,
+    school: SpellSchool.abjuration,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.self,
+    ),
+    components: SpellComponents(
+      verbal: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.minute,
+      amount: 10,
+      concentration: true,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.self,
+        SpellTargetType.creatures,
+        SpellTargetType.area,
+      },
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'aura_of_life_life_preserving_aura',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'creates_9_meter_radius_aura_centered_on_caster',
+          'aura_moves_with_caster',
+          'affects_caster_and_non_hostile_creatures_in_aura',
+          'affected_creatures_have_resistance_to_necrotic_damage',
+          'affected_creatures_hit_point_maximum_cannot_be_reduced',
+          'living_non_hostile_creature_at_0_hp_recovers_1_hp_at_start_of_turn_in_aura',
+          'requires_concentration',
+        },
+      ),
+    ],
+    classIds: {
+      'paladin',
+    },
+  ),
+  SpellIds.compulsion: SpellDefinition(
+    id: SpellIds.compulsion,
+    content: RuleContent(
+      id: SpellIds.compulsion,
+      name: 'Compulsione',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Costringe le creature influenzate a muoversi nella direzione indicata dall’incantatore.',
+        details:
+            'Le creature scelte dall’incantatore entro gittata, che possano '
+            'sentirlo e che egli sia in grado di vedere, devono effettuare un '
+            'tiro salvezza su Saggezza. Una creatura immune alla condizione '
+            'affascinato supera automaticamente il tiro. Finché l’incantesimo '
+            'non termina, l’incantatore può usare un’azione bonus in ogni suo '
+            'turno per indicare una direzione orizzontale. Nel proprio turno '
+            'successivo, ogni bersaglio influenzato deve usare quanto più '
+            'movimento possibile in quella direzione, potendo agire prima di '
+            'muoversi. Dopo il movimento può ripetere il tiro salvezza su '
+            'Saggezza, terminando l’effetto in caso di successo. Un bersaglio '
+            'non deve entrare in un pericolo evidente, ma provoca normalmente '
+            'attacchi di opportunità durante il movimento.',
+      ),
+      ownerId: SpellIds.compulsion,
+    ),
+    level: 4,
+    school: SpellSchool.enchantment,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 9,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.minute,
+      amount: 1,
+      concentration: true,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.creatures,
+        SpellTargetType.area,
+      },
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'compulsion_directed_movement',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'caster_chooses_creatures_seen_and_heard_within_range',
+          'targets_make_wisdom_save',
+          'creatures_immune_to_charmed_automatically_succeed',
+          'caster_uses_bonus_action_to_designate_horizontal_direction',
+          'affected_targets_use_as_much_movement_as_possible_in_direction',
+          'target_can_take_action_before_forced_movement',
+          'target_repeats_wisdom_save_after_movement',
+          'successful_repeat_save_ends_effect_for_target',
+          'target_does_not_move_into_obvious_hazard',
+          'forced_movement_can_provoke_opportunity_attacks',
+          'requires_concentration',
+        },
+      ),
+    ],
+    classIds: {
+      'bard',
     },
   ),
 };
