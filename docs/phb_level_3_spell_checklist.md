@@ -34,10 +34,10 @@ Checklist di lavoro per espandere `lib/data/spell_data.dart` con gli incantesimi
 - [x] Luce Diurna
 - [x] Manto del Crociato
 - [x] Morte Apparente
-- [ ] Muro di Vento
-- [ ] Nube Maleodorante
-- [ ] Palla di Fuoco
-- [ ] Parlare con i Morti
+- [x] Muro di Vento
+- [x] Nube Maleodorante
+- [x] Palla di Fuoco
+- [x] Parlare con i Morti
 - [ ] Parlare con i Vegetali
 - [ ] Parola Guaritrice di Massa
 - [ ] Paura

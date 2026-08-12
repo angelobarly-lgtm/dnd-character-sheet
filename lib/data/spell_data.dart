@@ -1112,6 +1112,9 @@ abstract final class SpellIds {
   static const daylight = 'daylight';
   static const crusadersMantle = 'crusaders_mantle';
   static const feignDeath = 'feign_death';
+  static const windWall = 'wind_wall';
+  static const stinkingCloud = 'stinking_cloud';
+  static const speakWithDead = 'speak_with_dead';
 }
 
 const Map<String, SpellDefinition> spellDefinitions = {
@@ -14148,6 +14151,255 @@ const Map<String, SpellDefinition> spellDefinitions = {
       'cleric',
       'druid',
       'wizard',
+    },
+  ),
+  SpellIds.windWall: SpellDefinition(
+    id: SpellIds.windWall,
+    content: RuleContent(
+      id: SpellIds.windWall,
+      name: 'Muro di Vento',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Solleva un muro di vento che danneggia, disperde gas e devia i proiettili ordinari.',
+        details:
+            'Un muro di vento forte si solleva dal terreno in un punto entro '
+            'gittata. Può essere lungo fino a 15 metri, alto 4,5 metri e '
+            'spesso 30 cm; l’incantatore può modellarlo come preferisce, '
+            'purché formi un percorso continuo lungo il terreno. Quando il '
+            'muro appare, ogni creatura nella sua area effettua un tiro '
+            'salvezza su Forza. Se lo fallisce, subisce 3d8 danni contundenti; '
+            'se lo supera, subisce metà danni. Il vento forte tiene lontani '
+            'nebbia, fumo e altri gas. Le creature e gli oggetti volanti di '
+            'taglia Piccola o inferiore non possono attraversare il muro; i '
+            'materiali leggeri e non fissati volano verso l’alto. Frecce, '
+            'quadrelli e altri proiettili ordinari diretti contro bersagli '
+            'dietro il muro vengono deviati e mancano automaticamente, mentre '
+            'i proiettili molto grandi non sono influenzati. Le creature in '
+            'forma gassosa non possono attraversare il muro. Richiede '
+            'concentrazione.',
+      ),
+      ownerId: SpellIds.windWall,
+    ),
+    level: 3,
+    school: SpellSchool.evocation,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 36,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+      materials: [
+        SpellMaterialComponent(
+          description:
+              'Un minuscolo ventaglio e una piuma di origini esotiche.',
+        ),
+      ],
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.minute,
+      amount: 1,
+      concentration: true,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.point,
+        SpellTargetType.area,
+      },
+    ),
+    damage: [
+      SpellDamage(
+        dice: '3d8',
+        type: SpellDamageType.bludgeoning,
+      ),
+    ],
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'wind_wall_strong_wind_barrier',
+        type: SpellPersistentEffectType.zone,
+        ruleTags: {
+          'wall_up_to_15_meters_long_4_5_meters_high_0_3_meters_thick',
+          'wall_forms_continuous_path_along_ground',
+          'creatures_in_area_make_strength_save_when_wall_appears',
+          'failed_save_deals_3d8_bludgeoning_damage',
+          'successful_save_deals_half_damage',
+          'keeps_fog_smoke_and_other_gases_away',
+          'small_or_smaller_flying_creatures_and_objects_cannot_pass',
+          'light_unsecured_materials_fly_upward',
+          'ordinary_projectiles_aimed_behind_wall_automatically_miss',
+          'large_projectiles_are_not_affected',
+          'gaseous_creatures_cannot_pass',
+          'requires_concentration',
+        },
+      ),
+    ],
+    classIds: {
+      'druid',
+      'ranger',
+    },
+  ),
+  SpellIds.stinkingCloud: SpellDefinition(
+    id: SpellIds.stinkingCloud,
+    content: RuleContent(
+      id: SpellIds.stinkingCloud,
+      name: 'Nube Maleodorante',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Crea una nube nauseante e oscurante che può far sprecare l’azione alle creature al suo interno.',
+        details:
+            'L’incantatore crea una sfera del raggio di 6 metri composta da '
+            'gas nauseante giallastro, centrata su un punto entro gittata. La '
+            'nube si diffonde oltre gli angoli, oscura pesantemente la sua '
+            'area e rimane nell’aria per la durata. Ogni creatura situata '
+            'completamente all’interno della nube all’inizio del proprio turno '
+            'effettua un tiro salvezza su Costituzione contro veleno. Se lo '
+            'fallisce, spende l’azione di quel turno a vomitare in preda al '
+            'dolore. Le creature che non hanno bisogno di respirare o sono '
+            'immuni al veleno superano automaticamente il tiro salvezza. Un '
+            'vento moderato di almeno 15 km/h disperde la nube dopo 4 round; '
+            'un vento forte di almeno 30 km/h la disperde dopo 1 round. '
+            'Richiede concentrazione.',
+      ),
+      ownerId: SpellIds.stinkingCloud,
+    ),
+    level: 3,
+    school: SpellSchool.conjuration,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 27,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+      materials: [
+        SpellMaterialComponent(
+          description: 'Un uovo marcio o alcune foglie di cavolfiore.',
+        ),
+      ],
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.minute,
+      amount: 1,
+      concentration: true,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.point,
+        SpellTargetType.area,
+      },
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'stinking_cloud_nauseating_gas',
+        type: SpellPersistentEffectType.zone,
+        ruleTags: {
+          'creates_6_meter_radius_sphere_of_nauseating_gas',
+          'cloud_spreads_around_corners',
+          'area_is_heavily_obscured',
+          'only_creatures_completely_inside_at_turn_start_make_save',
+          'constitution_save_is_against_poison',
+          'failed_save_spends_turn_action_retching_and_reeling',
+          'creatures_that_do_not_breathe_automatically_succeed',
+          'creatures_immune_to_poison_automatically_succeed',
+          'moderate_wind_at_least_15_kmh_dispels_after_4_rounds',
+          'strong_wind_at_least_30_kmh_dispels_after_1_round',
+          'requires_concentration',
+        },
+      ),
+    ],
+    classIds: {
+      'bard',
+      'sorcerer',
+      'wizard',
+    },
+  ),
+  SpellIds.speakWithDead: SpellDefinition(
+    id: SpellIds.speakWithDead,
+    content: RuleContent(
+      id: SpellIds.speakWithDead,
+      name: 'Parlare con i Morti',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Conferisce a un cadavere una parvenza di vita per consentirgli di rispondere a cinque domande.',
+        details:
+            'L’incantatore conferisce una parvenza di vita e intelligenza a '
+            'un cadavere entro gittata, permettendogli di rispondere alle sue '
+            'domande. Il cadavere deve avere ancora una bocca e non deve essere '
+            'un non morto. L’incantesimo fallisce se il cadavere ne è già '
+            'stato bersaglio negli ultimi 10 giorni. Per la durata, '
+            'l’incantatore può porre al massimo cinque domande. Il cadavere '
+            'conosce soltanto ciò che sapeva in vita, inclusi i linguaggi; le '
+            'risposte sono generalmente brevi, criptiche o ripetitive. Non è '
+            'obbligato a rispondere sinceramente se è ostile o riconosce '
+            'l’incantatore come nemico. L’incantesimo non riporta l’anima nel '
+            'corpo, ma soltanto lo spirito animante: il cadavere non può '
+            'apprendere nuove informazioni, non sa cosa sia accaduto dopo la '
+            'morte e non può speculare sul futuro.',
+      ),
+      ownerId: SpellIds.speakWithDead,
+    ),
+    level: 3,
+    school: SpellSchool.necromancy,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 3,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+      materials: [
+        SpellMaterialComponent(
+          description: 'Incenso bruciato.',
+        ),
+      ],
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.minute,
+      amount: 10,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.object,
+        SpellTargetType.special,
+      },
+      maximumTargets: 1,
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'speak_with_dead_animating_spirit_answers',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'targets_one_corpse_with_a_mouth_within_3_meters',
+          'corpse_must_not_be_undead',
+          'fails_if_corpse_was_targeted_within_last_10_days',
+          'caster_can_ask_up_to_five_questions',
+          'corpse_knows_only_what_it_knew_in_life',
+          'corpse_retains_languages_known_in_life',
+          'answers_are_generally_brief_cryptic_or_repetitive',
+          'hostile_corpse_is_not_compelled_to_answer_truthfully',
+          'does_not_return_soul_to_body',
+          'corpse_cannot_learn_new_information',
+          'corpse_knows_nothing_after_its_death',
+          'corpse_cannot_speculate_about_future_events',
+          'duration_10_minutes',
+        },
+      ),
+    ],
+    classIds: {
+      'bard',
+      'cleric',
     },
   ),
 };
