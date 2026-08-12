@@ -1153,6 +1153,10 @@ abstract final class SpellIds {
   static const arcaneEye = 'arcane_eye';
   static const stoneskin = 'stoneskin';
   static const dimensionDoor = 'dimension_door';
+  static const staggeringSmite = 'staggering_smite';
+  static const graspingVine = 'grasping_vine';
+  static const mordenkainensPrivateSanctum = 'mordenkainens_private_sanctum';
+  static const stoneShape = 'stone_shape';
 }
 
 const Map<String, SpellDefinition> spellDefinitions = {
@@ -17216,6 +17220,305 @@ const Map<String, SpellDefinition> spellDefinitions = {
       'bard',
       'sorcerer',
       'warlock',
+      'wizard',
+    },
+  ),
+  SpellIds.staggeringSmite: SpellDefinition(
+    id: SpellIds.staggeringSmite,
+    content: RuleContent(
+      id: SpellIds.staggeringSmite,
+      name: 'Punizione Demoralizzante',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Potenzia il successivo attacco in mischia con danni psichici e un effetto debilitante.',
+        details:
+            'La prossima volta che l’incantatore colpisce una creatura con un '
+            'attacco con un’arma da mischia prima che l’incantesimo termini, '
+            'l’attacco infligge 4d6 danni psichici aggiuntivi. Il bersaglio '
+            'deve effettuare un tiro salvezza su Saggezza. Se lo fallisce, '
+            'subisce svantaggio ai tiri per colpire e alle prove di '
+            'caratteristica e non può effettuare reazioni fino alla fine del '
+            'proprio turno successivo.',
+      ),
+      ownerId: SpellIds.staggeringSmite,
+    ),
+    level: 4,
+    school: SpellSchool.evocation,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.bonusAction,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.self,
+    ),
+    components: SpellComponents(
+      verbal: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.minute,
+      amount: 1,
+      concentration: true,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.self,
+        SpellTargetType.creature,
+      },
+      maximumTargets: 1,
+    ),
+    savingThrow: SpellSavingThrow(
+      ability: SpellSavingThrowAbility.wisdom,
+      onSuccess: SpellSaveSuccess.partial,
+    ),
+    damage: [
+      SpellDamage(
+        dice: '4d6',
+        type: SpellDamageType.psychic,
+      ),
+    ],
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'staggering_smitemite_next_melee_hit',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'triggers_on_next_melee_weapon_hit_during_duration',
+          'hit_deals_4d6_extra_psychic_damage',
+          'target_makes_wisdom_save_after_hit',
+          'successful_save_avoids_only_secondary_effects',
+          'failed_save_causes_disadvantage_on_attack_rolls',
+          'failed_save_causes_disadvantage_on_ability_checks',
+          'failed_save_prevents_reactions',
+          'secondary_effects_end_after_targets_next_turn',
+          'requires_concentration_until_triggered',
+        },
+      ),
+    ],
+    classIds: {
+      'paladin',
+    },
+  ),
+  SpellIds.graspingVine: SpellDefinition(
+    id: SpellIds.graspingVine,
+    content: RuleContent(
+      id: SpellIds.graspingVine,
+      name: 'Rampicante Afferrante',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Evoca un rampicante che può trascinare ripetutamente le creature verso di sé.',
+        details:
+            'Un rampicante spunta dal terreno in uno spazio libero visibile '
+            'entro gittata. Quando l’incantatore lancia l’incantesimo, può '
+            'ordinargli di avvinghiarsi a una creatura visibile situata entro '
+            '9 metri dal rampicante. La creatura deve superare un tiro '
+            'salvezza su Destrezza o viene trascinata di 6 metri direttamente '
+            'verso il rampicante. Finché l’incantesimo permane, in ogni suo '
+            'turno l’incantatore può usare un’azione bonus per ordinare al '
+            'rampicante di avvinghiare nuovamente la stessa creatura o una '
+            'creatura differente.',
+      ),
+      ownerId: SpellIds.graspingVine,
+    ),
+    level: 4,
+    school: SpellSchool.conjuration,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.bonusAction,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 9,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.minute,
+      amount: 1,
+      concentration: true,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.point,
+        SpellTargetType.creature,
+      },
+    ),
+    savingThrow: SpellSavingThrow(
+      ability: SpellSavingThrowAbility.dexterity,
+      onSuccess: SpellSaveSuccess.negates,
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'grasping_vine_conjured_vine',
+        type: SpellPersistentEffectType.createdObject,
+        ruleTags: {
+          'vine_appears_from_ground_in_seen_unoccupied_space',
+          'vine_targets_creature_seen_within_9_meters_of_vine',
+          'target_makes_dexterity_save',
+          'failed_save_pulls_target_6_meters_toward_vine',
+          'caster_may_command_vine_on_initial_cast',
+          'caster_bonus_action_repeats_effect_each_turn',
+          'repeated_effect_may_target_same_or_different_creature',
+          'requires_concentration',
+        },
+      ),
+    ],
+    classIds: {
+      'druid',
+      'ranger',
+    },
+  ),
+  SpellIds.mordenkainensPrivateSanctum: SpellDefinition(
+    id: SpellIds.mordenkainensPrivateSanctum,
+    content: RuleContent(
+      id: SpellIds.mordenkainensPrivateSanctum,
+      name: 'Santuario Privato di Mordenkainen',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Protegge un’area cubica da suoni, osservazione magica, teletrasporto e viaggi planari.',
+        details:
+            'L’incantatore protegge un’area cubica entro gittata, scegliendo '
+            'uno spigolo compreso tra 1,5 e 30 metri. Al lancio sceglie una o '
+            'più protezioni: i suoni non attraversano il confine; la barriera '
+            'diventa oscura e nebulosa e impedisce di vedere attraverso di '
+            'essa anche con la scurovisione; i sensori di divinazione non '
+            'possono apparire nell’area o attraversarne il perimetro; le '
+            'creature all’interno non possono essere bersagliate da '
+            'incantesimi di divinazione; nulla può teletrasportarsi dentro o '
+            'fuori; il viaggio planare nell’area è bloccato. L’incantatore '
+            'può terminare anticipatamente l’effetto con un’azione. Lanciando '
+            'l’incantesimo ogni giorno nello stesso luogo per un anno, '
+            'l’effetto diventa permanente. Con slot superiori al 4°, lo '
+            'spigolo massimo aumenta di 30 metri per ogni livello aggiuntivo.',
+      ),
+      ownerId: SpellIds.mordenkainensPrivateSanctum,
+    ),
+    level: 4,
+    school: SpellSchool.abjuration,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.minute,
+      amount: 10,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 36,
+    ),
+    area: SpellArea(
+      shape: SpellAreaShape.cube,
+      origin: SpellAreaOrigin.targetPoint,
+      sizeMeters: 30,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+      materials: [
+        SpellMaterialComponent(
+          description:
+              'Una sottile lamina di piombo, un pezzo di vetro opaco, un pezzo di cotone o stoffa e un crisolito polverizzato.',
+        ),
+      ],
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.day,
+      amount: 1,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.area,
+      },
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'mordenkainens_private_sanctum_zone',
+        type: SpellPersistentEffectType.zone,
+        ruleTags: {
+          'cube_side_may_range_from_1_5_to_30_meters',
+          'caster_selects_one_or_more_protections_on_cast',
+          'sound_cannot_cross_boundary_if_selected',
+          'boundary_blocks_vision_and_darkvision_if_selected',
+          'divination_sensors_cannot_appear_inside_or_cross_boundary',
+          'creatures_inside_cannot_be_targeted_by_divination',
+          'teleportation_into_or_out_of_area_is_blocked',
+          'planar_travel_inside_area_is_blocked',
+          'caster_may_end_effect_with_action',
+          'daily_casting_in_same_location_for_one_year_makes_permanent',
+          'slot_level_above_4_adds_30_meters_to_maximum_side_per_level',
+          'does_not_require_concentration',
+        },
+      ),
+    ],
+    classIds: {
+      'wizard',
+    },
+  ),
+  SpellIds.stoneShape: SpellDefinition(
+    id: SpellIds.stoneShape,
+    content: RuleContent(
+      id: SpellIds.stoneShape,
+      name: 'Scolpire Pietra',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Modella un oggetto o una sezione di pietra nella forma desiderata.',
+        details: 'L’incantatore tocca un oggetto di pietra di taglia Media o '
+            'inferiore, oppure una sezione di pietra non più grande di 1,5 '
+            'metri in ogni dimensione, e la modella nella forma desiderata. '
+            'Può creare un’arma, un idolo o un forziere, aprire un piccolo '
+            'passaggio in una parete spessa non più di 1,5 metri oppure '
+            'modellare una porta e i suoi stipiti per sigillarla. L’oggetto '
+            'creato può includere al massimo due cardini e un coperchio, ma '
+            'non può possedere meccanismi più raffinati.',
+      ),
+      ownerId: SpellIds.stoneShape,
+    ),
+    level: 4,
+    school: SpellSchool.transmutation,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.touch,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+      materials: [
+        SpellMaterialComponent(
+          description:
+              'Argilla duttile, plasmata nella forma dell’oggetto desiderato.',
+        ),
+      ],
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.instantaneous,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.object,
+        SpellTargetType.area,
+      },
+      maximumTargets: 1,
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'stone_shape_transformation',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'targets_medium_or_smaller_stone_object',
+          'or_targets_stone_section_max_1_5_meters_each_dimension',
+          'reshapes_stone_into_desired_form',
+          'may_open_passage_through_wall_max_1_5_meters_thick',
+          'may_create_or_seal_stone_door',
+          'created_object_may_have_up_to_two_hinges_and_one_lid',
+          'cannot_create_fine_mechanical_detail',
+          'instantaneous_transmutation',
+        },
+      ),
+    ],
+    classIds: {
+      'cleric',
+      'druid',
       'wizard',
     },
   ),

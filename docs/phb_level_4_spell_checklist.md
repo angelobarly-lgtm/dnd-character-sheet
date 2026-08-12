@@ -26,10 +26,10 @@ Checklist di lavoro per espandere `lib/data/spell_data.dart` con gli incantesimi
 - [x] Occhio Arcano
 - [x] Pelle di Pietra
 - [x] Porta Dimensionale
-- [ ] Punizione Demoralizzante
-- [ ] Rampicante Afferrante
-- [ ] Santuario Privato di Mordenkainen
-- [ ] Scolpire Pietra
+- [x] Punizione Demoralizzante
+- [x] Rampicante Afferrante
+- [x] Santuario Privato di Mordenkainen
+- [x] Scolpire Pietra
 - [ ] Scrigno Segreto di Leomund
 - [ ] Scudo di Fuoco
 - [ ] Segugio Fedele di Mordenkainen
