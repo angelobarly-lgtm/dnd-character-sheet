@@ -929,6 +929,10 @@ class SpellDefinition {
 /// Verrà popolato progressivamente. Tenere un unico registry permette a
 /// razze, classi, talenti e altri sistemi di riferirsi allo stesso ID.
 abstract final class SpellIds {
+  static const earthquake = 'earthquake';
+  static const telepathy = 'telepathy';
+  static const demiplane = 'demiplane';
+  static const feeblemind = 'feeblemind';
   static const powerWordStun = 'power_word_stun';
   static const incendiaryCloud = 'incendiary_cloud';
   static const glibness = 'glibness';
@@ -26945,6 +26949,358 @@ const Map<String, SpellDefinition> spellDefinitions = {
       'sorcerer',
       'warlock',
       'wizard',
+    },
+  ),
+  SpellIds.feeblemind: SpellDefinition(
+    id: SpellIds.feeblemind,
+    content: RuleContent(
+      id: SpellIds.feeblemind,
+      name: 'Regressione Mentale',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Devasta la mente di una creatura, infliggendo danni psichici e distruggendone intelletto e personalità.',
+        details:
+            'Una creatura visibile entro 45 metri subisce 4d6 danni psichici '
+            'e deve effettuare un tiro salvezza su Intelligenza. Se lo fallisce, '
+            'i suoi punteggi di Intelligenza e Carisma diventano 1. Il bersaglio '
+            'non può lanciare incantesimi, attivare oggetti magici, comprendere '
+            'linguaggi o comunicare in modo intelligibile, ma può riconoscere, '
+            'seguire e proteggere i propri amici. Alla fine di ogni periodo di '
+            '30 giorni può ripetere il tiro salvezza, terminando l’effetto in '
+            'caso di successo. L’effetto può essere terminato anche da Desiderio, '
+            'Guarigione o Ristorare Superiore.',
+      ),
+      ownerId: SpellIds.feeblemind,
+    ),
+    level: 8,
+    school: SpellSchool.enchantment,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 45,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+      materials: [
+        SpellMaterialComponent(
+          description:
+              'Una manciata di argilla, cristallo, vetro o sfere minerali.',
+        ),
+      ],
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.instantaneous,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.creature,
+      },
+      maximumTargets: 1,
+    ),
+    savingThrow: SpellSavingThrow(
+      ability: SpellSavingThrowAbility.intelligence,
+      onSuccess: SpellSaveSuccess.special,
+    ),
+    damage: [
+      SpellDamage(
+        dice: '4d6',
+        type: SpellDamageType.psychic,
+      ),
+    ],
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'feeblemind_shattered_intellect',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'psychic_damage_applies_before_intelligence_save',
+          'failed_save_sets_intelligence_to_1',
+          'failed_save_sets_charisma_to_1',
+          'target_cannot_cast_spells',
+          'target_cannot_activate_magic_items',
+          'target_cannot_understand_languages',
+          'target_cannot_communicate_intelligibly',
+          'target_can_recognize_follow_and_protect_friends',
+          'target_repeats_intelligence_save_every_30_days',
+          'successful_repeat_save_ends_effect',
+          'wish_heal_or_greater_restoration_ends_effect',
+        },
+      ),
+    ],
+    classIds: {
+      'bard',
+      'druid',
+      'warlock',
+      'wizard',
+    },
+  ),
+  SpellIds.demiplane: SpellDefinition(
+    id: SpellIds.demiplane,
+    content: RuleContent(
+      id: SpellIds.demiplane,
+      name: 'Semipiano',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Apre su una superficie una porta d’ombra collegata a una stanza extradimensionale.',
+        details:
+            'L’incantatore crea su una superficie solida, piatta e visibile entro '
+            '18 metri una porta d’ombra abbastanza grande da consentire il passaggio '
+            'di creature Medie. La porta conduce a un semipiano simile a una stanza '
+            'vuota di legno o pietra, larga 9 metri in ogni dimensione. Dopo 1 ora '
+            'la porta scompare da entrambi i lati e le creature o gli oggetti rimasti '
+            'nel semipiano vi restano intrappolati. A ogni lancio l’incantatore può '
+            'creare un nuovo semipiano, collegarsi a uno creato da lui in precedenza '
+            'oppure collegarsi al semipiano di un’altra creatura, purché ne conosca '
+            'la natura e il contenuto.',
+      ),
+      ownerId: SpellIds.demiplane,
+    ),
+    level: 8,
+    school: SpellSchool.conjuration,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 18,
+    ),
+    area: SpellArea(
+      shape: SpellAreaShape.cube,
+      origin: SpellAreaOrigin.special,
+      sizeMeters: 9,
+    ),
+    components: SpellComponents(
+      somatic: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.hour,
+      amount: 1,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.point,
+        SpellTargetType.object,
+      },
+      maximumTargets: 1,
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'demiplane_shadow_door',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'door_requires_visible_flat_solid_surface',
+          'door_allows_medium_creatures_to_pass',
+          'door_leads_to_9_meter_extradimensional_room',
+          'room_appears_empty_and_made_of_wood_or_stone',
+          'door_exists_on_both_sides',
+          'door_disappears_after_one_hour',
+          'creatures_and_objects_left_inside_remain_trapped',
+          'caster_can_create_new_demiplane',
+          'caster_can_reconnect_to_own_previous_demiplane',
+          'caster_can_connect_to_known_demiplane_created_by_another',
+          'connecting_to_anothers_demiplane_requires_knowing_nature_and_contents',
+        },
+      ),
+    ],
+    classIds: {
+      'warlock',
+      'wizard',
+    },
+  ),
+  SpellIds.telepathy: SpellDefinition(
+    id: SpellIds.telepathy,
+    content: RuleContent(
+      id: SpellIds.telepathy,
+      name: 'Telepatia',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Crea per 24 ore un legame telepatico senza limite di distanza con una creatura consenziente.',
+        details:
+            'L’incantatore crea un legame con una creatura consenziente a lui '
+            'familiare, che può trovarsi in qualsiasi punto dello stesso piano '
+            'di esistenza. Il legame termina se uno dei due lascia quel piano. '
+            'Finché permane, entrambi possono condividere istantaneamente parole, '
+            'immagini, suoni e altri messaggi sensoriali. Il bersaglio riconosce '
+            'l’incantatore come la creatura con cui comunica. Una creatura con '
+            'Intelligenza pari o superiore a 1 comprende il significato delle '
+            'parole e dei messaggi sensoriali inviati tramite il legame.',
+      ),
+      ownerId: SpellIds.telepathy,
+    ),
+    level: 8,
+    school: SpellSchool.evocation,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.unlimited,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+      materials: [
+        SpellMaterialComponent(
+          description: 'Un paio di anelli d’argento concatenati.',
+        ),
+      ],
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.hour,
+      amount: 24,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.willingCreature,
+      },
+      maximumTargets: 1,
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'telepathy_sensory_link',
+        type: SpellPersistentEffectType.magicalLink,
+        link: SpellLinkEffect(),
+        ruleTags: {
+          'target_must_be_familiar_to_caster',
+          'target_must_be_willing',
+          'target_can_be_anywhere_on_same_plane',
+          'link_ends_if_caster_or_target_leaves_plane',
+          'participants_share_words_instantly',
+          'participants_share_images_instantly',
+          'participants_share_sounds_instantly',
+          'participants_share_other_sensory_messages',
+          'target_recognizes_caster_as_communication_partner',
+          'intelligence_1_or_higher_understands_words_and_sensory_meaning',
+        },
+      ),
+    ],
+    classIds: {
+      'wizard',
+    },
+  ),
+  SpellIds.earthquake: SpellDefinition(
+    id: SpellIds.earthquake,
+    content: RuleContent(
+      id: SpellIds.earthquake,
+      name: 'Terremoto',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Scatena una violenta scossa sismica che abbatte creature, apre crepe e danneggia le strutture.',
+        details:
+            'Un intenso tremito scuote il terreno entro 30 metri da un punto '
+            'visibile situato entro 150 metri. Il terreno diventa difficile. '
+            'Le creature sul terreno che si stanno concentrando devono superare '
+            'un tiro salvezza su Costituzione o perdere la concentrazione. Al '
+            'momento del lancio e alla fine di ogni turno in cui l’incantatore '
+            'mantiene la concentrazione, le creature sul terreno effettuano un '
+            'tiro salvezza su Destrezza o cadono prone. Dal turno successivo si '
+            'aprono 1d6 crepe, profonde 1d10 × 3 metri, larghe 3 metri e disposte '
+            'da un bordo all’altro dell’area. Una creatura sopra una crepa deve '
+            'superare un tiro salvezza su Destrezza o cadervi dentro. Le strutture '
+            'sopra una crepa crollano automaticamente. Ogni struttura a contatto '
+            'con il terreno nell’area subisce 50 danni contundenti al lancio e '
+            'all’inizio di ogni turno dell’incantatore. Il crollo può infliggere '
+            '5d6 danni contundenti, rendere prone e seppellire le creature vicine; '
+            'un successo sul tiro salvezza dimezza i danni ed evita questi effetti. '
+            'Una creatura sepolta può liberarsi con un’azione e una prova di Forza '
+            '(Atletica) con CD 20, modificabile dal DM in base ai detriti.',
+      ),
+      ownerId: SpellIds.earthquake,
+    ),
+    level: 8,
+    school: SpellSchool.evocation,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 150,
+    ),
+    area: SpellArea(
+      shape: SpellAreaShape.radius,
+      origin: SpellAreaOrigin.targetPoint,
+      radiusMeters: 30,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+      materials: [
+        SpellMaterialComponent(
+          description:
+              'Un pizzico di terriccio, un frammento di pietra e un pezzo d’argilla.',
+        ),
+      ],
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.minute,
+      amount: 1,
+      concentration: true,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.area,
+        SpellTargetType.creatures,
+        SpellTargetType.object,
+      },
+    ),
+    savingThrow: SpellSavingThrow(
+      ability: SpellSavingThrowAbility.dexterity,
+      onSuccess: SpellSaveSuccess.special,
+    ),
+    areaTriggeredEffects: [
+      SpellAreaTriggeredEffect(
+        triggers: {
+          SpellAreaTriggerEvent.areaAppears,
+          SpellAreaTriggerEvent.special,
+        },
+        savingThrow: SpellSavingThrow(
+          ability: SpellSavingThrowAbility.dexterity,
+          onSuccess: SpellSaveSuccess.negates,
+        ),
+      ),
+    ],
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'earthquake_seismic_zone',
+        type: SpellPersistentEffectType.zone,
+        ruleTags: {
+          'ground_in_area_is_difficult_terrain',
+          'concentrating_creatures_on_ground_make_constitution_save',
+          'failed_constitution_save_breaks_concentration',
+          'creatures_make_dexterity_save_when_spell_is_cast',
+          'creatures_repeat_dexterity_save_at_end_of_casters_turn',
+          'failed_dexterity_save_causes_prone_condition',
+          'additional_effects_depend_on_terrain_and_dm',
+          'one_d6_fissures_open_starting_on_casters_next_turn',
+          'fissures_are_3_meters_wide',
+          'fissures_are_1d10_times_3_meters_deep',
+          'fissures_extend_between_opposite_edges_of_area',
+          'creature_over_fissure_makes_dexterity_save',
+          'failed_fissure_save_causes_creature_to_fall',
+          'successful_fissure_save_moves_creature_to_edge',
+          'fissure_under_structure_automatically_collapses_structure',
+          'structures_take_50_bludgeoning_damage_on_cast',
+          'structures_take_50_bludgeoning_damage_at_start_of_casters_turn',
+          'collapsed_structure_threatens_creatures_within_half_its_height',
+          'failed_collapse_save_deals_5d6_bludgeoning_damage',
+          'failed_collapse_save_causes_prone_and_buried',
+          'successful_collapse_save_deals_half_damage',
+          'successful_collapse_save_prevents_prone_and_buried',
+          'buried_creature_uses_action_for_dc_20_athletics_check',
+          'dm_can_adjust_escape_dc_based_on_debris',
+          'requires_concentration',
+        },
+      ),
+    ],
+    classIds: {
+      'cleric',
+      'druid',
+      'sorcerer',
     },
   ),
 };

@@ -14,9 +14,9 @@ Checklist di lavoro per espandere `lib/data/spell_data.dart` con gli incantesimi
 - [x] Loquacità
 - [x] Nube Incendiaria
 - [x] Parola del Potere Stordire
-- [ ] Regressione Mentale
-- [ ] Semipiano
-- [ ] Telepatia
-- [ ] Terremoto
+- [x] Regressione Mentale
+- [x] Semipiano
+- [x] Telepatia
+- [x] Terremoto
 - [ ] Tsunami
 - [ ] Vuoto Mentale
