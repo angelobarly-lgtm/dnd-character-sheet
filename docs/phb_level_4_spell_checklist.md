@@ -6,10 +6,10 @@ Checklist di lavoro per espandere `lib/data/spell_data.dart` con gli incantesimi
 - [x] Aura di Purezza
 - [x] Aura di Vita
 - [x] Compulsione
-- [ ] Confusione
-- [ ] Controllare Acqua
-- [ ] Divinazione
-- [ ] Dominare Bestie
+- [x] Confusione
+- [x] Controllare Acqua
+- [x] Divinazione
+- [x] Dominare Bestie
 - [ ] Esilio
 - [ ] Evoca Creature Boschive
 - [ ] Evoca Elementali Minori

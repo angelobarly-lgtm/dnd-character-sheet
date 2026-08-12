@@ -1133,6 +1133,10 @@ abstract final class SpellIds {
   static const auraOfPurity = 'aura_of_purity';
   static const auraOfLife = 'aura_of_life';
   static const compulsion = 'compulsion';
+  static const confusion = 'confusion';
+  static const controlWater = 'control_water';
+  static const divination = 'divination';
+  static const dominateBeast = 'dominate_beast';
 }
 
 const Map<String, SpellDefinition> spellDefinitions = {
@@ -15657,6 +15661,329 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ],
     classIds: {
       'bard',
+    },
+  ),
+  SpellIds.confusion: SpellDefinition(
+    id: SpellIds.confusion,
+    content: RuleContent(
+      id: SpellIds.confusion,
+      name: 'Confusione',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Sconvolge le menti delle creature in un’area, provocando movimenti e azioni incontrollate.',
+        details:
+            'Ogni creatura entro una sfera del raggio di 3 metri centrata su un '
+            'punto entro gittata deve superare un tiro salvezza su Saggezza o '
+            'resta influenzata. Un bersaglio influenzato non può effettuare '
+            'reazioni e tira 1d10 all’inizio di ogni turno: con 1 si muove in '
+            'una direzione casuale senza agire; con 2-6 non si muove né agisce; '
+            'con 7-8 usa la sua azione per attaccare in mischia una creatura '
+            'casuale entro portata, se presente; con 9-10 agisce e si muove '
+            'normalmente. Alla fine di ogni turno può ripetere il tiro salvezza '
+            'su Saggezza, terminando l’effetto su di sé in caso di successo. '
+            'Usando uno slot di 5° livello o superiore, il raggio della sfera '
+            'aumenta di 1,5 metri per ogni livello di slot superiore al 4°.',
+      ),
+      ownerId: SpellIds.confusion,
+    ),
+    level: 4,
+    school: SpellSchool.enchantment,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 27,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+      materials: [
+        SpellMaterialComponent(
+          description: 'Tre gusci di noce.',
+        ),
+      ],
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.minute,
+      amount: 1,
+      concentration: true,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.point,
+        SpellTargetType.area,
+        SpellTargetType.creatures,
+      },
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'confusion_uncontrolled_behavior',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'creates_3_meter_radius_sphere_at_point_in_range',
+          'creatures_in_area_make_wisdom_save',
+          'failed_save_prevents_reactions',
+          'affected_target_rolls_1d10_at_start_of_turn',
+          'roll_1_causes_random_movement_and_no_action',
+          'roll_2_to_6_prevents_movement_and_actions',
+          'roll_7_to_8_forces_random_melee_attack_if_possible',
+          'roll_9_to_10_allows_normal_movement_and_actions',
+          'target_repeats_wisdom_save_at_end_of_turn',
+          'successful_repeat_save_ends_effect_for_target',
+          'slot_level_above_4_increases_radius_by_1_5_meters_per_slot_level',
+          'requires_concentration',
+        },
+      ),
+    ],
+    classIds: {
+      'bard',
+      'druid',
+      'sorcerer',
+      'wizard',
+    },
+  ),
+  SpellIds.controlWater: SpellDefinition(
+    id: SpellIds.controlWater,
+    content: RuleContent(
+      id: SpellIds.controlWater,
+      name: 'Controllare Acqua',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Controlla una grande massa d’acqua, deviandola, inondando, separandola o creando un gorgo.',
+        details:
+            'L’incantatore controlla una massa libera d’acqua entro un volume '
+            'massimo pari a un cubo con spigolo di 30 metri. Quando lancia '
+            'l’incantesimo sceglie uno tra quattro effetti e, con un’azione nei '
+            'turni successivi, può ripeterlo o sceglierne un altro. Deviare la '
+            'Corrente dirige l’acqua corrente anche lungo percorsi improbabili. '
+            'Inondazione solleva fino a 6 metri il livello dell’acqua ferma o '
+            'genera un’onda alta 6 metri; l’onda trasporta le imbarcazioni '
+            'Enormi o più piccole e ha il 25 per cento di probabilità di '
+            'capovolgerle. Separare le Acque crea un varco attraverso l’intera '
+            'area. Gorgo richiede una massa d’acqua larga almeno 15 metri e '
+            'profonda almeno 7,5 metri: il vortice trascina creature e oggetti '
+            'entro 7,5 metri. Una creatura che entra nel vortice o vi inizia il '
+            'turno effettua un tiro salvezza su Forza; se fallisce subisce 2d8 '
+            'danni contundenti e resta catturata, mentre se riesce subisce metà '
+            'danni e si libera. Può tentare di allontanarsi con una prova di '
+            'Forza (Atletica), con svantaggio se è già nel vortice.',
+      ),
+      ownerId: SpellIds.controlWater,
+    ),
+    level: 4,
+    school: SpellSchool.transmutation,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 90,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+      materials: [
+        SpellMaterialComponent(
+          description: 'Una goccia d’acqua e un pizzico di polvere.',
+        ),
+      ],
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.minute,
+      amount: 10,
+      concentration: true,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.point,
+        SpellTargetType.area,
+      },
+    ),
+    damage: [
+      SpellDamage(
+        dice: '2d8',
+        type: SpellDamageType.bludgeoning,
+      ),
+    ],
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'control_water_chosen_water_effect',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'controls_free_water_inside_maximum_30_meter_cube',
+          'caster_chooses_redirect_flow_flood_part_water_or_whirlpool',
+          'caster_can_use_action_to_repeat_or_change_effect',
+          'redirect_flow_moves_running_water_in_chosen_direction',
+          'flood_raises_standing_water_up_to_6_meters',
+          'flood_can_create_6_meter_high_wave',
+          'wave_moves_huge_or_smaller_vessels_and_has_25_percent_capsize_chance',
+          'part_water_creates_passage_through_entire_area',
+          'whirlpool_requires_15_meter_square_7_5_meter_deep_water',
+          'whirlpool_pulls_creatures_and_objects_within_7_5_meters',
+          'creature_entering_or_starting_turn_in_whirlpool_makes_strength_save',
+          'failed_save_deals_2d8_bludgeoning_damage_and_traps_creature',
+          'successful_save_deals_half_damage_and_frees_creature',
+          'trapped_creature_can_action_attempt_strength_athletics_check_with_disadvantage',
+          'objects_in_whirlpool_take_2d8_bludgeoning_damage_each_round',
+          'requires_concentration',
+        },
+      ),
+    ],
+    classIds: {
+      'cleric',
+      'druid',
+      'wizard',
+    },
+  ),
+  SpellIds.divination: SpellDefinition(
+    id: SpellIds.divination,
+    content: RuleContent(
+      id: SpellIds.divination,
+      name: 'Divinazione',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Permette di porre a una divinità una domanda su un evento che si verificherà entro sette giorni.',
+        details:
+            'L’incantatore entra in contatto con una divinità o con i suoi '
+            'servitori e pone una singola domanda relativa a uno specifico '
+            'obiettivo, evento o attività che si verificherà entro sette '
+            'giorni. Il DM fornisce una risposta onesta sotto forma di breve '
+            'frase, rima enigmatica o presagio. Il responso non considera '
+            'circostanze successive che potrebbero modificarne l’esito. Se '
+            'l’incantesimo viene lanciato più volte prima del riposo lungo '
+            'successivo, ogni lancio dopo il primo comporta una probabilità '
+            'cumulativa del 25 per cento di ricevere un responso casuale. Il '
+            'DM effettua questo tiro in segreto. L’incantesimo può essere '
+            'lanciato come rituale e consuma l’offerta da almeno 25 mo.',
+      ),
+      ownerId: SpellIds.divination,
+    ),
+    level: 4,
+    school: SpellSchool.divination,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.self,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+      materials: [
+        SpellMaterialComponent(
+          description:
+              'Incenso e un’offerta sacrificale appropriata alla religione dell’incantatore, del valore complessivo di almeno 25 mo, consumati dall’incantesimo.',
+          minimumCostGp: 25,
+          consumed: true,
+        ),
+      ],
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.instantaneous,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.self,
+      },
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'divination_divine_answer',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'asks_one_question_about_goal_event_or_activity_within_7_days',
+          'dm_provides_truthful_phrase_rhyme_or_omen',
+          'answer_does_not_account_for_later_changed_circumstances',
+          'repeated_casts_before_long_rest_risk_random_answer',
+          'random_answer_chance_increases_cumulatively_by_25_percent_after_first_cast',
+          'dm_rolls_random_answer_chance_secretly',
+          'material_offering_worth_25_gp_is_consumed',
+          'can_be_cast_as_ritual',
+          'instantaneous_divination',
+        },
+      ),
+    ],
+    classIds: {
+      'cleric',
+    },
+  ),
+  SpellIds.dominateBeast: SpellDefinition(
+    id: SpellIds.dominateBeast,
+    content: RuleContent(
+      id: SpellIds.dominateBeast,
+      name: 'Dominare Bestie',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Affascina una bestia e permette all’incantatore di impartirle ordini telepatici o controllarla direttamente.',
+        details:
+            'Una bestia visibile entro gittata deve superare un tiro salvezza '
+            'su Saggezza o resta affascinata. Se sta combattendo contro '
+            'l’incantatore o i suoi alleati, dispone di vantaggio al tiro. '
+            'Finché entrambi sono sullo stesso piano, l’incantatore cosciente '
+            'può impartire ordini telepatici senza usare un’azione. Può anche '
+            'usare la propria azione per assumere un controllo preciso fino '
+            'alla fine del suo turno successivo, scegliendo tutte le azioni '
+            'della bestia e spendendo la propria reazione per farle usare una '
+            'reazione. Ogni volta che subisce danni, la bestia ripete il tiro '
+            'salvezza e termina l’incantesimo in caso di successo. Con uno '
+            'slot di 5° livello la durata diventa 10 minuti, con uno slot di '
+            '6° livello 1 ora e con uno slot di 7° livello o superiore 8 ore, '
+            'sempre con concentrazione.',
+      ),
+      ownerId: SpellIds.dominateBeast,
+    ),
+    level: 4,
+    school: SpellSchool.enchantment,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 18,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.minute,
+      amount: 1,
+      concentration: true,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.creature,
+      },
+      maximumTargets: 1,
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'dominate_beast_telepathic_control',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'targets_one_beast_seen_within_range',
+          'target_makes_wisdom_save',
+          'target_has_advantage_if_fighting_caster_or_allies',
+          'failed_save_charms_beast',
+          'telepathic_link_works_on_same_plane',
+          'caster_can_issue_commands_without_action_while_conscious',
+          'caster_can_action_take_total_precise_control',
+          'caster_spends_own_reaction_to_make_target_use_reaction',
+          'target_repeats_wisdom_save_whenever_it_takes_damage',
+          'successful_repeat_save_ends_spell',
+          'higher_slots_extend_concentration_duration',
+          'requires_concentration',
+        },
+      ),
+    ],
+    classIds: {
+      'druid',
+      'sorcerer',
     },
   ),
 };
