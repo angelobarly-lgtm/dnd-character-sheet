@@ -6,10 +6,10 @@ Checklist di lavoro per espandere `lib/data/spell_data.dart` con gli incantesimi
 - [x] Dito della Morte
 - [x] Evoca Celestiale
 - [x] Forma Eterea
-- [ ] Gabbia di Forza
-- [ ] Immagine Proiettata
-- [ ] Inversione della Gravità
-- [ ] Miraggio Arcano
+- [x] Gabbia di Forza
+- [x] Immagine Proiettata
+- [x] Inversione della Gravità
+- [x] Miraggio Arcano
 - [ ] Palla di Fuoco Ritardata
 - [ ] Parola Divina
 - [ ] Reggia Meravigliosa di Mordenkainen

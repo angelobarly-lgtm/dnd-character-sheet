@@ -929,6 +929,10 @@ class SpellDefinition {
 /// Verrà popolato progressivamente. Tenere un unico registry permette a
 /// razze, classi, talenti e altri sistemi di riferirsi allo stesso ID.
 abstract final class SpellIds {
+  static const mirageArcane = 'mirage_arcane';
+  static const reverseGravity = 'reverse_gravity';
+  static const projectImage = 'project_image';
+  static const forcecage = 'forcecage';
   static const etherealness = 'etherealness';
   static const conjureCelestial = 'conjure_celestial';
   static const fingerOfDeath = 'finger_of_death';
@@ -24627,6 +24631,342 @@ const Map<String, SpellDefinition> spellDefinitions = {
       'cleric',
       'sorcerer',
       'warlock',
+      'wizard',
+    },
+  ),
+  SpellIds.forcecage: SpellDefinition(
+    id: SpellIds.forcecage,
+    content: RuleContent(
+      id: SpellIds.forcecage,
+      name: 'Gabbia di Forza',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Crea una prigione cubica invisibile e indissolvibile composta di forza magica.',
+        details: 'L’incantatore crea una prigione cubica immobile e invisibile '
+            'attorno a un’area entro gittata. Può scegliere una gabbia con '
+            'lato massimo di 6 metri oppure un involucro solido con lato '
+            'massimo di 3 metri. La gabbia è composta da sbarre spesse '
+            '1,25 cm e distanti 1,25 cm. L’involucro impedisce il passaggio '
+            'di qualsiasi materia e blocca gli incantesimi lanciati '
+            'attraverso la barriera. Le creature interamente nell’area '
+            'rimangono intrappolate; quelle solo parzialmente comprese o '
+            'troppo grandi vengono spinte completamente all’esterno. Non è '
+            'possibile uscire con mezzi non magici. Una creatura che tenta '
+            'di teletrasportarsi o viaggiare tra i piani deve superare un '
+            'tiro salvezza su Carisma; se fallisce, rimane intrappolata e '
+            'spreca l’uso dell’effetto. La gabbia si estende sul Piano Etereo '
+            'e non può essere dissolta da Dissolvi Magie.',
+      ),
+      ownerId: SpellIds.forcecage,
+    ),
+    level: 7,
+    school: SpellSchool.evocation,
+    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 30,
+    ),
+    area: SpellArea(
+      shape: SpellAreaShape.cube,
+      origin: SpellAreaOrigin.targetPoint,
+      sizeMeters: 6,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+      materials: [
+        SpellMaterialComponent(
+          description: 'Polvere di rubino del valore di almeno 1.500 mo.',
+          minimumCostGp: 1500,
+        ),
+      ],
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.hour,
+      amount: 1,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.point,
+        SpellTargetType.area,
+      },
+    ),
+    savingThrow: SpellSavingThrow(
+      ability: SpellSavingThrowAbility.charisma,
+      onSuccess: SpellSaveSuccess.special,
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'forcecage_magical_prison',
+        type: SpellPersistentEffectType.zone,
+        ruleTags: {
+          'prison_is_immobile_and_invisible',
+          'caster_chooses_barred_cage_or_solid_box',
+          'barred_cage_maximum_size_6_meter_cube',
+          'solid_box_maximum_size_3_meter_cube',
+          'bars_are_1_25_centimeters_thick',
+          'bars_are_spaced_1_25_centimeters_apart',
+          'solid_box_blocks_all_matter',
+          'solid_box_blocks_spells_through_barrier',
+          'fully_enclosed_creatures_are_trapped',
+          'partially_enclosed_or_oversized_creatures_are_pushed_out',
+          'cannot_exit_by_nonmagical_means',
+          'teleportation_escape_requires_charisma_save',
+          'planar_travel_escape_requires_charisma_save',
+          'failed_escape_save_wastes_spell_or_effect',
+          'prison_extends_into_ethereal_plane',
+          'blocks_ethereal_travel',
+          'cannot_be_dispelled_by_dispel_magic',
+        },
+      ),
+    ],
+    classIds: {
+      'bard',
+      'warlock',
+      'wizard',
+    },
+  ),
+  SpellIds.projectImage: SpellDefinition(
+    id: SpellIds.projectImage,
+    content: RuleContent(
+      id: SpellIds.projectImage,
+      name: 'Immagine Proiettata',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Crea a enorme distanza una copia illusoria controllabile dell’incantatore.',
+        details:
+            'L’incantatore crea una copia illusoria di se stesso in un luogo '
+            'entro 750 km che abbia visto in precedenza, ignorando gli '
+            'ostacoli frapposti. La copia appare e suona come lui, ma è '
+            'intangibile. Se subisce danni, scompare e l’incantesimo termina. '
+            'L’incantatore può usare un’azione per muoverla fino al doppio '
+            'della propria velocità e farla agire, parlare e comportarsi come '
+            'desidera. Può vedere e sentire attraverso la copia e, come azione '
+            'bonus, passare dai suoi sensi a quelli dell’illusione o viceversa. '
+            'Mentre usa i sensi della copia è cieco e assordato rispetto al '
+            'proprio ambiente. L’interazione fisica rivela l’illusione. Una '
+            'creatura può esaminarla con un’azione e superare una prova di '
+            'Intelligenza (Indagare) contro la CD dell’incantesimo per '
+            'riconoscerla, vedere attraverso di essa e percepirne i suoni '
+            'come attenuati.',
+      ),
+      ownerId: SpellIds.projectImage,
+    ),
+    level: 7,
+    school: SpellSchool.illusion,
+    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 750000,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+      materials: [
+        SpellMaterialComponent(
+          description:
+              'Una riproduzione in miniatura dell’incantatore fatta di materiali del valore di almeno 5 mo.',
+          minimumCostGp: 5,
+        ),
+      ],
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.day,
+      amount: 1,
+      concentration: true,
+    ),
+    target: SpellTarget(
+      types: {SpellTargetType.point},
+      maximumTargets: 1,
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'project_image_illusory_duplicate',
+        type: SpellPersistentEffectType.magicalLink,
+        ruleTags: {
+          'image_can_appear_within_750_kilometers',
+          'caster_must_have_seen_destination_before',
+          'intervening_obstacles_do_not_block_creation',
+          'image_looks_and_sounds_like_caster',
+          'image_is_intangible',
+          'taking_damage_destroys_image_and_ends_spell',
+          'caster_can_use_action_to_control_image',
+          'image_can_move_up_to_twice_casters_speed',
+          'image_can_act_speak_and_imitate_caster',
+          'caster_can_see_and_hear_through_image',
+          'bonus_action_switches_between_caster_and_image_senses',
+          'caster_is_blind_and_deaf_locally_while_using_image_senses',
+          'physical_interaction_reveals_illusion',
+          'investigation_action_against_spell_save_dc_discerns_illusion',
+          'successful_investigation_allows_seeing_through_image',
+          'successful_investigation_makes_image_sounds_faint',
+          'requires_concentration',
+        },
+      ),
+    ],
+    classIds: {
+      'bard',
+      'wizard',
+    },
+  ),
+  SpellIds.reverseGravity: SpellDefinition(
+    id: SpellIds.reverseGravity,
+    content: RuleContent(
+      id: SpellIds.reverseGravity,
+      name: 'Inversione della Gravità',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Inverte la gravità in un grande cilindro facendo cadere creature e oggetti verso l’alto.',
+        details:
+            'L’incantatore inverte la gravità in un cilindro con raggio di '
+            '15 metri e altezza di 30 metri, centrato su un punto entro '
+            'gittata. Le creature e gli oggetti non ancorati cadono verso '
+            'l’alto fino alla sommità dell’area. Una creatura può effettuare '
+            'un tiro salvezza su Destrezza per afferrare un oggetto ancorato '
+            'entro portata ed evitare la caduta. Se durante la caduta viene '
+            'urtato un soffitto o un altro oggetto solido, la creatura o '
+            'l’oggetto subisce l’impatto come durante una normale caduta. '
+            'Chi raggiunge la sommità senza urtare nulla rimane sospeso lì '
+            'per la durata. Quando l’incantesimo termina, tutte le creature '
+            'e gli oggetti influenzati ricadono a terra.',
+      ),
+      ownerId: SpellIds.reverseGravity,
+    ),
+    level: 7,
+    school: SpellSchool.transmutation,
+    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 30,
+    ),
+    area: SpellArea(
+      shape: SpellAreaShape.cylinder,
+      origin: SpellAreaOrigin.targetPoint,
+      radiusMeters: 15,
+      heightMeters: 30,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+      materials: [
+        SpellMaterialComponent(
+          description: 'Una calamita e della limatura di ferro.',
+        ),
+      ],
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.minute,
+      amount: 1,
+      concentration: true,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.point,
+        SpellTargetType.area,
+      },
+    ),
+    savingThrow: SpellSavingThrow(
+      ability: SpellSavingThrowAbility.dexterity,
+      onSuccess: SpellSaveSuccess.negates,
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'reverse_gravity_cylindrical_zone',
+        type: SpellPersistentEffectType.zone,
+        ruleTags: {
+          'cylinder_radius_15_meters',
+          'cylinder_height_30_meters',
+          'unanchored_creatures_and_objects_fall_upward',
+          'dexterity_save_allows_grabbing_anchored_object',
+          'successful_save_prevents_upward_fall',
+          'collision_causes_normal_falling_impact',
+          'targets_reaching_top_remain_suspended',
+          'affected_targets_fall_down_when_spell_ends',
+          'requires_concentration',
+        },
+      ),
+    ],
+    classIds: {
+      'druid',
+      'sorcerer',
+      'wizard',
+    },
+  ),
+  SpellIds.mirageArcane: SpellDefinition(
+    id: SpellIds.mirageArcane,
+    content: RuleContent(
+      id: SpellIds.mirageArcane,
+      name: 'Miraggio Arcano',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Trasforma l’aspetto e le proprietà sensoriali di una vasta area di terreno.',
+        details:
+            'L’incantatore altera un’area di terreno grande al massimo quanto '
+            'un quadrato con lato di 1,5 km, facendola apparire, suonare, '
+            'odorare e risultare al tatto come un altro tipo di terreno. '
+            'La conformazione generale non cambia, ma strade, campi, stagni, '
+            'precipizi e altri elementi possono sembrare terreni differenti. '
+            'Può modificare l’aspetto delle strutture presenti o aggiungere '
+            'strutture illusorie, ma non può occultare, camuffare o creare '
+            'creature. L’illusione comprende elementi visivi, uditivi, '
+            'tattili e olfattivi e può rendere il terreno difficile o '
+            'invalicabile, oppure eliminare apparentemente tali ostacoli. '
+            'Gli elementi rimossi dall’area scompaiono immediatamente. '
+            'Visione del Vero rivela la reale conformazione del terreno, '
+            'ma gli elementi illusori rimangono fisicamente percepibili e '
+            'continuano a poter essere toccati e attraversati.',
+      ),
+      ownerId: SpellIds.mirageArcane,
+    ),
+    level: 7,
+    school: SpellSchool.illusion,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.minute,
+      amount: 10,
+    ),
+    range: SpellRange(type: SpellRangeType.sight),
+    area: SpellArea(
+      shape: SpellAreaShape.special,
+      origin: SpellAreaOrigin.targetPoint,
+      sizeMeters: 1500,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.day,
+      amount: 10,
+    ),
+    target: SpellTarget(
+      types: {SpellTargetType.area},
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'mirage_arcane_sensory_terrain',
+        type: SpellPersistentEffectType.zone,
+        ruleTags: {
+          'maximum_area_is_1_5_kilometer_square',
+          'alters_visual_auditory_tactile_and_olfactory_properties',
+          'general_terrain_shape_does_not_change',
+          'can_alter_appearance_of_existing_structures',
+          'can_add_illusory_structures',
+          'cannot_disguise_hide_or_add_creatures',
+          'can_make_open_ground_difficult_or_impassable',
+          'can_make_difficult_ground_appear_open',
+          'illusory_objects_removed_from_area_disappear',
+          'truesight_reveals_real_terrain_shape',
+          'truesight_does_not_remove_physical_interaction_with_illusion',
+        },
+      ),
+    ],
+    classIds: {
+      'bard',
+      'druid',
       'wizard',
     },
   ),
