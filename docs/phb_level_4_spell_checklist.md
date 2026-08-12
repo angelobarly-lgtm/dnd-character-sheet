@@ -10,10 +10,10 @@ Checklist di lavoro per espandere `lib/data/spell_data.dart` con gli incantesimi
 - [x] Controllare Acqua
 - [x] Divinazione
 - [x] Dominare Bestie
-- [ ] Esilio
-- [ ] Evoca Creature Boschive
-- [ ] Evoca Elementali Minori
-- [ ] Fabbricare
+- [x] Esilio
+- [x] Evoca Creature Boschive
+- [x] Evoca Elementali Minori
+- [x] Fabbricare
 - [ ] Guardiano della Fede
 - [ ] Inaridire
 - [ ] Insetto Gigante

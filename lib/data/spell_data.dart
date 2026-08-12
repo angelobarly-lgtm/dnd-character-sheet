@@ -1137,6 +1137,10 @@ abstract final class SpellIds {
   static const controlWater = 'control_water';
   static const divination = 'divination';
   static const dominateBeast = 'dominate_beast';
+  static const banishment = 'banishment';
+  static const conjureWoodlandBeings = 'conjure_woodland_beings';
+  static const conjureMinorElementals = 'conjure_minor_elementals';
+  static const fabricate = 'fabricate';
 }
 
 const Map<String, SpellDefinition> spellDefinitions = {
@@ -15984,6 +15988,305 @@ const Map<String, SpellDefinition> spellDefinitions = {
     classIds: {
       'druid',
       'sorcerer',
+    },
+  ),
+  SpellIds.banishment: SpellDefinition(
+    id: SpellIds.banishment,
+    content: RuleContent(
+      id: SpellIds.banishment,
+      name: 'Esilio',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Esilia temporaneamente una creatura o rimanda definitivamente un extraplanare al suo piano natio.',
+        details:
+            'Una creatura visibile entro gittata deve superare un tiro salvezza '
+            'su Carisma o viene esiliata. Se è originaria del piano attuale, '
+            'viene confinata in un semipiano innocuo, dove resta incapacitata '
+            'finché l’incantesimo non termina; poi ricompare nello spazio '
+            'lasciato o in quello libero più vicino. Se è originaria di un '
+            'altro piano, ritorna invece al proprio piano natio. Se '
+            'l’incantesimo termina prima che sia trascorso un minuto, la '
+            'creatura ricompare; se la concentrazione viene mantenuta per '
+            'l’intero minuto, non fa ritorno. Usando uno slot di 5° livello o '
+            'superiore, l’incantatore può bersagliare una creatura aggiuntiva '
+            'per ogni livello di slot superiore al 4°.',
+      ),
+      ownerId: SpellIds.banishment,
+    ),
+    level: 4,
+    school: SpellSchool.abjuration,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 18,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+      materials: [
+        SpellMaterialComponent(
+          description: 'Un oggetto sgradito al bersaglio.',
+        ),
+      ],
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.minute,
+      amount: 1,
+      concentration: true,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.creature,
+      },
+      maximumTargets: 1,
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'banishment_planar_exile',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'targets_one_creature_seen_within_range',
+          'target_makes_charisma_save',
+          'failed_save_banishes_target',
+          'native_target_is_sent_to_harmless_demiplane_and_incapacitated',
+          'native_target_returns_when_spell_ends',
+          'extraplanar_target_returns_to_native_plane',
+          'extraplanar_target_returns_if_spell_ends_before_1_minute',
+          'extraplanar_target_does_not_return_after_full_1_minute',
+          'slot_level_above_4_adds_one_target_per_slot_level',
+          'requires_concentration',
+        },
+      ),
+    ],
+    classIds: {
+      'cleric',
+      'paladin',
+      'sorcerer',
+      'warlock',
+      'wizard',
+    },
+  ),
+  SpellIds.conjureWoodlandBeings: SpellDefinition(
+    id: SpellIds.conjureWoodlandBeings,
+    content: RuleContent(
+      id: SpellIds.conjureWoodlandBeings,
+      name: 'Evoca Creature Boschive',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Evoca un gruppo di creature fatate amichevoli che obbediscono ai comandi dell’incantatore.',
+        details: 'Le creature fatate compaiono in spazi liberi visibili entro '
+            'gittata. L’incantatore sceglie una delle opzioni: una creatura con '
+            'GS 2 o inferiore, due con GS 1 o inferiore, quattro con GS 1/2 o '
+            'inferiore oppure otto con GS 1/4 o inferiore. Una creatura evocata '
+            'scompare quando scende a 0 punti ferita o quando l’incantesimo '
+            'termina. Le creature sono amichevoli, condividono un unico tiro '
+            'di iniziativa e obbediscono ai comandi verbali senza richiedere '
+            'un’azione. Senza ordini si difendono dalle creature ostili ma non '
+            'intraprendono altre azioni. Il DM possiede le loro statistiche. '
+            'Con uno slot di 6° livello viene evocato il doppio delle creature; '
+            'con uno slot di 8° livello, il triplo.',
+      ),
+      ownerId: SpellIds.conjureWoodlandBeings,
+    ),
+    level: 4,
+    school: SpellSchool.conjuration,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 18,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+      materials: [
+        SpellMaterialComponent(
+          description: 'Una bacca di agrifoglio per ogni creatura evocata.',
+        ),
+      ],
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.hour,
+      amount: 1,
+      concentration: true,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.point,
+        SpellTargetType.creatures,
+      },
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'conjure_woodland_beings_summoned_fey',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'summons_fey_in_unoccupied_spaces_seen_within_range',
+          'choice_one_cr_2_two_cr_1_four_cr_half_or_eight_cr_quarter',
+          'summoned_creature_disappears_at_0_hp_or_spell_end',
+          'summoned_creatures_are_friendly_to_caster_and_companions',
+          'summoned_group_shares_one_initiative_roll',
+          'summoned_creatures_obey_verbal_commands_without_action',
+          'without_command_creatures_defend_but_take_no_other_action',
+          'dm_has_summoned_creature_statistics',
+          'slot_level_6_doubles_number_summoned',
+          'slot_level_8_triples_number_summoned',
+          'requires_concentration',
+        },
+      ),
+    ],
+    classIds: {
+      'druid',
+      'ranger',
+    },
+  ),
+  SpellIds.conjureMinorElementals: SpellDefinition(
+    id: SpellIds.conjureMinorElementals,
+    content: RuleContent(
+      id: SpellIds.conjureMinorElementals,
+      name: 'Evoca Elementali Minori',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Evoca un gruppo di elementali amichevoli che combattono e obbediscono ai comandi dell’incantatore.',
+        details:
+            'Gli elementali compaiono in spazi liberi visibili entro gittata. '
+            'L’incantatore sceglie una delle opzioni: un elementale con GS 2 o '
+            'inferiore, due con GS 1 o inferiore, quattro con GS 1/2 o '
+            'inferiore oppure otto con GS 1/4 o inferiore. Un elementale '
+            'evocato scompare quando scende a 0 punti ferita o quando '
+            'l’incantesimo termina. Le creature sono amichevoli, condividono '
+            'un unico tiro di iniziativa e obbediscono ai comandi verbali '
+            'senza richiedere un’azione. Senza ordini si difendono dalle '
+            'creature ostili ma non intraprendono altre azioni. Il DM possiede '
+            'le loro statistiche. Con uno slot di 6° livello viene evocato il '
+            'doppio degli elementali; con uno slot di 8° livello, il triplo.',
+      ),
+      ownerId: SpellIds.conjureMinorElementals,
+    ),
+    level: 4,
+    school: SpellSchool.conjuration,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.minute,
+      amount: 1,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 27,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.hour,
+      amount: 1,
+      concentration: true,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.point,
+        SpellTargetType.creatures,
+      },
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'conjure_minor_elementals_summoned_group',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'summons_elementals_in_unoccupied_spaces_seen_within_range',
+          'choice_one_cr_2_two_cr_1_four_cr_half_or_eight_cr_quarter',
+          'summoned_elemental_disappears_at_0_hp_or_spell_end',
+          'summoned_elementals_are_friendly_to_caster_and_companions',
+          'summoned_group_shares_one_initiative_roll',
+          'summoned_elementals_obey_verbal_commands_without_action',
+          'without_command_elementals_defend_but_take_no_other_action',
+          'dm_has_summoned_elemental_statistics',
+          'slot_level_6_doubles_number_summoned',
+          'slot_level_8_triples_number_summoned',
+          'requires_concentration',
+        },
+      ),
+    ],
+    classIds: {
+      'druid',
+      'wizard',
+    },
+  ),
+  SpellIds.fabricate: SpellDefinition(
+    id: SpellIds.fabricate,
+    content: RuleContent(
+      id: SpellIds.fabricate,
+      name: 'Fabbricare',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Converte materie prime visibili in un prodotto finito composto dagli stessi materiali.',
+        details:
+            'L’incantatore converte materie prime visibili entro gittata in un '
+            'prodotto finito dello stesso materiale. Può creare un oggetto di '
+            'taglia Grande o inferiore, non più grande di un cubo con spigolo '
+            'di 3 metri o di otto cubi con spigolo di 1,5 metri collegati, '
+            'purché disponga di materie prime sufficienti. Con metallo, pietra '
+            'o altre sostanze minerarie può creare al massimo un oggetto di '
+            'taglia Media, contenuto in un cubo con spigolo di 1,5 metri. La '
+            'qualità del prodotto dipende dalla qualità delle materie prime. '
+            'L’incantesimo non crea o trasmuta creature né oggetti magici. Per '
+            'creare oggetti che richiedono grande precisione, come gioielli, '
+            'armi, vetro o armature, l’incantatore deve essere competente '
+            'negli strumenti da artigiano appropriati.',
+      ),
+      ownerId: SpellIds.fabricate,
+    ),
+    level: 4,
+    school: SpellSchool.transmutation,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.minute,
+      amount: 10,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 36,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.instantaneous,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.object,
+        SpellTargetType.area,
+      },
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'fabricate_raw_material_transformation',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'converts_visible_raw_materials_into_finished_product',
+          'finished_product_uses_same_materials',
+          'requires_sufficient_quantity_of_raw_material',
+          'general_product_maximum_large_size',
+          'general_product_fits_3_meter_cube_or_eight_connected_1_5_meter_cubes',
+          'mineral_product_maximum_medium_size_and_1_5_meter_cube',
+          'product_quality_matches_raw_material_quality',
+          'cannot_create_or_transmute_creatures',
+          'cannot_create_or_transmute_magic_items',
+          'precision_items_require_relevant_artisan_tool_proficiency',
+          'instantaneous_transmutation',
+        },
+      ),
+    ],
+    classIds: {
+      'wizard',
     },
   ),
 };
