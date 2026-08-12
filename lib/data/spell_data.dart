@@ -1043,6 +1043,10 @@ abstract final class SpellIds {
   static const enthrall = 'enthrall';
   static const continualFlame = 'continual_flame';
   static const shatter = 'shatter';
+  static const melfsAcidArrow = 'melfs_acid_arrow';
+  static const mirrorImage = 'mirror_image';
+  static const detectThoughts = 'detect_thoughts';
+  static const enlargeReduce = 'enlarge_reduce';
 }
 
 const Map<String, SpellDefinition> spellDefinitions = {
@@ -9002,6 +9006,331 @@ const Map<String, SpellDefinition> spellDefinitions = {
       'bard',
       'sorcerer',
       'warlock',
+      'wizard',
+    },
+  ),
+  SpellIds.melfsAcidArrow: SpellDefinition(
+    id: SpellIds.melfsAcidArrow,
+    content: RuleContent(
+      id: SpellIds.melfsAcidArrow,
+      name: 'Freccia Acida di Melf',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Scaglia una freccia acida contro un bersaglio, con danni immediati e successivi.',
+        details:
+            'Una freccia verde scintillante vola fino a un bersaglio entro '
+            'gittata ed esplode in uno spruzzo d’acido. L’incantatore effettua '
+            'un attacco a distanza con questo incantesimo contro il bersaglio. '
+            'Se colpisce, il bersaglio subisce immediatamente 4d4 danni da '
+            'acido e altri 2d4 danni da acido alla fine del suo turno '
+            'successivo. Se l’attacco manca, la freccia spruzza comunque acido '
+            'sul bersaglio, infliggendo metà dei danni iniziali e nessun danno '
+            'alla fine del turno successivo. Usando uno slot di livello '
+            'superiore al 2°, sia i danni iniziali sia quelli successivi '
+            'aumentano di 1d4 per ogni livello di slot superiore.',
+      ),
+      ownerId: SpellIds.melfsAcidArrow,
+    ),
+    level: 2,
+    school: SpellSchool.evocation,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 27,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+      materials: [
+        SpellMaterialComponent(
+          description:
+              'Una foglia di rabarbaro in polvere e lo stomaco di una vipera.',
+        ),
+      ],
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.instantaneous,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.creature,
+        SpellTargetType.object,
+      },
+      maximumTargets: 1,
+    ),
+    attackType: SpellAttackType.ranged,
+    damage: [
+      SpellDamage(
+        dice: '4d4',
+        type: SpellDamageType.acid,
+      ),
+    ],
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'melfs_acid_arrow_delayed_acid',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'ranged_spell_attack_against_target_within_27_meters',
+          'hit_deals_4d4_acid_damage_immediately',
+          'hit_deals_2d4_acid_damage_at_end_of_targets_next_turn',
+          'miss_deals_half_initial_damage',
+          'miss_deals_no_delayed_damage',
+          'initial_and_delayed_damage_increase_by_1d4_per_slot_level_above_2',
+        },
+      ),
+    ],
+    classIds: {
+      'wizard',
+    },
+  ),
+  SpellIds.mirrorImage: SpellDefinition(
+    id: SpellIds.mirrorImage,
+    content: RuleContent(
+      id: SpellIds.mirrorImage,
+      name: 'Immagine Speculare',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Crea tre duplicati illusori che possono deviare gli attacchi diretti contro l’incantatore.',
+        details:
+            'Tre duplicati illusori dell’incantatore compaiono nel suo spazio. '
+            'Finché l’incantesimo non termina, si muovono assieme a lui, '
+            'imitano le sue azioni e cambiano posizione rendendo impossibile '
+            'capire quale immagine sia reale. L’incantatore può usare la sua '
+            'azione per congedarli. Ogni volta che una creatura bersaglia '
+            'l’incantatore con un attacco, l’incantatore tira un d20 per '
+            'determinare se l’attacco colpisce invece un duplicato: con tre '
+            'duplicati serve 6 o più, con due duplicati 8 o più, con un '
+            'duplicato 11 o più. La CA di un duplicato è 10 + il modificatore '
+            'di Destrezza dell’incantatore. Un duplicato colpito viene '
+            'distrutto, ma ignora ogni altro danno o effetto. L’incantesimo '
+            'termina quando tutti e tre i duplicati sono distrutti. Una creatura '
+            'non è influenzata se non può vedere, se si affida a sensi diversi '
+            'dalla vista o se percepisce le illusioni come false.',
+      ),
+      ownerId: SpellIds.mirrorImage,
+    ),
+    level: 2,
+    school: SpellSchool.illusion,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.self,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.minute,
+      amount: 1,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.self,
+      },
+      maximumTargets: 1,
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'mirror_image_three_illusory_duplicates',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'creates_three_illusory_duplicates_in_casters_space',
+          'duplicates_move_with_caster_and_mimic_actions',
+          'caster_can_use_action_to_dismiss_duplicates',
+          'attack_targeting_caster_can_be_redirected_to_duplicate',
+          'three_duplicates_redirect_on_d20_6_or_higher',
+          'two_duplicates_redirect_on_d20_8_or_higher',
+          'one_duplicate_redirect_on_d20_11_or_higher',
+          'duplicate_ac_is_10_plus_caster_dexterity_modifier',
+          'duplicate_destroyed_when_hit_by_attack',
+          'duplicates_ignore_all_other_damage_and_effects',
+          'spell_ends_when_all_duplicates_destroyed',
+          'creature_unaffected_if_cannot_see_or_uses_nonvisual_senses',
+          'truesight_or_similar_true_perception_ignores_spell',
+          'does_not_require_concentration',
+        },
+      ),
+    ],
+    classIds: {
+      'sorcerer',
+      'warlock',
+      'wizard',
+    },
+  ),
+  SpellIds.detectThoughts: SpellDefinition(
+    id: SpellIds.detectThoughts,
+    content: RuleContent(
+      id: SpellIds.detectThoughts,
+      name: 'Individuazione dei Pensieri',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Permette di leggere pensieri superficiali, sondare più a fondo o cercare creature pensanti vicine.',
+        details: 'Per la durata, l’incantatore può leggere i pensieri di certe '
+            'creature. Quando lancia l’incantesimo e come azione in ogni turno, '
+            'può concentrarsi su una creatura entro 9 metri che sia in grado di '
+            'vedere. Una creatura con Intelligenza 3 o inferiore, o che non '
+            'parli alcun linguaggio, non può essere influenzata. Inizialmente '
+            'l’incantatore apprende i pensieri superficiali. Con un’azione può '
+            'spostare l’attenzione su un’altra creatura o sondare più a fondo '
+            'la stessa mente. Se sonda più a fondo, il bersaglio effettua un '
+            'tiro salvezza su Saggezza: se fallisce, vengono rivelati i suoi '
+            'ragionamenti, stato emotivo e una presenza dominante nei suoi '
+            'pensieri; se supera, l’incantesimo termina. Il bersaglio è '
+            'comunque consapevole della sonda mentale e può usare la sua azione '
+            'per una prova contrapposta di Intelligenza contro l’incantatore; '
+            'se ha successo, l’incantesimo termina. L’incantesimo può anche '
+            'cercare pensieri entro 9 metri, penetrando la maggior parte delle '
+            'barriere ma venendo bloccato da pietra spessa, metallo, piombo o '
+            'materiali simili indicati dalla regola. Richiede concentrazione.',
+      ),
+      ownerId: SpellIds.detectThoughts,
+    ),
+    level: 2,
+    school: SpellSchool.divination,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.self,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+      materials: [
+        SpellMaterialComponent(
+          description: 'Una moneta di rame.',
+        ),
+      ],
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.minute,
+      amount: 1,
+      concentration: true,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.self,
+      },
+      maximumTargets: 1,
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'detect_thoughts_read_and_probe_minds',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'caster_can_focus_on_visible_creature_within_9_meters_on_cast_or_as_action',
+          'creature_with_intelligence_3_or_lower_unaffected',
+          'creature_that_speaks_no_language_unaffected',
+          'initially_reads_surface_thoughts',
+          'caster_can_action_switch_to_another_creature',
+          'caster_can_action_probe_deeper',
+          'deep_probe_target_makes_wisdom_saving_throw',
+          'failed_deep_probe_reveals_reasoning_emotional_state_and_dominant_thought',
+          'successful_deep_probe_save_ends_spell',
+          'target_knows_mind_is_being_probed',
+          'target_can_action_intelligence_contest_to_end_spell',
+          'caster_can_search_for_thinking_creatures_within_9_meters',
+          'search_is_blocked_by_thick_stone_metal_lead_or_similar_barriers',
+          'requires_concentration',
+        },
+      ),
+    ],
+    classIds: {
+      'bard',
+      'sorcerer',
+      'wizard',
+    },
+  ),
+  SpellIds.enlargeReduce: SpellDefinition(
+    id: SpellIds.enlargeReduce,
+    content: RuleContent(
+      id: SpellIds.enlargeReduce,
+      name: 'Ingrandire/Ridurre',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Ingrandisce o riduce una creatura o un oggetto, modificando taglia, peso e Forza.',
+        details:
+            'L’incantatore ingrandisce o riduce una creatura o un oggetto entro '
+            'gittata che sia in grado di vedere. Il bersaglio deve essere una '
+            'creatura o un oggetto non indossato né trasportato. Se il bersaglio '
+            'non è consenziente, può effettuare un tiro salvezza su '
+            'Costituzione; se lo supera, l’incantesimo non ha effetto. Se il '
+            'bersaglio è una creatura, tutto ciò che indossa e trasporta cambia '
+            'taglia con lei, mentre un oggetto lasciato cadere torna subito alla '
+            'taglia normale. Con Ingrandire, la taglia raddoppia in tutte le '
+            'dimensioni, il peso aumenta di otto volte, la categoria di taglia '
+            'aumenta di uno se possibile, il bersaglio ha vantaggio alle prove '
+            'e ai tiri salvezza su Forza e le sue armi infliggono 1d4 danni '
+            'extra. Con Ridurre, la taglia si dimezza, il peso diventa un '
+            'ottavo, la categoria di taglia diminuisce di uno, il bersaglio ha '
+            'svantaggio alle prove e ai tiri salvezza su Forza e le sue armi '
+            'infliggono 1d4 danni in meno, senza scendere sotto 1 danno. '
+            'Richiede concentrazione.',
+      ),
+      ownerId: SpellIds.enlargeReduce,
+    ),
+    level: 2,
+    school: SpellSchool.transmutation,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 9,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+      materials: [
+        SpellMaterialComponent(
+          description: 'Un pizzico di polvere di ferro.',
+        ),
+      ],
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.minute,
+      amount: 1,
+      concentration: true,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.creature,
+        SpellTargetType.object,
+      },
+      maximumTargets: 1,
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'enlarge_reduce_size_change',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'targets_visible_creature_or_unworn_unheld_object_within_9_meters',
+          'unwilling_target_makes_constitution_saving_throw',
+          'successful_save_no_effect',
+          'creature_equipment_changes_size_with_creature',
+          'dropped_object_returns_to_normal_size',
+          'enlarge_doubles_dimensions_and_multiplies_weight_by_8',
+          'enlarge_increases_size_category_if_space_allows',
+          'enlarge_grants_advantage_on_strength_checks_and_saves',
+          'enlarged_weapons_deal_extra_1d4_damage',
+          'reduce_halves_dimensions_and_reduces_weight_to_one_eighth',
+          'reduce_decreases_size_category',
+          'reduce_grants_disadvantage_on_strength_checks_and_saves',
+          'reduced_weapons_deal_1d4_less_damage_minimum_1',
+          'requires_concentration',
+        },
+      ),
+    ],
+    classIds: {
+      'sorcerer',
       'wizard',
     },
   ),

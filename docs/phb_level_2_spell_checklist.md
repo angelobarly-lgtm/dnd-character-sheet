@@ -22,10 +22,10 @@ Checklist di lavoro per espandere `lib/data/spell_data.dart` con gli incantesimi
 - [x] Fiamma Perenne
 - [x] Folata di Vento
 - [x] Frantumare
-- [ ] Freccia Acida di Melf
-- [ ] Immagine Speculare
-- [ ] Individuazione dei Pensieri
-- [ ] Ingrandire/Ridurre
+- [x] Freccia Acida di Melf
+- [x] Immagine Speculare
+- [x] Individuazione dei Pensieri
+- [x] Ingrandire/Ridurre
 - [ ] Invisibilità
 - [ ] Lama Infuocata
 - [ ] Levitazione
