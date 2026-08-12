@@ -929,6 +929,8 @@ class SpellDefinition {
 /// Verrà popolato progressivamente. Tenere un unico registry permette a
 /// razze, classi, talenti e altri sistemi di riferirsi allo stesso ID.
 abstract final class SpellIds {
+  static const mindBlank = 'mind_blank';
+  static const tsunami = 'tsunami';
   static const earthquake = 'earthquake';
   static const telepathy = 'telepathy';
   static const demiplane = 'demiplane';
@@ -27301,6 +27303,196 @@ const Map<String, SpellDefinition> spellDefinitions = {
       'cleric',
       'druid',
       'sorcerer',
+    },
+  ),
+  SpellIds.tsunami: SpellDefinition(
+    id: SpellIds.tsunami,
+    content: RuleContent(
+      id: SpellIds.tsunami,
+      name: 'Tsunami',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Crea un enorme muro d’acqua che avanza e travolge le creature sul suo percorso.',
+        details:
+            'L’incantatore crea entro la propria visuale un muro d’acqua lungo fino a 90 metri, '
+            'alto fino a 90 metri e spesso 15 metri. Quando appare, ogni creatura nella sua area '
+            'effettua un tiro salvezza su Forza, subendo 6d10 danni contundenti se lo fallisce o '
+            'metà dei danni se lo supera. All’inizio di ogni turno successivo dell’incantatore, '
+            'il muro si muove di 15 metri allontanandosi da lui e trasporta le creature che '
+            'contiene. Le creature di taglia Enorme o inferiore nel muro, e quelle raggiunte dal '
+            'suo movimento, devono superare un tiro salvezza su Forza o subire 5d10 danni '
+            'contundenti, una sola volta per round. Al termine di ogni turno l’altezza diminuisce '
+            'di 15 metri e i danni successivi diminuiscono di 1d10. Una creatura immersa può '
+            'nuotare soltanto superando una prova di Forza (Atletica) contro la CD del tiro '
+            'salvezza dell’incantesimo; quando esce dal muro cade a terra.',
+      ),
+      ownerId: SpellIds.tsunami,
+    ),
+    level: 8,
+    school: SpellSchool.conjuration,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.minute,
+      amount: 1,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.sight,
+    ),
+    area: SpellArea(
+      shape: SpellAreaShape.special,
+      origin: SpellAreaOrigin.targetPoint,
+      lengthMeters: 90,
+      widthMeters: 15,
+      heightMeters: 90,
+    ),
+    wall: SpellWallDefinition(
+      shape: SpellWallShape.line,
+      lengthMeters: 90,
+      heightMeters: 90,
+      thicknessMeters: 15,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.round,
+      amount: 6,
+      concentration: true,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.area,
+        SpellTargetType.creatures,
+      },
+    ),
+    savingThrow: SpellSavingThrow(
+      ability: SpellSavingThrowAbility.strength,
+      onSuccess: SpellSaveSuccess.halfDamage,
+    ),
+    damage: [
+      SpellDamage(
+        dice: '6d10',
+        type: SpellDamageType.bludgeoning,
+      ),
+    ],
+    areaTriggeredEffects: [
+      SpellAreaTriggeredEffect(
+        triggers: {
+          SpellAreaTriggerEvent.areaAppears,
+        },
+        damage: SpellDamage(
+          dice: '6d10',
+          type: SpellDamageType.bludgeoning,
+        ),
+        savingThrow: SpellSavingThrow(
+          ability: SpellSavingThrowAbility.strength,
+          onSuccess: SpellSaveSuccess.halfDamage,
+        ),
+      ),
+      SpellAreaTriggeredEffect(
+        triggers: {
+          SpellAreaTriggerEvent.special,
+        },
+        damage: SpellDamage(
+          dice: '5d10',
+          type: SpellDamageType.bludgeoning,
+        ),
+        savingThrow: SpellSavingThrow(
+          ability: SpellSavingThrowAbility.strength,
+          onSuccess: SpellSaveSuccess.negates,
+        ),
+      ),
+    ],
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'tsunami_advancing_water_wall',
+        type: SpellPersistentEffectType.zone,
+        ruleTags: {
+          'wall_is_up_to_90_meters_long_90_meters_high_and_15_meters_thick',
+          'initial_failed_strength_save_deals_6d10_bludgeoning_damage',
+          'initial_successful_save_deals_half_damage',
+          'wall_moves_15_meters_away_from_caster_at_start_of_casters_turn',
+          'wall_carries_creatures_inside_it',
+          'moving_wall_forces_strength_save',
+          'failed_subsequent_save_deals_5d10_bludgeoning_damage',
+          'creature_can_take_subsequent_damage_once_per_round',
+          'wall_height_decreases_by_15_meters_each_round',
+          'subsequent_damage_decreases_by_1d10_each_round',
+          'spell_ends_when_wall_height_reaches_zero',
+          'swimming_requires_athletics_check_against_spell_save_dc',
+          'failed_athletics_check_prevents_movement',
+          'creature_leaving_wall_falls_prone',
+          'requires_concentration',
+        },
+      ),
+    ],
+    classIds: {
+      'druid',
+    },
+  ),
+  SpellIds.mindBlank: SpellDefinition(
+    id: SpellIds.mindBlank,
+    content: RuleContent(
+      id: SpellIds.mindBlank,
+      name: 'Vuoto Mentale',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Protegge completamente una creatura da danni psichici, divinazioni e interferenze mentali.',
+        details:
+            'Per 24 ore, una creatura consenziente toccata dall’incantatore '
+            'è immune ai danni psichici, alla condizione di affascinato e a '
+            'qualsiasi effetto che percepisca le sue emozioni o legga i suoi '
+            'pensieri. È inoltre immune agli incantesimi di divinazione. '
+            'La protezione neutralizza perfino Desiderio e gli incantesimi '
+            'o effetti di potenza analoga impiegati per influenzare la mente '
+            'del bersaglio o ottenere informazioni su di esso.',
+      ),
+      ownerId: SpellIds.mindBlank,
+    ),
+    level: 8,
+    school: SpellSchool.abjuration,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.touch,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.hour,
+      amount: 24,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.willingCreature,
+      },
+      maximumTargets: 1,
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'mind_blank_mental_protection',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'target_is_immune_to_psychic_damage',
+          'target_is_immune_to_charmed_condition',
+          'target_is_immune_to_emotion_detection',
+          'target_is_immune_to_thought_reading',
+          'target_is_immune_to_divination_spells',
+          'protection_blocks_magic_that_influences_targets_mind',
+          'protection_blocks_magic_that_obtains_information_about_target',
+          'protection_blocks_wish_used_for_mental_influence_or_information',
+          'protection_blocks_effects_with_power_similar_to_wish',
+        },
+      ),
+    ],
+    classIds: {
+      'bard',
+      'wizard',
     },
   ),
 };

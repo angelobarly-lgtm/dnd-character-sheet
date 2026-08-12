@@ -18,5 +18,5 @@ Checklist di lavoro per espandere `lib/data/spell_data.dart` con gli incantesimi
 - [x] Semipiano
 - [x] Telepatia
 - [x] Terremoto
-- [ ] Tsunami
-- [ ] Vuoto Mentale
+- [x] Tsunami
+- [x] Vuoto Mentale
