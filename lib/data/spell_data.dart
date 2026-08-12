@@ -1089,6 +1089,10 @@ abstract final class SpellIds {
   static const leomundsTinyHut = 'leomunds_tiny_hut';
   static const magicCircle = 'magic_circle';
   static const clairvoyance = 'clairvoyance';
+  static const counterspell = 'counterspell';
+  static const createFoodAndWater = 'create_food_and_water';
+  static const plantGrowth = 'plant_growth';
+  static const phantomSteed = 'phantom_steed';
 }
 
 const Map<String, SpellDefinition> spellDefinitions = {
@@ -12366,6 +12370,281 @@ const Map<String, SpellDefinition> spellDefinitions = {
       'bard',
       'cleric',
       'sorcerer',
+      'wizard',
+    },
+  ),
+  SpellIds.counterspell: SpellDefinition(
+    id: SpellIds.counterspell,
+    content: RuleContent(
+      id: SpellIds.counterspell,
+      name: 'Controincantesimo',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary: 'Interrompe una creatura mentre sta lanciando un incantesimo.',
+        details:
+            'L’incantatore tenta di interrompere una creatura nell’atto di '
+            'lanciare un incantesimo, usando una reazione quando vede una '
+            'creatura entro 18 metri che lancia un incantesimo. Se la creatura '
+            'sta lanciando un incantesimo di 3° livello o inferiore, '
+            'quell’incantesimo fallisce e non ha effetto. Se sta lanciando un '
+            'incantesimo di 4° livello o superiore, l’incantatore effettua una '
+            'prova di caratteristica usando la propria caratteristica da '
+            'incantatore; la CD è pari a 10 + il livello dell’incantesimo della '
+            'creatura. In caso di successo, l’incantesimo della creatura '
+            'fallisce e non ha effetto. Usando uno slot di 4° livello o '
+            'superiore, l’incantesimo interrotto non ha effetto se il suo '
+            'livello è pari o inferiore al livello dello slot usato.',
+      ),
+      ownerId: SpellIds.counterspell,
+    ),
+    level: 3,
+    school: SpellSchool.abjuration,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.reaction,
+      reactionTrigger:
+          'Quando l’incantatore vede una creatura entro 18 metri che lancia un incantesimo.',
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 18,
+    ),
+    components: SpellComponents(
+      somatic: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.instantaneous,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.creature,
+      },
+      maximumTargets: 1,
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'counterspell_interrupt_spellcasting',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'reaction_spell',
+          'trigger_seen_creature_within_18_meters_casts_spell',
+          'interrupts_creature_while_casting_spell',
+          'spell_level_3_or_lower_fails_automatically',
+          'spell_level_4_or_higher_requires_spellcasting_ability_check',
+          'counterspell_check_dc_10_plus_target_spell_level',
+          'successful_check_target_spell_fails_and_has_no_effect',
+          'slot_level_above_3_automatically_counters_spell_of_slot_level_or_lower',
+        },
+      ),
+    ],
+    classIds: {
+      'sorcerer',
+      'warlock',
+      'wizard',
+    },
+  ),
+  SpellIds.createFoodAndWater: SpellDefinition(
+    id: SpellIds.createFoodAndWater,
+    content: RuleContent(
+      id: SpellIds.createFoodAndWater,
+      name: 'Creare Cibo e Acqua',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Crea cibo e acqua sufficienti a nutrire fino a quindici umanoidi o cinque cavalcature.',
+        details: 'L’incantatore crea 22,5 kg di cibo e 120 litri di acqua sul '
+            'terreno o in contenitori entro gittata. Le provviste sono '
+            'sufficienti a offrire sostentamento a un massimo di quindici '
+            'umanoidi o cinque cavalcature per 24 ore. Il cibo è poco saporito '
+            'ma nutriente e si guasta se non viene mangiato entro 24 ore. '
+            'L’acqua è pulita e non va a male. L’incantesimo ha durata '
+            'istantanea.',
+      ),
+      ownerId: SpellIds.createFoodAndWater,
+    ),
+    level: 3,
+    school: SpellSchool.conjuration,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 9,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.instantaneous,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.point,
+      },
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'create_food_and_water_supplies',
+        type: SpellPersistentEffectType.createdObject,
+        ruleTags: {
+          'creates_22_5_kg_food',
+          'creates_120_liters_water',
+          'created_on_ground_or_in_containers_within_9_meters',
+          'sustains_up_to_fifteen_humanoids_for_24_hours',
+          'sustains_up_to_five_mounts_for_24_hours',
+          'food_is_bland_but_nourishing',
+          'food_spoils_if_not_eaten_within_24_hours',
+          'water_is_clean_and_does_not_spoil',
+          'instantaneous_conjuration',
+        },
+      ),
+    ],
+    classIds: {
+      'cleric',
+      'paladin',
+    },
+  ),
+  SpellIds.plantGrowth: SpellDefinition(
+    id: SpellIds.plantGrowth,
+    content: RuleContent(
+      id: SpellIds.plantGrowth,
+      name: 'Crescita Vegetale',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Fa crescere i vegetali per ostacolare il movimento o rendere fertile il terreno.',
+        details:
+            'Questo incantesimo incanala vitalità nei vegetali di un’area e può '
+            'fornire un beneficio immediato o a lungo termine. Se l’incantatore '
+            'lo lancia usando 1 azione, sceglie un punto entro gittata: tutti i '
+            'vegetali normali entro un raggio di 30 metri centrato su quel '
+            'punto crescono fino a formare un groviglio. Una creatura che si '
+            'muove attraverso l’area deve spendere 120 cm di movimento per ogni '
+            '30 cm percorsi. L’incantatore può escludere una o più aree di '
+            'qualsiasi dimensione all’interno dell’area. Se invece lancia '
+            'l’incantesimo nell’arco di 8 ore, rende fertile la terra: tutti i '
+            'vegetali entro un raggio di 750 metri centrato su un punto entro '
+            'gittata crescono rigogliosamente per 1 anno e producono il doppio '
+            'del cibo normale al momento del raccolto.',
+      ),
+      ownerId: SpellIds.plantGrowth,
+    ),
+    level: 3,
+    school: SpellSchool.transmutation,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.special,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 45,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.instantaneous,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.area,
+        SpellTargetType.point,
+      },
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'plant_growth_overgrowth_or_enrichment',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'casting_time_can_be_1_action_or_8_hours',
+          'action_casting_targets_point_within_45_meters',
+          'normal_plants_within_30_meter_radius_become_thick_overgrowth',
+          'creatures_spend_120_cm_movement_per_30_cm_moved_through_area',
+          'caster_can_exclude_one_or_more_areas_of_any_size',
+          'eight_hour_casting_enriches_land',
+          'plants_within_750_meter_radius_grow_vigorously_for_1_year',
+          'harvest_produces_twice_normal_food',
+          'instantaneous_transmutation',
+        },
+      ),
+    ],
+    classIds: {
+      'bard',
+      'druid',
+      'ranger',
+    },
+  ),
+  SpellIds.phantomSteed: SpellDefinition(
+    id: SpellIds.phantomSteed,
+    content: RuleContent(
+      id: SpellIds.phantomSteed,
+      name: 'Destriero Fantomatico',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Crea una cavalcatura quasi reale, simile a un cavallo, dotata di sella e grande velocità.',
+        details:
+            'Una creatura Grande, simile a un cavallo e quasi reale, appare sul '
+            'terreno in uno spazio libero scelto dall’incantatore entro gittata. '
+            'L’incantatore sceglie il suo aspetto, ma la creatura deve essere '
+            'dotata di sella, morso e briglie. L’equipaggiamento creato '
+            'dall’incantesimo svanisce se viene portato a più di 3 metri dalla '
+            'cavalcatura. Per la durata, l’incantatore o una creatura scelta può '
+            'cavalcare il destriero. La creatura usa le statistiche di un '
+            'cavallo da galoppo, ma ha velocità di 30 metri e può percorrere '
+            '15 km in un’ora o 20 km a passo veloce. Quando l’incantesimo '
+            'termina, la cavalcatura svanisce gradualmente e concede al '
+            'cavalcatore 1 minuto per smontare. L’incantesimo termina se '
+            'l’incantatore usa un’azione per interromperlo o se la cavalcatura '
+            'subisce danni. Può essere lanciato come rituale.',
+      ),
+      ownerId: SpellIds.phantomSteed,
+    ),
+    level: 3,
+    ritual: true,
+    school: SpellSchool.illusion,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.minute,
+      amount: 1,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 9,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.hour,
+      amount: 1,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.special,
+      },
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'phantom_steed_quasi_real_mount',
+        type: SpellPersistentEffectType.createdObject,
+        ruleTags: {
+          'ritual_spell',
+          'creates_large_horse_like_quasi_real_creature_in_unoccupied_space_within_9_meters',
+          'caster_chooses_mount_appearance',
+          'mount_has_saddle_bit_and_bridle',
+          'created_equipment_vanishes_if_more_than_3_meters_from_mount',
+          'caster_or_chosen_creature_can_ride_mount',
+          'mount_uses_riding_horse_statistics',
+          'mount_speed_30_meters',
+          'mount_travels_15_km_per_hour_or_20_km_fast_pace',
+          'mount_fades_when_spell_ends_and_gives_rider_1_minute_to_dismount',
+          'spell_ends_if_caster_dismisses_with_action',
+          'spell_ends_if_mount_takes_damage',
+        },
+      ),
+    ],
+    classIds: {
       'wizard',
     },
   ),

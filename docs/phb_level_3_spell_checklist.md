@@ -10,10 +10,10 @@ Checklist di lavoro per espandere `lib/data/spell_data.dart` con gli incantesimi
 - [x] Capanna di Leomund
 - [x] Cerchio Magico
 - [x] Chiaroveggenza
-- [ ] Controincantesimo
-- [ ] Creare Cibo e Acqua
-- [ ] Crescita Vegetale
-- [ ] Destriero Fantomatico
+- [x] Controincantesimo
+- [x] Creare Cibo e Acqua
+- [x] Crescita Vegetale
+- [x] Destriero Fantomatico
 - [ ] Dissolvi Magie
 - [ ] Evoca Animali
 - [ ] Evoca Raffica
