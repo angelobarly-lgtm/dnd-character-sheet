@@ -6,10 +6,10 @@ Checklist di lavoro per espandere `lib/data/spell_data.dart` con gli incantesimi
 - [x] Aura Sacra
 - [x] Campo Anti-Magia
 - [x] Clone
-- [ ] Controllare Tempo Atmosferico
-- [ ] Dominare Mostri
-- [ ] Esplosione Solare
-- [ ] Forme Animali
+- [x] Controllare Tempo Atmosferico
+- [x] Dominare Mostri
+- [x] Esplosione Solare
+- [x] Forme Animali
 - [ ] Labirinto
 - [ ] Loquacità
 - [ ] Nube Incendiaria

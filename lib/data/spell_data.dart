@@ -929,6 +929,10 @@ class SpellDefinition {
 /// Verrà popolato progressivamente. Tenere un unico registry permette a
 /// razze, classi, talenti e altri sistemi di riferirsi allo stesso ID.
 abstract final class SpellIds {
+  static const animalShapes = 'animal_shapes';
+  static const sunburst = 'sunburst';
+  static const dominateMonster = 'dominate_monster';
+  static const controlWeather = 'control_weather';
   static const clone = 'clone';
   static const antimagicField = 'antimagic_field';
   static const holyAura = 'holy_aura';
@@ -26315,6 +26319,335 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ],
     classIds: {
       'wizard',
+    },
+  ),
+  SpellIds.controlWeather: SpellDefinition(
+    id: SpellIds.controlWeather,
+    content: RuleContent(
+      id: SpellIds.controlWeather,
+      name: 'Controllare Tempo Atmosferico',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Permette di modificare gradualmente precipitazioni, temperatura e vento entro un raggio di 7,5 chilometri.',
+        details:
+            'L’incantatore deve trovarsi all’esterno e assume il controllo delle condizioni '
+            'atmosferiche entro 7,5 chilometri. L’incantesimo termina prematuramente se '
+            'l’incantatore si sposta dove non dispone di una linea diretta fino al cielo. '
+            'Può modificare precipitazioni, temperatura e vento di un grado verso l’alto '
+            'o verso il basso rispetto alle condizioni attuali, determinate dal DM in base '
+            'al clima e alla stagione. Può inoltre cambiare la direzione del vento. Le nuove '
+            'condizioni richiedono 1d4 × 10 minuti per manifestarsi; quando diventano effettive, '
+            'l’incantatore può modificarle nuovamente. Al termine dell’incantesimo il tempo '
+            'atmosferico ritorna gradualmente alla normalità.',
+      ),
+      ownerId: SpellIds.controlWeather,
+    ),
+    level: 8,
+    school: SpellSchool.transmutation,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.minute,
+      amount: 10,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.self,
+    ),
+    area: SpellArea(
+      shape: SpellAreaShape.radius,
+      origin: SpellAreaOrigin.caster,
+      radiusMeters: 7500,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+      materials: [
+        SpellMaterialComponent(
+          description:
+              'Incenso bruciato e frammenti di terra e di legno mescolati nell’acqua.',
+        ),
+      ],
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.hour,
+      amount: 8,
+      concentration: true,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.self,
+        SpellTargetType.area,
+      },
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'control_weather_atmospheric_zone',
+        type: SpellPersistentEffectType.zone,
+        ruleTags: {
+          'caster_must_be_outdoors_to_cast',
+          'spell_ends_if_caster_loses_direct_line_to_sky',
+          'controls_weather_within_7500_meter_radius',
+          'caster_can_change_precipitation_temperature_and_wind',
+          'each_weather_condition_changes_by_one_step',
+          'weather_change_requires_1d4_times_10_minutes',
+          'caster_can_change_conditions_again_after_change_completes',
+          'caster_can_change_wind_direction',
+          'weather_returns_gradually_to_normal_when_spell_ends',
+          'requires_concentration',
+        },
+      ),
+    ],
+    classIds: {
+      'cleric',
+      'druid',
+      'wizard',
+    },
+  ),
+  SpellIds.dominateMonster: SpellDefinition(
+    id: SpellIds.dominateMonster,
+    content: RuleContent(
+      id: SpellIds.dominateMonster,
+      name: 'Dominare Mostri',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Affascina una creatura e consente all’incantatore di controllarla tramite un legame telepatico.',
+        details:
+            'Una creatura visibile entro 18 metri deve superare un tiro salvezza su Saggezza '
+            'o essere affascinata dall’incantatore. Se sta combattendo contro l’incantatore '
+            'o contro creature a lui amichevoli, dispone di vantaggio al tiro salvezza. '
+            'Finché entrambi si trovano sullo stesso piano, l’incantatore può impartire '
+            'telepaticamente comandi generici senza usare un’azione. Può invece usare la '
+            'propria azione per assumere il controllo totale del bersaglio fino alla fine '
+            'del proprio turno successivo, scegliendo tutte le sue azioni. Per obbligare '
+            'il bersaglio a usare una reazione, l’incantatore deve usare anche la propria. '
+            'Ogni volta che il bersaglio subisce danni ripete il tiro salvezza su Saggezza, '
+            'terminando l’incantesimo in caso di successo. Con uno slot di 9° livello la '
+            'durata diventa concentrazione, fino a 8 ore.',
+      ),
+      ownerId: SpellIds.dominateMonster,
+    ),
+    level: 8,
+    school: SpellSchool.enchantment,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 18,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.hour,
+      amount: 1,
+      concentration: true,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.creature,
+      },
+      maximumTargets: 1,
+    ),
+    savingThrow: SpellSavingThrow(
+      ability: SpellSavingThrowAbility.wisdom,
+      onSuccess: SpellSaveSuccess.negates,
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'dominate_monster_telepathic_control',
+        type: SpellPersistentEffectType.magicalLink,
+        link: SpellLinkEffect(),
+        ruleTags: {
+          'target_must_be_visible',
+          'target_has_advantage_if_fighting_caster_or_allies',
+          'failed_wisdom_save_causes_charmed_condition',
+          'telepathic_link_functions_on_same_plane',
+          'general_telepathic_commands_require_no_action',
+          'target_defends_itself_after_completing_command',
+          'caster_action_grants_total_control_until_end_of_next_turn',
+          'target_only_takes_actions_allowed_by_caster_during_total_control',
+          'forcing_target_reaction_uses_casters_reaction',
+          'target_repeats_wisdom_save_when_damaged',
+          'successful_repeat_save_ends_spell',
+          'ninth_level_slot_increases_duration_to_8_hours',
+          'requires_concentration',
+        },
+      ),
+    ],
+    classIds: {
+      'bard',
+      'sorcerer',
+      'warlock',
+      'wizard',
+    },
+  ),
+  SpellIds.sunburst: SpellDefinition(
+    id: SpellIds.sunburst,
+    content: RuleContent(
+      id: SpellIds.sunburst,
+      name: 'Esplosione Solare',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Produce una vasta esplosione di luce solare che infligge danni radiosi, acceca e dissolve l’oscurità magica.',
+        details:
+            'Un’onda di luce solare si diffonde in una sfera del raggio di 18 metri '
+            'centrata su un punto entro 45 metri. Ogni creatura nell’area effettua '
+            'un tiro salvezza su Costituzione. Se lo fallisce, subisce 12d6 danni '
+            'radiosi ed è accecata per 1 minuto; se lo supera, subisce metà dei danni '
+            'e non è accecata. Melme e non morti hanno svantaggio al tiro salvezza. '
+            'Una creatura accecata ripete il tiro salvezza su Costituzione alla fine '
+            'di ogni proprio turno, terminando la condizione in caso di successo. '
+            'L’incantesimo dissolve inoltre qualsiasi oscurità creata magicamente '
+            'da un incantesimo e presente nella sua area.',
+      ),
+      ownerId: SpellIds.sunburst,
+    ),
+    level: 8,
+    school: SpellSchool.evocation,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 45,
+    ),
+    area: SpellArea(
+      shape: SpellAreaShape.sphere,
+      origin: SpellAreaOrigin.targetPoint,
+      radiusMeters: 18,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+      materials: [
+        SpellMaterialComponent(
+          description: 'Fuoco e un frammento di pietra del sole.',
+        ),
+      ],
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.instantaneous,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.creatures,
+        SpellTargetType.area,
+      },
+    ),
+    savingThrow: SpellSavingThrow(
+      ability: SpellSavingThrowAbility.constitution,
+      onSuccess: SpellSaveSuccess.halfDamage,
+    ),
+    damage: [
+      SpellDamage(
+        dice: '12d6',
+        type: SpellDamageType.radiant,
+      ),
+    ],
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'sunburst_blinding_radiance',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'failed_constitution_save_causes_blinded_for_one_minute',
+          'successful_save_prevents_blinded_condition',
+          'oozes_have_disadvantage_on_save',
+          'undead_have_disadvantage_on_save',
+          'blinded_creature_repeats_constitution_save_at_end_of_turn',
+          'successful_repeat_save_ends_blinded_condition',
+          'dispels_spell_created_darkness_in_area',
+        },
+      ),
+    ],
+    classIds: {
+      'druid',
+      'sorcerer',
+      'wizard',
+    },
+  ),
+  SpellIds.animalShapes: SpellDefinition(
+    id: SpellIds.animalShapes,
+    content: RuleContent(
+      id: SpellIds.animalShapes,
+      name: 'Forme Animali',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Trasforma un qualsiasi numero di creature consenzienti in bestie di taglia Grande o inferiore.',
+        details:
+            'L’incantatore sceglie un qualsiasi numero di creature consenzienti visibili '
+            'entro 9 metri e trasforma ciascuna di esse in una bestia di taglia Grande o '
+            'inferiore con grado di sfida non superiore a 4. Può scegliere una forma '
+            'diversa per ogni bersaglio e, nei turni successivi, usare la propria azione '
+            'per trasformare nuovamente le creature influenzate. La trasformazione termina '
+            'se un bersaglio scende a 0 punti ferita o muore. Le statistiche del bersaglio '
+            'sono sostituite da quelle della bestia, ma esso conserva allineamento e '
+            'punteggi di Intelligenza, Saggezza e Carisma. Assume i punti ferita della '
+            'nuova forma e, quando ritorna alla forma normale, recupera quelli posseduti '
+            'prima della trasformazione. I danni in eccesso si trasferiscono alla forma '
+            'normale. Il bersaglio non può parlare o lanciare incantesimi e il suo '
+            'equipaggiamento si fonde nella nuova forma senza poter essere usato.',
+      ),
+      ownerId: SpellIds.animalShapes,
+    ),
+    level: 8,
+    school: SpellSchool.transmutation,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 9,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.hour,
+      amount: 24,
+      concentration: true,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.willingCreature,
+      },
+    ),
+    repeatableEffects: [
+      SpellRepeatableEffect(
+        actionType: SpellRepeatActionType.action,
+        automatic: true,
+        sameTarget: true,
+      ),
+    ],
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'animal_shapes_group_transformation',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'targets_any_number_of_visible_willing_creatures',
+          'each_target_can_receive_different_beast_form',
+          'beast_form_must_be_large_or_smaller',
+          'beast_form_challenge_rating_must_be_4_or_lower',
+          'caster_can_use_action_to_change_affected_forms',
+          'transformation_ends_at_zero_hit_points_or_death',
+          'target_uses_beast_game_statistics',
+          'target_retains_alignment_intelligence_wisdom_and_charisma',
+          'target_uses_beast_hit_points',
+          'target_returns_to_previous_hit_points_when_form_ends',
+          'excess_damage_transfers_to_normal_form',
+          'target_cannot_speak_or_cast_spells',
+          'equipment_merges_into_beast_form',
+          'merged_equipment_cannot_be_used_or_activated',
+          'requires_concentration',
+        },
+      ),
+    ],
+    classIds: {
+      'druid',
     },
   ),
 };
