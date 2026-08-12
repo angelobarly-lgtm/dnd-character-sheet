@@ -14,10 +14,10 @@ Checklist di lavoro per espandere `lib/data/spell_data.dart` con gli incantesimi
 - [x] Creare Non Morti
 - [x] Danza Irresistibile di Otto
 - [x] Disintegrazione
-- [ ] Evoca Folletto
-- [ ] Evocazioni Istantanee di Drawmij
-- [ ] Ferire
-- [ ] Giara Magica
+- [x] Evoca Folletto
+- [x] Evocazioni Istantanee di Drawmij
+- [x] Ferire
+- [x] Giara Magica
 - [ ] Globo di Invulnerabilità
 - [ ] Guarigione
 - [ ] Illusione Programmata

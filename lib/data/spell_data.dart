@@ -1218,6 +1218,10 @@ abstract final class SpellIds {
   static const createUndead = 'create_undead';
   static const ottosIrresistibleDance = 'ottos_irresistible_dance';
   static const disintegrate = 'disintegrate';
+  static const conjureFey = 'conjure_fey';
+  static const drawmijsInstantSummons = 'drawmijs_instant_summons';
+  static const harm = 'harm';
+  static const magicJar = 'magic_jar';
 }
 
 const Map<String, SpellDefinition> spellDefinitions = {
@@ -22625,6 +22629,344 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ],
     classIds: {
       'sorcerer',
+      'wizard',
+    },
+  ),
+  SpellIds.conjureFey: SpellDefinition(
+    id: SpellIds.conjureFey,
+    content: RuleContent(
+      id: SpellIds.conjureFey,
+      name: 'Evoca Folletto',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Evoca un folletto o uno spirito fatato in forma di bestia, amichevole finché resta controllato.',
+        details:
+            'L’incantatore evoca un folletto con grado di sfida 6 o inferiore '
+            'oppure uno spirito fatato in forma di bestia con grado di sfida '
+            '6 o inferiore. Appare in uno spazio libero visibile entro '
+            '27 metri e scompare quando scende a 0 punti ferita o quando '
+            'l’incantesimo termina. È amichevole, tira la propria iniziativa '
+            'e obbedisce ai comandi verbali senza richiedere azioni. Se non '
+            'riceve comandi si difende, ma non compie altre azioni. Se la '
+            'concentrazione viene interrotta, non scompare: diventa ostile '
+            'all’incantatore e ai suoi compagni, può attaccarli, non può essere '
+            'congedato e scompare 1 ora dopo l’evocazione. Con uno slot di '
+            '7° livello o superiore, il grado di sfida massimo aumenta di 1 '
+            'per ogni livello dello slot oltre il 6°.',
+      ),
+      ownerId: SpellIds.conjureFey,
+    ),
+    level: 6,
+    school: SpellSchool.conjuration,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.minute,
+      amount: 1,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 27,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.hour,
+      amount: 1,
+      concentration: true,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.point,
+      },
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'conjure_fey_summoned_creature',
+        type: SpellPersistentEffectType.summonedCreature,
+        ruleTags: {
+          'summons_fey_cr_6_or_lower',
+          'can_summon_fey_spirit_as_beast_cr_6_or_lower',
+          'appears_in_visible_unoccupied_space_within_27_meters',
+          'disappears_at_0_hit_points_or_spell_end',
+          'summoned_fey_is_friendly_while_controlled',
+          'summoned_fey_rolls_own_initiative',
+          'obeys_verbal_commands_without_action',
+          'without_command_only_defends_against_hostile_creatures',
+          'lost_concentration_does_not_dismiss_fey',
+          'lost_concentration_makes_fey_hostile',
+          'uncontrolled_fey_cannot_be_dismissed',
+          'uncontrolled_fey_disappears_1_hour_after_summoning',
+          'dm_has_summoned_creature_statistics',
+          'slot_level_above_6_increases_maximum_cr_by_1_per_level',
+          'requires_concentration',
+        },
+      ),
+    ],
+    classIds: {
+      'druid',
+      'warlock',
+    },
+  ),
+  SpellIds.drawmijsInstantSummons: SpellDefinition(
+    id: SpellIds.drawmijsInstantSummons,
+    content: RuleContent(
+      id: SpellIds.drawmijsInstantSummons,
+      name: 'Evocazioni Istantanee di Drawmij',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Lega un piccolo oggetto a uno zaffiro, consentendo di richiamarlo da qualsiasi distanza.',
+        details:
+            'L’incantatore tocca un oggetto del peso massimo di 5 kg e la cui '
+            'dimensione più lunga non superi 1,8 metri. Un marchio invisibile '
+            'appare sull’oggetto e il suo nome viene tracciato sullo zaffiro '
+            'da 1.000 mo; ogni lancio richiede uno zaffiro diverso. In seguito '
+            'l’incantatore può usare un’azione per pronunciare il nome e '
+            'distruggere lo zaffiro: l’oggetto compare nella sua mano '
+            'indipendentemente dalla distanza fisica o planare e '
+            'l’incantesimo termina. Se un’altra creatura indossa o trasporta '
+            'l’oggetto, esso non viene trasportato, ma l’incantatore apprende '
+            'chi lo possiede e l’ubicazione approssimativa della creatura in '
+            'quel momento. Dissolvi Magie o un effetto analogo applicato con '
+            'successo allo zaffiro termina l’incantesimo.',
+      ),
+      ownerId: SpellIds.drawmijsInstantSummons,
+    ),
+    level: 6,
+    school: SpellSchool.conjuration,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.minute,
+      amount: 1,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.touch,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+      materials: [
+        SpellMaterialComponent(
+          description:
+              'Uno zaffiro del valore di 1.000 mo, distrutto quando l’oggetto viene richiamato.',
+          minimumCostGp: 1000,
+        ),
+      ],
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.untilDispelled,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.object,
+      },
+      maximumTargets: 1,
+    ),
+    ritual: true,
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'drawmijs_instant_summons_object_link',
+        type: SpellPersistentEffectType.magicalLink,
+        ruleTags: {
+          'target_object_maximum_weight_5_kilograms',
+          'target_longest_dimension_maximum_1_8_meters',
+          'spell_places_invisible_mark_on_object',
+          'object_name_is_inscribed_on_sapphire',
+          'each_casting_requires_different_sapphire',
+          'action_pronounces_name_and_destroys_sapphire',
+          'object_teleports_to_casters_hand_across_any_distance_or_plane',
+          'successful_retrieval_ends_spell',
+          'held_or_carried_object_does_not_teleport',
+          'failed_retrieval_reveals_possessor_identity',
+          'failed_retrieval_reveals_possessors_approximate_location',
+          'dispel_magic_on_sapphire_ends_spell',
+          'can_be_cast_as_ritual',
+          'does_not_require_concentration',
+        },
+      ),
+    ],
+    classIds: {
+      'wizard',
+    },
+  ),
+  SpellIds.harm: SpellDefinition(
+    id: SpellIds.harm,
+    content: RuleContent(
+      id: SpellIds.harm,
+      name: 'Ferire',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Infligge danni necrotici e riduce temporaneamente il massimo dei punti ferita.',
+        details:
+            'Una creatura visibile entro 18 metri effettua un tiro salvezza '
+            'su Costituzione. Se lo fallisce, subisce 14d6 danni necrotici; '
+            'se lo supera, subisce metà danni. Questi danni non possono '
+            'ridurre i punti ferita del bersaglio sotto 1. Se il tiro '
+            'salvezza fallisce, il massimo dei punti ferita del bersaglio '
+            'viene ridotto per 1 ora di un ammontare pari ai danni necrotici '
+            'subiti. Qualsiasi effetto che rimuova una malattia ripristina '
+            'anticipatamente il normale massimo dei punti ferita.',
+      ),
+      ownerId: SpellIds.harm,
+    ),
+    level: 6,
+    school: SpellSchool.necromancy,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 18,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.instantaneous,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.creature,
+      },
+      maximumTargets: 1,
+    ),
+    savingThrow: SpellSavingThrow(
+      ability: SpellSavingThrowAbility.constitution,
+      onSuccess: SpellSaveSuccess.halfDamage,
+    ),
+    damage: [
+      SpellDamage(
+        dice: '14d6',
+        type: SpellDamageType.necrotic,
+      ),
+    ],
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'harm_maximum_hit_point_reduction',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'failed_save_deals_14d6_necrotic_damage',
+          'successful_save_deals_half_damage',
+          'damage_cannot_reduce_target_below_1_hit_point',
+          'failed_save_reduces_maximum_hit_points',
+          'maximum_hit_point_reduction_equals_necrotic_damage_taken',
+          'maximum_hit_point_reduction_lasts_1_hour',
+          'disease_removal_effect_ends_maximum_hit_point_reduction',
+          'instantaneous_damage',
+        },
+      ),
+    ],
+    classIds: {
+      'cleric',
+    },
+  ),
+  SpellIds.magicJar: SpellDefinition(
+    id: SpellIds.magicJar,
+    content: RuleContent(
+      id: SpellIds.magicJar,
+      name: 'Giara Magica',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Trasferisce l’anima dell’incantatore in un contenitore, permettendogli di possedere un umanoide.',
+        details:
+            'Il corpo dell’incantatore diventa catatonico e la sua anima entra '
+            'nel contenitore da almeno 500 mo. Dal contenitore percepisce ciò '
+            'che lo circonda ma non può muoversi o usare reazioni; con la sua '
+            'unica azione può proiettarsi fino a 30 metri per tornare nel '
+            'proprio corpo e terminare l’incantesimo oppure tentare di '
+            'possedere un umanoide visibile. Un bersaglio protetto da '
+            'Protezione dal Bene e dal Male o Cerchio Magico non può essere '
+            'posseduto. Il bersaglio effettua un tiro salvezza su Carisma: '
+            'se lo supera, non può essere nuovamente bersagliato per 24 ore; '
+            'se lo fallisce, l’incantatore ne controlla il corpo e l’anima '
+            'del bersaglio resta nel contenitore. L’incantatore usa le '
+            'statistiche del corpo ospite, ma conserva allineamento, '
+            'Intelligenza, Saggezza, Carisma e privilegi di classe; non può '
+            'usare i privilegi di classe del bersaglio. Con un’azione può '
+            'tornare al contenitore entro 30 metri. Se il corpo ospite muore, '
+            'effettua un tiro salvezza su Carisma contro la propria CD: con '
+            'successo torna al contenitore entro 30 metri, altrimenti muore. '
+            'Se il contenitore viene distrutto o l’incantesimo termina, '
+            'l’anima tenta di tornare al corpo originale; se esso è morto o '
+            'si trova oltre 30 metri, l’incantatore muore. Anche un’altra '
+            'anima nel contenitore muore se non può tornare entro 30 metri '
+            'nel proprio corpo vivo. Quando l’incantesimo termina, il '
+            'contenitore viene distrutto.',
+      ),
+      ownerId: SpellIds.magicJar,
+    ),
+    level: 6,
+    school: SpellSchool.necromancy,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.minute,
+      amount: 1,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.self,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+      materials: [
+        SpellMaterialComponent(
+          description:
+              'Una gemma, un cristallo, un reliquiario o un altro contenitore ornamentale del valore di almeno 500 mo.',
+          minimumCostGp: 500,
+        ),
+      ],
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.untilDispelled,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.self,
+        SpellTargetType.creature,
+      },
+      maximumTargets: 1,
+    ),
+    savingThrow: SpellSavingThrow(
+      ability: SpellSavingThrowAbility.charisma,
+      onSuccess: SpellSaveSuccess.negates,
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'magic_jar_soul_container_and_possession',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'casters_body_becomes_catatonic',
+          'casters_soul_enters_material_container',
+          'soul_perceives_from_containers_space',
+          'soul_in_container_cannot_move_or_use_reactions',
+          'only_action_projects_soul_up_to_30_meters',
+          'action_can_return_soul_to_original_body_and_end_spell',
+          'action_can_attempt_to_possess_visible_humanoid',
+          'protection_from_evil_and_good_prevents_possession',
+          'magic_circle_prevents_possession',
+          'target_makes_charisma_save',
+          'successful_save_prevents_new_attempt_for_24_hours',
+          'failed_save_traps_targets_soul_in_container',
+          'caster_controls_possessed_body',
+          'caster_uses_host_statistics',
+          'caster_keeps_alignment_intelligence_wisdom_and_charisma',
+          'caster_keeps_own_class_features',
+          'caster_cannot_use_hosts_class_features',
+          'action_returns_to_container_if_within_30_meters',
+          'host_death_requires_charisma_save_against_casters_spell_dc',
+          'successful_host_death_save_returns_soul_to_nearby_container',
+          'failed_host_death_save_kills_caster',
+          'destroyed_container_returns_souls_to_living_bodies_within_30_meters',
+          'soul_dies_if_eligible_body_is_dead_or_beyond_30_meters',
+          'spell_end_destroys_container',
+          'does_not_require_concentration',
+        },
+      ),
+    ],
+    classIds: {
       'wizard',
     },
   ),
