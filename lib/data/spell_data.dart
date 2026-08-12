@@ -1051,6 +1051,9 @@ abstract final class SpellIds {
   static const flameBlade = 'flame_blade';
   static const levitate = 'levitate';
   static const locateAnimalsOrPlants = 'locate_animals_or_plants';
+  static const locateObject = 'locate_object';
+  static const spiderClimb = 'spider_climb';
+  static const darkness = 'darkness';
 }
 
 const Map<String, SpellDefinition> spellDefinitions = {
@@ -9629,6 +9632,226 @@ const Map<String, SpellDefinition> spellDefinitions = {
       'bard',
       'druid',
       'ranger',
+    },
+  ),
+  SpellIds.locateObject: SpellDefinition(
+    id: SpellIds.locateObject,
+    content: RuleContent(
+      id: SpellIds.locateObject,
+      name: 'Localizza Oggetto',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Rivela la direzione di un oggetto familiare o del più vicino oggetto di un tipo scelto.',
+        details:
+            'L’incantatore descrive o nomina un oggetto a lui familiare. Per la '
+            'durata, percepisce la direzione dell’ubicazione dell’oggetto, '
+            'purché esso si trovi entro 300 metri; se l’oggetto è in movimento, '
+            'l’incantatore sa in quale direzione si muove. L’incantesimo può '
+            'localizzare un oggetto specifico noto all’incantatore, purché lo '
+            'abbia visto da vicino entro 9 metri almeno una volta. In '
+            'alternativa, può localizzare l’oggetto più vicino di un tipo '
+            'particolare, come un certo tipo di veste, gioiello, mobile, '
+            'strumento o arma. L’incantesimo non può localizzare un oggetto se '
+            'una cortina di piombo di qualsiasi spessore blocca il percorso '
+            'diretto tra l’incantatore e l’oggetto. Richiede concentrazione.',
+      ),
+      ownerId: SpellIds.locateObject,
+    ),
+    level: 2,
+    school: SpellSchool.divination,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.self,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+      materials: [
+        SpellMaterialComponent(
+          description: 'Un rametto biforcuto.',
+        ),
+      ],
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.minute,
+      amount: 10,
+      concentration: true,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.self,
+      },
+      maximumTargets: 1,
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'locate_object_direction_tracking',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'caster_names_or_describes_familiar_object',
+          'reveals_direction_to_object_within_300_meters',
+          'reveals_direction_of_movement_if_object_is_moving',
+          'can_locate_specific_object_seen_within_9_meters_before',
+          'can_locate_nearest_object_of_a_particular_kind',
+          'lead_blocks_direct_path_and_prevents_location',
+          'requires_concentration',
+        },
+      ),
+    ],
+    classIds: {
+      'bard',
+      'cleric',
+      'druid',
+      'paladin',
+      'ranger',
+      'wizard',
+    },
+  ),
+  SpellIds.spiderClimb: SpellDefinition(
+    id: SpellIds.spiderClimb,
+    content: RuleContent(
+      id: SpellIds.spiderClimb,
+      name: 'Movimenti del Ragno',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Permette a una creatura consenziente di muoversi su pareti e soffitti mantenendo le mani libere.',
+        details:
+            'Finché l’incantesimo non termina, una creatura consenziente toccata '
+            'dall’incantatore ottiene la capacità di muoversi verticalmente e '
+            'orizzontalmente sulle pareti e a testa in giù sui soffitti, '
+            'mantenendo le mani libere. Il bersaglio ottiene inoltre una '
+            'velocità di scalare pari alla sua velocità base sul terreno. '
+            'L’incantesimo richiede concentrazione e può durare fino a 1 ora.',
+      ),
+      ownerId: SpellIds.spiderClimb,
+    ),
+    level: 2,
+    school: SpellSchool.transmutation,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.touch,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+      materials: [
+        SpellMaterialComponent(
+          description: 'Una goccia di bitume e un ragno.',
+        ),
+      ],
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.hour,
+      amount: 1,
+      concentration: true,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.willingCreature,
+      },
+      maximumTargets: 1,
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'spider_climb_wall_and_ceiling_movement',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'touched_willing_creature',
+          'target_can_move_vertically_and_horizontally_on_walls',
+          'target_can_move_upside_down_on_ceilings',
+          'target_keeps_hands_free_while_climbing',
+          'target_gains_climb_speed_equal_to_walking_speed',
+          'requires_concentration',
+        },
+      ),
+    ],
+    classIds: {
+      'sorcerer',
+      'warlock',
+      'wizard',
+    },
+  ),
+  SpellIds.darkness: SpellDefinition(
+    id: SpellIds.darkness,
+    content: RuleContent(
+      id: SpellIds.darkness,
+      name: 'Oscurità',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Crea una sfera di oscurità magica che blocca scurovisione e luce non magica.',
+        details:
+            'L’incantatore sceglie un punto entro gittata da cui si diffonde '
+            'un’oscurità magica che riempie una sfera del raggio di 4,5 metri '
+            'per la durata dell’incantesimo. L’oscurità si diffonde oltre gli '
+            'angoli. Una creatura dotata di scurovisione non può vedere '
+            'attraverso questa oscurità e le luci non magiche non possono '
+            'illuminarla. Se il punto scelto si trova su un oggetto impugnato '
+            'dall’incantatore o su un oggetto non indossato né trasportato, '
+            'l’oscurità si diffonde dall’oggetto e si muove con esso. Coprire '
+            'completamente la fonte con un oggetto opaco blocca l’oscurità. Se '
+            'l’area dell’incantesimo si sovrappone a un’area di luce creata da '
+            'un incantesimo di 2° livello o inferiore, l’incantesimo che ha '
+            'creato la luce è dissolto. Richiede concentrazione.',
+      ),
+      ownerId: SpellIds.darkness,
+    ),
+    level: 2,
+    school: SpellSchool.evocation,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 18,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      materials: [
+        SpellMaterialComponent(
+          description:
+              'Pelo di pipistrello e una goccia di pece o un pezzo di carbone.',
+        ),
+      ],
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.minute,
+      amount: 10,
+      concentration: true,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.point,
+        SpellTargetType.object,
+      },
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'darkness_magical_sphere',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'creates_4_5_meter_radius_sphere_of_magical_darkness',
+          'darkness_spreads_around_corners',
+          'darkvision_cannot_see_through_darkness',
+          'nonmagical_light_cannot_illuminate_darkness',
+          'darkness_can_originate_from_held_or_unworn_unheld_object',
+          'darkness_moves_with_source_object',
+          'opaque_cover_blocks_darkness_source',
+          'overlapping_light_spell_level_2_or_lower_is_dismissed',
+          'requires_concentration',
+        },
+      ),
+    ],
+    classIds: {
+      'sorcerer',
+      'warlock',
+      'wizard',
     },
   ),
 };

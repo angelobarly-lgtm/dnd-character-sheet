@@ -30,10 +30,10 @@ Checklist di lavoro per espandere `lib/data/spell_data.dart` con gli incantesimi
 - [x] Lama Infuocata
 - [x] Levitazione
 - [x] Localizza Animali o Vegetali
-- [ ] Localizza Oggetto
-- [ ] Movimenti del Ragno
-- [ ] Nube di Pugnali
-- [ ] Oscurità
+- [x] Localizza Oggetto
+- [x] Movimenti del Ragno
+- [x] Nube di Pugnali
+- [x] Oscurità
 - [ ] Passare Senza Tracce
 - [ ] Passo Velato
 - [ ] Pelle Coriacea
