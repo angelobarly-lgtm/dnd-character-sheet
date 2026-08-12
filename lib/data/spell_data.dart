@@ -929,6 +929,10 @@ class SpellDefinition {
 /// Verrà popolato progressivamente. Tenere un unico registry permette a
 /// razze, classi, talenti e altri sistemi di riferirsi allo stesso ID.
 abstract final class SpellIds {
+  static const etherealness = 'etherealness';
+  static const conjureCelestial = 'conjure_celestial';
+  static const fingerOfDeath = 'finger_of_death';
+  static const sequester = 'sequester';
   static const trueSeeing = 'true_seeing';
   static const guardsAndWards = 'guards_and_wards';
   static const transportViaPlants = 'transport_via_plants';
@@ -24331,6 +24335,290 @@ const Map<String, SpellDefinition> spellDefinitions = {
           'target_perceives_original_form_of_magically_transformed_creatures',
           'target_notices_magically_hidden_secret_doors',
           'target_can_see_into_ethereal_plane_36_meters',
+        },
+      ),
+    ],
+    classIds: {
+      'bard',
+      'cleric',
+      'sorcerer',
+      'warlock',
+      'wizard',
+    },
+  ),
+  SpellIds.sequester: SpellDefinition(
+    id: SpellIds.sequester,
+    content: RuleContent(
+      id: SpellIds.sequester,
+      name: 'Celare',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Nasconde una creatura o un oggetto rendendolo invisibile e immune ai tentativi di individuazione.',
+        details: 'L’incantatore tocca una creatura consenziente o un oggetto. '
+            'Il bersaglio diventa invisibile, non può essere bersagliato '
+            'dagli incantesimi di divinazione e non può essere percepito '
+            'dai sensori di scrutamento creati tramite divinazione. Se il '
+            'bersaglio è una creatura, entra in animazione sospesa: smette '
+            'di invecchiare e il tempo cessa di scorrere per lei. Durante '
+            'il lancio l’incantatore può stabilire una condizione che termina '
+            'anticipatamente l’incantesimo. La condizione può essere qualsiasi '
+            'evento scelto, ma deve verificarsi o essere visibile entro '
+            '1,5 km dal bersaglio. L’incantesimo termina anche se il '
+            'bersaglio subisce danni.',
+      ),
+      ownerId: SpellIds.sequester,
+    ),
+    level: 7,
+    school: SpellSchool.transmutation,
+    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
+    range: SpellRange(type: SpellRangeType.touch),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+      materials: [
+        SpellMaterialComponent(
+          description:
+              'Una mistura di polvere di diamante, smeraldo, rubino e zaffiro del valore di almeno 5.000 mo.',
+          minimumCostGp: 5000,
+          consumed: true,
+        ),
+      ],
+    ),
+    duration: SpellDuration(type: SpellDurationType.untilDispelled),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.willingCreature,
+        SpellTargetType.object,
+      },
+      maximumTargets: 1,
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'sequester_hidden_suspended_target',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'target_becomes_invisible',
+          'target_cannot_be_targeted_by_divination_spells',
+          'target_cannot_be_perceived_by_divination_scrying_sensors',
+          'creature_target_enters_suspended_animation',
+          'creature_target_stops_aging',
+          'time_stops_flowing_for_creature_target',
+          'caster_can_define_early_ending_condition',
+          'ending_condition_must_occur_or_be_visible_within_1_5_kilometers',
+          'taking_damage_ends_spell',
+        },
+      ),
+    ],
+    classIds: {
+      'wizard',
+    },
+  ),
+  SpellIds.fingerOfDeath: SpellDefinition(
+    id: SpellIds.fingerOfDeath,
+    content: RuleContent(
+      id: SpellIds.fingerOfDeath,
+      name: 'Dito della Morte',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Investe una creatura con energia negativa e trasforma in zombi un umanoide ucciso.',
+        details:
+            'L’incantatore trasmette energia negativa attraverso una creatura '
+            'visibile entro gittata. Il bersaglio deve effettuare un tiro '
+            'salvezza su Costituzione. Se lo fallisce, subisce 7d8 + 30 danni '
+            'necrotici; se lo supera, subisce la metà dei danni. Un umanoide '
+            'ucciso da questo incantesimo si anima come zombi all’inizio del '
+            'turno successivo dell’incantatore. Lo zombi rimane permanentemente '
+            'sotto il suo comando e obbedisce ai suoi ordini verbali al meglio '
+            'delle proprie capacità.',
+      ),
+      ownerId: SpellIds.fingerOfDeath,
+    ),
+    level: 7,
+    school: SpellSchool.necromancy,
+    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 18,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+    ),
+    duration: SpellDuration(type: SpellDurationType.instantaneous),
+    target: SpellTarget(
+      types: {SpellTargetType.creature},
+      maximumTargets: 1,
+    ),
+    savingThrow: SpellSavingThrow(
+      ability: SpellSavingThrowAbility.constitution,
+      onSuccess: SpellSaveSuccess.halfDamage,
+    ),
+    damage: [
+      SpellDamage(
+        dice: '7d8',
+        type: SpellDamageType.necrotic,
+      ),
+    ],
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'finger_of_death_damage_and_zombie',
+        type: SpellPersistentEffectType.createdCreature,
+        ruleTags: {
+          'target_must_be_visible',
+          'damage_roll_adds_flat_30_necrotic_damage',
+          'successful_save_halves_total_damage',
+          'humanoid_killed_by_spell_animates_as_zombie',
+          'zombie_animates_at_start_of_casters_next_turn',
+          'created_zombie_is_permanently_under_casters_command',
+          'created_zombie_obeys_casters_verbal_orders',
+        },
+      ),
+    ],
+    classIds: {
+      'sorcerer',
+      'warlock',
+      'wizard',
+    },
+  ),
+  SpellIds.conjureCelestial: SpellDefinition(
+    id: SpellIds.conjureCelestial,
+    content: RuleContent(
+      id: SpellIds.conjureCelestial,
+      name: 'Evoca Celestiale',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Evoca un celestiale amichevole che agisce autonomamente e obbedisce agli ordini.',
+        details: 'L’incantatore evoca un celestiale con grado di sfida pari o '
+            'inferiore a 4 in uno spazio libero visibile entro gittata. '
+            'Il celestiale scompare quando scende a 0 punti ferita o quando '
+            'l’incantesimo termina. È amichevole verso l’incantatore e i suoi '
+            'compagni, possiede una propria iniziativa e svolge i propri turni. '
+            'Obbedisce agli ordini verbali dell’incantatore senza richiedergli '
+            'azioni, purché non violino il suo allineamento. Senza ordini si '
+            'difende dalle creature ostili, ma non compie altre azioni. '
+            'Quando l’incantesimo viene lanciato usando uno slot di 9° livello, '
+            'può evocare un celestiale con grado di sfida pari o inferiore a 5.',
+      ),
+      ownerId: SpellIds.conjureCelestial,
+    ),
+    level: 7,
+    school: SpellSchool.conjuration,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.minute,
+      amount: 1,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 27,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.hour,
+      amount: 1,
+      concentration: true,
+    ),
+    target: SpellTarget(
+      types: {SpellTargetType.point},
+      maximumTargets: 1,
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'conjure_celestial_summoned_creature',
+        type: SpellPersistentEffectType.summonedCreature,
+        ruleTags: {
+          'summons_one_celestial',
+          'base_maximum_challenge_rating_4',
+          'summon_appears_in_visible_unoccupied_space',
+          'summon_disappears_at_0_hit_points',
+          'summon_disappears_when_spell_ends',
+          'summon_is_friendly_to_caster_and_companions',
+          'summon_has_independent_initiative_and_turns',
+          'summon_obeys_verbal_commands_without_action',
+          'commands_cannot_violate_summons_alignment',
+          'without_commands_summon_only_defends_against_hostile_creatures',
+          'slot_level_9_maximum_challenge_rating_5',
+          'requires_concentration',
+        },
+      ),
+    ],
+    classIds: {
+      'cleric',
+    },
+  ),
+  SpellIds.etherealness: SpellDefinition(
+    id: SpellIds.etherealness,
+    content: RuleContent(
+      id: SpellIds.etherealness,
+      name: 'Forma Eterea',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Trasferisce l’incantatore sul Confine Etereo consentendogli di attraversare gli oggetti del piano di provenienza.',
+        details:
+            'L’incantatore si trasferisce sul Confine Etereo, nella regione '
+            'che si sovrappone al suo piano attuale. Può terminare '
+            'l’incantesimo usando un’azione. Sul Piano Etereo può muoversi '
+            'in ogni direzione; il movimento verticale costa il doppio. '
+            'Può vedere e udire il piano di provenienza entro 18 metri, ma '
+            'tutto appare grigio. Può influenzare soltanto le creature del '
+            'Piano Etereo ed essere influenzato soltanto da esse, salvo '
+            'capacità o magie speciali. Ignora gli oggetti e gli effetti '
+            'non eterei, attraversandoli liberamente. Quando l’incantesimo '
+            'termina, ritorna sul piano di provenienza. Se lo spazio è '
+            'occupato, viene spostato nello spazio libero più vicino e '
+            'subisce 2 danni da forza per ogni 30 cm percorsi. L’incantesimo '
+            'non funziona sul Piano Etereo o su un piano non confinante. '
+            'Con uno slot di 8° livello o superiore può influenzare fino a '
+            'tre creature consenzienti, incluso l’incantatore, per ogni '
+            'livello dello slot oltre il 7°; devono trovarsi entro 3 metri.',
+      ),
+      ownerId: SpellIds.etherealness,
+    ),
+    level: 7,
+    school: SpellSchool.transmutation,
+    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
+    range: SpellRange(type: SpellRangeType.self),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.hour,
+      amount: 8,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.self,
+        SpellTargetType.willingCreature,
+      },
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'etherealness_border_ethereal_travel',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'caster_enters_border_ethereal',
+          'caster_can_end_spell_as_action',
+          'caster_can_move_in_any_direction',
+          'vertical_movement_costs_twice_normal',
+          'caster_sees_and_hears_origin_plane_up_to_18_meters',
+          'origin_plane_appears_gray',
+          'caster_normally_interacts_only_with_ethereal_creatures',
+          'caster_ignores_non_ethereal_objects_and_effects',
+          'caster_can_move_through_objects_on_origin_plane',
+          'spell_end_returns_targets_to_origin_plane',
+          'occupied_return_space_moves_target_to_nearest_free_space',
+          'forced_return_movement_deals_2_force_damage_per_0_3_meters',
+          'no_effect_when_cast_on_ethereal_plane',
+          'no_effect_on_plane_not_bordering_ethereal_plane',
+          'slot_level_8_or_higher_targets_3_willing_creatures_per_level_above_7',
+          'additional_targets_must_be_within_3_meters',
         },
       ),
     ],
