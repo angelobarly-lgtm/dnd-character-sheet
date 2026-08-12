@@ -1081,6 +1081,10 @@ abstract final class SpellIds {
   static const seeInvisibility = 'see_invisibility';
   static const wardingBond = 'warding_bond';
   static const zoneOfTruth = 'zone_of_truth';
+  static const animateDead = 'animate_dead';
+  static const nondetection = 'nondetection';
+  static const elementalWeapon = 'elemental_weapon';
+  static const auraOfVitality = 'aura_of_vitality';
 }
 
 const Map<String, SpellDefinition> spellDefinitions = {
@@ -11767,6 +11771,277 @@ const Map<String, SpellDefinition> spellDefinitions = {
     classIds: {
       'bard',
       'cleric',
+      'paladin',
+    },
+  ),
+  SpellIds.animateDead: SpellDefinition(
+    id: SpellIds.animateDead,
+    content: RuleContent(
+      id: SpellIds.animateDead,
+      name: 'Animare Morti',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Crea o mantiene il controllo su servitori non morti ricavati da ossa o cadaveri.',
+        details:
+            'L’incantatore sceglie un cadavere di umanoide Medio o Piccolo, '
+            'oppure un cumulo di ossa, entro gittata. La magia infonde al '
+            'bersaglio un’empia parvenza di vita: un cumulo di ossa diventa '
+            'uno scheletro, mentre un cadavere diventa uno zombi. A ogni suo '
+            'turno, l’incantatore può usare un’azione bonus per comandare '
+            'mentalmente qualsiasi creatura creata con questo incantesimo e '
+            'situata entro 18 metri. Se controlla più creature, può comandarle '
+            'insieme impartendo lo stesso ordine. La creatura resta sotto il '
+            'controllo dell’incantatore per 24 ore; prima che il periodo '
+            'termini, rilanciare l’incantesimo su di essa ristabilisce il '
+            'controllo per altre 24 ore, fino a quattro creature già animate. '
+            'Usando uno slot di 4° livello o superiore, l’incantatore anima o '
+            'ristabilisce il controllo su due non morti aggiuntivi per ogni '
+            'livello di slot superiore al 3°.',
+      ),
+      ownerId: SpellIds.animateDead,
+    ),
+    level: 3,
+    school: SpellSchool.necromancy,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.minute,
+      amount: 1,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 3,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+      materials: [
+        SpellMaterialComponent(
+          description:
+              'Una goccia di sangue, un brandello di carne e un pizzico di polvere d’osso.',
+        ),
+      ],
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.instantaneous,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.object,
+      },
+      maximumTargets: 1,
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'animate_dead_skeleton_or_zombie_servant',
+        type: SpellPersistentEffectType.createdObject,
+        ruleTags: {
+          'targets_medium_or_small_humanoid_corpse_or_pile_of_bones_within_3_meters',
+          'pile_of_bones_becomes_skeleton',
+          'corpse_becomes_zombie',
+          'caster_can_bonus_action_command_created_undead_within_18_meters',
+          'same_command_can_be_given_to_multiple_controlled_undead',
+          'undead_obeys_for_24_hours',
+          'recasting_before_24_hours_maintains_control',
+          'maintenance_reasserts_control_over_up_to_four_existing_undead',
+          'slot_level_above_3_animates_or_controls_two_additional_undead',
+        },
+      ),
+    ],
+    classIds: {
+      'cleric',
+      'wizard',
+    },
+  ),
+  SpellIds.nondetection: SpellDefinition(
+    id: SpellIds.nondetection,
+    content: RuleContent(
+      id: SpellIds.nondetection,
+      name: 'Anti-Individuazione',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Nasconde un bersaglio dalle magie di divinazione e dai sensori di scrutamento.',
+        details: 'Per la durata dell’incantesimo, l’incantatore nasconde un '
+            'bersaglio toccato dalle magie di divinazione. Il bersaglio può '
+            'essere una creatura consenziente, un luogo o un oggetto non più '
+            'grande di 3 metri in ogni dimensione. Il bersaglio non può essere '
+            'bersagliato da magie di divinazione né percepito dai sensori di '
+            'scrutamento magico. La polvere di diamante richiesta viene '
+            'consumata e l’effetto dura 8 ore senza concentrazione.',
+      ),
+      ownerId: SpellIds.nondetection,
+    ),
+    level: 3,
+    school: SpellSchool.abjuration,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.touch,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+      materials: [
+        SpellMaterialComponent(
+          description:
+              'Un pizzico di polvere di diamante del valore di 25 mo da spruzzare sul bersaglio, consumata dall’incantesimo.',
+          minimumCostGp: 25,
+          consumed: true,
+        ),
+      ],
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.hour,
+      amount: 8,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.willingCreature,
+        SpellTargetType.object,
+        SpellTargetType.area,
+      },
+      maximumTargets: 1,
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'nondetection_hidden_from_divination',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'touched_target_hidden_from_divination_magic',
+          'target_can_be_willing_creature_place_or_object',
+          'place_or_object_maximum_3_meters_in_each_dimension',
+          'target_cannot_be_targeted_by_divination_magic',
+          'target_cannot_be_perceived_by_magical_scrying_sensors',
+          'diamond_dust_worth_25_gp_is_consumed',
+          'does_not_require_concentration',
+        },
+      ),
+    ],
+    classIds: {
+      'bard',
+      'ranger',
+      'wizard',
+    },
+  ),
+  SpellIds.elementalWeapon: SpellDefinition(
+    id: SpellIds.elementalWeapon,
+    content: RuleContent(
+      id: SpellIds.elementalWeapon,
+      name: 'Arma Elementale',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Rende magica un’arma non magica, aggiungendo bonus al colpire e danni elementali.',
+        details: 'L’incantatore tocca un’arma non magica, che diventa un’arma '
+            'magica per la durata dell’incantesimo. Sceglie un tipo di danno '
+            'fra acido, freddo, fulmine, fuoco o tuono. L’arma ottiene un bonus '
+            'di +1 ai tiri per colpire e infligge 1d4 danni extra del tipo '
+            'scelto quando colpisce. Richiede concentrazione e può durare fino '
+            'a 1 ora. Usando uno slot di 5° o 6° livello, il bonus diventa +2 e '
+            'i danni extra 2d4. Usando uno slot di 7° livello o superiore, il '
+            'bonus diventa +3 e i danni extra 3d4.',
+      ),
+      ownerId: SpellIds.elementalWeapon,
+    ),
+    level: 3,
+    school: SpellSchool.transmutation,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.touch,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.hour,
+      amount: 1,
+      concentration: true,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.object,
+      },
+      maximumTargets: 1,
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'elemental_weapon_bonus_and_extra_damage',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'touched_nonmagical_weapon_becomes_magical',
+          'caster_chooses_acid_cold_lightning_fire_or_thunder',
+          'weapon_gains_plus_1_attack_bonus',
+          'weapon_deals_extra_1d4_chosen_damage_type_on_hit',
+          'slot_5_or_6_bonus_plus_2_and_extra_damage_2d4',
+          'slot_7_or_higher_bonus_plus_3_and_extra_damage_3d4',
+          'requires_concentration',
+        },
+      ),
+    ],
+    classIds: {
+      'paladin',
+    },
+  ),
+  SpellIds.auraOfVitality: SpellDefinition(
+    id: SpellIds.auraOfVitality,
+    content: RuleContent(
+      id: SpellIds.auraOfVitality,
+      name: 'Aura di Vitalità',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Emana un’aura curativa che permette di guarire creature con azioni bonus.',
+        details:
+            'L’incantatore emana un’aura di energia curativa entro 9 metri. '
+            'Finché l’incantesimo non termina, l’aura si muove assieme a lui ed '
+            'è centrata su di lui. L’incantatore può usare un’azione bonus per '
+            'far sì che una creatura entro l’aura, incluso l’incantatore, '
+            'recuperi 2d6 punti ferita. Richiede concentrazione e può durare '
+            'fino a 1 minuto.',
+      ),
+      ownerId: SpellIds.auraOfVitality,
+    ),
+    level: 3,
+    school: SpellSchool.evocation,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.self,
+    ),
+    components: SpellComponents(
+      verbal: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.minute,
+      amount: 1,
+      concentration: true,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.self,
+      },
+      maximumTargets: 1,
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'aura_of_vitality_bonus_action_healing',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'creates_9_meter_radius_healing_aura_centered_on_caster',
+          'aura_moves_with_caster',
+          'caster_can_bonus_action_heal_one_creature_in_aura',
+          'healing_can_target_caster',
+          'target_recovers_2d6_hit_points',
+          'requires_concentration',
+        },
+      ),
+    ],
+    classIds: {
       'paladin',
     },
   ),

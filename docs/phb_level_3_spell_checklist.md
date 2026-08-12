@@ -1,0 +1,54 @@
+# PHB livello 3 - checklist incantesimi
+
+Checklist di lavoro per espandere `lib/data/spell_data.dart` con gli incantesimi di 3° livello del PHB.
+
+- [x] Animare Morti
+- [x] Anti-Individuazione
+- [x] Arma Elementale
+- [x] Aura di Vitalità
+- [ ] Camminare sull'Acqua
+- [ ] Capanna di Leomund
+- [ ] Cerchio Magico
+- [ ] Chiaroveggenza
+- [ ] Controincantesimo
+- [ ] Creare Cibo e Acqua
+- [ ] Crescita Vegetale
+- [ ] Destriero Fantomatico
+- [ ] Dissolvi Magie
+- [ ] Evoca Animali
+- [ ] Evoca Raffica
+- [ ] Fame di Hadar
+- [ ] Faro di Speranza
+- [ ] Fondersi nella Pietra
+- [ ] Forma Gassosa
+- [ ] Freccia Folgorante
+- [ ] Fulmine
+- [ ] Glifo di Interdizione
+- [ ] Guardiani Spirituali
+- [ ] Immagine Maggiore
+- [ ] Intermittenza
+- [ ] Invocare il Fulmine
+- [ ] Inviare
+- [ ] Lentezza
+- [ ] Linguaggi
+- [ ] Luce Diurna
+- [ ] Manto del Crociato
+- [ ] Morte Apparente
+- [ ] Muro di Vento
+- [ ] Nube Maleodorante
+- [ ] Palla di Fuoco
+- [ ] Parlare con i Morti
+- [ ] Parlare con i Vegetali
+- [ ] Parola Guaritrice di Massa
+- [ ] Paura
+- [ ] Protezione dall'Energia
+- [ ] Punizione Accecante
+- [ ] Respirare sott'Acqua
+- [ ] Rimuovi Maledizione
+- [ ] Rinascita
+- [ ] Scagliare Maledizione
+- [ ] Tempesta di Nevischio
+- [ ] Tocco del Vampiro
+- [ ] Trama Ipnotica
+- [ ] Velocità
+- [ ] Volare
