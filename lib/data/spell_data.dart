@@ -1210,6 +1210,10 @@ abstract final class SpellIds {
   static const sunbeam = 'sunbeam';
   static const heroesFeast = 'heroes_feast';
   static const bladeBarrier = 'blade_barrier';
+  static const windWalk = 'wind_walk';
+  static const fleshToStone = 'flesh_to_stone';
+  static const chainLightning = 'chain_lightning';
+  static const circleOfDeath = 'circle_of_death';
 }
 
 const Map<String, SpellDefinition> spellDefinitions = {
@@ -21948,6 +21952,345 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ],
     classIds: {
       'cleric',
+    },
+  ),
+  SpellIds.windWalk: SpellDefinition(
+    id: SpellIds.windWalk,
+    content: RuleContent(
+      id: SpellIds.windWalk,
+      name: 'Camminare nel Vento',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Trasforma l’incantatore e fino a dieci alleati in nubi volanti estremamente rapide.',
+        details:
+            'L’incantatore e fino a dieci creature consenzienti visibili entro '
+            '9 metri assumono forma gassosa per 8 ore, apparendo come sbuffi '
+            'di fumo. In questa forma una creatura possiede una velocità di '
+            'volare di 90 metri e resistenza ai danni delle armi non magiche. '
+            'Può effettuare soltanto l’azione di Scatto oppure iniziare a '
+            'tornare alla forma normale. La trasformazione nella forma normale '
+            'richiede 1 minuto, durante il quale la creatura è incapacitata e '
+            'non può muoversi. Può successivamente riassumere la forma gassosa '
+            'con un’altra trasformazione di 1 minuto. Se l’effetto termina '
+            'mentre la creatura vola, essa scende di 18 metri per round per '
+            '1 minuto senza subire danni da caduta; se non atterra entro quel '
+            'tempo, cade per la distanza rimanente.',
+      ),
+      ownerId: SpellIds.windWalk,
+    ),
+    level: 6,
+    school: SpellSchool.transmutation,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.minute,
+      amount: 1,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 9,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+      materials: [
+        SpellMaterialComponent(
+          description: 'Fuoco e acqua santa.',
+        ),
+      ],
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.hour,
+      amount: 8,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.self,
+        SpellTargetType.creatures,
+      },
+      maximumTargets: 11,
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'wind_walk_gaseous_travel',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'affects_caster_and_up_to_10_visible_willing_creatures',
+          'targets_assume_gaseous_cloud_form',
+          'gaseous_form_has_flying_speed_90_meters',
+          'gaseous_form_resists_damage_from_nonmagical_weapons',
+          'gaseous_form_can_only_dash_or_begin_reverting',
+          'returning_to_normal_form_requires_1_minute',
+          'reverting_creature_is_incapacitated_and_cannot_move',
+          'returning_to_gaseous_form_requires_1_minute',
+          'flying_target_descends_18_meters_per_round_when_spell_ends',
+          'safe_descent_lasts_up_to_1_minute',
+          'target_falls_remaining_distance_if_not_landed_after_1_minute',
+          'duration_8_hours',
+          'does_not_require_concentration',
+        },
+      ),
+    ],
+    classIds: {
+      'druid',
+    },
+  ),
+  SpellIds.fleshToStone: SpellDefinition(
+    id: SpellIds.fleshToStone,
+    content: RuleContent(
+      id: SpellIds.fleshToStone,
+      name: 'Carne in Pietra',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Indurisce progressivamente una creatura di carne fino a pietrificarla.',
+        details:
+            'Una creatura visibile entro 18 metri il cui corpo sia fatto di '
+            'carne effettua un tiro salvezza su Costituzione. Se lo supera, '
+            'non subisce effetti; se lo fallisce, diventa trattenuta mentre '
+            'la sua carne si indurisce. Alla fine di ogni suo turno ripete il '
+            'tiro salvezza. Tre successi terminano l’incantesimo, mentre tre '
+            'fallimenti trasformano il bersaglio in pietra e gli impongono la '
+            'condizione di pietrificato per la durata. Successi e fallimenti '
+            'non devono essere consecutivi. Le rotture fisiche subite mentre '
+            'è pietrificato provocano deformità analoghe quando il bersaglio '
+            'torna normale. Se l’incantatore mantiene la concentrazione per '
+            'l’intero minuto, la pietrificazione permane finché non viene '
+            'rimossa.',
+      ),
+      ownerId: SpellIds.fleshToStone,
+    ),
+    level: 6,
+    school: SpellSchool.transmutation,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 18,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+      materials: [
+        SpellMaterialComponent(
+          description: 'Un pizzico di pietra calcarea, acqua e terra.',
+        ),
+      ],
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.minute,
+      amount: 1,
+      concentration: true,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.creature,
+      },
+      maximumTargets: 1,
+    ),
+    savingThrow: SpellSavingThrow(
+      ability: SpellSavingThrowAbility.constitution,
+      onSuccess: SpellSaveSuccess.negates,
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'flesh_to_stone_progressive_petrification',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'target_body_must_be_made_of_flesh',
+          'initial_failed_constitution_save_restrains_target',
+          'initial_successful_save_negates_spell',
+          'restrained_target_repeats_save_at_end_of_each_turn',
+          'three_successes_end_spell',
+          'three_failures_petrify_target',
+          'successes_and_failures_need_not_be_consecutive',
+          'physical_breakage_while_petrified_causes_matching_deformity',
+          'full_duration_concentration_makes_petrification_persist',
+          'persistent_petrification_lasts_until_removed',
+          'requires_concentration',
+        },
+      ),
+    ],
+    classIds: {
+      'warlock',
+      'wizard',
+    },
+  ),
+  SpellIds.chainLightning: SpellDefinition(
+    id: SpellIds.chainLightning,
+    content: RuleContent(
+      id: SpellIds.chainLightning,
+      name: 'Catena di Fulmini',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Un fulmine colpisce un bersaglio e si dirama verso altri tre bersagli vicini.',
+        details: 'Un fulmine colpisce una creatura o un oggetto visibile entro '
+            '45 metri. Dal primo bersaglio si diramano altri tre fulmini verso '
+            'un massimo di tre bersagli situati entro 9 metri dal primo. Ogni '
+            'bersaglio può essere colpito da un solo fulmine. Ogni bersaglio '
+            'effettua un tiro salvezza su Destrezza: se lo fallisce subisce '
+            '10d8 danni da fulmine, mentre se lo supera subisce metà danni. '
+            'Usando uno slot di 7° livello o superiore, dal primo bersaglio '
+            'si dirama un fulmine aggiuntivo verso un altro bersaglio per ogni '
+            'livello dello slot oltre il 6°.',
+      ),
+      ownerId: SpellIds.chainLightning,
+    ),
+    level: 6,
+    school: SpellSchool.evocation,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 45,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+      materials: [
+        SpellMaterialComponent(
+          description:
+              'Un ciuffo di pelliccia, un frammento d’ambra, di vetro o di una verga di cristallo e tre spilli d’argento.',
+        ),
+      ],
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.instantaneous,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.creature,
+        SpellTargetType.object,
+      },
+      maximumTargets: 4,
+    ),
+    savingThrow: SpellSavingThrow(
+      ability: SpellSavingThrowAbility.dexterity,
+      onSuccess: SpellSaveSuccess.halfDamage,
+    ),
+    damage: [
+      SpellDamage(
+        dice: '10d8',
+        type: SpellDamageType.lightning,
+      ),
+    ],
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'chain_lightning_primary_and_secondary_bolts',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'primary_target_must_be_visible_within_45_meters',
+          'primary_target_can_be_creature_or_object',
+          'up_to_3_secondary_targets',
+          'secondary_targets_must_be_within_9_meters_of_primary',
+          'each_target_can_be_hit_by_only_one_bolt',
+          'each_target_makes_dexterity_save',
+          'failed_save_deals_10d8_lightning_damage',
+          'successful_save_deals_half_damage',
+          'slot_level_above_6_adds_one_secondary_bolt_per_level',
+          'instantaneous_evocation',
+        },
+      ),
+    ],
+    classIds: {
+      'sorcerer',
+      'wizard',
+    },
+  ),
+  SpellIds.circleOfDeath: SpellDefinition(
+    id: SpellIds.circleOfDeath,
+    content: RuleContent(
+      id: SpellIds.circleOfDeath,
+      name: 'Cerchio di Morte',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Una vasta sfera di energia negativa infligge danni necrotici alle creature al suo interno.',
+        details:
+            'Una sfera di energia negativa del raggio di 18 metri si espande '
+            'da un punto situato entro 45 metri. Ogni creatura nell’area '
+            'effettua un tiro salvezza su Costituzione. Se lo fallisce, '
+            'subisce 8d6 danni necrotici; se lo supera, subisce metà danni. '
+            'Usando uno slot di 7° livello o superiore, i danni aumentano di '
+            '2d6 per ogni livello dello slot oltre il 6°. La polvere ricavata '
+            'dalla perla nera deve valere almeno 500 mo, ma non viene consumata.',
+      ),
+      ownerId: SpellIds.circleOfDeath,
+    ),
+    level: 6,
+    school: SpellSchool.necromancy,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 45,
+    ),
+    area: SpellArea(
+      shape: SpellAreaShape.radius,
+      origin: SpellAreaOrigin.targetPoint,
+      radiusMeters: 18,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+      materials: [
+        SpellMaterialComponent(
+          description:
+              'Polvere ricavata da una perla nera del valore di almeno 500 mo.',
+          minimumCostGp: 500,
+        ),
+      ],
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.instantaneous,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.point,
+        SpellTargetType.area,
+      },
+    ),
+    savingThrow: SpellSavingThrow(
+      ability: SpellSavingThrowAbility.constitution,
+      onSuccess: SpellSaveSuccess.halfDamage,
+    ),
+    damage: [
+      SpellDamage(
+        dice: '8d6',
+        type: SpellDamageType.necrotic,
+      ),
+    ],
+    scaling: SpellScaling(
+      type: SpellScalingType.slotLevel,
+      steps: [
+        SpellScalingStep(
+          threshold: 7,
+          additionalDice: '2d6',
+        ),
+      ],
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'circle_of_death_negative_energy_sphere',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'creates_18_meter_radius_sphere_at_point_within_range',
+          'each_creature_in_area_makes_constitution_save',
+          'failed_save_deals_8d6_necrotic_damage',
+          'successful_save_deals_half_damage',
+          'slot_level_above_6_adds_2d6_damage_per_level',
+          'black_pearl_dust_worth_at_least_500_gp_not_consumed',
+          'instantaneous_necromancy',
+        },
+      ),
+    ],
+    classIds: {
+      'sorcerer',
+      'warlock',
+      'wizard',
     },
   ),
 };

@@ -6,10 +6,10 @@ Checklist di lavoro per espandere `lib/data/spell_data.dart` con gli incantesimi
 - [x] Bagliore Solare
 - [x] Banchetto degli Eroi
 - [x] Barriera di Lame
-- [ ] Camminare nel Vento
-- [ ] Carne in Pietra
-- [ ] Catena di Fulmini
-- [ ] Cerchio di Morte
+- [x] Camminare nel Vento
+- [x] Carne in Pietra
+- [x] Catena di Fulmini
+- [x] Cerchio di Morte
 - [ ] Contingenza
 - [ ] Creare Non Morti
 - [ ] Danza Irresistibile di Otto
