@@ -45,7 +45,10 @@ class SpellReactionTrigger {
   final SpellReactionEvent event;
   final Set<String> spellIds;
 
-  const SpellReactionTrigger({required this.event, this.spellIds = const {}});
+  const SpellReactionTrigger({
+    required this.event,
+    this.spellIds = const {},
+  });
 }
 
 /// Tempo necessario per lanciare un incantesimo.
@@ -76,7 +79,14 @@ class SpellCastingTime {
 }
 
 /// Tipo fondamentale della gittata.
-enum SpellRangeType { self, touch, distance, sight, unlimited, special }
+enum SpellRangeType {
+  self,
+  touch,
+  distance,
+  sight,
+  unlimited,
+  special,
+}
 
 /// Gittata dell'incantesimo.
 ///
@@ -86,15 +96,30 @@ class SpellRange {
   final SpellRangeType type;
   final double distanceMeters;
 
-  const SpellRange({required this.type, this.distanceMeters = 0})
-      : assert(distanceMeters >= 0);
+  const SpellRange({
+    required this.type,
+    this.distanceMeters = 0,
+  }) : assert(distanceMeters >= 0);
 }
 
 /// Forma di un'eventuale area d'effetto.
-enum SpellAreaShape { cone, cube, cylinder, line, sphere, radius, special }
+enum SpellAreaShape {
+  cone,
+  cube,
+  cylinder,
+  line,
+  sphere,
+  radius,
+  special,
+}
 
 /// Origine geometrica dell'area.
-enum SpellAreaOrigin { caster, targetPoint, target, special }
+enum SpellAreaOrigin {
+  caster,
+  targetPoint,
+  target,
+  special,
+}
 
 /// Area geometrica prodotta dall'incantesimo.
 ///
@@ -135,7 +160,13 @@ enum SpellMovementModifierType {
 /// Modificatore di movimento prodotto da un incantesimo.
 
 /// Configurazione geometrica di una parete.
-enum SpellWallShape { line, ring, panels, hemisphere, special }
+enum SpellWallShape {
+  line,
+  ring,
+  panels,
+  hemisphere,
+  special,
+}
 
 /// Proprietà geometriche di una parete evocata.
 class SpellWallDefinition {
@@ -206,10 +237,21 @@ class SpellAreaTriggeredEffect {
 
 /// Interazione prodotta da un incantesimo sugli oggetti presenti
 /// nella sua area.
-enum SpellAreaObjectInteractionType { ignite, damage, destroy, move, special }
+enum SpellAreaObjectInteractionType {
+  ignite,
+  damage,
+  destroy,
+  move,
+  special,
+}
 
 /// Condizioni che limitano quali oggetti subiscono un'interazione.
-enum SpellAreaObjectCondition { flammable, notWorn, notCarried, special }
+enum SpellAreaObjectCondition {
+  flammable,
+  notWorn,
+  notCarried,
+  special,
+}
 
 /// Effetti ambientali e geometrici associati all'area.
 ///
@@ -231,7 +273,9 @@ enum SpellAreaExclusionType {
 class SpellAreaExclusion {
   final SpellAreaExclusionType type;
 
-  const SpellAreaExclusion({this.type = SpellAreaExclusionType.none});
+  const SpellAreaExclusion({
+    this.type = SpellAreaExclusionType.none,
+  });
 }
 
 class SpellAreaInteraction {
@@ -401,17 +445,29 @@ enum SpellSavingThrowAbility {
 }
 
 /// Risultato generale di un tiro salvezza riuscito.
-enum SpellSaveSuccess { none, halfDamage, negates, partial, special }
+enum SpellSaveSuccess {
+  none,
+  halfDamage,
+  negates,
+  partial,
+  special,
+}
 
 class SpellSavingThrow {
   final SpellSavingThrowAbility ability;
   final SpellSaveSuccess onSuccess;
 
-  const SpellSavingThrow({required this.ability, required this.onSuccess});
+  const SpellSavingThrow({
+    required this.ability,
+    required this.onSuccess,
+  });
 }
 
 /// Tipo di tiro per colpire richiesto dall'incantesimo.
-enum SpellAttackType { melee, ranged }
+enum SpellAttackType {
+  melee,
+  ranged,
+}
 
 /// Tipi di danno canonici.
 ///
@@ -440,11 +496,17 @@ class SpellDamage {
   final String dice;
   final SpellDamageType type;
 
-  const SpellDamage({required this.dice, required this.type});
+  const SpellDamage({
+    required this.dice,
+    required this.type,
+  });
 }
 
 /// Modalità con cui cresce un effetto dell'incantesimo.
-enum SpellScalingType { characterLevel, slotLevel }
+enum SpellScalingType {
+  characterLevel,
+  slotLevel,
+}
 
 /// Uno step esplicito di scaling.
 ///
@@ -470,11 +532,19 @@ class SpellScaling {
   final SpellScalingType type;
   final List<SpellScalingStep> steps;
 
-  const SpellScaling({required this.type, this.steps = const []});
+  const SpellScaling({
+    required this.type,
+    this.steps = const [],
+  });
 }
 
 /// Modalità con cui un singolo proiettile risolve il proprio impatto.
-enum SpellProjectileHitMode { automatic, spellAttack, savingThrow, special }
+enum SpellProjectileHitMode {
+  automatic,
+  spellAttack,
+  savingThrow,
+  special,
+}
 
 /// Effetto composto da più proiettili o impatti discreti.
 ///
@@ -519,7 +589,12 @@ class SpellProjectileEffect {
 }
 
 /// Risorsa d'azione necessaria per riattivare un effetto di uno spell.
-enum SpellRepeatActionType { action, bonusAction, reaction, special }
+enum SpellRepeatActionType {
+  action,
+  bonusAction,
+  reaction,
+  special,
+}
 
 /// Condizione che termina anticipatamente un effetto mantenuto.
 enum SpellMaintainedEffectEndCondition {
@@ -654,7 +729,12 @@ enum SpellPersistentEffectType {
 /// Tipo di creatura che un effetto può imporre alla creatura evocata.
 ///
 /// `original` mantiene il tipo normale della forma scelta.
-enum SpellCreatureTypeOverride { original, celestial, fey, fiend }
+enum SpellCreatureTypeOverride {
+  original,
+  celestial,
+  fey,
+  fiend,
+}
 
 /// Definizione strutturata di una creatura persistente collegata
 /// all'incantesimo.
@@ -685,7 +765,9 @@ class SpellCreatureEffect {
 
   const SpellCreatureEffect({
     this.formIds = const {},
-    this.allowedTypeOverrides = const {SpellCreatureTypeOverride.original},
+    this.allowedTypeOverrides = const {
+      SpellCreatureTypeOverride.original,
+    },
     this.maximumActive = 1,
     this.independentInitiative = false,
     this.obeysCaster = false,
@@ -723,8 +805,12 @@ class SpellLinkEffect {
     this.deliverTouchSpells = false,
     this.touchSpellDeliveryRangeMeters,
     this.touchSpellDeliveryUsesReaction = false,
-  })  : assert(telepathyRangeMeters == null || telepathyRangeMeters >= 0),
-        assert(reappearRangeMeters == null || reappearRangeMeters >= 0),
+  })  : assert(
+          telepathyRangeMeters == null || telepathyRangeMeters >= 0,
+        ),
+        assert(
+          reappearRangeMeters == null || reappearRangeMeters >= 0,
+        ),
         assert(
           touchSpellDeliveryRangeMeters == null ||
               touchSpellDeliveryRangeMeters >= 0,
@@ -1146,8 +1232,12 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 3,
     school: SpellSchool.conjuration,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.self),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.self,
+    ),
     area: SpellArea(
       shape: SpellAreaShape.radius,
       origin: SpellAreaOrigin.caster,
@@ -1159,14 +1249,22 @@ const Map<String, SpellDefinition> spellDefinitions = {
     components: SpellComponents(
       verbal: true,
       somatic: true,
-      materials: [SpellMaterialComponent(description: 'Un simbolo sacro.')],
+      materials: [
+        SpellMaterialComponent(
+          description: 'Un simbolo sacro.',
+        ),
+      ],
     ),
     duration: SpellDuration(
       type: SpellDurationType.minute,
       amount: 10,
       concentration: true,
     ),
-    target: SpellTarget(types: {SpellTargetType.area}),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.area,
+      },
+    ),
     areaTriggeredEffects: [
       SpellAreaTriggeredEffect(
         triggers: {
@@ -1181,7 +1279,10 @@ const Map<String, SpellDefinition> spellDefinitions = {
           ability: SpellSavingThrowAbility.wisdom,
           onSuccess: SpellSaveSuccess.halfDamage,
         ),
-        damage: SpellDamage(dice: '3d8', type: SpellDamageType.radiant),
+        damage: SpellDamage(
+          dice: '3d8',
+          type: SpellDamageType.radiant,
+        ),
       ),
     ],
     scaling: SpellScaling(
@@ -1195,7 +1296,9 @@ const Map<String, SpellDefinition> spellDefinitions = {
         SpellScalingStep(threshold: 9, additionalDice: '6d8'),
       ],
     ),
-    classIds: {'cleric'},
+    classIds: {
+      'cleric',
+    },
   ),
   SpellIds.cloudOfDaggers: SpellDefinition(
     id: SpellIds.cloudOfDaggers,
@@ -1218,8 +1321,13 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 2,
     school: SpellSchool.conjuration,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.distance, distanceMeters: 18),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 18,
+    ),
     area: SpellArea(
       shape: SpellAreaShape.cube,
       origin: SpellAreaOrigin.targetPoint,
@@ -1229,7 +1337,9 @@ const Map<String, SpellDefinition> spellDefinitions = {
       verbal: true,
       somatic: true,
       materials: [
-        SpellMaterialComponent(description: 'Una scheggia di vetro.'),
+        SpellMaterialComponent(
+          description: 'Una scheggia di vetro.',
+        ),
       ],
     ),
     duration: SpellDuration(
@@ -1237,29 +1347,62 @@ const Map<String, SpellDefinition> spellDefinitions = {
       amount: 1,
       concentration: true,
     ),
-    target: SpellTarget(types: {SpellTargetType.area}),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.area,
+      },
+    ),
     areaTriggeredEffects: [
       SpellAreaTriggeredEffect(
         triggers: {
           SpellAreaTriggerEvent.entersAreaFirstTimeOnTurn,
           SpellAreaTriggerEvent.startsTurnInArea,
         },
-        damage: SpellDamage(dice: '4d4', type: SpellDamageType.slashing),
+        damage: SpellDamage(
+          dice: '4d4',
+          type: SpellDamageType.slashing,
+        ),
       ),
     ],
     scaling: SpellScaling(
       type: SpellScalingType.slotLevel,
       steps: [
-        SpellScalingStep(threshold: 3, additionalDice: '2d4'),
-        SpellScalingStep(threshold: 4, additionalDice: '4d4'),
-        SpellScalingStep(threshold: 5, additionalDice: '6d4'),
-        SpellScalingStep(threshold: 6, additionalDice: '8d4'),
-        SpellScalingStep(threshold: 7, additionalDice: '10d4'),
-        SpellScalingStep(threshold: 8, additionalDice: '12d4'),
-        SpellScalingStep(threshold: 9, additionalDice: '14d4'),
+        SpellScalingStep(
+          threshold: 3,
+          additionalDice: '2d4',
+        ),
+        SpellScalingStep(
+          threshold: 4,
+          additionalDice: '4d4',
+        ),
+        SpellScalingStep(
+          threshold: 5,
+          additionalDice: '6d4',
+        ),
+        SpellScalingStep(
+          threshold: 6,
+          additionalDice: '8d4',
+        ),
+        SpellScalingStep(
+          threshold: 7,
+          additionalDice: '10d4',
+        ),
+        SpellScalingStep(
+          threshold: 8,
+          additionalDice: '12d4',
+        ),
+        SpellScalingStep(
+          threshold: 9,
+          additionalDice: '14d4',
+        ),
       ],
     ),
-    classIds: {'bard', 'sorcerer', 'warlock', 'wizard'},
+    classIds: {
+      'bard',
+      'sorcerer',
+      'warlock',
+      'wizard',
+    },
   ),
   SpellIds.fireball: SpellDefinition(
     id: SpellIds.fireball,
@@ -1286,8 +1429,13 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 3,
     school: SpellSchool.evocation,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.distance, distanceMeters: 45),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 45,
+    ),
     area: SpellArea(
       shape: SpellAreaShape.sphere,
       origin: SpellAreaOrigin.targetPoint,
@@ -1311,7 +1459,9 @@ const Map<String, SpellDefinition> spellDefinitions = {
         ),
       ],
     ),
-    duration: SpellDuration(type: SpellDurationType.instantaneous),
+    duration: SpellDuration(
+      type: SpellDurationType.instantaneous,
+    ),
     target: SpellTarget(
       types: {
         SpellTargetType.point,
@@ -1323,19 +1473,45 @@ const Map<String, SpellDefinition> spellDefinitions = {
       ability: SpellSavingThrowAbility.dexterity,
       onSuccess: SpellSaveSuccess.halfDamage,
     ),
-    damage: [SpellDamage(dice: '8d6', type: SpellDamageType.fire)],
+    damage: [
+      SpellDamage(
+        dice: '8d6',
+        type: SpellDamageType.fire,
+      ),
+    ],
     scaling: SpellScaling(
       type: SpellScalingType.slotLevel,
       steps: [
-        SpellScalingStep(threshold: 4, additionalDice: '1d6'),
-        SpellScalingStep(threshold: 5, additionalDice: '2d6'),
-        SpellScalingStep(threshold: 6, additionalDice: '3d6'),
-        SpellScalingStep(threshold: 7, additionalDice: '4d6'),
-        SpellScalingStep(threshold: 8, additionalDice: '5d6'),
-        SpellScalingStep(threshold: 9, additionalDice: '6d6'),
+        SpellScalingStep(
+          threshold: 4,
+          additionalDice: '1d6',
+        ),
+        SpellScalingStep(
+          threshold: 5,
+          additionalDice: '2d6',
+        ),
+        SpellScalingStep(
+          threshold: 6,
+          additionalDice: '3d6',
+        ),
+        SpellScalingStep(
+          threshold: 7,
+          additionalDice: '4d6',
+        ),
+        SpellScalingStep(
+          threshold: 8,
+          additionalDice: '5d6',
+        ),
+        SpellScalingStep(
+          threshold: 9,
+          additionalDice: '6d6',
+        ),
       ],
     ),
-    classIds: {'sorcerer', 'wizard'},
+    classIds: {
+      'sorcerer',
+      'wizard',
+    },
   ),
   SpellIds.witchBolt: SpellDefinition(
     id: SpellIds.witchBolt,
@@ -1362,8 +1538,13 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 1,
     school: SpellSchool.evocation,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.distance, distanceMeters: 9),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 9,
+    ),
     components: SpellComponents(
       verbal: true,
       somatic: true,
@@ -1378,24 +1559,58 @@ const Map<String, SpellDefinition> spellDefinitions = {
       amount: 1,
       concentration: true,
     ),
-    target: SpellTarget(types: {SpellTargetType.creature}, maximumTargets: 1),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.creature,
+      },
+      maximumTargets: 1,
+    ),
     attackType: SpellAttackType.ranged,
 
     // Danno dell'attacco iniziale.
-    damage: [SpellDamage(dice: '1d12', type: SpellDamageType.lightning)],
+    damage: [
+      SpellDamage(
+        dice: '1d12',
+        type: SpellDamageType.lightning,
+      ),
+    ],
 
     // Lo scaling riguarda esclusivamente il danno iniziale.
     scaling: SpellScaling(
       type: SpellScalingType.slotLevel,
       steps: [
-        SpellScalingStep(threshold: 2, additionalDice: '1d12'),
-        SpellScalingStep(threshold: 3, additionalDice: '2d12'),
-        SpellScalingStep(threshold: 4, additionalDice: '3d12'),
-        SpellScalingStep(threshold: 5, additionalDice: '4d12'),
-        SpellScalingStep(threshold: 6, additionalDice: '5d12'),
-        SpellScalingStep(threshold: 7, additionalDice: '6d12'),
-        SpellScalingStep(threshold: 8, additionalDice: '7d12'),
-        SpellScalingStep(threshold: 9, additionalDice: '8d12'),
+        SpellScalingStep(
+          threshold: 2,
+          additionalDice: '1d12',
+        ),
+        SpellScalingStep(
+          threshold: 3,
+          additionalDice: '2d12',
+        ),
+        SpellScalingStep(
+          threshold: 4,
+          additionalDice: '3d12',
+        ),
+        SpellScalingStep(
+          threshold: 5,
+          additionalDice: '4d12',
+        ),
+        SpellScalingStep(
+          threshold: 6,
+          additionalDice: '5d12',
+        ),
+        SpellScalingStep(
+          threshold: 7,
+          additionalDice: '6d12',
+        ),
+        SpellScalingStep(
+          threshold: 8,
+          additionalDice: '7d12',
+        ),
+        SpellScalingStep(
+          threshold: 9,
+          additionalDice: '8d12',
+        ),
       ],
     ),
 
@@ -1404,7 +1619,10 @@ const Map<String, SpellDefinition> spellDefinitions = {
     repeatableEffects: [
       SpellRepeatableEffect(
         actionType: SpellRepeatActionType.action,
-        damage: SpellDamage(dice: '1d12', type: SpellDamageType.lightning),
+        damage: SpellDamage(
+          dice: '1d12',
+          type: SpellDamageType.lightning,
+        ),
         automatic: true,
         sameTarget: true,
         endConditions: {
@@ -1414,7 +1632,11 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'sorcerer', 'warlock', 'wizard'},
+    classIds: {
+      'sorcerer',
+      'warlock',
+      'wizard',
+    },
   ),
   SpellIds.magicMissile: SpellDefinition(
     id: SpellIds.magicMissile,
@@ -1438,12 +1660,24 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 1,
     school: SpellSchool.evocation,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.distance, distanceMeters: 36),
-    components: SpellComponents(verbal: true, somatic: true),
-    duration: SpellDuration(type: SpellDurationType.instantaneous),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 36,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.instantaneous,
+    ),
     target: SpellTarget(
-      types: {SpellTargetType.creature},
+      types: {
+        SpellTargetType.creature,
+      },
 
       // Non fissiamo maximumTargets a 3:
       // usando slot superiori il numero massimo di creature distinte
@@ -1477,7 +1711,10 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'sorcerer', 'wizard'},
+    classIds: {
+      'sorcerer',
+      'wizard',
+    },
   ),
   SpellIds.shield: SpellDefinition(
     id: SpellIds.shield,
@@ -1504,26 +1741,48 @@ const Map<String, SpellDefinition> spellDefinitions = {
           'Quando l’incantatore viene colpito da un attacco o viene '
           'bersagliato da Dardo Incantato.',
       reactionTriggers: [
-        SpellReactionTrigger(event: SpellReactionEvent.hitByAttack),
+        SpellReactionTrigger(
+          event: SpellReactionEvent.hitByAttack,
+        ),
         SpellReactionTrigger(
           event: SpellReactionEvent.targetedBySpell,
-          spellIds: {SpellIds.magicMissile},
+          spellIds: {
+            SpellIds.magicMissile,
+          },
         ),
       ],
     ),
-    range: SpellRange(type: SpellRangeType.self),
-    components: SpellComponents(verbal: true, somatic: true),
-    duration: SpellDuration(type: SpellDurationType.round, amount: 1),
-    target: SpellTarget(types: {SpellTargetType.self}, maximumTargets: 1),
+    range: SpellRange(
+      type: SpellRangeType.self,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.round,
+      amount: 1,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.self,
+      },
+      maximumTargets: 1,
+    ),
     defensiveEffects: [
       SpellDefensiveEffect(
         armorClassBonus: 5,
         appliesToTriggeringAttack: true,
-        preventsDamageFromSpellIds: {SpellIds.magicMissile},
+        preventsDamageFromSpellIds: {
+          SpellIds.magicMissile,
+        },
         expiry: SpellDefensiveEffectExpiry.startOfCastersNextTurn,
       ),
     ],
-    classIds: {'sorcerer', 'wizard'},
+    classIds: {
+      'sorcerer',
+      'wizard',
+    },
   ),
   SpellIds.findFamiliar: SpellDefinition(
     id: SpellIds.findFamiliar,
@@ -1561,8 +1820,14 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 1,
     school: SpellSchool.conjuration,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.hour, amount: 1),
-    range: SpellRange(type: SpellRangeType.distance, distanceMeters: 3),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.hour,
+      amount: 1,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 3,
+    ),
     components: SpellComponents(
       verbal: true,
       somatic: true,
@@ -1578,8 +1843,14 @@ const Map<String, SpellDefinition> spellDefinitions = {
         ),
       ],
     ),
-    duration: SpellDuration(type: SpellDurationType.instantaneous),
-    target: SpellTarget(types: {SpellTargetType.special}),
+    duration: SpellDuration(
+      type: SpellDurationType.instantaneous,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.special,
+      },
+    ),
     ritual: true,
     persistentEffects: [
       SpellPersistentEffect(
@@ -1618,7 +1889,9 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'wizard'},
+    classIds: {
+      'wizard',
+    },
   ),
   SpellIds.identify: SpellDefinition(
     id: SpellIds.identify,
@@ -1644,8 +1917,13 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 1,
     school: SpellSchool.divination,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.minute, amount: 1),
-    range: SpellRange(type: SpellRangeType.touch),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.minute,
+      amount: 1,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.touch,
+    ),
     components: SpellComponents(
       verbal: true,
       somatic: true,
@@ -1654,12 +1932,19 @@ const Map<String, SpellDefinition> spellDefinitions = {
           description: 'Una perla del valore di almeno 100 monete d’oro.',
           minimumCostGp: 100,
         ),
-        SpellMaterialComponent(description: 'Una piuma di gufo.'),
+        SpellMaterialComponent(
+          description: 'Una piuma di gufo.',
+        ),
       ],
     ),
-    duration: SpellDuration(type: SpellDurationType.instantaneous),
+    duration: SpellDuration(
+      type: SpellDurationType.instantaneous,
+    ),
     target: SpellTarget(
-      types: {SpellTargetType.object, SpellTargetType.creature},
+      types: {
+        SpellTargetType.object,
+        SpellTargetType.creature,
+      },
       maximumTargets: 1,
     ),
     ritual: true,
@@ -1676,7 +1961,10 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'bard', 'wizard'},
+    classIds: {
+      'bard',
+      'wizard',
+    },
   ),
   SpellIds.gustOfWind: SpellDefinition(
     id: SpellIds.gustOfWind,
@@ -1704,8 +1992,12 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 2,
     school: SpellSchool.evocation,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.self),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.self,
+    ),
     area: SpellArea(
       shape: SpellAreaShape.line,
       origin: SpellAreaOrigin.caster,
@@ -1715,14 +2007,22 @@ const Map<String, SpellDefinition> spellDefinitions = {
     components: SpellComponents(
       verbal: true,
       somatic: true,
-      materials: [SpellMaterialComponent(description: 'Il seme di un legume.')],
+      materials: [
+        SpellMaterialComponent(
+          description: 'Il seme di un legume.',
+        ),
+      ],
     ),
     duration: SpellDuration(
       type: SpellDurationType.minute,
       amount: 1,
       concentration: true,
     ),
-    target: SpellTarget(types: {SpellTargetType.area}),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.area,
+      },
+    ),
     savingThrow: SpellSavingThrow(
       ability: SpellSavingThrowAbility.strength,
       onSuccess: SpellSaveSuccess.negates,
@@ -1741,7 +2041,11 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'druid', 'sorcerer', 'wizard'},
+    classIds: {
+      'druid',
+      'sorcerer',
+      'wizard',
+    },
   ),
   SpellIds.acidSplash: SpellDefinition(
     id: SpellIds.acidSplash,
@@ -1763,12 +2067,24 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 0,
     school: SpellSchool.conjuration,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.distance, distanceMeters: 18),
-    components: SpellComponents(verbal: true, somatic: true),
-    duration: SpellDuration(type: SpellDurationType.instantaneous),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 18,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.instantaneous,
+    ),
     target: SpellTarget(
-      types: {SpellTargetType.creature},
+      types: {
+        SpellTargetType.creature,
+      },
       maximumTargets: 2,
       maximumDistanceBetweenTargetsMeters: 1.5,
     ),
@@ -1776,16 +2092,33 @@ const Map<String, SpellDefinition> spellDefinitions = {
       ability: SpellSavingThrowAbility.dexterity,
       onSuccess: SpellSaveSuccess.negates,
     ),
-    damage: [SpellDamage(dice: '1d6', type: SpellDamageType.acid)],
+    damage: [
+      SpellDamage(
+        dice: '1d6',
+        type: SpellDamageType.acid,
+      ),
+    ],
     scaling: SpellScaling(
       type: SpellScalingType.characterLevel,
       steps: [
-        SpellScalingStep(threshold: 5, damageDice: '2d6'),
-        SpellScalingStep(threshold: 11, damageDice: '3d6'),
-        SpellScalingStep(threshold: 17, damageDice: '4d6'),
+        SpellScalingStep(
+          threshold: 5,
+          damageDice: '2d6',
+        ),
+        SpellScalingStep(
+          threshold: 11,
+          damageDice: '3d6',
+        ),
+        SpellScalingStep(
+          threshold: 17,
+          damageDice: '4d6',
+        ),
       ],
     ),
-    classIds: {'sorcerer', 'wizard'},
+    classIds: {
+      'sorcerer',
+      'wizard',
+    },
   ),
   SpellIds.fireBolt: SpellDefinition(
     id: SpellIds.fireBolt,
@@ -1807,25 +2140,55 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 0,
     school: SpellSchool.evocation,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.distance, distanceMeters: 36),
-    components: SpellComponents(verbal: true, somatic: true),
-    duration: SpellDuration(type: SpellDurationType.instantaneous),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 36,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.instantaneous,
+    ),
     target: SpellTarget(
-      types: {SpellTargetType.creature, SpellTargetType.object},
+      types: {
+        SpellTargetType.creature,
+        SpellTargetType.object,
+      },
       maximumTargets: 1,
     ),
     attackType: SpellAttackType.ranged,
-    damage: [SpellDamage(dice: '1d10', type: SpellDamageType.fire)],
+    damage: [
+      SpellDamage(
+        dice: '1d10',
+        type: SpellDamageType.fire,
+      ),
+    ],
     scaling: SpellScaling(
       type: SpellScalingType.characterLevel,
       steps: [
-        SpellScalingStep(threshold: 5, damageDice: '2d10'),
-        SpellScalingStep(threshold: 11, damageDice: '3d10'),
-        SpellScalingStep(threshold: 17, damageDice: '4d10'),
+        SpellScalingStep(
+          threshold: 5,
+          damageDice: '2d10',
+        ),
+        SpellScalingStep(
+          threshold: 11,
+          damageDice: '3d10',
+        ),
+        SpellScalingStep(
+          threshold: 17,
+          damageDice: '4d10',
+        ),
       ],
     ),
-    classIds: {'sorcerer', 'wizard'},
+    classIds: {
+      'sorcerer',
+      'wizard',
+    },
   ),
   SpellIds.minorIllusion: SpellDefinition(
     id: SpellIds.minorIllusion,
@@ -1856,14 +2219,30 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 0,
     school: SpellSchool.illusion,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.distance, distanceMeters: 9),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 9,
+    ),
     components: SpellComponents(
       somatic: true,
-      materials: [SpellMaterialComponent(description: 'Un ciuffo di lana.')],
+      materials: [
+        SpellMaterialComponent(
+          description: 'Un ciuffo di lana.',
+        ),
+      ],
     ),
-    duration: SpellDuration(type: SpellDurationType.minute, amount: 1),
-    target: SpellTarget(types: {SpellTargetType.special}),
+    duration: SpellDuration(
+      type: SpellDurationType.minute,
+      amount: 1,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.special,
+      },
+    ),
     persistentEffects: [
       SpellPersistentEffect(
         id: 'minor_illusion_sound_or_image',
@@ -1877,7 +2256,12 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'bard', 'sorcerer', 'warlock', 'wizard'},
+    classIds: {
+      'bard',
+      'sorcerer',
+      'warlock',
+      'wizard',
+    },
   ),
   SpellIds.bladeWard: SpellDefinition(
     id: SpellIds.bladeWard,
@@ -1897,11 +2281,26 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 0,
     school: SpellSchool.abjuration,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.self),
-    components: SpellComponents(verbal: true, somatic: true),
-    duration: SpellDuration(type: SpellDurationType.round, amount: 1),
-    target: SpellTarget(types: {SpellTargetType.self}, maximumTargets: 1),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.self,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.round,
+      amount: 1,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.self,
+      },
+      maximumTargets: 1,
+    ),
     defensiveEffects: [
       SpellDefensiveEffect(
         resistances: [
@@ -1917,7 +2316,12 @@ const Map<String, SpellDefinition> spellDefinitions = {
         expiry: SpellDefensiveEffectExpiry.endOfCastersNextTurn,
       ),
     ],
-    classIds: {'bard', 'sorcerer', 'warlock', 'wizard'},
+    classIds: {
+      'bard',
+      'sorcerer',
+      'warlock',
+      'wizard',
+    },
   ),
   SpellIds.chillTouch: SpellDefinition(
     id: SpellIds.chillTouch,
@@ -1943,19 +2347,48 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 0,
     school: SpellSchool.necromancy,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.distance, distanceMeters: 36),
-    components: SpellComponents(verbal: true, somatic: true),
-    duration: SpellDuration(type: SpellDurationType.instantaneous),
-    target: SpellTarget(types: {SpellTargetType.creature}, maximumTargets: 1),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 36,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.instantaneous,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.creature,
+      },
+      maximumTargets: 1,
+    ),
     attackType: SpellAttackType.ranged,
-    damage: [SpellDamage(dice: '1d8', type: SpellDamageType.necrotic)],
+    damage: [
+      SpellDamage(
+        dice: '1d8',
+        type: SpellDamageType.necrotic,
+      ),
+    ],
     scaling: SpellScaling(
       type: SpellScalingType.characterLevel,
       steps: [
-        SpellScalingStep(threshold: 5, damageDice: '2d8'),
-        SpellScalingStep(threshold: 11, damageDice: '3d8'),
-        SpellScalingStep(threshold: 17, damageDice: '4d8'),
+        SpellScalingStep(
+          threshold: 5,
+          damageDice: '2d8',
+        ),
+        SpellScalingStep(
+          threshold: 11,
+          damageDice: '3d8',
+        ),
+        SpellScalingStep(
+          threshold: 17,
+          damageDice: '4d8',
+        ),
       ],
     ),
     persistentEffects: [
@@ -1968,7 +2401,11 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'sorcerer', 'warlock', 'wizard'},
+    classIds: {
+      'sorcerer',
+      'warlock',
+      'wizard',
+    },
   ),
   SpellIds.dancingLights: SpellDefinition(
     id: SpellIds.dancingLights,
@@ -1991,8 +2428,13 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 0,
     school: SpellSchool.evocation,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.distance, distanceMeters: 36),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 36,
+    ),
     components: SpellComponents(
       verbal: true,
       somatic: true,
@@ -2008,7 +2450,11 @@ const Map<String, SpellDefinition> spellDefinitions = {
       amount: 1,
       concentration: true,
     ),
-    target: SpellTarget(types: {SpellTargetType.special}),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.special,
+      },
+    ),
     persistentEffects: [
       SpellPersistentEffect(
         id: 'dancing_lights_luminous_objects',
@@ -2020,7 +2466,11 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'bard', 'sorcerer', 'wizard'},
+    classIds: {
+      'bard',
+      'sorcerer',
+      'wizard',
+    },
   ),
   SpellIds.druidcraft: SpellDefinition(
     id: SpellIds.druidcraft,
@@ -2042,11 +2492,25 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 0,
     school: SpellSchool.transmutation,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.distance, distanceMeters: 9),
-    components: SpellComponents(verbal: true, somatic: true),
-    duration: SpellDuration(type: SpellDurationType.instantaneous),
-    target: SpellTarget(types: {SpellTargetType.special}),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 9,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.instantaneous,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.special,
+      },
+    ),
     persistentEffects: [
       SpellPersistentEffect(
         id: 'druidcraft_minor_nature_effect',
@@ -2059,7 +2523,9 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'druid'},
+    classIds: {
+      'druid',
+    },
   ),
   SpellIds.eldritchBlast: SpellDefinition(
     id: SpellIds.eldritchBlast,
@@ -2083,13 +2549,33 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 0,
     school: SpellSchool.evocation,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.distance, distanceMeters: 36),
-    components: SpellComponents(verbal: true, somatic: true),
-    duration: SpellDuration(type: SpellDurationType.instantaneous),
-    target: SpellTarget(types: {SpellTargetType.creature}, maximumTargets: 1),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 36,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.instantaneous,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.creature,
+      },
+      maximumTargets: 1,
+    ),
     attackType: SpellAttackType.ranged,
-    damage: [SpellDamage(dice: '1d10', type: SpellDamageType.force)],
+    damage: [
+      SpellDamage(
+        dice: '1d10',
+        type: SpellDamageType.force,
+      ),
+    ],
     persistentEffects: [
       SpellPersistentEffect(
         id: 'eldritch_blast_multiple_beams',
@@ -2101,7 +2587,9 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'warlock'},
+    classIds: {
+      'warlock',
+    },
   ),
   SpellIds.friends: SpellDefinition(
     id: SpellIds.friends,
@@ -2123,8 +2611,12 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 0,
     school: SpellSchool.enchantment,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.self),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.self,
+    ),
     components: SpellComponents(
       somatic: true,
       materials: [
@@ -2138,7 +2630,12 @@ const Map<String, SpellDefinition> spellDefinitions = {
       amount: 1,
       concentration: true,
     ),
-    target: SpellTarget(types: {SpellTargetType.self}, maximumTargets: 1),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.self,
+      },
+      maximumTargets: 1,
+    ),
     persistentEffects: [
       SpellPersistentEffect(
         id: 'friends_charisma_advantage',
@@ -2150,7 +2647,12 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'bard', 'sorcerer', 'warlock', 'wizard'},
+    classIds: {
+      'bard',
+      'sorcerer',
+      'warlock',
+      'wizard',
+    },
   ),
   SpellIds.guidance: SpellDefinition(
     id: SpellIds.guidance,
@@ -2172,16 +2674,25 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 0,
     school: SpellSchool.divination,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.touch),
-    components: SpellComponents(verbal: true, somatic: true),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.touch,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+    ),
     duration: SpellDuration(
       type: SpellDurationType.minute,
       amount: 1,
       concentration: true,
     ),
     target: SpellTarget(
-      types: {SpellTargetType.willingCreature},
+      types: {
+        SpellTargetType.willingCreature,
+      },
       maximumTargets: 1,
     ),
     persistentEffects: [
@@ -2195,7 +2706,10 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'cleric', 'druid'},
+    classIds: {
+      'cleric',
+      'druid',
+    },
   ),
   SpellIds.light: SpellDefinition(
     id: SpellIds.light,
@@ -2220,8 +2734,12 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 0,
     school: SpellSchool.evocation,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.touch),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.touch,
+    ),
     components: SpellComponents(
       verbal: true,
       materials: [
@@ -2230,8 +2748,16 @@ const Map<String, SpellDefinition> spellDefinitions = {
         ),
       ],
     ),
-    duration: SpellDuration(type: SpellDurationType.hour, amount: 1),
-    target: SpellTarget(types: {SpellTargetType.object}, maximumTargets: 1),
+    duration: SpellDuration(
+      type: SpellDurationType.hour,
+      amount: 1,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.object,
+      },
+      maximumTargets: 1,
+    ),
     persistentEffects: [
       SpellPersistentEffect(
         id: 'light_illuminated_object',
@@ -2244,7 +2770,12 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'bard', 'cleric', 'sorcerer', 'wizard'},
+    classIds: {
+      'bard',
+      'cleric',
+      'sorcerer',
+      'wizard',
+    },
   ),
   SpellIds.mageHand: SpellDefinition(
     id: SpellIds.mageHand,
@@ -2271,11 +2802,26 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 0,
     school: SpellSchool.conjuration,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.distance, distanceMeters: 9),
-    components: SpellComponents(verbal: true, somatic: true),
-    duration: SpellDuration(type: SpellDurationType.minute, amount: 1),
-    target: SpellTarget(types: {SpellTargetType.special}),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 9,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.minute,
+      amount: 1,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.special,
+      },
+    ),
     persistentEffects: [
       SpellPersistentEffect(
         id: 'mage_hand_spectral_hand',
@@ -2288,7 +2834,12 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'bard', 'sorcerer', 'warlock', 'wizard'},
+    classIds: {
+      'bard',
+      'sorcerer',
+      'warlock',
+      'wizard',
+    },
   ),
   SpellIds.mending: SpellDefinition(
     id: SpellIds.mending,
@@ -2309,15 +2860,31 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 0,
     school: SpellSchool.transmutation,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.minute, amount: 1),
-    range: SpellRange(type: SpellRangeType.touch),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.minute,
+      amount: 1,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.touch,
+    ),
     components: SpellComponents(
       verbal: true,
       somatic: true,
-      materials: [SpellMaterialComponent(description: 'Due calamite.')],
+      materials: [
+        SpellMaterialComponent(
+          description: 'Due calamite.',
+        ),
+      ],
     ),
-    duration: SpellDuration(type: SpellDurationType.instantaneous),
-    target: SpellTarget(types: {SpellTargetType.object}, maximumTargets: 1),
+    duration: SpellDuration(
+      type: SpellDurationType.instantaneous,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.object,
+      },
+      maximumTargets: 1,
+    ),
     persistentEffects: [
       SpellPersistentEffect(
         id: 'mending_repair_break',
@@ -2329,7 +2896,13 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'bard', 'cleric', 'druid', 'sorcerer', 'wizard'},
+    classIds: {
+      'bard',
+      'cleric',
+      'druid',
+      'sorcerer',
+      'wizard',
+    },
   ),
   SpellIds.message: SpellDefinition(
     id: SpellIds.message,
@@ -2351,17 +2924,32 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 0,
     school: SpellSchool.transmutation,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.distance, distanceMeters: 36),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 36,
+    ),
     components: SpellComponents(
       verbal: true,
       somatic: true,
       materials: [
-        SpellMaterialComponent(description: 'Un frammento di un filo di rame.'),
+        SpellMaterialComponent(
+          description: 'Un frammento di un filo di rame.',
+        ),
       ],
     ),
-    duration: SpellDuration(type: SpellDurationType.round, amount: 1),
-    target: SpellTarget(types: {SpellTargetType.creature}, maximumTargets: 1),
+    duration: SpellDuration(
+      type: SpellDurationType.round,
+      amount: 1,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.creature,
+      },
+      maximumTargets: 1,
+    ),
     persistentEffects: [
       SpellPersistentEffect(
         id: 'message_private_whisper',
@@ -2373,7 +2961,11 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'bard', 'sorcerer', 'wizard'},
+    classIds: {
+      'bard',
+      'sorcerer',
+      'wizard',
+    },
   ),
   SpellIds.poisonSpray: SpellDefinition(
     id: SpellIds.poisonSpray,
@@ -2394,18 +2986,47 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 0,
     school: SpellSchool.conjuration,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.distance, distanceMeters: 3),
-    components: SpellComponents(verbal: true, somatic: true),
-    duration: SpellDuration(type: SpellDurationType.instantaneous),
-    target: SpellTarget(types: {SpellTargetType.creature}, maximumTargets: 1),
-    damage: [SpellDamage(dice: '1d12', type: SpellDamageType.poison)],
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 3,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.instantaneous,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.creature,
+      },
+      maximumTargets: 1,
+    ),
+    damage: [
+      SpellDamage(
+        dice: '1d12',
+        type: SpellDamageType.poison,
+      ),
+    ],
     scaling: SpellScaling(
       type: SpellScalingType.characterLevel,
       steps: [
-        SpellScalingStep(threshold: 5, damageDice: '2d12'),
-        SpellScalingStep(threshold: 11, damageDice: '3d12'),
-        SpellScalingStep(threshold: 17, damageDice: '4d12'),
+        SpellScalingStep(
+          threshold: 5,
+          damageDice: '2d12',
+        ),
+        SpellScalingStep(
+          threshold: 11,
+          damageDice: '3d12',
+        ),
+        SpellScalingStep(
+          threshold: 17,
+          damageDice: '4d12',
+        ),
       ],
     ),
     persistentEffects: [
@@ -2418,7 +3039,12 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'druid', 'sorcerer', 'warlock', 'wizard'},
+    classIds: {
+      'druid',
+      'sorcerer',
+      'warlock',
+      'wizard',
+    },
   ),
   SpellIds.prestidigitation: SpellDefinition(
     id: SpellIds.prestidigitation,
@@ -2442,11 +3068,26 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 0,
     school: SpellSchool.transmutation,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.distance, distanceMeters: 3),
-    components: SpellComponents(verbal: true, somatic: true),
-    duration: SpellDuration(type: SpellDurationType.hour, amount: 1),
-    target: SpellTarget(types: {SpellTargetType.special}),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 3,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.hour,
+      amount: 1,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.special,
+      },
+    ),
     persistentEffects: [
       SpellPersistentEffect(
         id: 'prestidigitation_minor_magic_effects',
@@ -2462,7 +3103,12 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'bard', 'sorcerer', 'warlock', 'wizard'},
+    classIds: {
+      'bard',
+      'sorcerer',
+      'warlock',
+      'wizard',
+    },
   ),
   SpellIds.produceFlame: SpellDefinition(
     id: SpellIds.produceFlame,
@@ -2487,19 +3133,48 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 0,
     school: SpellSchool.conjuration,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.self),
-    components: SpellComponents(verbal: true, somatic: true),
-    duration: SpellDuration(type: SpellDurationType.minute, amount: 10),
-    target: SpellTarget(types: {SpellTargetType.self}, maximumTargets: 1),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.self,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.minute,
+      amount: 10,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.self,
+      },
+      maximumTargets: 1,
+    ),
     attackType: SpellAttackType.ranged,
-    damage: [SpellDamage(dice: '1d8', type: SpellDamageType.fire)],
+    damage: [
+      SpellDamage(
+        dice: '1d8',
+        type: SpellDamageType.fire,
+      ),
+    ],
     scaling: SpellScaling(
       type: SpellScalingType.characterLevel,
       steps: [
-        SpellScalingStep(threshold: 5, damageDice: '2d8'),
-        SpellScalingStep(threshold: 11, damageDice: '3d8'),
-        SpellScalingStep(threshold: 17, damageDice: '4d8'),
+        SpellScalingStep(
+          threshold: 5,
+          damageDice: '2d8',
+        ),
+        SpellScalingStep(
+          threshold: 11,
+          damageDice: '3d8',
+        ),
+        SpellScalingStep(
+          threshold: 17,
+          damageDice: '4d8',
+        ),
       ],
     ),
     persistentEffects: [
@@ -2514,7 +3189,9 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'druid'},
+    classIds: {
+      'druid',
+    },
   ),
   SpellIds.rayOfFrost: SpellDefinition(
     id: SpellIds.rayOfFrost,
@@ -2538,19 +3215,48 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 0,
     school: SpellSchool.evocation,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.distance, distanceMeters: 18),
-    components: SpellComponents(verbal: true, somatic: true),
-    duration: SpellDuration(type: SpellDurationType.instantaneous),
-    target: SpellTarget(types: {SpellTargetType.creature}, maximumTargets: 1),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 18,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.instantaneous,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.creature,
+      },
+      maximumTargets: 1,
+    ),
     attackType: SpellAttackType.ranged,
-    damage: [SpellDamage(dice: '1d8', type: SpellDamageType.cold)],
+    damage: [
+      SpellDamage(
+        dice: '1d8',
+        type: SpellDamageType.cold,
+      ),
+    ],
     scaling: SpellScaling(
       type: SpellScalingType.characterLevel,
       steps: [
-        SpellScalingStep(threshold: 5, damageDice: '2d8'),
-        SpellScalingStep(threshold: 11, damageDice: '3d8'),
-        SpellScalingStep(threshold: 17, damageDice: '4d8'),
+        SpellScalingStep(
+          threshold: 5,
+          damageDice: '2d8',
+        ),
+        SpellScalingStep(
+          threshold: 11,
+          damageDice: '3d8',
+        ),
+        SpellScalingStep(
+          threshold: 17,
+          damageDice: '4d8',
+        ),
       ],
     ),
     persistentEffects: [
@@ -2562,7 +3268,10 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'sorcerer', 'wizard'},
+    classIds: {
+      'sorcerer',
+      'wizard',
+    },
   ),
   SpellIds.resistance: SpellDefinition(
     id: SpellIds.resistance,
@@ -2583,13 +3292,19 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 0,
     school: SpellSchool.abjuration,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.touch),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.touch,
+    ),
     components: SpellComponents(
       verbal: true,
       somatic: true,
       materials: [
-        SpellMaterialComponent(description: 'Un mantello in miniatura.'),
+        SpellMaterialComponent(
+          description: 'Un mantello in miniatura.',
+        ),
       ],
     ),
     duration: SpellDuration(
@@ -2598,7 +3313,9 @@ const Map<String, SpellDefinition> spellDefinitions = {
       concentration: true,
     ),
     target: SpellTarget(
-      types: {SpellTargetType.willingCreature},
+      types: {
+        SpellTargetType.willingCreature,
+      },
       maximumTargets: 1,
     ),
     persistentEffects: [
@@ -2612,7 +3329,10 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'cleric', 'druid'},
+    classIds: {
+      'cleric',
+      'druid',
+    },
   ),
   SpellIds.sacredFlame: SpellDefinition(
     id: SpellIds.sacredFlame,
@@ -2635,18 +3355,47 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 0,
     school: SpellSchool.evocation,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.distance, distanceMeters: 18),
-    components: SpellComponents(verbal: true, somatic: true),
-    duration: SpellDuration(type: SpellDurationType.instantaneous),
-    target: SpellTarget(types: {SpellTargetType.creature}, maximumTargets: 1),
-    damage: [SpellDamage(dice: '1d8', type: SpellDamageType.radiant)],
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 18,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.instantaneous,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.creature,
+      },
+      maximumTargets: 1,
+    ),
+    damage: [
+      SpellDamage(
+        dice: '1d8',
+        type: SpellDamageType.radiant,
+      ),
+    ],
     scaling: SpellScaling(
       type: SpellScalingType.characterLevel,
       steps: [
-        SpellScalingStep(threshold: 5, damageDice: '2d8'),
-        SpellScalingStep(threshold: 11, damageDice: '3d8'),
-        SpellScalingStep(threshold: 17, damageDice: '4d8'),
+        SpellScalingStep(
+          threshold: 5,
+          damageDice: '2d8',
+        ),
+        SpellScalingStep(
+          threshold: 11,
+          damageDice: '3d8',
+        ),
+        SpellScalingStep(
+          threshold: 17,
+          damageDice: '4d8',
+        ),
       ],
     ),
     persistentEffects: [
@@ -2660,7 +3409,9 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'cleric'},
+    classIds: {
+      'cleric',
+    },
   ),
   SpellIds.shillelagh: SpellDefinition(
     id: SpellIds.shillelagh,
@@ -2684,8 +3435,12 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 0,
     school: SpellSchool.transmutation,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.bonusAction),
-    range: SpellRange(type: SpellRangeType.touch),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.bonusAction,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.touch,
+    ),
     components: SpellComponents(
       verbal: true,
       somatic: true,
@@ -2696,8 +3451,16 @@ const Map<String, SpellDefinition> spellDefinitions = {
         ),
       ],
     ),
-    duration: SpellDuration(type: SpellDurationType.minute, amount: 1),
-    target: SpellTarget(types: {SpellTargetType.object}, maximumTargets: 1),
+    duration: SpellDuration(
+      type: SpellDurationType.minute,
+      amount: 1,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.object,
+      },
+      maximumTargets: 1,
+    ),
     persistentEffects: [
       SpellPersistentEffect(
         id: 'shillelagh_empowered_weapon',
@@ -2710,7 +3473,9 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'druid'},
+    classIds: {
+      'druid',
+    },
   ),
   SpellIds.shockingGrasp: SpellDefinition(
     id: SpellIds.shockingGrasp,
@@ -2734,19 +3499,47 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 0,
     school: SpellSchool.evocation,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.touch),
-    components: SpellComponents(verbal: true, somatic: true),
-    duration: SpellDuration(type: SpellDurationType.instantaneous),
-    target: SpellTarget(types: {SpellTargetType.creature}, maximumTargets: 1),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.touch,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.instantaneous,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.creature,
+      },
+      maximumTargets: 1,
+    ),
     attackType: SpellAttackType.melee,
-    damage: [SpellDamage(dice: '1d8', type: SpellDamageType.lightning)],
+    damage: [
+      SpellDamage(
+        dice: '1d8',
+        type: SpellDamageType.lightning,
+      ),
+    ],
     scaling: SpellScaling(
       type: SpellScalingType.characterLevel,
       steps: [
-        SpellScalingStep(threshold: 5, damageDice: '2d8'),
-        SpellScalingStep(threshold: 11, damageDice: '3d8'),
-        SpellScalingStep(threshold: 17, damageDice: '4d8'),
+        SpellScalingStep(
+          threshold: 5,
+          damageDice: '2d8',
+        ),
+        SpellScalingStep(
+          threshold: 11,
+          damageDice: '3d8',
+        ),
+        SpellScalingStep(
+          threshold: 17,
+          damageDice: '4d8',
+        ),
       ],
     ),
     persistentEffects: [
@@ -2759,7 +3552,10 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'sorcerer', 'wizard'},
+    classIds: {
+      'sorcerer',
+      'wizard',
+    },
   ),
   SpellIds.spareTheDying: SpellDefinition(
     id: SpellIds.spareTheDying,
@@ -2782,11 +3578,25 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 0,
     school: SpellSchool.necromancy,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.touch),
-    components: SpellComponents(verbal: true, somatic: true),
-    duration: SpellDuration(type: SpellDurationType.instantaneous),
-    target: SpellTarget(types: {SpellTargetType.creature}, maximumTargets: 1),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.touch,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.instantaneous,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.creature,
+      },
+      maximumTargets: 1,
+    ),
     persistentEffects: [
       SpellPersistentEffect(
         id: 'spare_the_dying_stabilize',
@@ -2797,7 +3607,9 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'cleric'},
+    classIds: {
+      'cleric',
+    },
   ),
   SpellIds.thaumaturgy: SpellDefinition(
     id: SpellIds.thaumaturgy,
@@ -2820,11 +3632,25 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 0,
     school: SpellSchool.transmutation,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.distance, distanceMeters: 9),
-    components: SpellComponents(verbal: true),
-    duration: SpellDuration(type: SpellDurationType.minute, amount: 1),
-    target: SpellTarget(types: {SpellTargetType.special}),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 9,
+    ),
+    components: SpellComponents(
+      verbal: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.minute,
+      amount: 1,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.special,
+      },
+    ),
     persistentEffects: [
       SpellPersistentEffect(
         id: 'thaumaturgy_minor_wonder',
@@ -2840,7 +3666,9 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'cleric'},
+    classIds: {
+      'cleric',
+    },
   ),
   SpellIds.trueStrike: SpellDefinition(
     id: SpellIds.trueStrike,
@@ -2862,15 +3690,27 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 0,
     school: SpellSchool.divination,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.distance, distanceMeters: 9),
-    components: SpellComponents(somatic: true),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 9,
+    ),
+    components: SpellComponents(
+      somatic: true,
+    ),
     duration: SpellDuration(
       type: SpellDurationType.round,
       amount: 1,
       concentration: true,
     ),
-    target: SpellTarget(types: {SpellTargetType.creature}, maximumTargets: 1),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.creature,
+      },
+      maximumTargets: 1,
+    ),
     persistentEffects: [
       SpellPersistentEffect(
         id: 'true_strike_next_attack_advantage',
@@ -2881,7 +3721,12 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'bard', 'sorcerer', 'warlock', 'wizard'},
+    classIds: {
+      'bard',
+      'sorcerer',
+      'warlock',
+      'wizard',
+    },
   ),
   SpellIds.viciousMockery: SpellDefinition(
     id: SpellIds.viciousMockery,
@@ -2904,18 +3749,46 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 0,
     school: SpellSchool.enchantment,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.distance, distanceMeters: 18),
-    components: SpellComponents(verbal: true),
-    duration: SpellDuration(type: SpellDurationType.instantaneous),
-    target: SpellTarget(types: {SpellTargetType.creature}, maximumTargets: 1),
-    damage: [SpellDamage(dice: '1d4', type: SpellDamageType.psychic)],
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 18,
+    ),
+    components: SpellComponents(
+      verbal: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.instantaneous,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.creature,
+      },
+      maximumTargets: 1,
+    ),
+    damage: [
+      SpellDamage(
+        dice: '1d4',
+        type: SpellDamageType.psychic,
+      ),
+    ],
     scaling: SpellScaling(
       type: SpellScalingType.characterLevel,
       steps: [
-        SpellScalingStep(threshold: 5, damageDice: '2d4'),
-        SpellScalingStep(threshold: 11, damageDice: '3d4'),
-        SpellScalingStep(threshold: 17, damageDice: '4d4'),
+        SpellScalingStep(
+          threshold: 5,
+          damageDice: '2d4',
+        ),
+        SpellScalingStep(
+          threshold: 11,
+          damageDice: '3d4',
+        ),
+        SpellScalingStep(
+          threshold: 17,
+          damageDice: '4d4',
+        ),
       ],
     ),
     persistentEffects: [
@@ -2930,7 +3803,9 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'bard'},
+    classIds: {
+      'bard',
+    },
   ),
   SpellIds.alarm: SpellDefinition(
     id: SpellIds.alarm,
@@ -2958,8 +3833,14 @@ const Map<String, SpellDefinition> spellDefinitions = {
     level: 1,
     ritual: true,
     school: SpellSchool.abjuration,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.minute, amount: 1),
-    range: SpellRange(type: SpellRangeType.distance, distanceMeters: 9),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.minute,
+      amount: 1,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 9,
+    ),
     components: SpellComponents(
       verbal: true,
       somatic: true,
@@ -2970,8 +3851,15 @@ const Map<String, SpellDefinition> spellDefinitions = {
         ),
       ],
     ),
-    duration: SpellDuration(type: SpellDurationType.hour, amount: 8),
-    target: SpellTarget(types: {SpellTargetType.special}),
+    duration: SpellDuration(
+      type: SpellDurationType.hour,
+      amount: 8,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.special,
+      },
+    ),
     persistentEffects: [
       SpellPersistentEffect(
         id: 'alarm_warded_area',
@@ -2985,7 +3873,10 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'ranger', 'wizard'},
+    classIds: {
+      'ranger',
+      'wizard',
+    },
   ),
   SpellIds.animalFriendship: SpellDefinition(
     id: SpellIds.animalFriendship,
@@ -3011,15 +3902,32 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 1,
     school: SpellSchool.enchantment,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.distance, distanceMeters: 9),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 9,
+    ),
     components: SpellComponents(
       verbal: true,
       somatic: true,
-      materials: [SpellMaterialComponent(description: 'Un boccone di cibo.')],
+      materials: [
+        SpellMaterialComponent(
+          description: 'Un boccone di cibo.',
+        ),
+      ],
     ),
-    duration: SpellDuration(type: SpellDurationType.hour, amount: 24),
-    target: SpellTarget(types: {SpellTargetType.creature}, maximumTargets: 1),
+    duration: SpellDuration(
+      type: SpellDurationType.hour,
+      amount: 24,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.creature,
+      },
+      maximumTargets: 1,
+    ),
     persistentEffects: [
       SpellPersistentEffect(
         id: 'animal_friendship_charmed_beast',
@@ -3034,7 +3942,11 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'bard', 'druid', 'ranger'},
+    classIds: {
+      'bard',
+      'druid',
+      'ranger',
+    },
   ),
   SpellIds.bane: SpellDefinition(
     id: SpellIds.bane,
@@ -3059,19 +3971,33 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 1,
     school: SpellSchool.enchantment,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.distance, distanceMeters: 9),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 9,
+    ),
     components: SpellComponents(
       verbal: true,
       somatic: true,
-      materials: [SpellMaterialComponent(description: 'Una goccia di sangue.')],
+      materials: [
+        SpellMaterialComponent(
+          description: 'Una goccia di sangue.',
+        ),
+      ],
     ),
     duration: SpellDuration(
       type: SpellDurationType.minute,
       amount: 1,
       concentration: true,
     ),
-    target: SpellTarget(types: {SpellTargetType.creature}, maximumTargets: 3),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.creature,
+      },
+      maximumTargets: 3,
+    ),
     persistentEffects: [
       SpellPersistentEffect(
         id: 'bane_attack_and_save_penalty',
@@ -3085,7 +4011,10 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'bard', 'cleric'},
+    classIds: {
+      'bard',
+      'cleric',
+    },
   ),
   SpellIds.armorOfAgathys: SpellDefinition(
     id: SpellIds.armorOfAgathys,
@@ -3109,16 +4038,37 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 1,
     school: SpellSchool.abjuration,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.self),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.self,
+    ),
     components: SpellComponents(
       verbal: true,
       somatic: true,
-      materials: [SpellMaterialComponent(description: 'Una coppa d’acqua.')],
+      materials: [
+        SpellMaterialComponent(
+          description: 'Una coppa d’acqua.',
+        ),
+      ],
     ),
-    duration: SpellDuration(type: SpellDurationType.hour, amount: 1),
-    target: SpellTarget(types: {SpellTargetType.self}, maximumTargets: 1),
-    damage: [SpellDamage(dice: '5', type: SpellDamageType.cold)],
+    duration: SpellDuration(
+      type: SpellDurationType.hour,
+      amount: 1,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.self,
+      },
+      maximumTargets: 1,
+    ),
+    damage: [
+      SpellDamage(
+        dice: '5',
+        type: SpellDamageType.cold,
+      ),
+    ],
     persistentEffects: [
       SpellPersistentEffect(
         id: 'armor_of_agathys_temporary_hit_points_and_cold_retribution',
@@ -3130,7 +4080,9 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'warlock'},
+    classIds: {
+      'warlock',
+    },
   ),
   SpellIds.mageArmor: SpellDefinition(
     id: SpellIds.mageArmor,
@@ -3155,18 +4107,29 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 1,
     school: SpellSchool.abjuration,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.touch),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.touch,
+    ),
     components: SpellComponents(
       verbal: true,
       somatic: true,
       materials: [
-        SpellMaterialComponent(description: 'Un pezzo di cuoio trattato.'),
+        SpellMaterialComponent(
+          description: 'Un pezzo di cuoio trattato.',
+        ),
       ],
     ),
-    duration: SpellDuration(type: SpellDurationType.hour, amount: 8),
+    duration: SpellDuration(
+      type: SpellDurationType.hour,
+      amount: 8,
+    ),
     target: SpellTarget(
-      types: {SpellTargetType.willingCreature},
+      types: {
+        SpellTargetType.willingCreature,
+      },
       maximumTargets: 1,
     ),
     persistentEffects: [
@@ -3182,7 +4145,10 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'sorcerer', 'wizard'},
+    classIds: {
+      'sorcerer',
+      'wizard',
+    },
   ),
   SpellIds.goodberry: SpellDefinition(
     id: SpellIds.goodberry,
@@ -3205,17 +4171,29 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 1,
     school: SpellSchool.transmutation,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.touch),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.touch,
+    ),
     components: SpellComponents(
       verbal: true,
       somatic: true,
       materials: [
-        SpellMaterialComponent(description: 'Un rametto di vischio.'),
+        SpellMaterialComponent(
+          description: 'Un rametto di vischio.',
+        ),
       ],
     ),
-    duration: SpellDuration(type: SpellDurationType.instantaneous),
-    target: SpellTarget(types: {SpellTargetType.special}),
+    duration: SpellDuration(
+      type: SpellDurationType.instantaneous,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.special,
+      },
+    ),
     persistentEffects: [
       SpellPersistentEffect(
         id: 'goodberry_magical_berries',
@@ -3229,7 +4207,10 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'druid', 'ranger'},
+    classIds: {
+      'druid',
+      'ranger',
+    },
   ),
   SpellIds.bless: SpellDefinition(
     id: SpellIds.bless,
@@ -3254,13 +4235,20 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 1,
     school: SpellSchool.enchantment,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.distance, distanceMeters: 9),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 9,
+    ),
     components: SpellComponents(
       verbal: true,
       somatic: true,
       materials: [
-        SpellMaterialComponent(description: 'Uno spruzzo di acqua santa.'),
+        SpellMaterialComponent(
+          description: 'Uno spruzzo di acqua santa.',
+        ),
       ],
     ),
     duration: SpellDuration(
@@ -3268,7 +4256,12 @@ const Map<String, SpellDefinition> spellDefinitions = {
       amount: 1,
       concentration: true,
     ),
-    target: SpellTarget(types: {SpellTargetType.creature}, maximumTargets: 3),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.creature,
+      },
+      maximumTargets: 3,
+    ),
     persistentEffects: [
       SpellPersistentEffect(
         id: 'bless_attack_and_save_bonus',
@@ -3281,7 +4274,10 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'cleric', 'paladin'},
+    classIds: {
+      'cleric',
+      'paladin',
+    },
   ),
   SpellIds.armsOfHadar: SpellDefinition(
     id: SpellIds.armsOfHadar,
@@ -3307,12 +4303,30 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 1,
     school: SpellSchool.conjuration,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.self),
-    components: SpellComponents(verbal: true, somatic: true),
-    duration: SpellDuration(type: SpellDurationType.instantaneous),
-    target: SpellTarget(types: {SpellTargetType.creature}),
-    damage: [SpellDamage(dice: '2d6', type: SpellDamageType.necrotic)],
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.self,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.instantaneous,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.creature,
+      },
+    ),
+    damage: [
+      SpellDamage(
+        dice: '2d6',
+        type: SpellDamageType.necrotic,
+      ),
+    ],
     persistentEffects: [
       SpellPersistentEffect(
         id: 'arms_of_hadar_strength_save_no_reactions',
@@ -3326,7 +4340,9 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'warlock'},
+    classIds: {
+      'warlock',
+    },
   ),
   SpellIds.featherFall: SpellDefinition(
     id: SpellIds.featherFall,
@@ -3350,14 +4366,31 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 1,
     school: SpellSchool.transmutation,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.reaction),
-    range: SpellRange(type: SpellRangeType.distance, distanceMeters: 18),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.reaction,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 18,
+    ),
     components: SpellComponents(
       verbal: true,
-      materials: [SpellMaterialComponent(description: 'Una piccola piuma.')],
+      materials: [
+        SpellMaterialComponent(
+          description: 'Una piccola piuma.',
+        ),
+      ],
     ),
-    duration: SpellDuration(type: SpellDurationType.minute, amount: 1),
-    target: SpellTarget(types: {SpellTargetType.creature}, maximumTargets: 5),
+    duration: SpellDuration(
+      type: SpellDurationType.minute,
+      amount: 1,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.creature,
+      },
+      maximumTargets: 5,
+    ),
     persistentEffects: [
       SpellPersistentEffect(
         id: 'feather_fall_slow_falling_creatures',
@@ -3372,7 +4405,11 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'bard', 'sorcerer', 'wizard'},
+    classIds: {
+      'bard',
+      'sorcerer',
+      'wizard',
+    },
   ),
   SpellIds.disguiseSelf: SpellDefinition(
     id: SpellIds.disguiseSelf,
@@ -3398,11 +4435,26 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 1,
     school: SpellSchool.illusion,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.self),
-    components: SpellComponents(verbal: true, somatic: true),
-    duration: SpellDuration(type: SpellDurationType.hour, amount: 1),
-    target: SpellTarget(types: {SpellTargetType.self}, maximumTargets: 1),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.self,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.hour,
+      amount: 1,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.self,
+      },
+      maximumTargets: 1,
+    ),
     persistentEffects: [
       SpellPersistentEffect(
         id: 'disguise_self_illusory_appearance',
@@ -3416,7 +4468,11 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'bard', 'sorcerer', 'wizard'},
+    classIds: {
+      'bard',
+      'sorcerer',
+      'wizard',
+    },
   ),
   SpellIds.charmPerson: SpellDefinition(
     id: SpellIds.charmPerson,
@@ -3445,11 +4501,27 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 1,
     school: SpellSchool.enchantment,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.distance, distanceMeters: 9),
-    components: SpellComponents(verbal: true, somatic: true),
-    duration: SpellDuration(type: SpellDurationType.hour, amount: 1),
-    target: SpellTarget(types: {SpellTargetType.creature}, maximumTargets: 1),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 9,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.hour,
+      amount: 1,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.creature,
+      },
+      maximumTargets: 1,
+    ),
     persistentEffects: [
       SpellPersistentEffect(
         id: 'charm_person_wisdom_save_charmed_humanoid',
@@ -3466,7 +4538,13 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'bard', 'druid', 'sorcerer', 'warlock', 'wizard'},
+    classIds: {
+      'bard',
+      'druid',
+      'sorcerer',
+      'warlock',
+      'wizard',
+    },
   ),
   SpellIds.ensnaringStrike: SpellDefinition(
     id: SpellIds.ensnaringStrike,
@@ -3496,16 +4574,32 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 1,
     school: SpellSchool.conjuration,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.bonusAction),
-    range: SpellRange(type: SpellRangeType.self),
-    components: SpellComponents(verbal: true),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.bonusAction,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.self,
+    ),
+    components: SpellComponents(
+      verbal: true,
+    ),
     duration: SpellDuration(
       type: SpellDurationType.minute,
       amount: 1,
       concentration: true,
     ),
-    target: SpellTarget(types: {SpellTargetType.self}, maximumTargets: 1),
-    damage: [SpellDamage(dice: '1d6', type: SpellDamageType.piercing)],
+    target: SpellTarget(
+      types: {
+        SpellTargetType.self,
+      },
+      maximumTargets: 1,
+    ),
+    damage: [
+      SpellDamage(
+        dice: '1d6',
+        type: SpellDamageType.piercing,
+      ),
+    ],
     persistentEffects: [
       SpellPersistentEffect(
         id: 'ensnaring_strike_restrained_vines',
@@ -3522,7 +4616,9 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'ranger'},
+    classIds: {
+      'ranger',
+    },
   ),
   SpellIds.command: SpellDefinition(
     id: SpellIds.command,
@@ -3554,11 +4650,26 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 1,
     school: SpellSchool.enchantment,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.distance, distanceMeters: 18),
-    components: SpellComponents(verbal: true),
-    duration: SpellDuration(type: SpellDurationType.round, amount: 1),
-    target: SpellTarget(types: {SpellTargetType.creature}, maximumTargets: 1),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 18,
+    ),
+    components: SpellComponents(
+      verbal: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.round,
+      amount: 1,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.creature,
+      },
+      maximumTargets: 1,
+    ),
     persistentEffects: [
       SpellPersistentEffect(
         id: 'command_one_word_order',
@@ -3576,7 +4687,10 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'cleric', 'paladin'},
+    classIds: {
+      'cleric',
+      'paladin',
+    },
   ),
   SpellIds.comprehendLanguages: SpellDefinition(
     id: SpellIds.comprehendLanguages,
@@ -3601,8 +4715,12 @@ const Map<String, SpellDefinition> spellDefinitions = {
     level: 1,
     ritual: true,
     school: SpellSchool.divination,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.self),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.self,
+    ),
     components: SpellComponents(
       verbal: true,
       somatic: true,
@@ -3612,8 +4730,16 @@ const Map<String, SpellDefinition> spellDefinitions = {
         ),
       ],
     ),
-    duration: SpellDuration(type: SpellDurationType.hour, amount: 1),
-    target: SpellTarget(types: {SpellTargetType.self}, maximumTargets: 1),
+    duration: SpellDuration(
+      type: SpellDurationType.hour,
+      amount: 1,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.self,
+      },
+      maximumTargets: 1,
+    ),
     persistentEffects: [
       SpellPersistentEffect(
         id: 'comprehend_languages_literal_meaning',
@@ -3627,7 +4753,12 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'bard', 'sorcerer', 'warlock', 'wizard'},
+    classIds: {
+      'bard',
+      'sorcerer',
+      'warlock',
+      'wizard',
+    },
   ),
   SpellIds.createOrDestroyWater: SpellDefinition(
     id: SpellIds.createOrDestroyWater,
@@ -3654,8 +4785,13 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 1,
     school: SpellSchool.transmutation,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.distance, distanceMeters: 9),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 9,
+    ),
     components: SpellComponents(
       verbal: true,
       somatic: true,
@@ -3666,8 +4802,14 @@ const Map<String, SpellDefinition> spellDefinitions = {
         ),
       ],
     ),
-    duration: SpellDuration(type: SpellDurationType.instantaneous),
-    target: SpellTarget(types: {SpellTargetType.special}),
+    duration: SpellDuration(
+      type: SpellDurationType.instantaneous,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.special,
+      },
+    ),
     persistentEffects: [
       SpellPersistentEffect(
         id: 'create_or_destroy_water',
@@ -3681,7 +4823,10 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'cleric', 'druid'},
+    classIds: {
+      'cleric',
+      'druid',
+    },
   ),
   SpellIds.cureWounds: SpellDefinition(
     id: SpellIds.cureWounds,
@@ -3703,11 +4848,25 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 1,
     school: SpellSchool.evocation,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.touch),
-    components: SpellComponents(verbal: true, somatic: true),
-    duration: SpellDuration(type: SpellDurationType.instantaneous),
-    target: SpellTarget(types: {SpellTargetType.creature}, maximumTargets: 1),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.touch,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.instantaneous,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.creature,
+      },
+      maximumTargets: 1,
+    ),
     persistentEffects: [
       SpellPersistentEffect(
         id: 'cure_wounds_touch_healing',
@@ -3719,7 +4878,13 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'bard', 'cleric', 'druid', 'paladin', 'ranger'},
+    classIds: {
+      'bard',
+      'cleric',
+      'druid',
+      'paladin',
+      'ranger',
+    },
   ),
   SpellIds.guidingBolt: SpellDefinition(
     id: SpellIds.guidingBolt,
@@ -3745,13 +4910,34 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 1,
     school: SpellSchool.evocation,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.distance, distanceMeters: 36),
-    components: SpellComponents(verbal: true, somatic: true),
-    duration: SpellDuration(type: SpellDurationType.round, amount: 1),
-    target: SpellTarget(types: {SpellTargetType.creature}, maximumTargets: 1),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 36,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.round,
+      amount: 1,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.creature,
+      },
+      maximumTargets: 1,
+    ),
     attackType: SpellAttackType.ranged,
-    damage: [SpellDamage(dice: '4d6', type: SpellDamageType.radiant)],
+    damage: [
+      SpellDamage(
+        dice: '4d6',
+        type: SpellDamageType.radiant,
+      ),
+    ],
     persistentEffects: [
       SpellPersistentEffect(
         id: 'guiding_bolt_advantage_on_next_attack',
@@ -3765,7 +4951,9 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'cleric'},
+    classIds: {
+      'cleric',
+    },
   ),
   SpellIds.tensersFloatingDisk: SpellDefinition(
     id: SpellIds.tensersFloatingDisk,
@@ -3796,17 +4984,31 @@ const Map<String, SpellDefinition> spellDefinitions = {
     level: 1,
     ritual: true,
     school: SpellSchool.conjuration,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.distance, distanceMeters: 9),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 9,
+    ),
     components: SpellComponents(
       verbal: true,
       somatic: true,
       materials: [
-        SpellMaterialComponent(description: 'Una goccia di mercurio.'),
+        SpellMaterialComponent(
+          description: 'Una goccia di mercurio.',
+        ),
       ],
     ),
-    duration: SpellDuration(type: SpellDurationType.hour, amount: 1),
-    target: SpellTarget(types: {SpellTargetType.special}),
+    duration: SpellDuration(
+      type: SpellDurationType.hour,
+      amount: 1,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.special,
+      },
+    ),
     persistentEffects: [
       SpellPersistentEffect(
         id: 'tensers_floating_disk_force_platform',
@@ -3823,7 +5025,9 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'wizard'},
+    classIds: {
+      'wizard',
+    },
   ),
   SpellIds.compelledDuel: SpellDefinition(
     id: SpellIds.compelledDuel,
@@ -3854,15 +5058,27 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 1,
     school: SpellSchool.enchantment,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.bonusAction),
-    range: SpellRange(type: SpellRangeType.distance, distanceMeters: 9),
-    components: SpellComponents(verbal: true),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.bonusAction,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 9,
+    ),
+    components: SpellComponents(
+      verbal: true,
+    ),
     duration: SpellDuration(
       type: SpellDurationType.minute,
       amount: 1,
       concentration: true,
     ),
-    target: SpellTarget(types: {SpellTargetType.creature}, maximumTargets: 1),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.creature,
+      },
+      maximumTargets: 1,
+    ),
     persistentEffects: [
       SpellPersistentEffect(
         id: 'compelled_duel_wisdom_save_duel_focus',
@@ -3881,7 +5097,9 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'paladin'},
+    classIds: {
+      'paladin',
+    },
   ),
   SpellIds.heroism: SpellDefinition(
     id: SpellIds.heroism,
@@ -3907,16 +5125,25 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 1,
     school: SpellSchool.enchantment,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.touch),
-    components: SpellComponents(verbal: true, somatic: true),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.touch,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+    ),
     duration: SpellDuration(
       type: SpellDurationType.minute,
       amount: 1,
       concentration: true,
     ),
     target: SpellTarget(
-      types: {SpellTargetType.willingCreature},
+      types: {
+        SpellTargetType.willingCreature,
+      },
       maximumTargets: 1,
     ),
     persistentEffects: [
@@ -3933,7 +5160,10 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'bard', 'paladin'},
+    classIds: {
+      'bard',
+      'paladin',
+    },
   ),
   SpellIds.divineFavor: SpellDefinition(
     id: SpellIds.divineFavor,
@@ -3957,15 +5187,27 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 1,
     school: SpellSchool.evocation,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.bonusAction),
-    range: SpellRange(type: SpellRangeType.self),
-    components: SpellComponents(verbal: true, somatic: true),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.bonusAction,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.self,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+    ),
     duration: SpellDuration(
       type: SpellDurationType.minute,
       amount: 1,
       concentration: true,
     ),
-    target: SpellTarget(types: {SpellTargetType.self}, maximumTargets: 1),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.self,
+      },
+      maximumTargets: 1,
+    ),
     persistentEffects: [
       SpellPersistentEffect(
         id: 'divine_favor_weapon_attack_radiant_damage',
@@ -3979,7 +5221,9 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'paladin'},
+    classIds: {
+      'paladin',
+    },
   ),
   SpellIds.chromaticOrb: SpellDefinition(
     id: SpellIds.chromaticOrb,
@@ -4003,8 +5247,13 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 1,
     school: SpellSchool.evocation,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.distance, distanceMeters: 27),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 27,
+    ),
     components: SpellComponents(
       verbal: true,
       somatic: true,
@@ -4014,8 +5263,15 @@ const Map<String, SpellDefinition> spellDefinitions = {
         ),
       ],
     ),
-    duration: SpellDuration(type: SpellDurationType.instantaneous),
-    target: SpellTarget(types: {SpellTargetType.creature}, maximumTargets: 1),
+    duration: SpellDuration(
+      type: SpellDurationType.instantaneous,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.creature,
+      },
+      maximumTargets: 1,
+    ),
     attackType: SpellAttackType.ranged,
     persistentEffects: [
       SpellPersistentEffect(
@@ -4030,7 +5286,10 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'sorcerer', 'wizard'},
+    classIds: {
+      'sorcerer',
+      'wizard',
+    },
   ),
   SpellIds.silentImage: SpellDefinition(
     id: SpellIds.silentImage,
@@ -4058,19 +5317,32 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 1,
     school: SpellSchool.illusion,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.distance, distanceMeters: 18),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 18,
+    ),
     components: SpellComponents(
       verbal: true,
       somatic: true,
-      materials: [SpellMaterialComponent(description: 'Un ciuffo di lana.')],
+      materials: [
+        SpellMaterialComponent(
+          description: 'Un ciuffo di lana.',
+        ),
+      ],
     ),
     duration: SpellDuration(
       type: SpellDurationType.minute,
       amount: 10,
       concentration: true,
     ),
-    target: SpellTarget(types: {SpellTargetType.special}),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.special,
+      },
+    ),
     persistentEffects: [
       SpellPersistentEffect(
         id: 'silent_image_visual_illusion',
@@ -4086,7 +5358,11 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'bard', 'sorcerer', 'wizard'},
+    classIds: {
+      'bard',
+      'sorcerer',
+      'wizard',
+    },
   ),
   SpellIds.detectEvilAndGood: SpellDefinition(
     id: SpellIds.detectEvilAndGood,
@@ -4111,15 +5387,27 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 1,
     school: SpellSchool.divination,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.self),
-    components: SpellComponents(verbal: true, somatic: true),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.self,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+    ),
     duration: SpellDuration(
       type: SpellDurationType.minute,
       amount: 10,
       concentration: true,
     ),
-    target: SpellTarget(types: {SpellTargetType.self}, maximumTargets: 1),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.self,
+      },
+      maximumTargets: 1,
+    ),
     persistentEffects: [
       SpellPersistentEffect(
         id: 'detect_evil_and_good_presence_and_location',
@@ -4136,7 +5424,10 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'cleric', 'paladin'},
+    classIds: {
+      'cleric',
+      'paladin',
+    },
   ),
   SpellIds.detectMagic: SpellDefinition(
     id: SpellIds.detectMagic,
@@ -4162,15 +5453,27 @@ const Map<String, SpellDefinition> spellDefinitions = {
     level: 1,
     ritual: true,
     school: SpellSchool.divination,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.self),
-    components: SpellComponents(verbal: true, somatic: true),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.self,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+    ),
     duration: SpellDuration(
       type: SpellDurationType.minute,
       amount: 10,
       concentration: true,
     ),
-    target: SpellTarget(types: {SpellTargetType.self}, maximumTargets: 1),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.self,
+      },
+      maximumTargets: 1,
+    ),
     persistentEffects: [
       SpellPersistentEffect(
         id: 'detect_magic_aura_and_school',
@@ -4222,19 +5525,32 @@ const Map<String, SpellDefinition> spellDefinitions = {
     level: 1,
     ritual: true,
     school: SpellSchool.divination,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.self),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.self,
+    ),
     components: SpellComponents(
       verbal: true,
       somatic: true,
-      materials: [SpellMaterialComponent(description: 'Una foglia di tasso.')],
+      materials: [
+        SpellMaterialComponent(
+          description: 'Una foglia di tasso.',
+        ),
+      ],
     ),
     duration: SpellDuration(
       type: SpellDurationType.minute,
       amount: 10,
       concentration: true,
     ),
-    target: SpellTarget(types: {SpellTargetType.self}, maximumTargets: 1),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.self,
+      },
+      maximumTargets: 1,
+    ),
     persistentEffects: [
       SpellPersistentEffect(
         id: 'detect_poison_and_disease_presence_location_type',
@@ -4252,7 +5568,12 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'cleric', 'druid', 'paladin', 'ranger'},
+    classIds: {
+      'cleric',
+      'druid',
+      'paladin',
+      'ranger',
+    },
   ),
   SpellIds.inflictWounds: SpellDefinition(
     id: SpellIds.inflictWounds,
@@ -4273,13 +5594,32 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 1,
     school: SpellSchool.necromancy,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.touch),
-    components: SpellComponents(verbal: true, somatic: true),
-    duration: SpellDuration(type: SpellDurationType.instantaneous),
-    target: SpellTarget(types: {SpellTargetType.creature}, maximumTargets: 1),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.touch,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.instantaneous,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.creature,
+      },
+      maximumTargets: 1,
+    ),
     attackType: SpellAttackType.melee,
-    damage: [SpellDamage(dice: '3d10', type: SpellDamageType.necrotic)],
+    damage: [
+      SpellDamage(
+        dice: '3d10',
+        type: SpellDamageType.necrotic,
+      ),
+    ],
     persistentEffects: [
       SpellPersistentEffect(
         id: 'inflict_wounds_melee_spell_attack_necrotic',
@@ -4291,7 +5631,9 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'cleric'},
+    classIds: {
+      'cleric',
+    },
   ),
   SpellIds.hellishRebuke: SpellDefinition(
     id: SpellIds.hellishRebuke,
@@ -4316,12 +5658,32 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 1,
     school: SpellSchool.evocation,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.reaction),
-    range: SpellRange(type: SpellRangeType.distance, distanceMeters: 18),
-    components: SpellComponents(verbal: true, somatic: true),
-    duration: SpellDuration(type: SpellDurationType.instantaneous),
-    target: SpellTarget(types: {SpellTargetType.creature}, maximumTargets: 1),
-    damage: [SpellDamage(dice: '2d10', type: SpellDamageType.fire)],
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.reaction,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 18,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.instantaneous,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.creature,
+      },
+      maximumTargets: 1,
+    ),
+    damage: [
+      SpellDamage(
+        dice: '2d10',
+        type: SpellDamageType.fire,
+      ),
+    ],
     persistentEffects: [
       SpellPersistentEffect(
         id: 'hellish_rebuke_reaction_fire_damage',
@@ -4335,7 +5697,9 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'warlock'},
+    classIds: {
+      'warlock',
+    },
   ),
   SpellIds.entangle: SpellDefinition(
     id: SpellIds.entangle,
@@ -4362,15 +5726,27 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 1,
     school: SpellSchool.conjuration,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.distance, distanceMeters: 27),
-    components: SpellComponents(verbal: true, somatic: true),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 27,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+    ),
     duration: SpellDuration(
       type: SpellDurationType.minute,
       amount: 1,
       concentration: true,
     ),
-    target: SpellTarget(types: {SpellTargetType.special}),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.special,
+      },
+    ),
     persistentEffects: [
       SpellPersistentEffect(
         id: 'entangle_restraining_plants',
@@ -4386,7 +5762,9 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'druid'},
+    classIds: {
+      'druid',
+    },
   ),
   SpellIds.faerieFire: SpellDefinition(
     id: SpellIds.faerieFire,
@@ -4413,15 +5791,26 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 1,
     school: SpellSchool.evocation,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.distance, distanceMeters: 18),
-    components: SpellComponents(verbal: true),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 18,
+    ),
+    components: SpellComponents(
+      verbal: true,
+    ),
     duration: SpellDuration(
       type: SpellDurationType.minute,
       amount: 1,
       concentration: true,
     ),
-    target: SpellTarget(types: {SpellTargetType.special}),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.special,
+      },
+    ),
     persistentEffects: [
       SpellPersistentEffect(
         id: 'faerie_fire_glowing_targets_advantage',
@@ -4437,7 +5826,10 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'bard', 'druid'},
+    classIds: {
+      'bard',
+      'druid',
+    },
   ),
   SpellIds.burningHands: SpellDefinition(
     id: SpellIds.burningHands,
@@ -4461,12 +5853,30 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 1,
     school: SpellSchool.evocation,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.self),
-    components: SpellComponents(verbal: true, somatic: true),
-    duration: SpellDuration(type: SpellDurationType.instantaneous),
-    target: SpellTarget(types: {SpellTargetType.special}),
-    damage: [SpellDamage(dice: '3d6', type: SpellDamageType.fire)],
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.self,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.instantaneous,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.special,
+      },
+    ),
+    damage: [
+      SpellDamage(
+        dice: '3d6',
+        type: SpellDamageType.fire,
+      ),
+    ],
     persistentEffects: [
       SpellPersistentEffect(
         id: 'burning_hands_cone_fire_damage',
@@ -4481,7 +5891,10 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'sorcerer', 'wizard'},
+    classIds: {
+      'sorcerer',
+      'wizard',
+    },
   ),
   SpellIds.huntersMark: SpellDefinition(
     id: SpellIds.huntersMark,
@@ -4509,15 +5922,27 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 1,
     school: SpellSchool.divination,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.bonusAction),
-    range: SpellRange(type: SpellRangeType.distance, distanceMeters: 27),
-    components: SpellComponents(verbal: true),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.bonusAction,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 27,
+    ),
+    components: SpellComponents(
+      verbal: true,
+    ),
     duration: SpellDuration(
       type: SpellDurationType.hour,
       amount: 1,
       concentration: true,
     ),
-    target: SpellTarget(types: {SpellTargetType.creature}, maximumTargets: 1),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.creature,
+      },
+      maximumTargets: 1,
+    ),
     persistentEffects: [
       SpellPersistentEffect(
         id: 'hunters_mark_marked_prey',
@@ -4535,7 +5960,9 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'ranger'},
+    classIds: {
+      'ranger',
+    },
   ),
   SpellIds.fogCloud: SpellDefinition(
     id: SpellIds.fogCloud,
@@ -4558,15 +5985,27 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 1,
     school: SpellSchool.conjuration,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.distance, distanceMeters: 36),
-    components: SpellComponents(verbal: true, somatic: true),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 36,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+    ),
     duration: SpellDuration(
       type: SpellDurationType.hour,
       amount: 1,
       concentration: true,
     ),
-    target: SpellTarget(types: {SpellTargetType.special}),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.special,
+      },
+    ),
     persistentEffects: [
       SpellPersistentEffect(
         id: 'fog_cloud_heavily_obscured_sphere',
@@ -4581,7 +6020,12 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'druid', 'ranger', 'sorcerer', 'wizard'},
+    classIds: {
+      'druid',
+      'ranger',
+      'sorcerer',
+      'wizard',
+    },
   ),
   SpellIds.thunderwave: SpellDefinition(
     id: SpellIds.thunderwave,
@@ -4609,12 +6053,30 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 1,
     school: SpellSchool.evocation,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.self),
-    components: SpellComponents(verbal: true, somatic: true),
-    duration: SpellDuration(type: SpellDurationType.instantaneous),
-    target: SpellTarget(types: {SpellTargetType.special}),
-    damage: [SpellDamage(dice: '2d8', type: SpellDamageType.thunder)],
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.self,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.instantaneous,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.special,
+      },
+    ),
+    damage: [
+      SpellDamage(
+        dice: '2d8',
+        type: SpellDamageType.thunder,
+      ),
+    ],
     persistentEffects: [
       SpellPersistentEffect(
         id: 'thunderwave_constitution_save_push',
@@ -4630,7 +6092,12 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'bard', 'druid', 'sorcerer', 'wizard'},
+    classIds: {
+      'bard',
+      'druid',
+      'sorcerer',
+      'wizard',
+    },
   ),
   SpellIds.speakWithAnimals: SpellDefinition(
     id: SpellIds.speakWithAnimals,
@@ -4657,11 +6124,26 @@ const Map<String, SpellDefinition> spellDefinitions = {
     level: 1,
     ritual: true,
     school: SpellSchool.divination,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.self),
-    components: SpellComponents(verbal: true, somatic: true),
-    duration: SpellDuration(type: SpellDurationType.minute, amount: 10),
-    target: SpellTarget(types: {SpellTargetType.self}, maximumTargets: 1),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.self,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.minute,
+      amount: 10,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.self,
+      },
+      maximumTargets: 1,
+    ),
     persistentEffects: [
       SpellPersistentEffect(
         id: 'speak_with_animals_communication',
@@ -4677,7 +6159,11 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'bard', 'druid', 'ranger'},
+    classIds: {
+      'bard',
+      'druid',
+      'ranger',
+    },
   ),
   SpellIds.healingWord: SpellDefinition(
     id: SpellIds.healingWord,
@@ -4701,11 +6187,25 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 1,
     school: SpellSchool.evocation,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.bonusAction),
-    range: SpellRange(type: SpellRangeType.distance, distanceMeters: 18),
-    components: SpellComponents(verbal: true),
-    duration: SpellDuration(type: SpellDurationType.instantaneous),
-    target: SpellTarget(types: {SpellTargetType.creature}, maximumTargets: 1),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.bonusAction,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 18,
+    ),
+    components: SpellComponents(
+      verbal: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.instantaneous,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.creature,
+      },
+      maximumTargets: 1,
+    ),
     persistentEffects: [
       SpellPersistentEffect(
         id: 'healing_word_bonus_action_healing',
@@ -4718,7 +6218,11 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'bard', 'cleric', 'druid'},
+    classIds: {
+      'bard',
+      'cleric',
+      'druid',
+    },
   ),
   SpellIds.longstrider: SpellDefinition(
     id: SpellIds.longstrider,
@@ -4740,17 +6244,31 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 1,
     school: SpellSchool.transmutation,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.touch),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.touch,
+    ),
     components: SpellComponents(
       verbal: true,
       somatic: true,
       materials: [
-        SpellMaterialComponent(description: 'Un pizzico di terriccio.'),
+        SpellMaterialComponent(
+          description: 'Un pizzico di terriccio.',
+        ),
       ],
     ),
-    duration: SpellDuration(type: SpellDurationType.hour, amount: 1),
-    target: SpellTarget(types: {SpellTargetType.creature}, maximumTargets: 1),
+    duration: SpellDuration(
+      type: SpellDurationType.hour,
+      amount: 1,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.creature,
+      },
+      maximumTargets: 1,
+    ),
     persistentEffects: [
       SpellPersistentEffect(
         id: 'longstrider_speed_increase',
@@ -4762,7 +6280,12 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'bard', 'druid', 'ranger', 'wizard'},
+    classIds: {
+      'bard',
+      'druid',
+      'ranger',
+      'wizard',
+    },
   ),
   SpellIds.protectionFromEvilAndGood: SpellDefinition(
     id: SpellIds.protectionFromEvilAndGood,
@@ -4788,8 +6311,12 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 1,
     school: SpellSchool.abjuration,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.touch),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.touch,
+    ),
     components: SpellComponents(
       verbal: true,
       somatic: true,
@@ -4807,7 +6334,9 @@ const Map<String, SpellDefinition> spellDefinitions = {
       concentration: true,
     ),
     target: SpellTarget(
-      types: {SpellTargetType.willingCreature},
+      types: {
+        SpellTargetType.willingCreature,
+      },
       maximumTargets: 1,
     ),
     persistentEffects: [
@@ -4825,7 +6354,12 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'cleric', 'paladin', 'warlock', 'wizard'},
+    classIds: {
+      'cleric',
+      'paladin',
+      'warlock',
+      'wizard',
+    },
   ),
   SpellIds.wrathfulSmite: SpellDefinition(
     id: SpellIds.wrathfulSmite,
@@ -4851,16 +6385,32 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 1,
     school: SpellSchool.evocation,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.bonusAction),
-    range: SpellRange(type: SpellRangeType.self),
-    components: SpellComponents(verbal: true),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.bonusAction,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.self,
+    ),
+    components: SpellComponents(
+      verbal: true,
+    ),
     duration: SpellDuration(
       type: SpellDurationType.minute,
       amount: 1,
       concentration: true,
     ),
-    target: SpellTarget(types: {SpellTargetType.self}, maximumTargets: 1),
-    damage: [SpellDamage(dice: '1d6', type: SpellDamageType.psychic)],
+    target: SpellTarget(
+      types: {
+        SpellTargetType.self,
+      },
+      maximumTargets: 1,
+    ),
+    damage: [
+      SpellDamage(
+        dice: '1d6',
+        type: SpellDamageType.psychic,
+      ),
+    ],
     persistentEffects: [
       SpellPersistentEffect(
         id: 'wrathful_smite_psychic_frightened',
@@ -4876,7 +6426,9 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'paladin'},
+    classIds: {
+      'paladin',
+    },
   ),
   SpellIds.searingSmite: SpellDefinition(
     id: SpellIds.searingSmite,
@@ -4906,16 +6458,32 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 1,
     school: SpellSchool.evocation,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.bonusAction),
-    range: SpellRange(type: SpellRangeType.self),
-    components: SpellComponents(verbal: true),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.bonusAction,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.self,
+    ),
+    components: SpellComponents(
+      verbal: true,
+    ),
     duration: SpellDuration(
       type: SpellDurationType.minute,
       amount: 1,
       concentration: true,
     ),
-    target: SpellTarget(types: {SpellTargetType.self}, maximumTargets: 1),
-    damage: [SpellDamage(dice: '1d6', type: SpellDamageType.fire)],
+    target: SpellTarget(
+      types: {
+        SpellTargetType.self,
+      },
+      maximumTargets: 1,
+    ),
+    damage: [
+      SpellDamage(
+        dice: '1d6',
+        type: SpellDamageType.fire,
+      ),
+    ],
     persistentEffects: [
       SpellPersistentEffect(
         id: 'searing_smite_fire_and_burning',
@@ -4935,7 +6503,9 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'paladin'},
+    classIds: {
+      'paladin',
+    },
   ),
   SpellIds.thunderousSmite: SpellDefinition(
     id: SpellIds.thunderousSmite,
@@ -4960,16 +6530,32 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 1,
     school: SpellSchool.evocation,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.bonusAction),
-    range: SpellRange(type: SpellRangeType.self),
-    components: SpellComponents(verbal: true),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.bonusAction,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.self,
+    ),
+    components: SpellComponents(
+      verbal: true,
+    ),
     duration: SpellDuration(
       type: SpellDurationType.minute,
       amount: 1,
       concentration: true,
     ),
-    target: SpellTarget(types: {SpellTargetType.self}, maximumTargets: 1),
-    damage: [SpellDamage(dice: '2d6', type: SpellDamageType.thunder)],
+    target: SpellTarget(
+      types: {
+        SpellTargetType.self,
+      },
+      maximumTargets: 1,
+    ),
+    damage: [
+      SpellDamage(
+        dice: '2d6',
+        type: SpellDamageType.thunder,
+      ),
+    ],
     persistentEffects: [
       SpellPersistentEffect(
         id: 'thunderous_smite_thunder_push_prone',
@@ -4985,7 +6571,9 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'paladin'},
+    classIds: {
+      'paladin',
+    },
   ),
   SpellIds.purifyFoodAndDrink: SpellDefinition(
     id: SpellIds.purifyFoodAndDrink,
@@ -5010,11 +6598,25 @@ const Map<String, SpellDefinition> spellDefinitions = {
     level: 1,
     ritual: true,
     school: SpellSchool.transmutation,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.distance, distanceMeters: 3),
-    components: SpellComponents(verbal: true, somatic: true),
-    duration: SpellDuration(type: SpellDurationType.instantaneous),
-    target: SpellTarget(types: {SpellTargetType.special}),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 3,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.instantaneous,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.special,
+      },
+    ),
     persistentEffects: [
       SpellPersistentEffect(
         id: 'purify_food_and_drink_cleanse',
@@ -5029,7 +6631,11 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'cleric', 'druid', 'paladin'},
+    classIds: {
+      'cleric',
+      'druid',
+      'paladin',
+    },
   ),
   SpellIds.hailOfThorns: SpellDefinition(
     id: SpellIds.hailOfThorns,
@@ -5056,16 +6662,32 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 1,
     school: SpellSchool.conjuration,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.bonusAction),
-    range: SpellRange(type: SpellRangeType.self),
-    components: SpellComponents(verbal: true),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.bonusAction,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.self,
+    ),
+    components: SpellComponents(
+      verbal: true,
+    ),
     duration: SpellDuration(
       type: SpellDurationType.minute,
       amount: 1,
       concentration: true,
     ),
-    target: SpellTarget(types: {SpellTargetType.self}, maximumTargets: 1),
-    damage: [SpellDamage(dice: '1d10', type: SpellDamageType.piercing)],
+    target: SpellTarget(
+      types: {
+        SpellTargetType.self,
+      },
+      maximumTargets: 1,
+    ),
+    damage: [
+      SpellDamage(
+        dice: '1d10',
+        type: SpellDamageType.piercing,
+      ),
+    ],
     persistentEffects: [
       SpellPersistentEffect(
         id: 'hail_of_thorns_ranged_weapon_burst',
@@ -5083,7 +6705,9 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'ranger'},
+    classIds: {
+      'ranger',
+    },
   ),
   SpellIds.rayOfSickness: SpellDefinition(
     id: SpellIds.rayOfSickness,
@@ -5107,13 +6731,33 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 1,
     school: SpellSchool.necromancy,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.distance, distanceMeters: 18),
-    components: SpellComponents(verbal: true, somatic: true),
-    duration: SpellDuration(type: SpellDurationType.instantaneous),
-    target: SpellTarget(types: {SpellTargetType.creature}, maximumTargets: 1),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 18,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.instantaneous,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.creature,
+      },
+      maximumTargets: 1,
+    ),
     attackType: SpellAttackType.ranged,
-    damage: [SpellDamage(dice: '2d8', type: SpellDamageType.poison)],
+    damage: [
+      SpellDamage(
+        dice: '2d8',
+        type: SpellDamageType.poison,
+      ),
+    ],
     persistentEffects: [
       SpellPersistentEffect(
         id: 'ray_of_sickness_poisoned_condition',
@@ -5127,7 +6771,10 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'sorcerer', 'wizard'},
+    classIds: {
+      'sorcerer',
+      'wizard',
+    },
   ),
   SpellIds.tashasHideousLaughter: SpellDefinition(
     id: SpellIds.tashasHideousLaughter,
@@ -5155,8 +6802,13 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 1,
     school: SpellSchool.enchantment,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.distance, distanceMeters: 9),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 9,
+    ),
     components: SpellComponents(
       verbal: true,
       somatic: true,
@@ -5172,7 +6824,12 @@ const Map<String, SpellDefinition> spellDefinitions = {
       amount: 1,
       concentration: true,
     ),
-    target: SpellTarget(types: {SpellTargetType.creature}, maximumTargets: 1),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.creature,
+      },
+      maximumTargets: 1,
+    ),
     persistentEffects: [
       SpellPersistentEffect(
         id: 'tashas_hideous_laughter_prone_incapacitated',
@@ -5192,7 +6849,10 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'bard', 'wizard'},
+    classIds: {
+      'bard',
+      'wizard',
+    },
   ),
   SpellIds.expeditiousRetreat: SpellDefinition(
     id: SpellIds.expeditiousRetreat,
@@ -5217,15 +6877,27 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 1,
     school: SpellSchool.transmutation,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.bonusAction),
-    range: SpellRange(type: SpellRangeType.self),
-    components: SpellComponents(verbal: true, somatic: true),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.bonusAction,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.self,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+    ),
     duration: SpellDuration(
       type: SpellDurationType.minute,
       amount: 10,
       concentration: true,
     ),
-    target: SpellTarget(types: {SpellTargetType.self}, maximumTargets: 1),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.self,
+      },
+      maximumTargets: 1,
+    ),
     persistentEffects: [
       SpellPersistentEffect(
         id: 'expeditious_retreat_bonus_action_dash',
@@ -5239,7 +6911,11 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'sorcerer', 'warlock', 'wizard'},
+    classIds: {
+      'sorcerer',
+      'warlock',
+      'wizard',
+    },
   ),
   SpellIds.jump: SpellDefinition(
     id: SpellIds.jump,
@@ -5262,8 +6938,12 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 1,
     school: SpellSchool.transmutation,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.touch),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.touch,
+    ),
     components: SpellComponents(
       verbal: true,
       somatic: true,
@@ -5273,8 +6953,16 @@ const Map<String, SpellDefinition> spellDefinitions = {
         ),
       ],
     ),
-    duration: SpellDuration(type: SpellDurationType.minute, amount: 1),
-    target: SpellTarget(types: {SpellTargetType.creature}, maximumTargets: 1),
+    duration: SpellDuration(
+      type: SpellDurationType.minute,
+      amount: 1,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.creature,
+      },
+      maximumTargets: 1,
+    ),
     persistentEffects: [
       SpellPersistentEffect(
         id: 'jump_tripled_jump_distance',
@@ -5286,7 +6974,12 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'druid', 'ranger', 'sorcerer', 'wizard'},
+    classIds: {
+      'druid',
+      'ranger',
+      'sorcerer',
+      'wizard',
+    },
   ),
   SpellIds.sanctuary: SpellDefinition(
     id: SpellIds.sanctuary,
@@ -5312,17 +7005,32 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 1,
     school: SpellSchool.abjuration,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.bonusAction),
-    range: SpellRange(type: SpellRangeType.distance, distanceMeters: 9),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.bonusAction,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 9,
+    ),
     components: SpellComponents(
       verbal: true,
       somatic: true,
       materials: [
-        SpellMaterialComponent(description: 'Uno specchietto d’argento.'),
+        SpellMaterialComponent(
+          description: 'Uno specchietto d’argento.',
+        ),
       ],
     ),
-    duration: SpellDuration(type: SpellDurationType.minute, amount: 1),
-    target: SpellTarget(types: {SpellTargetType.creature}, maximumTargets: 1),
+    duration: SpellDuration(
+      type: SpellDurationType.minute,
+      amount: 1,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.creature,
+      },
+      maximumTargets: 1,
+    ),
     persistentEffects: [
       SpellPersistentEffect(
         id: 'sanctuary_wisdom_save_before_targeting',
@@ -5338,7 +7046,9 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'cleric'},
+    classIds: {
+      'cleric',
+    },
   ),
   SpellIds.shieldOfFaith: SpellDefinition(
     id: SpellIds.shieldOfFaith,
@@ -5362,8 +7072,13 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 1,
     school: SpellSchool.abjuration,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.bonusAction),
-    range: SpellRange(type: SpellRangeType.distance, distanceMeters: 18),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.bonusAction,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 18,
+    ),
     components: SpellComponents(
       verbal: true,
       somatic: true,
@@ -5379,7 +7094,12 @@ const Map<String, SpellDefinition> spellDefinitions = {
       amount: 10,
       concentration: true,
     ),
-    target: SpellTarget(types: {SpellTargetType.creature}, maximumTargets: 1),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.creature,
+      },
+      maximumTargets: 1,
+    ),
     persistentEffects: [
       SpellPersistentEffect(
         id: 'shield_of_faith_plus_2_ac',
@@ -5392,7 +7112,10 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'cleric', 'paladin'},
+    classIds: {
+      'cleric',
+      'paladin',
+    },
   ),
   SpellIds.illusoryScript: SpellDefinition(
     id: SpellIds.illusoryScript,
@@ -5422,8 +7145,13 @@ const Map<String, SpellDefinition> spellDefinitions = {
     level: 1,
     ritual: true,
     school: SpellSchool.illusion,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.minute, amount: 1),
-    range: SpellRange(type: SpellRangeType.touch),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.minute,
+      amount: 1,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.touch,
+    ),
     components: SpellComponents(
       somatic: true,
       materials: [
@@ -5434,8 +7162,16 @@ const Map<String, SpellDefinition> spellDefinitions = {
         ),
       ],
     ),
-    duration: SpellDuration(type: SpellDurationType.day, amount: 10),
-    target: SpellTarget(types: {SpellTargetType.object}, maximumTargets: 1),
+    duration: SpellDuration(
+      type: SpellDurationType.day,
+      amount: 10,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.object,
+      },
+      maximumTargets: 1,
+    ),
     persistentEffects: [
       SpellPersistentEffect(
         id: 'illusory_script_hidden_message',
@@ -5453,7 +7189,11 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'bard', 'warlock', 'wizard'},
+    classIds: {
+      'bard',
+      'warlock',
+      'wizard',
+    },
   ),
   SpellIds.unseenServant: SpellDefinition(
     id: SpellIds.unseenServant,
@@ -5484,8 +7224,13 @@ const Map<String, SpellDefinition> spellDefinitions = {
     level: 1,
     ritual: true,
     school: SpellSchool.conjuration,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.distance, distanceMeters: 18),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 18,
+    ),
     components: SpellComponents(
       verbal: true,
       somatic: true,
@@ -5495,8 +7240,15 @@ const Map<String, SpellDefinition> spellDefinitions = {
         ),
       ],
     ),
-    duration: SpellDuration(type: SpellDurationType.hour, amount: 1),
-    target: SpellTarget(types: {SpellTargetType.special}),
+    duration: SpellDuration(
+      type: SpellDurationType.hour,
+      amount: 1,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.special,
+      },
+    ),
     persistentEffects: [
       SpellPersistentEffect(
         id: 'unseen_servant_invisible_force',
@@ -5515,7 +7267,11 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'bard', 'warlock', 'wizard'},
+    classIds: {
+      'bard',
+      'warlock',
+      'wizard',
+    },
   ),
   SpellIds.sleep: SpellDefinition(
     id: SpellIds.sleep,
@@ -5546,8 +7302,13 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 1,
     school: SpellSchool.enchantment,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.distance, distanceMeters: 27),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 27,
+    ),
     components: SpellComponents(
       verbal: true,
       somatic: true,
@@ -5558,8 +7319,15 @@ const Map<String, SpellDefinition> spellDefinitions = {
         ),
       ],
     ),
-    duration: SpellDuration(type: SpellDurationType.minute, amount: 1),
-    target: SpellTarget(types: {SpellTargetType.special}),
+    duration: SpellDuration(
+      type: SpellDurationType.minute,
+      amount: 1,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.special,
+      },
+    ),
     persistentEffects: [
       SpellPersistentEffect(
         id: 'sleep_magical_unconscious_pool',
@@ -5579,7 +7347,11 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'bard', 'sorcerer', 'wizard'},
+    classIds: {
+      'bard',
+      'sorcerer',
+      'wizard',
+    },
   ),
   SpellIds.hex: SpellDefinition(
     id: SpellIds.hex,
@@ -5608,8 +7380,13 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 1,
     school: SpellSchool.enchantment,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.bonusAction),
-    range: SpellRange(type: SpellRangeType.distance, distanceMeters: 27),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.bonusAction,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 27,
+    ),
     components: SpellComponents(
       verbal: true,
       somatic: true,
@@ -5624,8 +7401,18 @@ const Map<String, SpellDefinition> spellDefinitions = {
       amount: 1,
       concentration: true,
     ),
-    target: SpellTarget(types: {SpellTargetType.creature}, maximumTargets: 1),
-    damage: [SpellDamage(dice: '1d6', type: SpellDamageType.necrotic)],
+    target: SpellTarget(
+      types: {
+        SpellTargetType.creature,
+      },
+      maximumTargets: 1,
+    ),
+    damage: [
+      SpellDamage(
+        dice: '1d6',
+        type: SpellDamageType.necrotic,
+      ),
+    ],
     persistentEffects: [
       SpellPersistentEffect(
         id: 'hex_curse_extra_necrotic_damage',
@@ -5644,7 +7431,9 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'warlock'},
+    classIds: {
+      'warlock',
+    },
   ),
   SpellIds.colorSpray: SpellDefinition(
     id: SpellIds.colorSpray,
@@ -5674,8 +7463,12 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 1,
     school: SpellSchool.illusion,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.self),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.self,
+    ),
     components: SpellComponents(
       verbal: true,
       somatic: true,
@@ -5686,8 +7479,15 @@ const Map<String, SpellDefinition> spellDefinitions = {
         ),
       ],
     ),
-    duration: SpellDuration(type: SpellDurationType.round, amount: 1),
-    target: SpellTarget(types: {SpellTargetType.special}),
+    duration: SpellDuration(
+      type: SpellDurationType.round,
+      amount: 1,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.special,
+      },
+    ),
     persistentEffects: [
       SpellPersistentEffect(
         id: 'color_spray_blinding_hp_pool',
@@ -5705,7 +7505,10 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'sorcerer', 'wizard'},
+    classIds: {
+      'sorcerer',
+      'wizard',
+    },
   ),
   SpellIds.dissonantWhispers: SpellDefinition(
     id: SpellIds.dissonantWhispers,
@@ -5733,12 +7536,31 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 1,
     school: SpellSchool.enchantment,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.distance, distanceMeters: 18),
-    components: SpellComponents(verbal: true),
-    duration: SpellDuration(type: SpellDurationType.instantaneous),
-    target: SpellTarget(types: {SpellTargetType.creature}, maximumTargets: 1),
-    damage: [SpellDamage(dice: '3d6', type: SpellDamageType.psychic)],
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 18,
+    ),
+    components: SpellComponents(
+      verbal: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.instantaneous,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.creature,
+      },
+      maximumTargets: 1,
+    ),
+    damage: [
+      SpellDamage(
+        dice: '3d6',
+        type: SpellDamageType.psychic,
+      ),
+    ],
     persistentEffects: [
       SpellPersistentEffect(
         id: 'dissonant_whispers_wisdom_save_forced_movement',
@@ -5757,7 +7579,9 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'bard'},
+    classIds: {
+      'bard',
+    },
   ),
   SpellIds.grease: SpellDefinition(
     id: SpellIds.grease,
@@ -5782,8 +7606,13 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 1,
     school: SpellSchool.conjuration,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.distance, distanceMeters: 18),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 18,
+    ),
     components: SpellComponents(
       verbal: true,
       somatic: true,
@@ -5793,8 +7622,15 @@ const Map<String, SpellDefinition> spellDefinitions = {
         ),
       ],
     ),
-    duration: SpellDuration(type: SpellDurationType.minute, amount: 1),
-    target: SpellTarget(types: {SpellTargetType.special}),
+    duration: SpellDuration(
+      type: SpellDurationType.minute,
+      amount: 1,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.special,
+      },
+    ),
     persistentEffects: [
       SpellPersistentEffect(
         id: 'grease_slippery_difficult_terrain',
@@ -5810,7 +7646,9 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'wizard'},
+    classIds: {
+      'wizard',
+    },
   ),
   SpellIds.falseLife: SpellDefinition(
     id: SpellIds.falseLife,
@@ -5835,8 +7673,12 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 1,
     school: SpellSchool.necromancy,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.self),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.self,
+    ),
     components: SpellComponents(
       verbal: true,
       somatic: true,
@@ -5846,8 +7688,16 @@ const Map<String, SpellDefinition> spellDefinitions = {
         ),
       ],
     ),
-    duration: SpellDuration(type: SpellDurationType.hour, amount: 1),
-    target: SpellTarget(types: {SpellTargetType.self}, maximumTargets: 1),
+    duration: SpellDuration(
+      type: SpellDurationType.hour,
+      amount: 1,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.self,
+      },
+      maximumTargets: 1,
+    ),
     persistentEffects: [
       SpellPersistentEffect(
         id: 'false_life_temporary_hit_points',
@@ -5860,7 +7710,10 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'sorcerer', 'wizard'},
+    classIds: {
+      'sorcerer',
+      'wizard',
+    },
   ),
   SpellIds.aid: SpellDefinition(
     id: SpellIds.aid,
@@ -5884,8 +7737,13 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 2,
     school: SpellSchool.abjuration,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.distance, distanceMeters: 9),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 9,
+    ),
     components: SpellComponents(
       verbal: true,
       somatic: true,
@@ -5895,8 +7753,16 @@ const Map<String, SpellDefinition> spellDefinitions = {
         ),
       ],
     ),
-    duration: SpellDuration(type: SpellDurationType.hour, amount: 8),
-    target: SpellTarget(types: {SpellTargetType.creature}, maximumTargets: 3),
+    duration: SpellDuration(
+      type: SpellDurationType.hour,
+      amount: 8,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.creature,
+      },
+      maximumTargets: 3,
+    ),
     persistentEffects: [
       SpellPersistentEffect(
         id: 'aid_current_and_max_hp_increase',
@@ -5911,7 +7777,10 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'cleric', 'paladin'},
+    classIds: {
+      'cleric',
+      'paladin',
+    },
   ),
   SpellIds.phantasmalForce: SpellDefinition(
     id: SpellIds.phantasmalForce,
@@ -5945,20 +7814,39 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 2,
     school: SpellSchool.illusion,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.distance, distanceMeters: 18),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 18,
+    ),
     components: SpellComponents(
       verbal: true,
       somatic: true,
-      materials: [SpellMaterialComponent(description: 'Un ciuffo di lana.')],
+      materials: [
+        SpellMaterialComponent(
+          description: 'Un ciuffo di lana.',
+        ),
+      ],
     ),
     duration: SpellDuration(
       type: SpellDurationType.minute,
       amount: 1,
       concentration: true,
     ),
-    target: SpellTarget(types: {SpellTargetType.creature}, maximumTargets: 1),
-    damage: [SpellDamage(dice: '1d6', type: SpellDamageType.psychic)],
+    target: SpellTarget(
+      types: {
+        SpellTargetType.creature,
+      },
+      maximumTargets: 1,
+    ),
+    damage: [
+      SpellDamage(
+        dice: '1d6',
+        type: SpellDamageType.psychic,
+      ),
+    ],
     persistentEffects: [
       SpellPersistentEffect(
         id: 'phantasmal_force_mind_illusion',
@@ -5977,7 +7865,11 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'bard', 'sorcerer', 'wizard'},
+    classIds: {
+      'bard',
+      'sorcerer',
+      'wizard',
+    },
   ),
   SpellIds.alterSelf: SpellDefinition(
     id: SpellIds.alterSelf,
@@ -6009,15 +7901,27 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 2,
     school: SpellSchool.transmutation,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.self),
-    components: SpellComponents(verbal: true, somatic: true),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.self,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+    ),
     duration: SpellDuration(
       type: SpellDurationType.hour,
       amount: 1,
       concentration: true,
     ),
-    target: SpellTarget(types: {SpellTargetType.self}, maximumTargets: 1),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.self,
+      },
+      maximumTargets: 1,
+    ),
     persistentEffects: [
       SpellPersistentEffect(
         id: 'alter_self_body_options',
@@ -6037,7 +7941,10 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'sorcerer', 'wizard'},
+    classIds: {
+      'sorcerer',
+      'wizard',
+    },
   ),
   SpellIds.animalMessenger: SpellDefinition(
     id: SpellIds.animalMessenger,
@@ -6069,15 +7976,32 @@ const Map<String, SpellDefinition> spellDefinitions = {
     level: 2,
     ritual: true,
     school: SpellSchool.enchantment,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.distance, distanceMeters: 9),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 9,
+    ),
     components: SpellComponents(
       verbal: true,
       somatic: true,
-      materials: [SpellMaterialComponent(description: 'Un boccone di cibo.')],
+      materials: [
+        SpellMaterialComponent(
+          description: 'Un boccone di cibo.',
+        ),
+      ],
     ),
-    duration: SpellDuration(type: SpellDurationType.hour, amount: 24),
-    target: SpellTarget(types: {SpellTargetType.creature}, maximumTargets: 1),
+    duration: SpellDuration(
+      type: SpellDurationType.hour,
+      amount: 24,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.creature,
+      },
+      maximumTargets: 1,
+    ),
     persistentEffects: [
       SpellPersistentEffect(
         id: 'animal_messenger_tiny_beast_message',
@@ -6096,7 +8020,11 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'bard', 'druid', 'ranger'},
+    classIds: {
+      'bard',
+      'druid',
+      'ranger',
+    },
   ),
   SpellIds.magicWeapon: SpellDefinition(
     id: SpellIds.magicWeapon,
@@ -6120,15 +8048,27 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 2,
     school: SpellSchool.transmutation,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.bonusAction),
-    range: SpellRange(type: SpellRangeType.touch),
-    components: SpellComponents(verbal: true, somatic: true),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.bonusAction,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.touch,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+    ),
     duration: SpellDuration(
       type: SpellDurationType.hour,
       amount: 1,
       concentration: true,
     ),
-    target: SpellTarget(types: {SpellTargetType.object}, maximumTargets: 1),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.object,
+      },
+      maximumTargets: 1,
+    ),
     persistentEffects: [
       SpellPersistentEffect(
         id: 'magic_weapon_plus_bonus',
@@ -6143,7 +8083,10 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'paladin', 'wizard'},
+    classIds: {
+      'paladin',
+      'wizard',
+    },
   ),
   SpellIds.spiritualWeapon: SpellDefinition(
     id: SpellIds.spiritualWeapon,
@@ -6173,13 +8116,33 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 2,
     school: SpellSchool.evocation,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.bonusAction),
-    range: SpellRange(type: SpellRangeType.distance, distanceMeters: 18),
-    components: SpellComponents(verbal: true, somatic: true),
-    duration: SpellDuration(type: SpellDurationType.minute, amount: 1),
-    target: SpellTarget(types: {SpellTargetType.special}),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.bonusAction,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 18,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.minute,
+      amount: 1,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.special,
+      },
+    ),
     attackType: SpellAttackType.melee,
-    damage: [SpellDamage(dice: '1d8', type: SpellDamageType.force)],
+    damage: [
+      SpellDamage(
+        dice: '1d8',
+        type: SpellDamageType.force,
+      ),
+    ],
     persistentEffects: [
       SpellPersistentEffect(
         id: 'spiritual_weapon_spectral_attack',
@@ -6198,7 +8161,9 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'cleric'},
+    classIds: {
+      'cleric',
+    },
   ),
   SpellIds.nystulsMagicAura: SpellDefinition(
     id: SpellIds.nystulsMagicAura,
@@ -6229,18 +8194,30 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 2,
     school: SpellSchool.illusion,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.touch),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.touch,
+    ),
     components: SpellComponents(
       verbal: true,
       somatic: true,
       materials: [
-        SpellMaterialComponent(description: 'Un pezzo quadrato di seta.'),
+        SpellMaterialComponent(
+          description: 'Un pezzo quadrato di seta.',
+        ),
       ],
     ),
-    duration: SpellDuration(type: SpellDurationType.hour, amount: 24),
+    duration: SpellDuration(
+      type: SpellDurationType.hour,
+      amount: 24,
+    ),
     target: SpellTarget(
-      types: {SpellTargetType.creature, SpellTargetType.object},
+      types: {
+        SpellTargetType.creature,
+        SpellTargetType.object,
+      },
       maximumTargets: 1,
     ),
     persistentEffects: [
@@ -6260,7 +8237,9 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'wizard'},
+    classIds: {
+      'wizard',
+    },
   ),
   SpellIds.moonbeam: SpellDefinition(
     id: SpellIds.moonbeam,
@@ -6291,8 +8270,13 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 2,
     school: SpellSchool.evocation,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.distance, distanceMeters: 36),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 36,
+    ),
     components: SpellComponents(
       verbal: true,
       somatic: true,
@@ -6308,8 +8292,17 @@ const Map<String, SpellDefinition> spellDefinitions = {
       amount: 1,
       concentration: true,
     ),
-    target: SpellTarget(types: {SpellTargetType.special}),
-    damage: [SpellDamage(dice: '2d10', type: SpellDamageType.radiant)],
+    target: SpellTarget(
+      types: {
+        SpellTargetType.special,
+      },
+    ),
+    damage: [
+      SpellDamage(
+        dice: '2d10',
+        type: SpellDamageType.radiant,
+      ),
+    ],
     persistentEffects: [
       SpellPersistentEffect(
         id: 'moonbeam_radiant_cylinder_shapeshifter',
@@ -6331,7 +8324,9 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'druid'},
+    classIds: {
+      'druid',
+    },
   ),
   SpellIds.holdPerson: SpellDefinition(
     id: SpellIds.holdPerson,
@@ -6356,13 +8351,20 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 2,
     school: SpellSchool.enchantment,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.distance, distanceMeters: 18),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 18,
+    ),
     components: SpellComponents(
       verbal: true,
       somatic: true,
       materials: [
-        SpellMaterialComponent(description: 'Una piccola sbarra di ferro.'),
+        SpellMaterialComponent(
+          description: 'Una piccola sbarra di ferro.',
+        ),
       ],
     ),
     duration: SpellDuration(
@@ -6370,7 +8372,12 @@ const Map<String, SpellDefinition> spellDefinitions = {
       amount: 1,
       concentration: true,
     ),
-    target: SpellTarget(types: {SpellTargetType.creature}, maximumTargets: 1),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.creature,
+      },
+      maximumTargets: 1,
+    ),
     persistentEffects: [
       SpellPersistentEffect(
         id: 'hold_person_wisdom_save_paralyzed',
@@ -6387,7 +8394,14 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'bard', 'cleric', 'druid', 'sorcerer', 'warlock', 'wizard'},
+    classIds: {
+      'bard',
+      'cleric',
+      'druid',
+      'sorcerer',
+      'warlock',
+      'wizard',
+    },
   ),
   SpellIds.magicMouth: SpellDefinition(
     id: SpellIds.magicMouth,
@@ -6419,8 +8433,14 @@ const Map<String, SpellDefinition> spellDefinitions = {
     level: 2,
     ritual: true,
     school: SpellSchool.illusion,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.minute, amount: 1),
-    range: SpellRange(type: SpellRangeType.distance, distanceMeters: 9),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.minute,
+      amount: 1,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 9,
+    ),
     components: SpellComponents(
       verbal: true,
       somatic: true,
@@ -6433,8 +8453,15 @@ const Map<String, SpellDefinition> spellDefinitions = {
         ),
       ],
     ),
-    duration: SpellDuration(type: SpellDurationType.untilDispelled),
-    target: SpellTarget(types: {SpellTargetType.object}, maximumTargets: 1),
+    duration: SpellDuration(
+      type: SpellDurationType.untilDispelled,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.object,
+      },
+      maximumTargets: 1,
+    ),
     persistentEffects: [
       SpellPersistentEffect(
         id: 'magic_mouth_triggered_message',
@@ -6454,7 +8481,10 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'bard', 'wizard'},
+    classIds: {
+      'bard',
+      'wizard',
+    },
   ),
   SpellIds.calmEmotions: SpellDefinition(
     id: SpellIds.calmEmotions,
@@ -6485,15 +8515,27 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 2,
     school: SpellSchool.enchantment,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.distance, distanceMeters: 18),
-    components: SpellComponents(verbal: true, somatic: true),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 18,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+    ),
     duration: SpellDuration(
       type: SpellDurationType.minute,
       amount: 1,
       concentration: true,
     ),
-    target: SpellTarget(types: {SpellTargetType.area}),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.area,
+      },
+    ),
     persistentEffects: [
       SpellPersistentEffect(
         id: 'calm_emotions_suppression_or_indifference',
@@ -6513,7 +8555,10 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'bard', 'cleric'},
+    classIds: {
+      'bard',
+      'cleric',
+    },
   ),
   SpellIds.enhanceAbility: SpellDefinition(
     id: SpellIds.enhanceAbility,
@@ -6544,8 +8589,12 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 2,
     school: SpellSchool.transmutation,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.touch),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.touch,
+    ),
     components: SpellComponents(
       verbal: true,
       somatic: true,
@@ -6560,7 +8609,12 @@ const Map<String, SpellDefinition> spellDefinitions = {
       amount: 1,
       concentration: true,
     ),
-    target: SpellTarget(types: {SpellTargetType.creature}, maximumTargets: 1),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.creature,
+      },
+      maximumTargets: 1,
+    ),
     persistentEffects: [
       SpellPersistentEffect(
         id: 'enhance_ability_choose_ability_boost',
@@ -6582,7 +8636,12 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'bard', 'cleric', 'druid', 'sorcerer'},
+    classIds: {
+      'bard',
+      'cleric',
+      'druid',
+      'sorcerer',
+    },
   ),
   SpellIds.blindnessDeafness: SpellDefinition(
     id: SpellIds.blindnessDeafness,
@@ -6609,11 +8668,26 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 2,
     school: SpellSchool.necromancy,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.distance, distanceMeters: 9),
-    components: SpellComponents(verbal: true),
-    duration: SpellDuration(type: SpellDurationType.minute, amount: 1),
-    target: SpellTarget(types: {SpellTargetType.creature}, maximumTargets: 1),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 9,
+    ),
+    components: SpellComponents(
+      verbal: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.minute,
+      amount: 1,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.creature,
+      },
+      maximumTargets: 1,
+    ),
     persistentEffects: [
       SpellPersistentEffect(
         id: 'blindness_deafness_constitution_save_condition',
@@ -6630,7 +8704,13 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'bard', 'cleric', 'sorcerer', 'warlock', 'wizard'},
+    classIds: {
+      'bard',
+      'cleric',
+      'sorcerer',
+      'warlock',
+      'wizard',
+    },
   ),
   SpellIds.cordonOfArrows: SpellDefinition(
     id: SpellIds.cordonOfArrows,
@@ -6660,8 +8740,13 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 2,
     school: SpellSchool.transmutation,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.distance, distanceMeters: 1.5),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 1.5,
+    ),
     components: SpellComponents(
       verbal: true,
       somatic: true,
@@ -6671,9 +8756,21 @@ const Map<String, SpellDefinition> spellDefinitions = {
         ),
       ],
     ),
-    duration: SpellDuration(type: SpellDurationType.hour, amount: 8),
-    target: SpellTarget(types: {SpellTargetType.special}),
-    damage: [SpellDamage(dice: '1d6', type: SpellDamageType.piercing)],
+    duration: SpellDuration(
+      type: SpellDurationType.hour,
+      amount: 8,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.special,
+      },
+    ),
+    damage: [
+      SpellDamage(
+        dice: '1d6',
+        type: SpellDamageType.piercing,
+      ),
+    ],
     persistentEffects: [
       SpellPersistentEffect(
         id: 'cordon_of_arrows_guarding_ammunition',
@@ -6693,7 +8790,9 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'ranger'},
+    classIds: {
+      'ranger',
+    },
   ),
   SpellIds.crownOfMadness: SpellDefinition(
     id: SpellIds.crownOfMadness,
@@ -6725,15 +8824,28 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 2,
     school: SpellSchool.enchantment,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.distance, distanceMeters: 36),
-    components: SpellComponents(verbal: true, somatic: true),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 36,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+    ),
     duration: SpellDuration(
       type: SpellDurationType.minute,
       amount: 1,
       concentration: true,
     ),
-    target: SpellTarget(types: {SpellTargetType.creature}, maximumTargets: 1),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.creature,
+      },
+      maximumTargets: 1,
+    ),
     persistentEffects: [
       SpellPersistentEffect(
         id: 'crown_of_madness_charmed_forced_attack',
@@ -6755,7 +8867,12 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'bard', 'sorcerer', 'warlock', 'wizard'},
+    classIds: {
+      'bard',
+      'sorcerer',
+      'warlock',
+      'wizard',
+    },
   ),
   SpellIds.spikeGrowth: SpellDefinition(
     id: SpellIds.spikeGrowth,
@@ -6782,8 +8899,13 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 2,
     school: SpellSchool.transmutation,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.distance, distanceMeters: 45),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 45,
+    ),
     components: SpellComponents(
       verbal: true,
       somatic: true,
@@ -6798,8 +8920,17 @@ const Map<String, SpellDefinition> spellDefinitions = {
       amount: 10,
       concentration: true,
     ),
-    target: SpellTarget(types: {SpellTargetType.area}),
-    damage: [SpellDamage(dice: '2d4', type: SpellDamageType.piercing)],
+    target: SpellTarget(
+      types: {
+        SpellTargetType.area,
+      },
+    ),
+    damage: [
+      SpellDamage(
+        dice: '2d4',
+        type: SpellDamageType.piercing,
+      ),
+    ],
     persistentEffects: [
       SpellPersistentEffect(
         id: 'spike_growth_hidden_piercing_terrain',
@@ -6815,7 +8946,10 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'druid', 'ranger'},
+    classIds: {
+      'druid',
+      'ranger',
+    },
   ),
   SpellIds.enthrall: SpellDefinition(
     id: SpellIds.enthrall,
@@ -6844,11 +8978,26 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 2,
     school: SpellSchool.enchantment,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.distance, distanceMeters: 18),
-    components: SpellComponents(verbal: true, somatic: true),
-    duration: SpellDuration(type: SpellDurationType.minute, amount: 1),
-    target: SpellTarget(types: {SpellTargetType.creatures}),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 18,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.minute,
+      amount: 1,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.creatures,
+      },
+    ),
     persistentEffects: [
       SpellPersistentEffect(
         id: 'enthrall_wisdom_perception_distraction',
@@ -6867,7 +9016,10 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'bard', 'warlock'},
+    classIds: {
+      'bard',
+      'warlock',
+    },
   ),
   SpellIds.continualFlame: SpellDefinition(
     id: SpellIds.continualFlame,
@@ -6891,8 +9043,12 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 2,
     school: SpellSchool.evocation,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.touch),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.touch,
+    ),
     components: SpellComponents(
       verbal: true,
       somatic: true,
@@ -6905,8 +9061,15 @@ const Map<String, SpellDefinition> spellDefinitions = {
         ),
       ],
     ),
-    duration: SpellDuration(type: SpellDurationType.untilDispelled),
-    target: SpellTarget(types: {SpellTargetType.object}, maximumTargets: 1),
+    duration: SpellDuration(
+      type: SpellDurationType.untilDispelled,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.object,
+      },
+      maximumTargets: 1,
+    ),
     persistentEffects: [
       SpellPersistentEffect(
         id: 'continual_flame_torch_light_no_heat',
@@ -6923,7 +9086,10 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'cleric', 'wizard'},
+    classIds: {
+      'cleric',
+      'wizard',
+    },
   ),
   SpellIds.shatter: SpellDefinition(
     id: SpellIds.shatter,
@@ -6950,16 +9116,36 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 2,
     school: SpellSchool.evocation,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.distance, distanceMeters: 18),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 18,
+    ),
     components: SpellComponents(
       verbal: true,
       somatic: true,
-      materials: [SpellMaterialComponent(description: 'Un frammento di mica.')],
+      materials: [
+        SpellMaterialComponent(
+          description: 'Un frammento di mica.',
+        ),
+      ],
     ),
-    duration: SpellDuration(type: SpellDurationType.instantaneous),
-    target: SpellTarget(types: {SpellTargetType.area}),
-    damage: [SpellDamage(dice: '3d8', type: SpellDamageType.thunder)],
+    duration: SpellDuration(
+      type: SpellDurationType.instantaneous,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.area,
+      },
+    ),
+    damage: [
+      SpellDamage(
+        dice: '3d8',
+        type: SpellDamageType.thunder,
+      ),
+    ],
     persistentEffects: [
       SpellPersistentEffect(
         id: 'shatter_constitution_save_thunder_burst',
@@ -6975,7 +9161,12 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'bard', 'sorcerer', 'warlock', 'wizard'},
+    classIds: {
+      'bard',
+      'sorcerer',
+      'warlock',
+      'wizard',
+    },
   ),
   SpellIds.melfsAcidArrow: SpellDefinition(
     id: SpellIds.melfsAcidArrow,
@@ -7002,8 +9193,13 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 2,
     school: SpellSchool.evocation,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.distance, distanceMeters: 27),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 27,
+    ),
     components: SpellComponents(
       verbal: true,
       somatic: true,
@@ -7014,13 +9210,23 @@ const Map<String, SpellDefinition> spellDefinitions = {
         ),
       ],
     ),
-    duration: SpellDuration(type: SpellDurationType.instantaneous),
+    duration: SpellDuration(
+      type: SpellDurationType.instantaneous,
+    ),
     target: SpellTarget(
-      types: {SpellTargetType.creature, SpellTargetType.object},
+      types: {
+        SpellTargetType.creature,
+        SpellTargetType.object,
+      },
       maximumTargets: 1,
     ),
     attackType: SpellAttackType.ranged,
-    damage: [SpellDamage(dice: '4d4', type: SpellDamageType.acid)],
+    damage: [
+      SpellDamage(
+        dice: '4d4',
+        type: SpellDamageType.acid,
+      ),
+    ],
     persistentEffects: [
       SpellPersistentEffect(
         id: 'melfs_acid_arrow_delayed_acid',
@@ -7035,7 +9241,9 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'wizard'},
+    classIds: {
+      'wizard',
+    },
   ),
   SpellIds.mirrorImage: SpellDefinition(
     id: SpellIds.mirrorImage,
@@ -7066,11 +9274,26 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 2,
     school: SpellSchool.illusion,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.self),
-    components: SpellComponents(verbal: true, somatic: true),
-    duration: SpellDuration(type: SpellDurationType.minute, amount: 1),
-    target: SpellTarget(types: {SpellTargetType.self}, maximumTargets: 1),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.self,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.minute,
+      amount: 1,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.self,
+      },
+      maximumTargets: 1,
+    ),
     persistentEffects: [
       SpellPersistentEffect(
         id: 'mirror_image_three_illusory_duplicates',
@@ -7093,7 +9316,11 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'sorcerer', 'warlock', 'wizard'},
+    classIds: {
+      'sorcerer',
+      'warlock',
+      'wizard',
+    },
   ),
   SpellIds.detectThoughts: SpellDefinition(
     id: SpellIds.detectThoughts,
@@ -7126,19 +9353,32 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 2,
     school: SpellSchool.divination,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.self),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.self,
+    ),
     components: SpellComponents(
       verbal: true,
       somatic: true,
-      materials: [SpellMaterialComponent(description: 'Una moneta di rame.')],
+      materials: [
+        SpellMaterialComponent(
+          description: 'Una moneta di rame.',
+        ),
+      ],
     ),
     duration: SpellDuration(
       type: SpellDurationType.minute,
       amount: 1,
       concentration: true,
     ),
-    target: SpellTarget(types: {SpellTargetType.self}, maximumTargets: 1),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.self,
+      },
+      maximumTargets: 1,
+    ),
     persistentEffects: [
       SpellPersistentEffect(
         id: 'detect_thoughts_read_and_probe_minds',
@@ -7161,7 +9401,11 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'bard', 'sorcerer', 'wizard'},
+    classIds: {
+      'bard',
+      'sorcerer',
+      'wizard',
+    },
   ),
   SpellIds.enlargeReduce: SpellDefinition(
     id: SpellIds.enlargeReduce,
@@ -7194,13 +9438,20 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 2,
     school: SpellSchool.transmutation,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.distance, distanceMeters: 9),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 9,
+    ),
     components: SpellComponents(
       verbal: true,
       somatic: true,
       materials: [
-        SpellMaterialComponent(description: 'Un pizzico di polvere di ferro.'),
+        SpellMaterialComponent(
+          description: 'Un pizzico di polvere di ferro.',
+        ),
       ],
     ),
     duration: SpellDuration(
@@ -7209,7 +9460,10 @@ const Map<String, SpellDefinition> spellDefinitions = {
       concentration: true,
     ),
     target: SpellTarget(
-      types: {SpellTargetType.creature, SpellTargetType.object},
+      types: {
+        SpellTargetType.creature,
+        SpellTargetType.object,
+      },
       maximumTargets: 1,
     ),
     persistentEffects: [
@@ -7234,7 +9488,10 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'sorcerer', 'wizard'},
+    classIds: {
+      'sorcerer',
+      'wizard',
+    },
   ),
   SpellIds.invisibility: SpellDefinition(
     id: SpellIds.invisibility,
@@ -7259,8 +9516,12 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 2,
     school: SpellSchool.illusion,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.touch),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.touch,
+    ),
     components: SpellComponents(
       verbal: true,
       somatic: true,
@@ -7275,7 +9536,12 @@ const Map<String, SpellDefinition> spellDefinitions = {
       amount: 1,
       concentration: true,
     ),
-    target: SpellTarget(types: {SpellTargetType.creature}, maximumTargets: 1),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.creature,
+      },
+      maximumTargets: 1,
+    ),
     persistentEffects: [
       SpellPersistentEffect(
         id: 'invisibility_touched_creature_hidden',
@@ -7290,7 +9556,12 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'bard', 'sorcerer', 'warlock', 'wizard'},
+    classIds: {
+      'bard',
+      'sorcerer',
+      'warlock',
+      'wizard',
+    },
   ),
   SpellIds.flameBlade: SpellDefinition(
     id: SpellIds.flameBlade,
@@ -7318,13 +9589,19 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 2,
     school: SpellSchool.evocation,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.bonusAction),
-    range: SpellRange(type: SpellRangeType.self),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.bonusAction,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.self,
+    ),
     components: SpellComponents(
       verbal: true,
       somatic: true,
       materials: [
-        SpellMaterialComponent(description: 'Una foglia di sommacco.'),
+        SpellMaterialComponent(
+          description: 'Una foglia di sommacco.',
+        ),
       ],
     ),
     duration: SpellDuration(
@@ -7332,9 +9609,19 @@ const Map<String, SpellDefinition> spellDefinitions = {
       amount: 10,
       concentration: true,
     ),
-    target: SpellTarget(types: {SpellTargetType.self}, maximumTargets: 1),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.self,
+      },
+      maximumTargets: 1,
+    ),
     attackType: SpellAttackType.melee,
-    damage: [SpellDamage(dice: '3d6', type: SpellDamageType.fire)],
+    damage: [
+      SpellDamage(
+        dice: '3d6',
+        type: SpellDamageType.fire,
+      ),
+    ],
     persistentEffects: [
       SpellPersistentEffect(
         id: 'flame_blade_fiery_scimitar',
@@ -7353,7 +9640,9 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'druid'},
+    classIds: {
+      'druid',
+    },
   ),
   SpellIds.levitate: SpellDefinition(
     id: SpellIds.levitate,
@@ -7380,8 +9669,13 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 2,
     school: SpellSchool.transmutation,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.distance, distanceMeters: 18),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 18,
+    ),
     components: SpellComponents(
       verbal: true,
       somatic: true,
@@ -7398,7 +9692,10 @@ const Map<String, SpellDefinition> spellDefinitions = {
       concentration: true,
     ),
     target: SpellTarget(
-      types: {SpellTargetType.creature, SpellTargetType.object},
+      types: {
+        SpellTargetType.creature,
+        SpellTargetType.object,
+      },
       maximumTargets: 1,
     ),
     persistentEffects: [
@@ -7419,7 +9716,10 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'sorcerer', 'wizard'},
+    classIds: {
+      'sorcerer',
+      'wizard',
+    },
   ),
   SpellIds.locateAnimalsOrPlants: SpellDefinition(
     id: SpellIds.locateAnimalsOrPlants,
@@ -7443,8 +9743,12 @@ const Map<String, SpellDefinition> spellDefinitions = {
     level: 2,
     ritual: true,
     school: SpellSchool.divination,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.self),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.self,
+    ),
     components: SpellComponents(
       verbal: true,
       somatic: true,
@@ -7454,8 +9758,15 @@ const Map<String, SpellDefinition> spellDefinitions = {
         ),
       ],
     ),
-    duration: SpellDuration(type: SpellDurationType.instantaneous),
-    target: SpellTarget(types: {SpellTargetType.self}, maximumTargets: 1),
+    duration: SpellDuration(
+      type: SpellDurationType.instantaneous,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.self,
+      },
+      maximumTargets: 1,
+    ),
     persistentEffects: [
       SpellPersistentEffect(
         id: 'locate_animals_or_plants_nearest_type',
@@ -7469,7 +9780,11 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'bard', 'druid', 'ranger'},
+    classIds: {
+      'bard',
+      'druid',
+      'ranger',
+    },
   ),
   SpellIds.locateObject: SpellDefinition(
     id: SpellIds.locateObject,
@@ -7497,19 +9812,32 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 2,
     school: SpellSchool.divination,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.self),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.self,
+    ),
     components: SpellComponents(
       verbal: true,
       somatic: true,
-      materials: [SpellMaterialComponent(description: 'Un rametto biforcuto.')],
+      materials: [
+        SpellMaterialComponent(
+          description: 'Un rametto biforcuto.',
+        ),
+      ],
     ),
     duration: SpellDuration(
       type: SpellDurationType.minute,
       amount: 10,
       concentration: true,
     ),
-    target: SpellTarget(types: {SpellTargetType.self}, maximumTargets: 1),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.self,
+      },
+      maximumTargets: 1,
+    ),
     persistentEffects: [
       SpellPersistentEffect(
         id: 'locate_object_direction_tracking',
@@ -7525,7 +9853,14 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'bard', 'cleric', 'druid', 'paladin', 'ranger', 'wizard'},
+    classIds: {
+      'bard',
+      'cleric',
+      'druid',
+      'paladin',
+      'ranger',
+      'wizard',
+    },
   ),
   SpellIds.spiderClimb: SpellDefinition(
     id: SpellIds.spiderClimb,
@@ -7548,13 +9883,19 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 2,
     school: SpellSchool.transmutation,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.touch),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.touch,
+    ),
     components: SpellComponents(
       verbal: true,
       somatic: true,
       materials: [
-        SpellMaterialComponent(description: 'Una goccia di bitume e un ragno.'),
+        SpellMaterialComponent(
+          description: 'Una goccia di bitume e un ragno.',
+        ),
       ],
     ),
     duration: SpellDuration(
@@ -7563,7 +9904,9 @@ const Map<String, SpellDefinition> spellDefinitions = {
       concentration: true,
     ),
     target: SpellTarget(
-      types: {SpellTargetType.willingCreature},
+      types: {
+        SpellTargetType.willingCreature,
+      },
       maximumTargets: 1,
     ),
     persistentEffects: [
@@ -7580,7 +9923,11 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'sorcerer', 'warlock', 'wizard'},
+    classIds: {
+      'sorcerer',
+      'warlock',
+      'wizard',
+    },
   ),
   SpellIds.darkness: SpellDefinition(
     id: SpellIds.darkness,
@@ -7609,8 +9956,13 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 2,
     school: SpellSchool.evocation,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.distance, distanceMeters: 18),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 18,
+    ),
     components: SpellComponents(
       verbal: true,
       materials: [
@@ -7625,7 +9977,12 @@ const Map<String, SpellDefinition> spellDefinitions = {
       amount: 10,
       concentration: true,
     ),
-    target: SpellTarget(types: {SpellTargetType.point, SpellTargetType.object}),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.point,
+        SpellTargetType.object,
+      },
+    ),
     persistentEffects: [
       SpellPersistentEffect(
         id: 'darkness_magical_sphere',
@@ -7643,7 +10000,11 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'sorcerer', 'warlock', 'wizard'},
+    classIds: {
+      'sorcerer',
+      'warlock',
+      'wizard',
+    },
   ),
   SpellIds.passWithoutTrace: SpellDefinition(
     id: SpellIds.passWithoutTrace,
@@ -7668,8 +10029,12 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 2,
     school: SpellSchool.abjuration,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.self),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.self,
+    ),
     components: SpellComponents(
       verbal: true,
       somatic: true,
@@ -7686,7 +10051,10 @@ const Map<String, SpellDefinition> spellDefinitions = {
       concentration: true,
     ),
     target: SpellTarget(
-      types: {SpellTargetType.self, SpellTargetType.creatures},
+      types: {
+        SpellTargetType.self,
+        SpellTargetType.creatures,
+      },
     ),
     persistentEffects: [
       SpellPersistentEffect(
@@ -7701,7 +10069,10 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'druid', 'ranger'},
+    classIds: {
+      'druid',
+      'ranger',
+    },
   ),
   SpellIds.mistyStep: SpellDefinition(
     id: SpellIds.mistyStep,
@@ -7723,11 +10094,24 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 2,
     school: SpellSchool.conjuration,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.bonusAction),
-    range: SpellRange(type: SpellRangeType.self),
-    components: SpellComponents(verbal: true),
-    duration: SpellDuration(type: SpellDurationType.instantaneous),
-    target: SpellTarget(types: {SpellTargetType.self}, maximumTargets: 1),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.bonusAction,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.self,
+    ),
+    components: SpellComponents(
+      verbal: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.instantaneous,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.self,
+      },
+      maximumTargets: 1,
+    ),
     persistentEffects: [
       SpellPersistentEffect(
         id: 'misty_step_short_teleport',
@@ -7741,7 +10125,11 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'sorcerer', 'warlock', 'wizard'},
+    classIds: {
+      'sorcerer',
+      'warlock',
+      'wizard',
+    },
   ),
   SpellIds.barkskin: SpellDefinition(
     id: SpellIds.barkskin,
@@ -7763,8 +10151,12 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 2,
     school: SpellSchool.transmutation,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.touch),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.touch,
+    ),
     components: SpellComponents(
       verbal: true,
       somatic: true,
@@ -7780,7 +10172,9 @@ const Map<String, SpellDefinition> spellDefinitions = {
       concentration: true,
     ),
     target: SpellTarget(
-      types: {SpellTargetType.willingCreature},
+      types: {
+        SpellTargetType.willingCreature,
+      },
       maximumTargets: 1,
     ),
     persistentEffects: [
@@ -7796,7 +10190,10 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'druid', 'ranger'},
+    classIds: {
+      'druid',
+      'ranger',
+    },
   ),
   SpellIds.beastSense: SpellDefinition(
     id: SpellIds.beastSense,
@@ -7823,16 +10220,24 @@ const Map<String, SpellDefinition> spellDefinitions = {
     level: 2,
     ritual: true,
     school: SpellSchool.divination,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.touch),
-    components: SpellComponents(somatic: true),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.touch,
+    ),
+    components: SpellComponents(
+      somatic: true,
+    ),
     duration: SpellDuration(
       type: SpellDurationType.hour,
       amount: 1,
       concentration: true,
     ),
     target: SpellTarget(
-      types: {SpellTargetType.willingCreature},
+      types: {
+        SpellTargetType.willingCreature,
+      },
       maximumTargets: 1,
     ),
     persistentEffects: [
@@ -7851,7 +10256,10 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'druid', 'ranger'},
+    classIds: {
+      'druid',
+      'ranger',
+    },
   ),
   SpellIds.prayerOfHealing: SpellDefinition(
     id: SpellIds.prayerOfHealing,
@@ -7879,10 +10287,22 @@ const Map<String, SpellDefinition> spellDefinitions = {
       type: SpellCastingTimeType.minute,
       amount: 10,
     ),
-    range: SpellRange(type: SpellRangeType.distance, distanceMeters: 9),
-    components: SpellComponents(verbal: true),
-    duration: SpellDuration(type: SpellDurationType.instantaneous),
-    target: SpellTarget(types: {SpellTargetType.creatures}, maximumTargets: 6),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 9,
+    ),
+    components: SpellComponents(
+      verbal: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.instantaneous,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.creatures,
+      },
+      maximumTargets: 6,
+    ),
     persistentEffects: [
       SpellPersistentEffect(
         id: 'prayer_of_healing_six_creatures_heal',
@@ -7897,7 +10317,9 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'cleric'},
+    classIds: {
+      'cleric',
+    },
   ),
   SpellIds.augury: SpellDefinition(
     id: SpellIds.augury,
@@ -7926,8 +10348,13 @@ const Map<String, SpellDefinition> spellDefinitions = {
     level: 2,
     ritual: true,
     school: SpellSchool.divination,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.minute, amount: 1),
-    range: SpellRange(type: SpellRangeType.self),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.minute,
+      amount: 1,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.self,
+    ),
     components: SpellComponents(
       verbal: true,
       somatic: true,
@@ -7939,8 +10366,15 @@ const Map<String, SpellDefinition> spellDefinitions = {
         ),
       ],
     ),
-    duration: SpellDuration(type: SpellDurationType.instantaneous),
-    target: SpellTarget(types: {SpellTargetType.self}, maximumTargets: 1),
+    duration: SpellDuration(
+      type: SpellDurationType.instantaneous,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.self,
+      },
+      maximumTargets: 1,
+    ),
     persistentEffects: [
       SpellPersistentEffect(
         id: 'augury_omen_for_course_of_action',
@@ -7958,7 +10392,9 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'cleric'},
+    classIds: {
+      'cleric',
+    },
   ),
   SpellIds.protectionFromPoison: SpellDefinition(
     id: SpellIds.protectionFromPoison,
@@ -7982,11 +10418,26 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 2,
     school: SpellSchool.abjuration,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.touch),
-    components: SpellComponents(verbal: true, somatic: true),
-    duration: SpellDuration(type: SpellDurationType.hour, amount: 1),
-    target: SpellTarget(types: {SpellTargetType.creature}, maximumTargets: 1),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.touch,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.hour,
+      amount: 1,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.creature,
+      },
+      maximumTargets: 1,
+    ),
     persistentEffects: [
       SpellPersistentEffect(
         id: 'protection_from_poison_neutralize_and_resist',
@@ -8001,7 +10452,12 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'cleric', 'druid', 'paladin', 'ranger'},
+    classIds: {
+      'cleric',
+      'druid',
+      'paladin',
+      'ranger',
+    },
   ),
   SpellIds.brandingSmite: SpellDefinition(
     id: SpellIds.brandingSmite,
@@ -8027,16 +10483,32 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 2,
     school: SpellSchool.evocation,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.bonusAction),
-    range: SpellRange(type: SpellRangeType.self),
-    components: SpellComponents(verbal: true),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.bonusAction,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.self,
+    ),
+    components: SpellComponents(
+      verbal: true,
+    ),
     duration: SpellDuration(
       type: SpellDurationType.minute,
       amount: 1,
       concentration: true,
     ),
-    target: SpellTarget(types: {SpellTargetType.self}, maximumTargets: 1),
-    damage: [SpellDamage(dice: '2d6', type: SpellDamageType.radiant)],
+    target: SpellTarget(
+      types: {
+        SpellTargetType.self,
+      },
+      maximumTargets: 1,
+    ),
+    damage: [
+      SpellDamage(
+        dice: '2d6',
+        type: SpellDamageType.radiant,
+      ),
+    ],
     persistentEffects: [
       SpellPersistentEffect(
         id: 'branding_smite_radiant_reveal',
@@ -8053,7 +10525,9 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'paladin'},
+    classIds: {
+      'paladin',
+    },
   ),
   SpellIds.rayOfEnfeeblement: SpellDefinition(
     id: SpellIds.rayOfEnfeeblement,
@@ -8078,15 +10552,28 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 2,
     school: SpellSchool.necromancy,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.distance, distanceMeters: 18),
-    components: SpellComponents(verbal: true, somatic: true),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 18,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+    ),
     duration: SpellDuration(
       type: SpellDurationType.minute,
       amount: 1,
       concentration: true,
     ),
-    target: SpellTarget(types: {SpellTargetType.creature}, maximumTargets: 1),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.creature,
+      },
+      maximumTargets: 1,
+    ),
     attackType: SpellAttackType.ranged,
     persistentEffects: [
       SpellPersistentEffect(
@@ -8101,7 +10588,10 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'warlock', 'wizard'},
+    classIds: {
+      'warlock',
+      'wizard',
+    },
   ),
   SpellIds.scorchingRay: SpellDefinition(
     id: SpellIds.scorchingRay,
@@ -8125,15 +10615,33 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 2,
     school: SpellSchool.evocation,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.distance, distanceMeters: 36),
-    components: SpellComponents(verbal: true, somatic: true),
-    duration: SpellDuration(type: SpellDurationType.instantaneous),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 36,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.instantaneous,
+    ),
     target: SpellTarget(
-      types: {SpellTargetType.creature, SpellTargetType.object},
+      types: {
+        SpellTargetType.creature,
+        SpellTargetType.object,
+      },
     ),
     attackType: SpellAttackType.ranged,
-    damage: [SpellDamage(dice: '2d6', type: SpellDamageType.fire)],
+    damage: [
+      SpellDamage(
+        dice: '2d6',
+        type: SpellDamageType.fire,
+      ),
+    ],
     persistentEffects: [
       SpellPersistentEffect(
         id: 'scorching_ray_three_fire_rays',
@@ -8147,7 +10655,10 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'sorcerer', 'wizard'},
+    classIds: {
+      'sorcerer',
+      'wizard',
+    },
   ),
   SpellIds.web: SpellDefinition(
     id: SpellIds.web,
@@ -8180,8 +10691,13 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 2,
     school: SpellSchool.conjuration,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.distance, distanceMeters: 18),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 18,
+    ),
     components: SpellComponents(
       verbal: true,
       somatic: true,
@@ -8196,8 +10712,17 @@ const Map<String, SpellDefinition> spellDefinitions = {
       amount: 1,
       concentration: true,
     ),
-    target: SpellTarget(types: {SpellTargetType.area}),
-    damage: [SpellDamage(dice: '2d4', type: SpellDamageType.fire)],
+    target: SpellTarget(
+      types: {
+        SpellTargetType.area,
+      },
+    ),
+    damage: [
+      SpellDamage(
+        dice: '2d4',
+        type: SpellDamageType.fire,
+      ),
+    ],
     persistentEffects: [
       SpellPersistentEffect(
         id: 'web_restraining_flammable_area',
@@ -8219,7 +10744,10 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'sorcerer', 'wizard'},
+    classIds: {
+      'sorcerer',
+      'wizard',
+    },
   ),
   SpellIds.gentleRepose: SpellDefinition(
     id: SpellIds.gentleRepose,
@@ -8245,8 +10773,12 @@ const Map<String, SpellDefinition> spellDefinitions = {
     level: 2,
     ritual: true,
     school: SpellSchool.necromancy,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.touch),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.touch,
+    ),
     components: SpellComponents(
       verbal: true,
       somatic: true,
@@ -8257,8 +10789,16 @@ const Map<String, SpellDefinition> spellDefinitions = {
         ),
       ],
     ),
-    duration: SpellDuration(type: SpellDurationType.day, amount: 10),
-    target: SpellTarget(types: {SpellTargetType.object}, maximumTargets: 1),
+    duration: SpellDuration(
+      type: SpellDurationType.day,
+      amount: 10,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.object,
+      },
+      maximumTargets: 1,
+    ),
     persistentEffects: [
       SpellPersistentEffect(
         id: 'gentle_repose_preserve_corpse',
@@ -8273,7 +10813,10 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'cleric', 'wizard'},
+    classIds: {
+      'cleric',
+      'wizard',
+    },
   ),
   SpellIds.heatMetal: SpellDefinition(
     id: SpellIds.heatMetal,
@@ -8304,13 +10847,20 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 2,
     school: SpellSchool.transmutation,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.distance, distanceMeters: 18),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 18,
+    ),
     components: SpellComponents(
       verbal: true,
       somatic: true,
       materials: [
-        SpellMaterialComponent(description: 'Un pezzo di ferro e una fiamma.'),
+        SpellMaterialComponent(
+          description: 'Un pezzo di ferro e una fiamma.',
+        ),
       ],
     ),
     duration: SpellDuration(
@@ -8318,8 +10868,18 @@ const Map<String, SpellDefinition> spellDefinitions = {
       amount: 1,
       concentration: true,
     ),
-    target: SpellTarget(types: {SpellTargetType.object}, maximumTargets: 1),
-    damage: [SpellDamage(dice: '2d8', type: SpellDamageType.fire)],
+    target: SpellTarget(
+      types: {
+        SpellTargetType.object,
+      },
+      maximumTargets: 1,
+    ),
+    damage: [
+      SpellDamage(
+        dice: '2d8',
+        type: SpellDamageType.fire,
+      ),
+    ],
     persistentEffects: [
       SpellPersistentEffect(
         id: 'heat_metal_glowing_object_damage',
@@ -8339,7 +10899,10 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'bard', 'druid'},
+    classIds: {
+      'bard',
+      'druid',
+    },
   ),
   SpellIds.lesserRestoration: SpellDefinition(
     id: SpellIds.lesserRestoration,
@@ -8360,11 +10923,25 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 2,
     school: SpellSchool.abjuration,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.touch),
-    components: SpellComponents(verbal: true, somatic: true),
-    duration: SpellDuration(type: SpellDurationType.instantaneous),
-    target: SpellTarget(types: {SpellTargetType.creature}, maximumTargets: 1),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.touch,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.instantaneous,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.creature,
+      },
+      maximumTargets: 1,
+    ),
     persistentEffects: [
       SpellPersistentEffect(
         id: 'lesser_restoration_end_disease_or_condition',
@@ -8380,7 +10957,13 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'bard', 'cleric', 'druid', 'paladin', 'ranger'},
+    classIds: {
+      'bard',
+      'cleric',
+      'druid',
+      'paladin',
+      'ranger',
+    },
   ),
   SpellIds.knock: SpellDefinition(
     id: SpellIds.knock,
@@ -8408,11 +10991,25 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 2,
     school: SpellSchool.transmutation,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.distance, distanceMeters: 18),
-    components: SpellComponents(verbal: true),
-    duration: SpellDuration(type: SpellDurationType.instantaneous),
-    target: SpellTarget(types: {SpellTargetType.object}, maximumTargets: 1),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 18,
+    ),
+    components: SpellComponents(
+      verbal: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.instantaneous,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.object,
+      },
+      maximumTargets: 1,
+    ),
     persistentEffects: [
       SpellPersistentEffect(
         id: 'knock_unlock_or_suppress_lock',
@@ -8428,7 +11025,11 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'bard', 'sorcerer', 'wizard'},
+    classIds: {
+      'bard',
+      'sorcerer',
+      'wizard',
+    },
   ),
   SpellIds.findTraps: SpellDefinition(
     id: SpellIds.findTraps,
@@ -8455,11 +11056,25 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 2,
     school: SpellSchool.divination,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.distance, distanceMeters: 36),
-    components: SpellComponents(verbal: true, somatic: true),
-    duration: SpellDuration(type: SpellDurationType.instantaneous),
-    target: SpellTarget(types: {SpellTargetType.area}),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 36,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.instantaneous,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.area,
+      },
+    ),
     persistentEffects: [
       SpellPersistentEffect(
         id: 'find_traps_presence_and_general_nature',
@@ -8477,7 +11092,11 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'cleric', 'druid', 'ranger'},
+    classIds: {
+      'cleric',
+      'druid',
+      'ranger',
+    },
   ),
   SpellIds.darkvision: SpellDefinition(
     id: SpellIds.darkvision,
@@ -8498,8 +11117,12 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 2,
     school: SpellSchool.transmutation,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.touch),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.touch,
+    ),
     components: SpellComponents(
       verbal: true,
       somatic: true,
@@ -8509,9 +11132,14 @@ const Map<String, SpellDefinition> spellDefinitions = {
         ),
       ],
     ),
-    duration: SpellDuration(type: SpellDurationType.hour, amount: 8),
+    duration: SpellDuration(
+      type: SpellDurationType.hour,
+      amount: 8,
+    ),
     target: SpellTarget(
-      types: {SpellTargetType.willingCreature},
+      types: {
+        SpellTargetType.willingCreature,
+      },
       maximumTargets: 1,
     ),
     persistentEffects: [
@@ -8526,7 +11154,12 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'druid', 'ranger', 'sorcerer', 'wizard'},
+    classIds: {
+      'druid',
+      'ranger',
+      'sorcerer',
+      'wizard',
+    },
   ),
   SpellIds.arcaneLock: SpellDefinition(
     id: SpellIds.arcaneLock,
@@ -8554,8 +11187,12 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 2,
     school: SpellSchool.abjuration,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.touch),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.touch,
+    ),
     components: SpellComponents(
       verbal: true,
       somatic: true,
@@ -8568,8 +11205,15 @@ const Map<String, SpellDefinition> spellDefinitions = {
         ),
       ],
     ),
-    duration: SpellDuration(type: SpellDurationType.untilDispelled),
-    target: SpellTarget(types: {SpellTargetType.object}, maximumTargets: 1),
+    duration: SpellDuration(
+      type: SpellDurationType.untilDispelled,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.object,
+      },
+      maximumTargets: 1,
+    ),
     persistentEffects: [
       SpellPersistentEffect(
         id: 'arcane_lock_magically_locked_access',
@@ -8587,7 +11231,9 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'wizard'},
+    classIds: {
+      'wizard',
+    },
   ),
   SpellIds.flamingSphere: SpellDefinition(
     id: SpellIds.flamingSphere,
@@ -8619,8 +11265,13 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 2,
     school: SpellSchool.conjuration,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.distance, distanceMeters: 18),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 18,
+    ),
     components: SpellComponents(
       verbal: true,
       somatic: true,
@@ -8636,8 +11287,17 @@ const Map<String, SpellDefinition> spellDefinitions = {
       amount: 1,
       concentration: true,
     ),
-    target: SpellTarget(types: {SpellTargetType.point}),
-    damage: [SpellDamage(dice: '2d6', type: SpellDamageType.fire)],
+    target: SpellTarget(
+      types: {
+        SpellTargetType.point,
+      },
+    ),
+    damage: [
+      SpellDamage(
+        dice: '2d6',
+        type: SpellDamageType.fire,
+      ),
+    ],
     persistentEffects: [
       SpellPersistentEffect(
         id: 'flaming_sphere_mobile_fire_hazard',
@@ -8659,7 +11319,10 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'druid', 'wizard'},
+    classIds: {
+      'druid',
+      'wizard',
+    },
   ),
   SpellIds.blur: SpellDefinition(
     id: SpellIds.blur,
@@ -8684,15 +11347,26 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 2,
     school: SpellSchool.illusion,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.self),
-    components: SpellComponents(verbal: true),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.self,
+    ),
+    components: SpellComponents(
+      verbal: true,
+    ),
     duration: SpellDuration(
       type: SpellDurationType.minute,
       amount: 1,
       concentration: true,
     ),
-    target: SpellTarget(types: {SpellTargetType.self}, maximumTargets: 1),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.self,
+      },
+      maximumTargets: 1,
+    ),
     persistentEffects: [
       SpellPersistentEffect(
         id: 'blur_disadvantage_on_attacks',
@@ -8707,7 +11381,10 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'sorcerer', 'wizard'},
+    classIds: {
+      'sorcerer',
+      'wizard',
+    },
   ),
   SpellIds.silence: SpellDefinition(
     id: SpellIds.silence,
@@ -8733,15 +11410,27 @@ const Map<String, SpellDefinition> spellDefinitions = {
     level: 2,
     ritual: true,
     school: SpellSchool.illusion,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.distance, distanceMeters: 36),
-    components: SpellComponents(verbal: true, somatic: true),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 36,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+    ),
     duration: SpellDuration(
       type: SpellDurationType.minute,
       amount: 10,
       concentration: true,
     ),
-    target: SpellTarget(types: {SpellTargetType.area}),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.area,
+      },
+    ),
     persistentEffects: [
       SpellPersistentEffect(
         id: 'silence_no_sound_sphere',
@@ -8758,7 +11447,11 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'bard', 'cleric', 'ranger'},
+    classIds: {
+      'bard',
+      'cleric',
+      'ranger',
+    },
   ),
   SpellIds.suggestion: SpellDefinition(
     id: SpellIds.suggestion,
@@ -8790,8 +11483,13 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 2,
     school: SpellSchool.enchantment,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.distance, distanceMeters: 9),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 9,
+    ),
     components: SpellComponents(
       verbal: true,
       materials: [
@@ -8806,7 +11504,12 @@ const Map<String, SpellDefinition> spellDefinitions = {
       amount: 8,
       concentration: true,
     ),
-    target: SpellTarget(types: {SpellTargetType.creature}, maximumTargets: 1),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.creature,
+      },
+      maximumTargets: 1,
+    ),
     persistentEffects: [
       SpellPersistentEffect(
         id: 'suggestion_reasonable_course_of_action',
@@ -8827,7 +11530,12 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'bard', 'sorcerer', 'warlock', 'wizard'},
+    classIds: {
+      'bard',
+      'sorcerer',
+      'warlock',
+      'wizard',
+    },
   ),
   SpellIds.findSteed: SpellDefinition(
     id: SpellIds.findSteed,
@@ -8864,10 +11572,22 @@ const Map<String, SpellDefinition> spellDefinitions = {
       type: SpellCastingTimeType.minute,
       amount: 10,
     ),
-    range: SpellRange(type: SpellRangeType.distance, distanceMeters: 9),
-    components: SpellComponents(verbal: true, somatic: true),
-    duration: SpellDuration(type: SpellDurationType.instantaneous),
-    target: SpellTarget(types: {SpellTargetType.special}),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 9,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.instantaneous,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.special,
+      },
+    ),
     persistentEffects: [
       SpellPersistentEffect(
         id: 'find_steed_loyal_spirit_mount',
@@ -8888,7 +11608,9 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'paladin'},
+    classIds: {
+      'paladin',
+    },
   ),
   SpellIds.ropeTrick: SpellDefinition(
     id: SpellIds.ropeTrick,
@@ -8918,8 +11640,12 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 2,
     school: SpellSchool.transmutation,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.touch),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.touch,
+    ),
     components: SpellComponents(
       verbal: true,
       somatic: true,
@@ -8930,8 +11656,16 @@ const Map<String, SpellDefinition> spellDefinitions = {
         ),
       ],
     ),
-    duration: SpellDuration(type: SpellDurationType.hour, amount: 1),
-    target: SpellTarget(types: {SpellTargetType.object}, maximumTargets: 1),
+    duration: SpellDuration(
+      type: SpellDurationType.hour,
+      amount: 1,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.object,
+      },
+      maximumTargets: 1,
+    ),
     persistentEffects: [
       SpellPersistentEffect(
         id: 'rope_trick_extradimensional_space',
@@ -8949,7 +11683,9 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'wizard'},
+    classIds: {
+      'wizard',
+    },
   ),
   SpellIds.seeInvisibility: SpellDefinition(
     id: SpellIds.seeInvisibility,
@@ -8971,8 +11707,12 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 2,
     school: SpellSchool.divination,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.self),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.self,
+    ),
     components: SpellComponents(
       verbal: true,
       somatic: true,
@@ -8983,8 +11723,16 @@ const Map<String, SpellDefinition> spellDefinitions = {
         ),
       ],
     ),
-    duration: SpellDuration(type: SpellDurationType.hour, amount: 1),
-    target: SpellTarget(types: {SpellTargetType.self}, maximumTargets: 1),
+    duration: SpellDuration(
+      type: SpellDurationType.hour,
+      amount: 1,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.self,
+      },
+      maximumTargets: 1,
+    ),
     persistentEffects: [
       SpellPersistentEffect(
         id: 'see_invisibility_invisible_and_ethereal_sight',
@@ -8998,7 +11746,11 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'bard', 'sorcerer', 'wizard'},
+    classIds: {
+      'bard',
+      'sorcerer',
+      'wizard',
+    },
   ),
   SpellIds.wardingBond: SpellDefinition(
     id: SpellIds.wardingBond,
@@ -9025,8 +11777,12 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 2,
     school: SpellSchool.abjuration,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.touch),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.touch,
+    ),
     components: SpellComponents(
       verbal: true,
       somatic: true,
@@ -9038,9 +11794,14 @@ const Map<String, SpellDefinition> spellDefinitions = {
         ),
       ],
     ),
-    duration: SpellDuration(type: SpellDurationType.hour, amount: 1),
+    duration: SpellDuration(
+      type: SpellDurationType.hour,
+      amount: 1,
+    ),
     target: SpellTarget(
-      types: {SpellTargetType.willingCreature},
+      types: {
+        SpellTargetType.willingCreature,
+      },
       maximumTargets: 1,
     ),
     persistentEffects: [
@@ -9062,7 +11823,9 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'cleric'},
+    classIds: {
+      'cleric',
+    },
   ),
   SpellIds.zoneOfTruth: SpellDefinition(
     id: SpellIds.zoneOfTruth,
@@ -9089,11 +11852,26 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 2,
     school: SpellSchool.enchantment,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.distance, distanceMeters: 18),
-    components: SpellComponents(verbal: true, somatic: true),
-    duration: SpellDuration(type: SpellDurationType.minute, amount: 10),
-    target: SpellTarget(types: {SpellTargetType.area}),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 18,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.minute,
+      amount: 10,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.area,
+      },
+    ),
     persistentEffects: [
       SpellPersistentEffect(
         id: 'zone_of_truth_charisma_save_no_lies',
@@ -9111,7 +11889,11 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'bard', 'cleric', 'paladin'},
+    classIds: {
+      'bard',
+      'cleric',
+      'paladin',
+    },
   ),
   SpellIds.animateDead: SpellDefinition(
     id: SpellIds.animateDead,
@@ -9142,8 +11924,14 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 3,
     school: SpellSchool.necromancy,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.minute, amount: 1),
-    range: SpellRange(type: SpellRangeType.distance, distanceMeters: 3),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.minute,
+      amount: 1,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 3,
+    ),
     components: SpellComponents(
       verbal: true,
       somatic: true,
@@ -9154,8 +11942,15 @@ const Map<String, SpellDefinition> spellDefinitions = {
         ),
       ],
     ),
-    duration: SpellDuration(type: SpellDurationType.instantaneous),
-    target: SpellTarget(types: {SpellTargetType.object}, maximumTargets: 1),
+    duration: SpellDuration(
+      type: SpellDurationType.instantaneous,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.object,
+      },
+      maximumTargets: 1,
+    ),
     persistentEffects: [
       SpellPersistentEffect(
         id: 'animate_dead_skeleton_or_zombie_servant',
@@ -9173,7 +11968,10 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'cleric', 'wizard'},
+    classIds: {
+      'cleric',
+      'wizard',
+    },
   ),
   SpellIds.nondetection: SpellDefinition(
     id: SpellIds.nondetection,
@@ -9196,8 +11994,12 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 3,
     school: SpellSchool.abjuration,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.touch),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.touch,
+    ),
     components: SpellComponents(
       verbal: true,
       somatic: true,
@@ -9210,7 +12012,10 @@ const Map<String, SpellDefinition> spellDefinitions = {
         ),
       ],
     ),
-    duration: SpellDuration(type: SpellDurationType.hour, amount: 8),
+    duration: SpellDuration(
+      type: SpellDurationType.hour,
+      amount: 8,
+    ),
     target: SpellTarget(
       types: {
         SpellTargetType.willingCreature,
@@ -9234,7 +12039,11 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'bard', 'ranger', 'wizard'},
+    classIds: {
+      'bard',
+      'ranger',
+      'wizard',
+    },
   ),
   SpellIds.elementalWeapon: SpellDefinition(
     id: SpellIds.elementalWeapon,
@@ -9258,15 +12067,27 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 3,
     school: SpellSchool.transmutation,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.touch),
-    components: SpellComponents(verbal: true, somatic: true),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.touch,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+    ),
     duration: SpellDuration(
       type: SpellDurationType.hour,
       amount: 1,
       concentration: true,
     ),
-    target: SpellTarget(types: {SpellTargetType.object}, maximumTargets: 1),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.object,
+      },
+      maximumTargets: 1,
+    ),
     persistentEffects: [
       SpellPersistentEffect(
         id: 'elemental_weapon_bonus_and_extra_damage',
@@ -9282,7 +12103,9 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'paladin'},
+    classIds: {
+      'paladin',
+    },
   ),
   SpellIds.auraOfVitality: SpellDefinition(
     id: SpellIds.auraOfVitality,
@@ -9305,15 +12128,26 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 3,
     school: SpellSchool.evocation,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.self),
-    components: SpellComponents(verbal: true),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.self,
+    ),
+    components: SpellComponents(
+      verbal: true,
+    ),
     duration: SpellDuration(
       type: SpellDurationType.minute,
       amount: 1,
       concentration: true,
     ),
-    target: SpellTarget(types: {SpellTargetType.self}, maximumTargets: 1),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.self,
+      },
+      maximumTargets: 1,
+    ),
     persistentEffects: [
       SpellPersistentEffect(
         id: 'aura_of_vitality_bonus_action_healing',
@@ -9328,7 +12162,9 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'paladin'},
+    classIds: {
+      'paladin',
+    },
   ),
   SpellIds.waterWalk: SpellDefinition(
     id: SpellIds.waterWalk,
@@ -9356,16 +12192,31 @@ const Map<String, SpellDefinition> spellDefinitions = {
     level: 3,
     ritual: true,
     school: SpellSchool.transmutation,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.distance, distanceMeters: 9),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 9,
+    ),
     components: SpellComponents(
       verbal: true,
       somatic: true,
-      materials: [SpellMaterialComponent(description: 'Un pezzo di sughero.')],
+      materials: [
+        SpellMaterialComponent(
+          description: 'Un pezzo di sughero.',
+        ),
+      ],
     ),
-    duration: SpellDuration(type: SpellDurationType.hour, amount: 1),
+    duration: SpellDuration(
+      type: SpellDurationType.hour,
+      amount: 1,
+    ),
     target: SpellTarget(
-      types: {SpellTargetType.willingCreature, SpellTargetType.creatures},
+      types: {
+        SpellTargetType.willingCreature,
+        SpellTargetType.creatures,
+      },
       maximumTargets: 10,
     ),
     persistentEffects: [
@@ -9384,7 +12235,12 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'cleric', 'druid', 'ranger', 'sorcerer'},
+    classIds: {
+      'cleric',
+      'druid',
+      'ranger',
+      'sorcerer',
+    },
   ),
   SpellIds.leomundsTinyHut: SpellDefinition(
     id: SpellIds.leomundsTinyHut,
@@ -9416,17 +12272,32 @@ const Map<String, SpellDefinition> spellDefinitions = {
     level: 3,
     ritual: true,
     school: SpellSchool.evocation,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.minute, amount: 1),
-    range: SpellRange(type: SpellRangeType.self),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.minute,
+      amount: 1,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.self,
+    ),
     components: SpellComponents(
       verbal: true,
       somatic: true,
       materials: [
-        SpellMaterialComponent(description: 'Una biglia di cristallo.'),
+        SpellMaterialComponent(
+          description: 'Una biglia di cristallo.',
+        ),
       ],
     ),
-    duration: SpellDuration(type: SpellDurationType.hour, amount: 8),
-    target: SpellTarget(types: {SpellTargetType.self, SpellTargetType.area}),
+    duration: SpellDuration(
+      type: SpellDurationType.hour,
+      amount: 8,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.self,
+        SpellTargetType.area,
+      },
+    ),
     persistentEffects: [
       SpellPersistentEffect(
         id: 'leomunds_tiny_hut_force_dome',
@@ -9447,7 +12318,10 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'bard', 'wizard'},
+    classIds: {
+      'bard',
+      'wizard',
+    },
   ),
   SpellIds.magicCircle: SpellDefinition(
     id: SpellIds.magicCircle,
@@ -9478,8 +12352,14 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 3,
     school: SpellSchool.abjuration,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.minute, amount: 1),
-    range: SpellRange(type: SpellRangeType.distance, distanceMeters: 3),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.minute,
+      amount: 1,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 3,
+    ),
     components: SpellComponents(
       verbal: true,
       somatic: true,
@@ -9492,8 +12372,15 @@ const Map<String, SpellDefinition> spellDefinitions = {
         ),
       ],
     ),
-    duration: SpellDuration(type: SpellDurationType.hour, amount: 1),
-    target: SpellTarget(types: {SpellTargetType.area}),
+    duration: SpellDuration(
+      type: SpellDurationType.hour,
+      amount: 1,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.area,
+      },
+    ),
     persistentEffects: [
       SpellPersistentEffect(
         id: 'magic_circle_protective_or_inverted_cylinder',
@@ -9512,7 +12399,12 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'cleric', 'paladin', 'warlock', 'wizard'},
+    classIds: {
+      'cleric',
+      'paladin',
+      'warlock',
+      'wizard',
+    },
   ),
   SpellIds.clairvoyance: SpellDefinition(
     id: SpellIds.clairvoyance,
@@ -9545,7 +12437,10 @@ const Map<String, SpellDefinition> spellDefinitions = {
       type: SpellCastingTimeType.minute,
       amount: 10,
     ),
-    range: SpellRange(type: SpellRangeType.distance, distanceMeters: 1500),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 1500,
+    ),
     components: SpellComponents(
       verbal: true,
       somatic: true,
@@ -9562,7 +12457,11 @@ const Map<String, SpellDefinition> spellDefinitions = {
       amount: 10,
       concentration: true,
     ),
-    target: SpellTarget(types: {SpellTargetType.point}),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.point,
+      },
+    ),
     persistentEffects: [
       SpellPersistentEffect(
         id: 'clairvoyance_invisible_remote_sensor',
@@ -9580,7 +12479,12 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'bard', 'cleric', 'sorcerer', 'wizard'},
+    classIds: {
+      'bard',
+      'cleric',
+      'sorcerer',
+      'wizard',
+    },
   ),
   SpellIds.counterspell: SpellDefinition(
     id: SpellIds.counterspell,
@@ -9613,10 +12517,22 @@ const Map<String, SpellDefinition> spellDefinitions = {
       reactionTrigger:
           'Quando l’incantatore vede una creatura entro 18 metri che lancia un incantesimo.',
     ),
-    range: SpellRange(type: SpellRangeType.distance, distanceMeters: 18),
-    components: SpellComponents(somatic: true),
-    duration: SpellDuration(type: SpellDurationType.instantaneous),
-    target: SpellTarget(types: {SpellTargetType.creature}, maximumTargets: 1),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 18,
+    ),
+    components: SpellComponents(
+      somatic: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.instantaneous,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.creature,
+      },
+      maximumTargets: 1,
+    ),
     persistentEffects: [
       SpellPersistentEffect(
         id: 'counterspell_interrupt_spellcasting',
@@ -9633,7 +12549,11 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'sorcerer', 'warlock', 'wizard'},
+    classIds: {
+      'sorcerer',
+      'warlock',
+      'wizard',
+    },
   ),
   SpellIds.createFoodAndWater: SpellDefinition(
     id: SpellIds.createFoodAndWater,
@@ -9656,11 +12576,25 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 3,
     school: SpellSchool.conjuration,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.distance, distanceMeters: 9),
-    components: SpellComponents(verbal: true, somatic: true),
-    duration: SpellDuration(type: SpellDurationType.instantaneous),
-    target: SpellTarget(types: {SpellTargetType.point}),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 9,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.instantaneous,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.point,
+      },
+    ),
     persistentEffects: [
       SpellPersistentEffect(
         id: 'create_food_and_water_supplies',
@@ -9678,7 +12612,10 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'cleric', 'paladin'},
+    classIds: {
+      'cleric',
+      'paladin',
+    },
   ),
   SpellIds.plantGrowth: SpellDefinition(
     id: SpellIds.plantGrowth,
@@ -9707,11 +12644,26 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 3,
     school: SpellSchool.transmutation,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.special),
-    range: SpellRange(type: SpellRangeType.distance, distanceMeters: 45),
-    components: SpellComponents(verbal: true, somatic: true),
-    duration: SpellDuration(type: SpellDurationType.instantaneous),
-    target: SpellTarget(types: {SpellTargetType.area, SpellTargetType.point}),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.special,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 45,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.instantaneous,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.area,
+        SpellTargetType.point,
+      },
+    ),
     persistentEffects: [
       SpellPersistentEffect(
         id: 'plant_growth_overgrowth_or_enrichment',
@@ -9729,7 +12681,11 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'bard', 'druid', 'ranger'},
+    classIds: {
+      'bard',
+      'druid',
+      'ranger',
+    },
   ),
   SpellIds.phantomSteed: SpellDefinition(
     id: SpellIds.phantomSteed,
@@ -9760,11 +12716,27 @@ const Map<String, SpellDefinition> spellDefinitions = {
     level: 3,
     ritual: true,
     school: SpellSchool.illusion,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.minute, amount: 1),
-    range: SpellRange(type: SpellRangeType.distance, distanceMeters: 9),
-    components: SpellComponents(verbal: true, somatic: true),
-    duration: SpellDuration(type: SpellDurationType.hour, amount: 1),
-    target: SpellTarget(types: {SpellTargetType.special}),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.minute,
+      amount: 1,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 9,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.hour,
+      amount: 1,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.special,
+      },
+    ),
     persistentEffects: [
       SpellPersistentEffect(
         id: 'phantom_steed_quasi_real_mount',
@@ -9785,7 +12757,9 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'wizard'},
+    classIds: {
+      'wizard',
+    },
   ),
   SpellIds.dispelMagic: SpellDefinition(
     id: SpellIds.dispelMagic,
@@ -9811,10 +12785,20 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 3,
     school: SpellSchool.abjuration,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.distance, distanceMeters: 36),
-    components: SpellComponents(verbal: true, somatic: true),
-    duration: SpellDuration(type: SpellDurationType.instantaneous),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 36,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.instantaneous,
+    ),
     target: SpellTarget(
       types: {
         SpellTargetType.creature,
@@ -9878,15 +12862,27 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 3,
     school: SpellSchool.conjuration,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.distance, distanceMeters: 18),
-    components: SpellComponents(verbal: true, somatic: true),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 18,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+    ),
     duration: SpellDuration(
       type: SpellDurationType.hour,
       amount: 1,
       concentration: true,
     ),
-    target: SpellTarget(types: {SpellTargetType.special}),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.special,
+      },
+    ),
     persistentEffects: [
       SpellPersistentEffect(
         id: 'conjure_animals_fey_beast_spirits',
@@ -9914,7 +12910,10 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'druid', 'ranger'},
+    classIds: {
+      'druid',
+      'ranger',
+    },
   ),
   SpellIds.conjureBarrage: SpellDefinition(
     id: SpellIds.conjureBarrage,
@@ -9938,8 +12937,12 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 3,
     school: SpellSchool.conjuration,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.self),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.self,
+    ),
     components: SpellComponents(
       verbal: true,
       somatic: true,
@@ -9949,8 +12952,14 @@ const Map<String, SpellDefinition> spellDefinitions = {
         ),
       ],
     ),
-    duration: SpellDuration(type: SpellDurationType.instantaneous),
-    target: SpellTarget(types: {SpellTargetType.area}),
+    duration: SpellDuration(
+      type: SpellDurationType.instantaneous,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.area,
+      },
+    ),
     persistentEffects: [
       SpellPersistentEffect(
         id: 'conjure_barrage_weapon_cone',
@@ -9967,7 +12976,9 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'ranger'},
+    classIds: {
+      'ranger',
+    },
   ),
   SpellIds.hungerOfHadar: SpellDefinition(
     id: SpellIds.hungerOfHadar,
@@ -9994,8 +13005,13 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 3,
     school: SpellSchool.conjuration,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.distance, distanceMeters: 45),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 45,
+    ),
     components: SpellComponents(
       verbal: true,
       somatic: true,
@@ -10010,10 +13026,21 @@ const Map<String, SpellDefinition> spellDefinitions = {
       amount: 1,
       concentration: true,
     ),
-    target: SpellTarget(types: {SpellTargetType.area, SpellTargetType.point}),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.area,
+        SpellTargetType.point,
+      },
+    ),
     damage: [
-      SpellDamage(dice: '2d6', type: SpellDamageType.cold),
-      SpellDamage(dice: '2d6', type: SpellDamageType.acid),
+      SpellDamage(
+        dice: '2d6',
+        type: SpellDamageType.cold,
+      ),
+      SpellDamage(
+        dice: '2d6',
+        type: SpellDamageType.acid,
+      ),
     ],
     persistentEffects: [
       SpellPersistentEffect(
@@ -10034,7 +13061,9 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'warlock'},
+    classIds: {
+      'warlock',
+    },
   ),
   SpellIds.beaconOfHope: SpellDefinition(
     id: SpellIds.beaconOfHope,
@@ -10057,15 +13086,27 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 3,
     school: SpellSchool.abjuration,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.distance, distanceMeters: 9),
-    components: SpellComponents(verbal: true, somatic: true),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 9,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+    ),
     duration: SpellDuration(
       type: SpellDurationType.minute,
       amount: 1,
       concentration: true,
     ),
-    target: SpellTarget(types: {SpellTargetType.creatures}),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.creatures,
+      },
+    ),
     persistentEffects: [
       SpellPersistentEffect(
         id: 'beacon_of_hope_saves_and_max_healing',
@@ -10079,7 +13120,9 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'cleric'},
+    classIds: {
+      'cleric',
+    },
   ),
   SpellIds.meldIntoStone: SpellDefinition(
     id: SpellIds.meldIntoStone,
@@ -10112,11 +13155,26 @@ const Map<String, SpellDefinition> spellDefinitions = {
     level: 3,
     ritual: true,
     school: SpellSchool.transmutation,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.touch),
-    components: SpellComponents(verbal: true, somatic: true),
-    duration: SpellDuration(type: SpellDurationType.hour, amount: 8),
-    target: SpellTarget(types: {SpellTargetType.self, SpellTargetType.object}),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.touch,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.hour,
+      amount: 8,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.self,
+        SpellTargetType.object,
+      },
+    ),
     persistentEffects: [
       SpellPersistentEffect(
         id: 'meld_into_stone_hidden_in_stone',
@@ -10138,7 +13196,10 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'cleric', 'druid'},
+    classIds: {
+      'cleric',
+      'druid',
+    },
   ),
   SpellIds.gaseousForm: SpellDefinition(
     id: SpellIds.gaseousForm,
@@ -10168,8 +13229,12 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 3,
     school: SpellSchool.transmutation,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.touch),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.touch,
+    ),
     components: SpellComponents(
       verbal: true,
       somatic: true,
@@ -10185,7 +13250,9 @@ const Map<String, SpellDefinition> spellDefinitions = {
       concentration: true,
     ),
     target: SpellTarget(
-      types: {SpellTargetType.willingCreature},
+      types: {
+        SpellTargetType.willingCreature,
+      },
       maximumTargets: 1,
     ),
     persistentEffects: [
@@ -10210,7 +13277,11 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'sorcerer', 'warlock', 'wizard'},
+    classIds: {
+      'sorcerer',
+      'warlock',
+      'wizard',
+    },
   ),
   SpellIds.lightningArrow: SpellDefinition(
     id: SpellIds.lightningArrow,
@@ -10239,16 +13310,33 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 3,
     school: SpellSchool.transmutation,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.bonusAction),
-    range: SpellRange(type: SpellRangeType.self),
-    components: SpellComponents(verbal: true, somatic: true),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.bonusAction,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.self,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+    ),
     duration: SpellDuration(
       type: SpellDurationType.minute,
       amount: 1,
       concentration: true,
     ),
-    target: SpellTarget(types: {SpellTargetType.self}, maximumTargets: 1),
-    damage: [SpellDamage(dice: '4d8', type: SpellDamageType.lightning)],
+    target: SpellTarget(
+      types: {
+        SpellTargetType.self,
+      },
+      maximumTargets: 1,
+    ),
+    damage: [
+      SpellDamage(
+        dice: '4d8',
+        type: SpellDamageType.lightning,
+      ),
+    ],
     persistentEffects: [
       SpellPersistentEffect(
         id: 'lightning_arrow_next_ranged_weapon_attack',
@@ -10269,7 +13357,9 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'ranger'},
+    classIds: {
+      'ranger',
+    },
   ),
   SpellIds.lightningBolt: SpellDefinition(
     id: SpellIds.lightningBolt,
@@ -10294,8 +13384,12 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 3,
     school: SpellSchool.evocation,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.self),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.self,
+    ),
     components: SpellComponents(
       verbal: true,
       somatic: true,
@@ -10306,9 +13400,20 @@ const Map<String, SpellDefinition> spellDefinitions = {
         ),
       ],
     ),
-    duration: SpellDuration(type: SpellDurationType.instantaneous),
-    target: SpellTarget(types: {SpellTargetType.area}),
-    damage: [SpellDamage(dice: '8d6', type: SpellDamageType.lightning)],
+    duration: SpellDuration(
+      type: SpellDurationType.instantaneous,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.area,
+      },
+    ),
+    damage: [
+      SpellDamage(
+        dice: '8d6',
+        type: SpellDamageType.lightning,
+      ),
+    ],
     persistentEffects: [
       SpellPersistentEffect(
         id: 'lightning_bolt_line_damage',
@@ -10325,7 +13430,10 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'sorcerer', 'wizard'},
+    classIds: {
+      'sorcerer',
+      'wizard',
+    },
   ),
   SpellIds.glyphOfWarding: SpellDefinition(
     id: SpellIds.glyphOfWarding,
@@ -10363,8 +13471,13 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 3,
     school: SpellSchool.abjuration,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.hour, amount: 1),
-    range: SpellRange(type: SpellRangeType.touch),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.hour,
+      amount: 1,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.touch,
+    ),
     components: SpellComponents(
       verbal: true,
       somatic: true,
@@ -10377,17 +13490,37 @@ const Map<String, SpellDefinition> spellDefinitions = {
         ),
       ],
     ),
-    duration: SpellDuration(type: SpellDurationType.untilDispelled),
+    duration: SpellDuration(
+      type: SpellDurationType.untilDispelled,
+    ),
     target: SpellTarget(
-      types: {SpellTargetType.object, SpellTargetType.area},
+      types: {
+        SpellTargetType.object,
+        SpellTargetType.area,
+      },
       maximumTargets: 1,
     ),
     damage: [
-      SpellDamage(dice: '5d8', type: SpellDamageType.acid),
-      SpellDamage(dice: '5d8', type: SpellDamageType.cold),
-      SpellDamage(dice: '5d8', type: SpellDamageType.lightning),
-      SpellDamage(dice: '5d8', type: SpellDamageType.fire),
-      SpellDamage(dice: '5d8', type: SpellDamageType.thunder),
+      SpellDamage(
+        dice: '5d8',
+        type: SpellDamageType.acid,
+      ),
+      SpellDamage(
+        dice: '5d8',
+        type: SpellDamageType.cold,
+      ),
+      SpellDamage(
+        dice: '5d8',
+        type: SpellDamageType.lightning,
+      ),
+      SpellDamage(
+        dice: '5d8',
+        type: SpellDamageType.fire,
+      ),
+      SpellDamage(
+        dice: '5d8',
+        type: SpellDamageType.thunder,
+      ),
     ],
     persistentEffects: [
       SpellPersistentEffect(
@@ -10416,7 +13549,11 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'bard', 'cleric', 'wizard'},
+    classIds: {
+      'bard',
+      'cleric',
+      'wizard',
+    },
   ),
   SpellIds.majorImage: SpellDefinition(
     id: SpellIds.majorImage,
@@ -10451,19 +13588,33 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 3,
     school: SpellSchool.illusion,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.distance, distanceMeters: 36),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 36,
+    ),
     components: SpellComponents(
       verbal: true,
       somatic: true,
-      materials: [SpellMaterialComponent(description: 'Un ciuffo di lana.')],
+      materials: [
+        SpellMaterialComponent(
+          description: 'Un ciuffo di lana.',
+        ),
+      ],
     ),
     duration: SpellDuration(
       type: SpellDurationType.minute,
       amount: 10,
       concentration: true,
     ),
-    target: SpellTarget(types: {SpellTargetType.point, SpellTargetType.area}),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.point,
+        SpellTargetType.area,
+      },
+    ),
     persistentEffects: [
       SpellPersistentEffect(
         id: 'major_image_multisensory_illusion',
@@ -10487,7 +13638,12 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'bard', 'sorcerer', 'warlock', 'wizard'},
+    classIds: {
+      'bard',
+      'sorcerer',
+      'warlock',
+      'wizard',
+    },
   ),
   SpellIds.blink: SpellDefinition(
     id: SpellIds.blink,
@@ -10516,11 +13672,26 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 3,
     school: SpellSchool.transmutation,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.self),
-    components: SpellComponents(verbal: true, somatic: true),
-    duration: SpellDuration(type: SpellDurationType.minute, amount: 1),
-    target: SpellTarget(types: {SpellTargetType.self}, maximumTargets: 1),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.self,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.minute,
+      amount: 1,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.self,
+      },
+      maximumTargets: 1,
+    ),
     persistentEffects: [
       SpellPersistentEffect(
         id: 'blink_ethereal_intermittenza',
@@ -10539,7 +13710,10 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'sorcerer', 'wizard'},
+    classIds: {
+      'sorcerer',
+      'wizard',
+    },
   ),
   SpellIds.callLightning: SpellDefinition(
     id: SpellIds.callLightning,
@@ -10573,16 +13747,34 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 3,
     school: SpellSchool.conjuration,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.distance, distanceMeters: 36),
-    components: SpellComponents(verbal: true, somatic: true),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 36,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+    ),
     duration: SpellDuration(
       type: SpellDurationType.minute,
       amount: 10,
       concentration: true,
     ),
-    target: SpellTarget(types: {SpellTargetType.point, SpellTargetType.area}),
-    damage: [SpellDamage(dice: '3d10', type: SpellDamageType.lightning)],
+    target: SpellTarget(
+      types: {
+        SpellTargetType.point,
+        SpellTargetType.area,
+      },
+    ),
+    damage: [
+      SpellDamage(
+        dice: '3d10',
+        type: SpellDamageType.lightning,
+      ),
+    ],
     persistentEffects: [
       SpellPersistentEffect(
         id: 'call_lightning_storm_cloud_bolts',
@@ -10605,7 +13797,9 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'druid'},
+    classIds: {
+      'druid',
+    },
   ),
   SpellIds.sending: SpellDefinition(
     id: SpellIds.sending,
@@ -10631,17 +13825,31 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 3,
     school: SpellSchool.evocation,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.special),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.special,
+    ),
     components: SpellComponents(
       verbal: true,
       somatic: true,
       materials: [
-        SpellMaterialComponent(description: 'Un pezzo di cavo di rame.'),
+        SpellMaterialComponent(
+          description: 'Un pezzo di cavo di rame.',
+        ),
       ],
     ),
-    duration: SpellDuration(type: SpellDurationType.round, amount: 1),
-    target: SpellTarget(types: {SpellTargetType.creature}, maximumTargets: 1),
+    duration: SpellDuration(
+      type: SpellDurationType.round,
+      amount: 1,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.creature,
+      },
+      maximumTargets: 1,
+    ),
     persistentEffects: [
       SpellPersistentEffect(
         id: 'sending_short_mental_message',
@@ -10660,7 +13868,11 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'bard', 'cleric', 'wizard'},
+    classIds: {
+      'bard',
+      'cleric',
+      'wizard',
+    },
   ),
   SpellIds.slow: SpellDefinition(
     id: SpellIds.slow,
@@ -10693,13 +13905,20 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 3,
     school: SpellSchool.transmutation,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.distance, distanceMeters: 36),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 36,
+    ),
     components: SpellComponents(
       verbal: true,
       somatic: true,
       materials: [
-        SpellMaterialComponent(description: 'Una goccia di melassa.'),
+        SpellMaterialComponent(
+          description: 'Una goccia di melassa.',
+        ),
       ],
     ),
     duration: SpellDuration(
@@ -10708,7 +13927,10 @@ const Map<String, SpellDefinition> spellDefinitions = {
       concentration: true,
     ),
     target: SpellTarget(
-      types: {SpellTargetType.creatures, SpellTargetType.area},
+      types: {
+        SpellTargetType.creatures,
+        SpellTargetType.area,
+      },
       maximumTargets: 6,
     ),
     persistentEffects: [
@@ -10735,7 +13957,10 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'sorcerer', 'wizard'},
+    classIds: {
+      'sorcerer',
+      'wizard',
+    },
   ),
   SpellIds.tongues: SpellDefinition(
     id: SpellIds.tongues,
@@ -10758,8 +13983,12 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 3,
     school: SpellSchool.divination,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.touch),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.touch,
+    ),
     components: SpellComponents(
       verbal: true,
       materials: [
@@ -10768,8 +13997,16 @@ const Map<String, SpellDefinition> spellDefinitions = {
         ),
       ],
     ),
-    duration: SpellDuration(type: SpellDurationType.hour, amount: 1),
-    target: SpellTarget(types: {SpellTargetType.creature}, maximumTargets: 1),
+    duration: SpellDuration(
+      type: SpellDurationType.hour,
+      amount: 1,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.creature,
+      },
+      maximumTargets: 1,
+    ),
     persistentEffects: [
       SpellPersistentEffect(
         id: 'tongues_understand_and_be_understood',
@@ -10783,7 +14020,13 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'bard', 'cleric', 'sorcerer', 'warlock', 'wizard'},
+    classIds: {
+      'bard',
+      'cleric',
+      'sorcerer',
+      'warlock',
+      'wizard',
+    },
   ),
   SpellIds.daylight: SpellDefinition(
     id: SpellIds.daylight,
@@ -10810,10 +14053,21 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 3,
     school: SpellSchool.evocation,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.distance, distanceMeters: 18),
-    components: SpellComponents(verbal: true, somatic: true),
-    duration: SpellDuration(type: SpellDurationType.hour, amount: 1),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 18,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.hour,
+      amount: 1,
+    ),
     target: SpellTarget(
       types: {
         SpellTargetType.point,
@@ -10837,7 +14091,13 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'cleric', 'druid', 'paladin', 'ranger', 'sorcerer'},
+    classIds: {
+      'cleric',
+      'druid',
+      'paladin',
+      'ranger',
+      'sorcerer',
+    },
   ),
   SpellIds.crusadersMantle: SpellDefinition(
     id: SpellIds.crusadersMantle,
@@ -10861,16 +14121,32 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 3,
     school: SpellSchool.evocation,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.self),
-    components: SpellComponents(verbal: true),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.self,
+    ),
+    components: SpellComponents(
+      verbal: true,
+    ),
     duration: SpellDuration(
       type: SpellDurationType.minute,
       amount: 1,
       concentration: true,
     ),
-    target: SpellTarget(types: {SpellTargetType.self, SpellTargetType.area}),
-    damage: [SpellDamage(dice: '1d4', type: SpellDamageType.radiant)],
+    target: SpellTarget(
+      types: {
+        SpellTargetType.self,
+        SpellTargetType.area,
+      },
+    ),
+    damage: [
+      SpellDamage(
+        dice: '1d4',
+        type: SpellDamageType.radiant,
+      ),
+    ],
     persistentEffects: [
       SpellPersistentEffect(
         id: 'crusaders_mantle_radiant_weapon_aura',
@@ -10885,7 +14161,9 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'paladin'},
+    classIds: {
+      'paladin',
+    },
   ),
   SpellIds.feignDeath: SpellDefinition(
     id: SpellIds.feignDeath,
@@ -10914,8 +14192,12 @@ const Map<String, SpellDefinition> spellDefinitions = {
     level: 3,
     ritual: true,
     school: SpellSchool.necromancy,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.touch),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.touch,
+    ),
     components: SpellComponents(
       verbal: true,
       somatic: true,
@@ -10925,9 +14207,14 @@ const Map<String, SpellDefinition> spellDefinitions = {
         ),
       ],
     ),
-    duration: SpellDuration(type: SpellDurationType.hour, amount: 1),
+    duration: SpellDuration(
+      type: SpellDurationType.hour,
+      amount: 1,
+    ),
     target: SpellTarget(
-      types: {SpellTargetType.willingCreature},
+      types: {
+        SpellTargetType.willingCreature,
+      },
       maximumTargets: 1,
     ),
     persistentEffects: [
@@ -10950,7 +14237,12 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'bard', 'cleric', 'druid', 'wizard'},
+    classIds: {
+      'bard',
+      'cleric',
+      'druid',
+      'wizard',
+    },
   ),
   SpellIds.windWall: SpellDefinition(
     id: SpellIds.windWall,
@@ -10982,8 +14274,13 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 3,
     school: SpellSchool.evocation,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.distance, distanceMeters: 36),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 36,
+    ),
     components: SpellComponents(
       verbal: true,
       somatic: true,
@@ -10999,8 +14296,18 @@ const Map<String, SpellDefinition> spellDefinitions = {
       amount: 1,
       concentration: true,
     ),
-    target: SpellTarget(types: {SpellTargetType.point, SpellTargetType.area}),
-    damage: [SpellDamage(dice: '3d8', type: SpellDamageType.bludgeoning)],
+    target: SpellTarget(
+      types: {
+        SpellTargetType.point,
+        SpellTargetType.area,
+      },
+    ),
+    damage: [
+      SpellDamage(
+        dice: '3d8',
+        type: SpellDamageType.bludgeoning,
+      ),
+    ],
     persistentEffects: [
       SpellPersistentEffect(
         id: 'wind_wall_strong_wind_barrier',
@@ -11021,7 +14328,10 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'druid', 'ranger'},
+    classIds: {
+      'druid',
+      'ranger',
+    },
   ),
   SpellIds.stinkingCloud: SpellDefinition(
     id: SpellIds.stinkingCloud,
@@ -11050,8 +14360,13 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 3,
     school: SpellSchool.conjuration,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.distance, distanceMeters: 27),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 27,
+    ),
     components: SpellComponents(
       verbal: true,
       somatic: true,
@@ -11066,7 +14381,12 @@ const Map<String, SpellDefinition> spellDefinitions = {
       amount: 1,
       concentration: true,
     ),
-    target: SpellTarget(types: {SpellTargetType.point, SpellTargetType.area}),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.point,
+        SpellTargetType.area,
+      },
+    ),
     persistentEffects: [
       SpellPersistentEffect(
         id: 'stinking_cloud_nauseating_gas',
@@ -11086,7 +14406,11 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'bard', 'sorcerer', 'wizard'},
+    classIds: {
+      'bard',
+      'sorcerer',
+      'wizard',
+    },
   ),
   SpellIds.speakWithDead: SpellDefinition(
     id: SpellIds.speakWithDead,
@@ -11116,16 +14440,31 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 3,
     school: SpellSchool.necromancy,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.distance, distanceMeters: 3),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 3,
+    ),
     components: SpellComponents(
       verbal: true,
       somatic: true,
-      materials: [SpellMaterialComponent(description: 'Incenso bruciato.')],
+      materials: [
+        SpellMaterialComponent(
+          description: 'Incenso bruciato.',
+        ),
+      ],
     ),
-    duration: SpellDuration(type: SpellDurationType.minute, amount: 10),
+    duration: SpellDuration(
+      type: SpellDurationType.minute,
+      amount: 10,
+    ),
     target: SpellTarget(
-      types: {SpellTargetType.object, SpellTargetType.special},
+      types: {
+        SpellTargetType.object,
+        SpellTargetType.special,
+      },
       maximumTargets: 1,
     ),
     persistentEffects: [
@@ -11149,7 +14488,10 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'bard', 'cleric'},
+    classIds: {
+      'bard',
+      'cleric',
+    },
   ),
   SpellIds.speakWithPlants: SpellDefinition(
     id: SpellIds.speakWithPlants,
@@ -11180,11 +14522,26 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 3,
     school: SpellSchool.transmutation,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.self),
-    components: SpellComponents(verbal: true, somatic: true),
-    duration: SpellDuration(type: SpellDurationType.minute, amount: 10),
-    target: SpellTarget(types: {SpellTargetType.self, SpellTargetType.area}),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.self,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.minute,
+      amount: 10,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.self,
+        SpellTargetType.area,
+      },
+    ),
     persistentEffects: [
       SpellPersistentEffect(
         id: 'speak_with_plants_animated_vegetation',
@@ -11207,7 +14564,11 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'bard', 'druid', 'ranger'},
+    classIds: {
+      'bard',
+      'druid',
+      'ranger',
+    },
   ),
   SpellIds.massHealingWord: SpellDefinition(
     id: SpellIds.massHealingWord,
@@ -11230,11 +14591,25 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 3,
     school: SpellSchool.evocation,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.bonusAction),
-    range: SpellRange(type: SpellRangeType.distance, distanceMeters: 18),
-    components: SpellComponents(verbal: true),
-    duration: SpellDuration(type: SpellDurationType.instantaneous),
-    target: SpellTarget(types: {SpellTargetType.creatures}, maximumTargets: 6),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.bonusAction,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 18,
+    ),
+    components: SpellComponents(
+      verbal: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.instantaneous,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.creatures,
+      },
+      maximumTargets: 6,
+    ),
     persistentEffects: [
       SpellPersistentEffect(
         id: 'mass_healing_word_restore_hit_points',
@@ -11250,7 +14625,9 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'cleric'},
+    classIds: {
+      'cleric',
+    },
   ),
   SpellIds.fear: SpellDefinition(
     id: SpellIds.fear,
@@ -11278,8 +14655,12 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 3,
     school: SpellSchool.illusion,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.self),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.self,
+    ),
     components: SpellComponents(
       verbal: true,
       somatic: true,
@@ -11295,7 +14676,10 @@ const Map<String, SpellDefinition> spellDefinitions = {
       concentration: true,
     ),
     target: SpellTarget(
-      types: {SpellTargetType.area, SpellTargetType.creatures},
+      types: {
+        SpellTargetType.area,
+        SpellTargetType.creatures,
+      },
     ),
     persistentEffects: [
       SpellPersistentEffect(
@@ -11315,7 +14699,12 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'bard', 'sorcerer', 'warlock', 'wizard'},
+    classIds: {
+      'bard',
+      'sorcerer',
+      'warlock',
+      'wizard',
+    },
   ),
   SpellIds.protectionFromEnergy: SpellDefinition(
     id: SpellIds.protectionFromEnergy,
@@ -11336,16 +14725,25 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 3,
     school: SpellSchool.abjuration,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.touch),
-    components: SpellComponents(verbal: true, somatic: true),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.touch,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+    ),
     duration: SpellDuration(
       type: SpellDurationType.hour,
       amount: 1,
       concentration: true,
     ),
     target: SpellTarget(
-      types: {SpellTargetType.willingCreature},
+      types: {
+        SpellTargetType.willingCreature,
+      },
       maximumTargets: 1,
     ),
     persistentEffects: [
@@ -11361,7 +14759,13 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'cleric', 'druid', 'ranger', 'sorcerer', 'wizard'},
+    classIds: {
+      'cleric',
+      'druid',
+      'ranger',
+      'sorcerer',
+      'wizard',
+    },
   ),
   SpellIds.blindingSmite: SpellDefinition(
     id: SpellIds.blindingSmite,
@@ -11385,19 +14789,33 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 3,
     school: SpellSchool.evocation,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.bonusAction),
-    range: SpellRange(type: SpellRangeType.self),
-    components: SpellComponents(verbal: true),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.bonusAction,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.self,
+    ),
+    components: SpellComponents(
+      verbal: true,
+    ),
     duration: SpellDuration(
       type: SpellDurationType.minute,
       amount: 1,
       concentration: true,
     ),
     target: SpellTarget(
-      types: {SpellTargetType.self, SpellTargetType.creature},
+      types: {
+        SpellTargetType.self,
+        SpellTargetType.creature,
+      },
       maximumTargets: 1,
     ),
-    damage: [SpellDamage(dice: '3d8', type: SpellDamageType.radiant)],
+    damage: [
+      SpellDamage(
+        dice: '3d8',
+        type: SpellDamageType.radiant,
+      ),
+    ],
     persistentEffects: [
       SpellPersistentEffect(
         id: 'blinding_smite_empowered_hit',
@@ -11413,7 +14831,9 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'paladin'},
+    classIds: {
+      'paladin',
+    },
   ),
   SpellIds.waterBreathing: SpellDefinition(
     id: SpellIds.waterBreathing,
@@ -11434,17 +14854,32 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 3,
     school: SpellSchool.transmutation,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.distance, distanceMeters: 9),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 9,
+    ),
     components: SpellComponents(
       verbal: true,
       somatic: true,
       materials: [
-        SpellMaterialComponent(description: 'Un piccolo giunco o una paglia.'),
+        SpellMaterialComponent(
+          description: 'Un piccolo giunco o una paglia.',
+        ),
       ],
     ),
-    duration: SpellDuration(type: SpellDurationType.hour, amount: 24),
-    target: SpellTarget(types: {SpellTargetType.creatures}, maximumTargets: 10),
+    duration: SpellDuration(
+      type: SpellDurationType.hour,
+      amount: 24,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.creatures,
+      },
+      maximumTargets: 10,
+    ),
     persistentEffects: [
       SpellPersistentEffect(
         id: 'water_breathing_underwater_respiration',
@@ -11458,7 +14893,12 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'druid', 'ranger', 'sorcerer', 'wizard'},
+    classIds: {
+      'druid',
+      'ranger',
+      'sorcerer',
+      'wizard',
+    },
   ),
   SpellIds.removeCurse: SpellDefinition(
     id: SpellIds.removeCurse,
@@ -11480,12 +14920,24 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 3,
     school: SpellSchool.abjuration,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.touch),
-    components: SpellComponents(verbal: true, somatic: true),
-    duration: SpellDuration(type: SpellDurationType.instantaneous),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.touch,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.instantaneous,
+    ),
     target: SpellTarget(
-      types: {SpellTargetType.creature, SpellTargetType.object},
+      types: {
+        SpellTargetType.creature,
+        SpellTargetType.object,
+      },
       maximumTargets: 1,
     ),
     persistentEffects: [
@@ -11501,7 +14953,12 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'cleric', 'paladin', 'warlock', 'wizard'},
+    classIds: {
+      'cleric',
+      'paladin',
+      'warlock',
+      'wizard',
+    },
   ),
   SpellIds.revivify: SpellDefinition(
     id: SpellIds.revivify,
@@ -11523,8 +14980,12 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 3,
     school: SpellSchool.necromancy,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.touch),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.touch,
+    ),
     components: SpellComponents(
       verbal: true,
       somatic: true,
@@ -11537,8 +14998,15 @@ const Map<String, SpellDefinition> spellDefinitions = {
         ),
       ],
     ),
-    duration: SpellDuration(type: SpellDurationType.instantaneous),
-    target: SpellTarget(types: {SpellTargetType.creature}, maximumTargets: 1),
+    duration: SpellDuration(
+      type: SpellDurationType.instantaneous,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.creature,
+      },
+      maximumTargets: 1,
+    ),
     persistentEffects: [
       SpellPersistentEffect(
         id: 'revivify_recently_dead_creature',
@@ -11553,7 +15021,10 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'cleric', 'paladin'},
+    classIds: {
+      'cleric',
+      'paladin',
+    },
   ),
   SpellIds.bestowCurse: SpellDefinition(
     id: SpellIds.bestowCurse,
@@ -11584,16 +15055,33 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 3,
     school: SpellSchool.necromancy,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.touch),
-    components: SpellComponents(verbal: true, somatic: true),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.touch,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+    ),
     duration: SpellDuration(
       type: SpellDurationType.minute,
       amount: 1,
       concentration: true,
     ),
-    target: SpellTarget(types: {SpellTargetType.creature}, maximumTargets: 1),
-    damage: [SpellDamage(dice: '1d8', type: SpellDamageType.necrotic)],
+    target: SpellTarget(
+      types: {
+        SpellTargetType.creature,
+      },
+      maximumTargets: 1,
+    ),
+    damage: [
+      SpellDamage(
+        dice: '1d8',
+        type: SpellDamageType.necrotic,
+      ),
+    ],
     persistentEffects: [
       SpellPersistentEffect(
         id: 'bestow_curse_chosen_debilitating_effect',
@@ -11613,7 +15101,11 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'bard', 'cleric', 'wizard'},
+    classIds: {
+      'bard',
+      'cleric',
+      'wizard',
+    },
   ),
   SpellIds.sleetStorm: SpellDefinition(
     id: SpellIds.sleetStorm,
@@ -11640,8 +15132,13 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 3,
     school: SpellSchool.conjuration,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.distance, distanceMeters: 45),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 45,
+    ),
     components: SpellComponents(
       verbal: true,
       somatic: true,
@@ -11656,7 +15153,12 @@ const Map<String, SpellDefinition> spellDefinitions = {
       amount: 1,
       concentration: true,
     ),
-    target: SpellTarget(types: {SpellTargetType.point, SpellTargetType.area}),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.point,
+        SpellTargetType.area,
+      },
+    ),
     persistentEffects: [
       SpellPersistentEffect(
         id: 'sleet_storm_obscured_icy_cylinder',
@@ -11674,7 +15176,11 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'druid', 'sorcerer', 'wizard'},
+    classIds: {
+      'druid',
+      'sorcerer',
+      'wizard',
+    },
   ),
   SpellIds.vampiricTouch: SpellDefinition(
     id: SpellIds.vampiricTouch,
@@ -11698,19 +15204,34 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 3,
     school: SpellSchool.necromancy,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.self),
-    components: SpellComponents(verbal: true, somatic: true),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.self,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+    ),
     duration: SpellDuration(
       type: SpellDurationType.minute,
       amount: 1,
       concentration: true,
     ),
     target: SpellTarget(
-      types: {SpellTargetType.self, SpellTargetType.creature},
+      types: {
+        SpellTargetType.self,
+        SpellTargetType.creature,
+      },
       maximumTargets: 1,
     ),
-    damage: [SpellDamage(dice: '3d6', type: SpellDamageType.necrotic)],
+    damage: [
+      SpellDamage(
+        dice: '3d6',
+        type: SpellDamageType.necrotic,
+      ),
+    ],
     persistentEffects: [
       SpellPersistentEffect(
         id: 'vampiric_touch_life_draining_attack',
@@ -11725,7 +15246,10 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'warlock', 'wizard'},
+    classIds: {
+      'warlock',
+      'wizard',
+    },
   ),
   SpellIds.hypnoticPattern: SpellDefinition(
     id: SpellIds.hypnoticPattern,
@@ -11748,8 +15272,13 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 3,
     school: SpellSchool.illusion,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.distance, distanceMeters: 36),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 36,
+    ),
     components: SpellComponents(
       somatic: true,
       materials: [
@@ -11765,7 +15294,10 @@ const Map<String, SpellDefinition> spellDefinitions = {
       concentration: true,
     ),
     target: SpellTarget(
-      types: {SpellTargetType.area, SpellTargetType.creatures},
+      types: {
+        SpellTargetType.area,
+        SpellTargetType.creatures,
+      },
     ),
     persistentEffects: [
       SpellPersistentEffect(
@@ -11783,7 +15315,12 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'bard', 'sorcerer', 'warlock', 'wizard'},
+    classIds: {
+      'bard',
+      'sorcerer',
+      'warlock',
+      'wizard',
+    },
   ),
   SpellIds.haste: SpellDefinition(
     id: SpellIds.haste,
@@ -11809,8 +15346,13 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 3,
     school: SpellSchool.transmutation,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.distance, distanceMeters: 9),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 9,
+    ),
     components: SpellComponents(
       verbal: true,
       somatic: true,
@@ -11825,7 +15367,12 @@ const Map<String, SpellDefinition> spellDefinitions = {
       amount: 1,
       concentration: true,
     ),
-    target: SpellTarget(types: {SpellTargetType.creature}, maximumTargets: 1),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.creature,
+      },
+      maximumTargets: 1,
+    ),
     persistentEffects: [
       SpellPersistentEffect(
         id: 'haste_accelerated_willing_creature',
@@ -11843,7 +15390,10 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'sorcerer', 'wizard'},
+    classIds: {
+      'sorcerer',
+      'wizard',
+    },
   ),
   SpellIds.fly: SpellDefinition(
     id: SpellIds.fly,
@@ -11866,8 +15416,12 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 3,
     school: SpellSchool.transmutation,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.touch),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.touch,
+    ),
     components: SpellComponents(
       verbal: true,
       somatic: true,
@@ -11882,7 +15436,12 @@ const Map<String, SpellDefinition> spellDefinitions = {
       amount: 10,
       concentration: true,
     ),
-    target: SpellTarget(types: {SpellTargetType.creature}, maximumTargets: 1),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.creature,
+      },
+      maximumTargets: 1,
+    ),
     persistentEffects: [
       SpellPersistentEffect(
         id: 'fly_granted_flying_speed',
@@ -11897,7 +15456,11 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'sorcerer', 'warlock', 'wizard'},
+    classIds: {
+      'sorcerer',
+      'warlock',
+      'wizard',
+    },
   ),
   SpellIds.phantasmalKiller: SpellDefinition(
     id: SpellIds.phantasmalKiller,
@@ -11924,16 +15487,34 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 4,
     school: SpellSchool.illusion,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.distance, distanceMeters: 36),
-    components: SpellComponents(verbal: true, somatic: true),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 36,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+    ),
     duration: SpellDuration(
       type: SpellDurationType.minute,
       amount: 1,
       concentration: true,
     ),
-    target: SpellTarget(types: {SpellTargetType.creature}, maximumTargets: 1),
-    damage: [SpellDamage(dice: '4d10', type: SpellDamageType.psychic)],
+    target: SpellTarget(
+      types: {
+        SpellTargetType.creature,
+      },
+      maximumTargets: 1,
+    ),
+    damage: [
+      SpellDamage(
+        dice: '4d10',
+        type: SpellDamageType.psychic,
+      ),
+    ],
     persistentEffects: [
       SpellPersistentEffect(
         id: 'phantasmal_killer_manifested_nightmare',
@@ -11951,7 +15532,9 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'wizard'},
+    classIds: {
+      'wizard',
+    },
   ),
   SpellIds.auraOfPurity: SpellDefinition(
     id: SpellIds.auraOfPurity,
@@ -11975,9 +15558,15 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 4,
     school: SpellSchool.abjuration,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.self),
-    components: SpellComponents(verbal: true),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.self,
+    ),
+    components: SpellComponents(
+      verbal: true,
+    ),
     duration: SpellDuration(
       type: SpellDurationType.minute,
       amount: 10,
@@ -12005,7 +15594,9 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'paladin'},
+    classIds: {
+      'paladin',
+    },
   ),
   SpellIds.auraOfLife: SpellDefinition(
     id: SpellIds.auraOfLife,
@@ -12029,9 +15620,15 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 4,
     school: SpellSchool.abjuration,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.self),
-    components: SpellComponents(verbal: true),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.self,
+    ),
+    components: SpellComponents(
+      verbal: true,
+    ),
     duration: SpellDuration(
       type: SpellDurationType.minute,
       amount: 10,
@@ -12059,7 +15656,9 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'paladin'},
+    classIds: {
+      'paladin',
+    },
   ),
   SpellIds.compulsion: SpellDefinition(
     id: SpellIds.compulsion,
@@ -12088,16 +15687,27 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 4,
     school: SpellSchool.enchantment,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.distance, distanceMeters: 9),
-    components: SpellComponents(verbal: true, somatic: true),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 9,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+    ),
     duration: SpellDuration(
       type: SpellDurationType.minute,
       amount: 1,
       concentration: true,
     ),
     target: SpellTarget(
-      types: {SpellTargetType.creatures, SpellTargetType.area},
+      types: {
+        SpellTargetType.creatures,
+        SpellTargetType.area,
+      },
     ),
     persistentEffects: [
       SpellPersistentEffect(
@@ -12118,7 +15728,9 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'bard'},
+    classIds: {
+      'bard',
+    },
   ),
   SpellIds.confusion: SpellDefinition(
     id: SpellIds.confusion,
@@ -12146,12 +15758,21 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 4,
     school: SpellSchool.enchantment,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.distance, distanceMeters: 27),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 27,
+    ),
     components: SpellComponents(
       verbal: true,
       somatic: true,
-      materials: [SpellMaterialComponent(description: 'Tre gusci di noce.')],
+      materials: [
+        SpellMaterialComponent(
+          description: 'Tre gusci di noce.',
+        ),
+      ],
     ),
     duration: SpellDuration(
       type: SpellDurationType.minute,
@@ -12185,7 +15806,12 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'bard', 'druid', 'sorcerer', 'wizard'},
+    classIds: {
+      'bard',
+      'druid',
+      'sorcerer',
+      'wizard',
+    },
   ),
   SpellIds.controlWater: SpellDefinition(
     id: SpellIds.controlWater,
@@ -12218,8 +15844,13 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 4,
     school: SpellSchool.transmutation,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.distance, distanceMeters: 90),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 90,
+    ),
     components: SpellComponents(
       verbal: true,
       somatic: true,
@@ -12234,8 +15865,18 @@ const Map<String, SpellDefinition> spellDefinitions = {
       amount: 10,
       concentration: true,
     ),
-    target: SpellTarget(types: {SpellTargetType.point, SpellTargetType.area}),
-    damage: [SpellDamage(dice: '2d8', type: SpellDamageType.bludgeoning)],
+    target: SpellTarget(
+      types: {
+        SpellTargetType.point,
+        SpellTargetType.area,
+      },
+    ),
+    damage: [
+      SpellDamage(
+        dice: '2d8',
+        type: SpellDamageType.bludgeoning,
+      ),
+    ],
     persistentEffects: [
       SpellPersistentEffect(
         id: 'control_water_chosen_water_effect',
@@ -12260,7 +15901,11 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'cleric', 'druid', 'wizard'},
+    classIds: {
+      'cleric',
+      'druid',
+      'wizard',
+    },
   ),
   SpellIds.divination: SpellDefinition(
     id: SpellIds.divination,
@@ -12288,8 +15933,12 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 4,
     school: SpellSchool.divination,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.self),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.self,
+    ),
     components: SpellComponents(
       verbal: true,
       somatic: true,
@@ -12302,8 +15951,14 @@ const Map<String, SpellDefinition> spellDefinitions = {
         ),
       ],
     ),
-    duration: SpellDuration(type: SpellDurationType.instantaneous),
-    target: SpellTarget(types: {SpellTargetType.self}),
+    duration: SpellDuration(
+      type: SpellDurationType.instantaneous,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.self,
+      },
+    ),
     persistentEffects: [
       SpellPersistentEffect(
         id: 'divination_divine_answer',
@@ -12321,7 +15976,9 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'cleric'},
+    classIds: {
+      'cleric',
+    },
   ),
   SpellIds.dominateBeast: SpellDefinition(
     id: SpellIds.dominateBeast,
@@ -12351,15 +16008,28 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 4,
     school: SpellSchool.enchantment,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.distance, distanceMeters: 18),
-    components: SpellComponents(verbal: true, somatic: true),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 18,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+    ),
     duration: SpellDuration(
       type: SpellDurationType.minute,
       amount: 1,
       concentration: true,
     ),
-    target: SpellTarget(types: {SpellTargetType.creature}, maximumTargets: 1),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.creature,
+      },
+      maximumTargets: 1,
+    ),
     persistentEffects: [
       SpellPersistentEffect(
         id: 'dominate_beast_telepathic_control',
@@ -12380,7 +16050,10 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'druid', 'sorcerer'},
+    classIds: {
+      'druid',
+      'sorcerer',
+    },
   ),
   SpellIds.banishment: SpellDefinition(
     id: SpellIds.banishment,
@@ -12408,8 +16081,13 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 4,
     school: SpellSchool.abjuration,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.distance, distanceMeters: 18),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 18,
+    ),
     components: SpellComponents(
       verbal: true,
       somatic: true,
@@ -12424,7 +16102,12 @@ const Map<String, SpellDefinition> spellDefinitions = {
       amount: 1,
       concentration: true,
     ),
-    target: SpellTarget(types: {SpellTargetType.creature}, maximumTargets: 1),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.creature,
+      },
+      maximumTargets: 1,
+    ),
     persistentEffects: [
       SpellPersistentEffect(
         id: 'banishment_planar_exile',
@@ -12443,7 +16126,13 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'cleric', 'paladin', 'sorcerer', 'warlock', 'wizard'},
+    classIds: {
+      'cleric',
+      'paladin',
+      'sorcerer',
+      'warlock',
+      'wizard',
+    },
   ),
   SpellIds.conjureWoodlandBeings: SpellDefinition(
     id: SpellIds.conjureWoodlandBeings,
@@ -12470,8 +16159,13 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 4,
     school: SpellSchool.conjuration,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.distance, distanceMeters: 18),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 18,
+    ),
     components: SpellComponents(
       verbal: true,
       somatic: true,
@@ -12487,7 +16181,10 @@ const Map<String, SpellDefinition> spellDefinitions = {
       concentration: true,
     ),
     target: SpellTarget(
-      types: {SpellTargetType.point, SpellTargetType.creatures},
+      types: {
+        SpellTargetType.point,
+        SpellTargetType.creatures,
+      },
     ),
     persistentEffects: [
       SpellPersistentEffect(
@@ -12508,7 +16205,10 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'druid', 'ranger'},
+    classIds: {
+      'druid',
+      'ranger',
+    },
   ),
   SpellIds.conjureMinorElementals: SpellDefinition(
     id: SpellIds.conjureMinorElementals,
@@ -12536,16 +16236,28 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 4,
     school: SpellSchool.conjuration,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.minute, amount: 1),
-    range: SpellRange(type: SpellRangeType.distance, distanceMeters: 27),
-    components: SpellComponents(verbal: true, somatic: true),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.minute,
+      amount: 1,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 27,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+    ),
     duration: SpellDuration(
       type: SpellDurationType.hour,
       amount: 1,
       concentration: true,
     ),
     target: SpellTarget(
-      types: {SpellTargetType.point, SpellTargetType.creatures},
+      types: {
+        SpellTargetType.point,
+        SpellTargetType.creatures,
+      },
     ),
     persistentEffects: [
       SpellPersistentEffect(
@@ -12566,7 +16278,10 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'druid', 'wizard'},
+    classIds: {
+      'druid',
+      'wizard',
+    },
   ),
   SpellIds.fabricate: SpellDefinition(
     id: SpellIds.fabricate,
@@ -12599,10 +16314,23 @@ const Map<String, SpellDefinition> spellDefinitions = {
       type: SpellCastingTimeType.minute,
       amount: 10,
     ),
-    range: SpellRange(type: SpellRangeType.distance, distanceMeters: 36),
-    components: SpellComponents(verbal: true, somatic: true),
-    duration: SpellDuration(type: SpellDurationType.instantaneous),
-    target: SpellTarget(types: {SpellTargetType.object, SpellTargetType.area}),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 36,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.instantaneous,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.object,
+        SpellTargetType.area,
+      },
+    ),
     persistentEffects: [
       SpellPersistentEffect(
         id: 'fabricate_raw_material_transformation',
@@ -12622,7 +16350,9 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'wizard'},
+    classIds: {
+      'wizard',
+    },
   ),
   SpellIds.guardianOfFaith: SpellDefinition(
     id: SpellIds.guardianOfFaith,
@@ -12648,16 +16378,31 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 4,
     school: SpellSchool.conjuration,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.distance, distanceMeters: 9),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 9,
+    ),
     area: SpellArea(
       shape: SpellAreaShape.radius,
       origin: SpellAreaOrigin.targetPoint,
       radiusMeters: 3,
     ),
-    components: SpellComponents(verbal: true),
-    duration: SpellDuration(type: SpellDurationType.hour, amount: 8),
-    target: SpellTarget(types: {SpellTargetType.point, SpellTargetType.area}),
+    components: SpellComponents(
+      verbal: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.hour,
+      amount: 8,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.point,
+        SpellTargetType.area,
+      },
+    ),
     persistentEffects: [
       SpellPersistentEffect(
         id: 'guardian_of_faith_spectral_guardian',
@@ -12675,7 +16420,9 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'cleric'},
+    classIds: {
+      'cleric',
+    },
   ),
   SpellIds.blight: SpellDefinition(
     id: SpellIds.blight,
@@ -12700,22 +16447,45 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 4,
     school: SpellSchool.necromancy,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.distance, distanceMeters: 9),
-    components: SpellComponents(verbal: true, somatic: true),
-    duration: SpellDuration(type: SpellDurationType.instantaneous),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 9,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.instantaneous,
+    ),
     target: SpellTarget(
-      types: {SpellTargetType.creature, SpellTargetType.object},
+      types: {
+        SpellTargetType.creature,
+        SpellTargetType.object,
+      },
       maximumTargets: 1,
     ),
     savingThrow: SpellSavingThrow(
       ability: SpellSavingThrowAbility.constitution,
       onSuccess: SpellSaveSuccess.halfDamage,
     ),
-    damage: [SpellDamage(dice: '8d8', type: SpellDamageType.necrotic)],
+    damage: [
+      SpellDamage(
+        dice: '8d8',
+        type: SpellDamageType.necrotic,
+      ),
+    ],
     scaling: SpellScaling(
       type: SpellScalingType.slotLevel,
-      steps: [SpellScalingStep(threshold: 5, additionalDice: '1d8')],
+      steps: [
+        SpellScalingStep(
+          threshold: 5,
+          additionalDice: '1d8',
+        ),
+      ],
     ),
     persistentEffects: [
       SpellPersistentEffect(
@@ -12731,7 +16501,12 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'druid', 'sorcerer', 'warlock', 'wizard'},
+    classIds: {
+      'druid',
+      'sorcerer',
+      'warlock',
+      'wizard',
+    },
   ),
   SpellIds.giantInsect: SpellDefinition(
     id: SpellIds.giantInsect,
@@ -12757,15 +16532,28 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 4,
     school: SpellSchool.transmutation,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.distance, distanceMeters: 9),
-    components: SpellComponents(verbal: true, somatic: true),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 9,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+    ),
     duration: SpellDuration(
       type: SpellDurationType.minute,
       amount: 10,
       concentration: true,
     ),
-    target: SpellTarget(types: {SpellTargetType.creatures}, maximumTargets: 10),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.creatures,
+      },
+      maximumTargets: 10,
+    ),
     persistentEffects: [
       SpellPersistentEffect(
         id: 'giant_insect_transformed_creatures',
@@ -12785,7 +16573,9 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'druid'},
+    classIds: {
+      'druid',
+    },
   ),
   SpellIds.deathWard: SpellDefinition(
     id: SpellIds.deathWard,
@@ -12809,11 +16599,26 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 4,
     school: SpellSchool.abjuration,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.touch),
-    components: SpellComponents(verbal: true, somatic: true),
-    duration: SpellDuration(type: SpellDurationType.hour, amount: 8),
-    target: SpellTarget(types: {SpellTargetType.creature}, maximumTargets: 1),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.touch,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.hour,
+      amount: 8,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.creature,
+      },
+      maximumTargets: 1,
+    ),
     persistentEffects: [
       SpellPersistentEffect(
         id: 'death_ward_protection',
@@ -12826,7 +16631,10 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'cleric', 'paladin'},
+    classIds: {
+      'cleric',
+      'paladin',
+    },
   ),
   SpellIds.greaterInvisibility: SpellDefinition(
     id: SpellIds.greaterInvisibility,
@@ -12848,15 +16656,27 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 4,
     school: SpellSchool.illusion,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.touch),
-    components: SpellComponents(verbal: true, somatic: true),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.touch,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+    ),
     duration: SpellDuration(
       type: SpellDurationType.minute,
       amount: 1,
       concentration: true,
     ),
-    target: SpellTarget(types: {SpellTargetType.creature}, maximumTargets: 1),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.creature,
+      },
+      maximumTargets: 1,
+    ),
     persistentEffects: [
       SpellPersistentEffect(
         id: 'greater_invisibility_effect',
@@ -12870,7 +16690,11 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'bard', 'sorcerer', 'wizard'},
+    classIds: {
+      'bard',
+      'sorcerer',
+      'wizard',
+    },
   ),
   SpellIds.freedomOfMovement: SpellDefinition(
     id: SpellIds.freedomOfMovement,
@@ -12894,8 +16718,12 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 4,
     school: SpellSchool.abjuration,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.touch),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.touch,
+    ),
     components: SpellComponents(
       verbal: true,
       somatic: true,
@@ -12906,9 +16734,14 @@ const Map<String, SpellDefinition> spellDefinitions = {
         ),
       ],
     ),
-    duration: SpellDuration(type: SpellDurationType.hour, amount: 1),
+    duration: SpellDuration(
+      type: SpellDurationType.hour,
+      amount: 1,
+    ),
     target: SpellTarget(
-      types: {SpellTargetType.willingCreature},
+      types: {
+        SpellTargetType.willingCreature,
+      },
       maximumTargets: 1,
     ),
     persistentEffects: [
@@ -12928,7 +16761,12 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'bard', 'cleric', 'druid', 'ranger'},
+    classIds: {
+      'bard',
+      'cleric',
+      'druid',
+      'ranger',
+    },
   ),
   SpellIds.locateCreature: SpellDefinition(
     id: SpellIds.locateCreature,
@@ -12954,8 +16792,12 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 4,
     school: SpellSchool.divination,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.self),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.self,
+    ),
     components: SpellComponents(
       verbal: true,
       somatic: true,
@@ -12970,7 +16812,11 @@ const Map<String, SpellDefinition> spellDefinitions = {
       amount: 1,
       concentration: true,
     ),
-    target: SpellTarget(types: {SpellTargetType.special}),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.special,
+      },
+    ),
     persistentEffects: [
       SpellPersistentEffect(
         id: 'locate_creature_direction_sense',
@@ -12987,7 +16833,14 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'bard', 'cleric', 'druid', 'paladin', 'ranger', 'wizard'},
+    classIds: {
+      'bard',
+      'cleric',
+      'druid',
+      'paladin',
+      'ranger',
+      'wizard',
+    },
   ),
   SpellIds.polymorph: SpellDefinition(
     id: SpellIds.polymorph,
@@ -13021,13 +16874,20 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 4,
     school: SpellSchool.transmutation,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.distance, distanceMeters: 18),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 18,
+    ),
     components: SpellComponents(
       verbal: true,
       somatic: true,
       materials: [
-        SpellMaterialComponent(description: 'Il bozzolo di un bruco.'),
+        SpellMaterialComponent(
+          description: 'Il bozzolo di un bruco.',
+        ),
       ],
     ),
     duration: SpellDuration(
@@ -13035,7 +16895,12 @@ const Map<String, SpellDefinition> spellDefinitions = {
       amount: 1,
       concentration: true,
     ),
-    target: SpellTarget(types: {SpellTargetType.creature}, maximumTargets: 1),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.creature,
+      },
+      maximumTargets: 1,
+    ),
     savingThrow: SpellSavingThrow(
       ability: SpellSavingThrowAbility.wisdom,
       onSuccess: SpellSaveSuccess.negates,
@@ -13062,7 +16927,12 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'bard', 'druid', 'sorcerer', 'wizard'},
+    classIds: {
+      'bard',
+      'druid',
+      'sorcerer',
+      'wizard',
+    },
   ),
   SpellIds.wallOfFire: SpellDefinition(
     id: SpellIds.wallOfFire,
@@ -13090,8 +16960,13 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 4,
     school: SpellSchool.evocation,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.distance, distanceMeters: 36),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 36,
+    ),
     wall: SpellWallDefinition(
       shape: SpellWallShape.special,
       lengthMeters: 18,
@@ -13103,7 +16978,9 @@ const Map<String, SpellDefinition> spellDefinitions = {
       verbal: true,
       somatic: true,
       materials: [
-        SpellMaterialComponent(description: 'Un frammento di fosforo.'),
+        SpellMaterialComponent(
+          description: 'Un frammento di fosforo.',
+        ),
       ],
     ),
     duration: SpellDuration(
@@ -13111,15 +16988,30 @@ const Map<String, SpellDefinition> spellDefinitions = {
       amount: 1,
       concentration: true,
     ),
-    target: SpellTarget(types: {SpellTargetType.point, SpellTargetType.area}),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.point,
+        SpellTargetType.area,
+      },
+    ),
     savingThrow: SpellSavingThrow(
       ability: SpellSavingThrowAbility.dexterity,
       onSuccess: SpellSaveSuccess.halfDamage,
     ),
-    damage: [SpellDamage(dice: '5d8', type: SpellDamageType.fire)],
+    damage: [
+      SpellDamage(
+        dice: '5d8',
+        type: SpellDamageType.fire,
+      ),
+    ],
     scaling: SpellScaling(
       type: SpellScalingType.slotLevel,
-      steps: [SpellScalingStep(threshold: 5, additionalDice: '1d8')],
+      steps: [
+        SpellScalingStep(
+          threshold: 5,
+          additionalDice: '1d8',
+        ),
+      ],
     ),
     areaTriggeredEffects: [
       SpellAreaTriggeredEffect(
@@ -13127,7 +17019,10 @@ const Map<String, SpellDefinition> spellDefinitions = {
           SpellAreaTriggerEvent.entersAreaFirstTimeOnTurn,
           SpellAreaTriggerEvent.endsTurnInArea,
         },
-        damage: SpellDamage(dice: '5d8', type: SpellDamageType.fire),
+        damage: SpellDamage(
+          dice: '5d8',
+          type: SpellDamageType.fire,
+        ),
       ),
     ],
     persistentEffects: [
@@ -13149,7 +17044,11 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'druid', 'sorcerer', 'wizard'},
+    classIds: {
+      'druid',
+      'sorcerer',
+      'wizard',
+    },
   ),
   SpellIds.arcaneEye: SpellDefinition(
     id: SpellIds.arcaneEye,
@@ -13174,8 +17073,13 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 4,
     school: SpellSchool.divination,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.distance, distanceMeters: 9),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 9,
+    ),
     components: SpellComponents(
       verbal: true,
       somatic: true,
@@ -13190,7 +17094,11 @@ const Map<String, SpellDefinition> spellDefinitions = {
       amount: 1,
       concentration: true,
     ),
-    target: SpellTarget(types: {SpellTargetType.point}),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.point,
+      },
+    ),
     persistentEffects: [
       SpellPersistentEffect(
         id: 'arcane_eye_sensor',
@@ -13209,7 +17117,9 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'wizard'},
+    classIds: {
+      'wizard',
+    },
   ),
   SpellIds.stoneskin: SpellDefinition(
     id: SpellIds.stoneskin,
@@ -13230,8 +17140,12 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 4,
     school: SpellSchool.abjuration,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.touch),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.touch,
+    ),
     components: SpellComponents(
       verbal: true,
       somatic: true,
@@ -13250,7 +17164,9 @@ const Map<String, SpellDefinition> spellDefinitions = {
       concentration: true,
     ),
     target: SpellTarget(
-      types: {SpellTargetType.willingCreature},
+      types: {
+        SpellTargetType.willingCreature,
+      },
       maximumTargets: 1,
     ),
     defensiveEffects: [
@@ -13281,7 +17197,12 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'druid', 'ranger', 'sorcerer', 'wizard'},
+    classIds: {
+      'druid',
+      'ranger',
+      'sorcerer',
+      'wizard',
+    },
   ),
   SpellIds.dimensionDoor: SpellDefinition(
     id: SpellIds.dimensionDoor,
@@ -13306,10 +17227,19 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 4,
     school: SpellSchool.conjuration,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.distance, distanceMeters: 150),
-    components: SpellComponents(verbal: true),
-    duration: SpellDuration(type: SpellDurationType.instantaneous),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 150,
+    ),
+    components: SpellComponents(
+      verbal: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.instantaneous,
+    ),
     target: SpellTarget(
       types: {
         SpellTargetType.self,
@@ -13335,7 +17265,12 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'bard', 'sorcerer', 'warlock', 'wizard'},
+    classIds: {
+      'bard',
+      'sorcerer',
+      'warlock',
+      'wizard',
+    },
   ),
   SpellIds.staggeringSmite: SpellDefinition(
     id: SpellIds.staggeringSmite,
@@ -13359,23 +17294,37 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 4,
     school: SpellSchool.evocation,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.bonusAction),
-    range: SpellRange(type: SpellRangeType.self),
-    components: SpellComponents(verbal: true),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.bonusAction,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.self,
+    ),
+    components: SpellComponents(
+      verbal: true,
+    ),
     duration: SpellDuration(
       type: SpellDurationType.minute,
       amount: 1,
       concentration: true,
     ),
     target: SpellTarget(
-      types: {SpellTargetType.self, SpellTargetType.creature},
+      types: {
+        SpellTargetType.self,
+        SpellTargetType.creature,
+      },
       maximumTargets: 1,
     ),
     savingThrow: SpellSavingThrow(
       ability: SpellSavingThrowAbility.wisdom,
       onSuccess: SpellSaveSuccess.partial,
     ),
-    damage: [SpellDamage(dice: '4d6', type: SpellDamageType.psychic)],
+    damage: [
+      SpellDamage(
+        dice: '4d6',
+        type: SpellDamageType.psychic,
+      ),
+    ],
     persistentEffects: [
       SpellPersistentEffect(
         id: 'staggering_smite_next_melee_hit',
@@ -13393,7 +17342,9 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'paladin'},
+    classIds: {
+      'paladin',
+    },
   ),
   SpellIds.graspingVine: SpellDefinition(
     id: SpellIds.graspingVine,
@@ -13419,16 +17370,27 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 4,
     school: SpellSchool.conjuration,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.bonusAction),
-    range: SpellRange(type: SpellRangeType.distance, distanceMeters: 9),
-    components: SpellComponents(verbal: true, somatic: true),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.bonusAction,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 9,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+    ),
     duration: SpellDuration(
       type: SpellDurationType.minute,
       amount: 1,
       concentration: true,
     ),
     target: SpellTarget(
-      types: {SpellTargetType.point, SpellTargetType.creature},
+      types: {
+        SpellTargetType.point,
+        SpellTargetType.creature,
+      },
     ),
     savingThrow: SpellSavingThrow(
       ability: SpellSavingThrowAbility.dexterity,
@@ -13450,7 +17412,10 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'druid', 'ranger'},
+    classIds: {
+      'druid',
+      'ranger',
+    },
   ),
   SpellIds.mordenkainensPrivateSanctum: SpellDefinition(
     id: SpellIds.mordenkainensPrivateSanctum,
@@ -13484,7 +17449,10 @@ const Map<String, SpellDefinition> spellDefinitions = {
       type: SpellCastingTimeType.minute,
       amount: 10,
     ),
-    range: SpellRange(type: SpellRangeType.distance, distanceMeters: 36),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 36,
+    ),
     area: SpellArea(
       shape: SpellAreaShape.cube,
       origin: SpellAreaOrigin.targetPoint,
@@ -13500,8 +17468,15 @@ const Map<String, SpellDefinition> spellDefinitions = {
         ),
       ],
     ),
-    duration: SpellDuration(type: SpellDurationType.day, amount: 1),
-    target: SpellTarget(types: {SpellTargetType.area}),
+    duration: SpellDuration(
+      type: SpellDurationType.day,
+      amount: 1,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.area,
+      },
+    ),
     persistentEffects: [
       SpellPersistentEffect(
         id: 'mordenkainens_private_sanctum_zone',
@@ -13522,7 +17497,9 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'wizard'},
+    classIds: {
+      'wizard',
+    },
   ),
   SpellIds.stoneShape: SpellDefinition(
     id: SpellIds.stoneShape,
@@ -13547,8 +17524,12 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 4,
     school: SpellSchool.transmutation,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.touch),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.touch,
+    ),
     components: SpellComponents(
       verbal: true,
       somatic: true,
@@ -13559,9 +17540,14 @@ const Map<String, SpellDefinition> spellDefinitions = {
         ),
       ],
     ),
-    duration: SpellDuration(type: SpellDurationType.instantaneous),
+    duration: SpellDuration(
+      type: SpellDurationType.instantaneous,
+    ),
     target: SpellTarget(
-      types: {SpellTargetType.object, SpellTargetType.area},
+      types: {
+        SpellTargetType.object,
+        SpellTargetType.area,
+      },
       maximumTargets: 1,
     ),
     persistentEffects: [
@@ -13580,7 +17566,11 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'cleric', 'druid', 'wizard'},
+    classIds: {
+      'cleric',
+      'druid',
+      'wizard',
+    },
   ),
   SpellIds.leomundsSecretChest: SpellDefinition(
     id: SpellIds.leomundsSecretChest,
@@ -13608,8 +17598,12 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 4,
     school: SpellSchool.conjuration,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.touch),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.touch,
+    ),
     components: SpellComponents(
       verbal: true,
       somatic: true,
@@ -13626,8 +17620,15 @@ const Map<String, SpellDefinition> spellDefinitions = {
         ),
       ],
     ),
-    duration: SpellDuration(type: SpellDurationType.instantaneous),
-    target: SpellTarget(types: {SpellTargetType.object}, maximumTargets: 1),
+    duration: SpellDuration(
+      type: SpellDurationType.instantaneous,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.object,
+      },
+      maximumTargets: 1,
+    ),
     persistentEffects: [
       SpellPersistentEffect(
         id: 'leomunds_secret_chest_ethereal_storage',
@@ -13646,7 +17647,9 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'wizard'},
+    classIds: {
+      'wizard',
+    },
   ),
   SpellIds.fireShield: SpellDefinition(
     id: SpellIds.fireShield,
@@ -13671,8 +17674,12 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 4,
     school: SpellSchool.evocation,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.self),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.self,
+    ),
     components: SpellComponents(
       verbal: true,
       somatic: true,
@@ -13682,8 +17689,16 @@ const Map<String, SpellDefinition> spellDefinitions = {
         ),
       ],
     ),
-    duration: SpellDuration(type: SpellDurationType.minute, amount: 10),
-    target: SpellTarget(types: {SpellTargetType.self}, maximumTargets: 1),
+    duration: SpellDuration(
+      type: SpellDurationType.minute,
+      amount: 10,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.self,
+      },
+      maximumTargets: 1,
+    ),
     persistentEffects: [
       SpellPersistentEffect(
         id: 'fire_shield_warm_or_chill_flames',
@@ -13701,7 +17716,9 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'wizard'},
+    classIds: {
+      'wizard',
+    },
   ),
   SpellIds.mordenkainensFaithfulHound: SpellDefinition(
     id: SpellIds.mordenkainensFaithfulHound,
@@ -13730,8 +17747,13 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 4,
     school: SpellSchool.conjuration,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.distance, distanceMeters: 9),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 9,
+    ),
     components: SpellComponents(
       verbal: true,
       somatic: true,
@@ -13741,9 +17763,21 @@ const Map<String, SpellDefinition> spellDefinitions = {
         ),
       ],
     ),
-    duration: SpellDuration(type: SpellDurationType.hour, amount: 8),
-    target: SpellTarget(types: {SpellTargetType.point}),
-    damage: [SpellDamage(dice: '4d8', type: SpellDamageType.piercing)],
+    duration: SpellDuration(
+      type: SpellDurationType.hour,
+      amount: 8,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.point,
+      },
+    ),
+    damage: [
+      SpellDamage(
+        dice: '4d8',
+        type: SpellDamageType.piercing,
+      ),
+    ],
     persistentEffects: [
       SpellPersistentEffect(
         id: 'mordenkainens_faithful_hound_guardian',
@@ -13764,7 +17798,9 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'wizard'},
+    classIds: {
+      'wizard',
+    },
   ),
   SpellIds.otilukesResilientSphere: SpellDefinition(
     id: SpellIds.otilukesResilientSphere,
@@ -13793,8 +17829,13 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 4,
     school: SpellSchool.evocation,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.distance, distanceMeters: 9),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 9,
+    ),
     components: SpellComponents(
       verbal: true,
       somatic: true,
@@ -13811,7 +17852,10 @@ const Map<String, SpellDefinition> spellDefinitions = {
       concentration: true,
     ),
     target: SpellTarget(
-      types: {SpellTargetType.creature, SpellTargetType.object},
+      types: {
+        SpellTargetType.creature,
+        SpellTargetType.object,
+      },
       maximumTargets: 1,
     ),
     savingThrow: SpellSavingThrow(
@@ -13838,7 +17882,9 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'wizard'},
+    classIds: {
+      'wizard',
+    },
   ),
   SpellIds.iceStorm: SpellDefinition(
     id: SpellIds.iceStorm,
@@ -13863,8 +17909,13 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 4,
     school: SpellSchool.evocation,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.distance, distanceMeters: 90),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 90,
+    ),
     area: SpellArea(
       shape: SpellAreaShape.cylinder,
       origin: SpellAreaOrigin.targetPoint,
@@ -13880,19 +17931,37 @@ const Map<String, SpellDefinition> spellDefinitions = {
         ),
       ],
     ),
-    duration: SpellDuration(type: SpellDurationType.instantaneous),
-    target: SpellTarget(types: {SpellTargetType.point, SpellTargetType.area}),
+    duration: SpellDuration(
+      type: SpellDurationType.instantaneous,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.point,
+        SpellTargetType.area,
+      },
+    ),
     savingThrow: SpellSavingThrow(
       ability: SpellSavingThrowAbility.dexterity,
       onSuccess: SpellSaveSuccess.halfDamage,
     ),
     damage: [
-      SpellDamage(dice: '2d8', type: SpellDamageType.bludgeoning),
-      SpellDamage(dice: '4d6', type: SpellDamageType.cold),
+      SpellDamage(
+        dice: '2d8',
+        type: SpellDamageType.bludgeoning,
+      ),
+      SpellDamage(
+        dice: '4d6',
+        type: SpellDamageType.cold,
+      ),
     ],
     scaling: SpellScaling(
       type: SpellScalingType.slotLevel,
-      steps: [SpellScalingStep(threshold: 5, additionalDice: '1d8')],
+      steps: [
+        SpellScalingStep(
+          threshold: 5,
+          additionalDice: '1d8',
+        ),
+      ],
     ),
     persistentEffects: [
       SpellPersistentEffect(
@@ -13908,7 +17977,11 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'druid', 'sorcerer', 'wizard'},
+    classIds: {
+      'druid',
+      'sorcerer',
+      'wizard',
+    },
   ),
   SpellIds.evardsBlackTentacles: SpellDefinition(
     id: SpellIds.evardsBlackTentacles,
@@ -13934,8 +18007,13 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 4,
     school: SpellSchool.conjuration,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.distance, distanceMeters: 27),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 27,
+    ),
     area: SpellArea(
       shape: SpellAreaShape.special,
       origin: SpellAreaOrigin.targetPoint,
@@ -13956,12 +18034,22 @@ const Map<String, SpellDefinition> spellDefinitions = {
       amount: 1,
       concentration: true,
     ),
-    target: SpellTarget(types: {SpellTargetType.point, SpellTargetType.area}),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.point,
+        SpellTargetType.area,
+      },
+    ),
     savingThrow: SpellSavingThrow(
       ability: SpellSavingThrowAbility.dexterity,
       onSuccess: SpellSaveSuccess.negates,
     ),
-    damage: [SpellDamage(dice: '3d6', type: SpellDamageType.bludgeoning)],
+    damage: [
+      SpellDamage(
+        dice: '3d6',
+        type: SpellDamageType.bludgeoning,
+      ),
+    ],
     areaTriggeredEffects: [
       SpellAreaTriggeredEffect(
         triggers: {
@@ -13972,7 +18060,10 @@ const Map<String, SpellDefinition> spellDefinitions = {
           ability: SpellSavingThrowAbility.dexterity,
           onSuccess: SpellSaveSuccess.negates,
         ),
-        damage: SpellDamage(dice: '3d6', type: SpellDamageType.bludgeoning),
+        damage: SpellDamage(
+          dice: '3d6',
+          type: SpellDamageType.bludgeoning,
+        ),
       ),
     ],
     persistentEffects: [
@@ -13992,7 +18083,9 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'wizard'},
+    classIds: {
+      'wizard',
+    },
   ),
   SpellIds.hallucinatoryTerrain: SpellDefinition(
     id: SpellIds.hallucinatoryTerrain,
@@ -14022,7 +18115,10 @@ const Map<String, SpellDefinition> spellDefinitions = {
       type: SpellCastingTimeType.minute,
       amount: 10,
     ),
-    range: SpellRange(type: SpellRangeType.distance, distanceMeters: 90),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 90,
+    ),
     area: SpellArea(
       shape: SpellAreaShape.cube,
       origin: SpellAreaOrigin.targetPoint,
@@ -14038,8 +18134,15 @@ const Map<String, SpellDefinition> spellDefinitions = {
         ),
       ],
     ),
-    duration: SpellDuration(type: SpellDurationType.hour, amount: 24),
-    target: SpellTarget(types: {SpellTargetType.area}),
+    duration: SpellDuration(
+      type: SpellDurationType.hour,
+      amount: 24,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.area,
+      },
+    ),
     persistentEffects: [
       SpellPersistentEffect(
         id: 'hallucinatory_terrain_natural_landscape_illusion',
@@ -14056,7 +18159,12 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'bard', 'druid', 'warlock', 'wizard'},
+    classIds: {
+      'bard',
+      'druid',
+      'warlock',
+      'wizard',
+    },
   ),
   SpellIds.animateObjects: SpellDefinition(
     id: SpellIds.animateObjects,
@@ -14087,15 +18195,28 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 5,
     school: SpellSchool.transmutation,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.distance, distanceMeters: 36),
-    components: SpellComponents(verbal: true, somatic: true),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 36,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+    ),
     duration: SpellDuration(
       type: SpellDurationType.minute,
       amount: 1,
       concentration: true,
     ),
-    target: SpellTarget(types: {SpellTargetType.object}, maximumTargets: 10),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.object,
+      },
+      maximumTargets: 10,
+    ),
     persistentEffects: [
       SpellPersistentEffect(
         id: 'animate_objects_controlled_constructs',
@@ -14129,7 +18250,11 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'bard', 'sorcerer', 'wizard'},
+    classIds: {
+      'bard',
+      'sorcerer',
+      'wizard',
+    },
   ),
   SpellIds.holdMonster: SpellDefinition(
     id: SpellIds.holdMonster,
@@ -14154,13 +18279,20 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 5,
     school: SpellSchool.enchantment,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.distance, distanceMeters: 27),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 27,
+    ),
     components: SpellComponents(
       verbal: true,
       somatic: true,
       materials: [
-        SpellMaterialComponent(description: 'Una piccola sbarra di ferro.'),
+        SpellMaterialComponent(
+          description: 'Una piccola sbarra di ferro.',
+        ),
       ],
     ),
     duration: SpellDuration(
@@ -14168,7 +18300,12 @@ const Map<String, SpellDefinition> spellDefinitions = {
       amount: 1,
       concentration: true,
     ),
-    target: SpellTarget(types: {SpellTargetType.creature}, maximumTargets: 1),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.creature,
+      },
+      maximumTargets: 1,
+    ),
     savingThrow: SpellSavingThrow(
       ability: SpellSavingThrowAbility.wisdom,
       onSuccess: SpellSaveSuccess.negates,
@@ -14188,7 +18325,12 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'bard', 'sorcerer', 'warlock', 'wizard'},
+    classIds: {
+      'bard',
+      'sorcerer',
+      'warlock',
+      'wizard',
+    },
   ),
   SpellIds.circleOfPower: SpellDefinition(
     id: SpellIds.circleOfPower,
@@ -14213,20 +18355,31 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 5,
     school: SpellSchool.abjuration,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.self),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.self,
+    ),
     area: SpellArea(
       shape: SpellAreaShape.radius,
       origin: SpellAreaOrigin.caster,
       radiusMeters: 9,
     ),
-    components: SpellComponents(verbal: true),
+    components: SpellComponents(
+      verbal: true,
+    ),
     duration: SpellDuration(
       type: SpellDurationType.minute,
       amount: 10,
       concentration: true,
     ),
-    target: SpellTarget(types: {SpellTargetType.self, SpellTargetType.area}),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.self,
+        SpellTargetType.area,
+      },
+    ),
     persistentEffects: [
       SpellPersistentEffect(
         id: 'circle_of_power_protective_aura',
@@ -14241,7 +18394,9 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'paladin'},
+    classIds: {
+      'paladin',
+    },
   ),
   SpellIds.teleportationCircle: SpellDefinition(
     id: SpellIds.teleportationCircle,
@@ -14268,8 +18423,14 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 5,
     school: SpellSchool.conjuration,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.minute, amount: 1),
-    range: SpellRange(type: SpellRangeType.distance, distanceMeters: 3),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.minute,
+      amount: 1,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 3,
+    ),
     area: SpellArea(
       shape: SpellAreaShape.radius,
       origin: SpellAreaOrigin.targetPoint,
@@ -14286,8 +18447,16 @@ const Map<String, SpellDefinition> spellDefinitions = {
         ),
       ],
     ),
-    duration: SpellDuration(type: SpellDurationType.round, amount: 1),
-    target: SpellTarget(types: {SpellTargetType.point, SpellTargetType.area}),
+    duration: SpellDuration(
+      type: SpellDurationType.round,
+      amount: 1,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.point,
+        SpellTargetType.area,
+      },
+    ),
     persistentEffects: [
       SpellPersistentEffect(
         id: 'teleportation_circle_planar_portal',
@@ -14305,7 +18474,11 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'bard', 'sorcerer', 'wizard'},
+    classIds: {
+      'bard',
+      'sorcerer',
+      'wizard',
+    },
   ),
   SpellIds.flameStrike: SpellDefinition(
     id: SpellIds.flameStrike,
@@ -14329,8 +18502,13 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 5,
     school: SpellSchool.evocation,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.distance, distanceMeters: 18),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 18,
+    ),
     area: SpellArea(
       shape: SpellAreaShape.cylinder,
       origin: SpellAreaOrigin.targetPoint,
@@ -14340,21 +18518,43 @@ const Map<String, SpellDefinition> spellDefinitions = {
     components: SpellComponents(
       verbal: true,
       somatic: true,
-      materials: [SpellMaterialComponent(description: 'Un pizzico di zolfo.')],
+      materials: [
+        SpellMaterialComponent(
+          description: 'Un pizzico di zolfo.',
+        ),
+      ],
     ),
-    duration: SpellDuration(type: SpellDurationType.instantaneous),
-    target: SpellTarget(types: {SpellTargetType.point, SpellTargetType.area}),
+    duration: SpellDuration(
+      type: SpellDurationType.instantaneous,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.point,
+        SpellTargetType.area,
+      },
+    ),
     savingThrow: SpellSavingThrow(
       ability: SpellSavingThrowAbility.dexterity,
       onSuccess: SpellSaveSuccess.halfDamage,
     ),
     damage: [
-      SpellDamage(dice: '4d6', type: SpellDamageType.fire),
-      SpellDamage(dice: '4d6', type: SpellDamageType.radiant),
+      SpellDamage(
+        dice: '4d6',
+        type: SpellDamageType.fire,
+      ),
+      SpellDamage(
+        dice: '4d6',
+        type: SpellDamageType.radiant,
+      ),
     ],
     scaling: SpellScaling(
       type: SpellScalingType.slotLevel,
-      steps: [SpellScalingStep(threshold: 6, additionalDice: '1d6')],
+      steps: [
+        SpellScalingStep(
+          threshold: 6,
+          additionalDice: '1d6',
+        ),
+      ],
     ),
     persistentEffects: [
       SpellPersistentEffect(
@@ -14368,7 +18568,9 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'cleric'},
+    classIds: {
+      'cleric',
+    },
   ),
   SpellIds.commune: SpellDefinition(
     id: SpellIds.commune,
@@ -14395,8 +18597,13 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 5,
     school: SpellSchool.divination,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.minute, amount: 1),
-    range: SpellRange(type: SpellRangeType.self),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.minute,
+      amount: 1,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.self,
+    ),
     components: SpellComponents(
       verbal: true,
       somatic: true,
@@ -14406,8 +18613,16 @@ const Map<String, SpellDefinition> spellDefinitions = {
         ),
       ],
     ),
-    duration: SpellDuration(type: SpellDurationType.minute, amount: 1),
-    target: SpellTarget(types: {SpellTargetType.self, SpellTargetType.special}),
+    duration: SpellDuration(
+      type: SpellDurationType.minute,
+      amount: 1,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.self,
+        SpellTargetType.special,
+      },
+    ),
     ritual: true,
     persistentEffects: [
       SpellPersistentEffect(
@@ -14426,7 +18641,9 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'cleric'},
+    classIds: {
+      'cleric',
+    },
   ),
   SpellIds.communeWithNature: SpellDefinition(
     id: SpellIds.communeWithNature,
@@ -14451,11 +18668,26 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 5,
     school: SpellSchool.divination,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.minute, amount: 1),
-    range: SpellRange(type: SpellRangeType.self),
-    components: SpellComponents(verbal: true, somatic: true),
-    duration: SpellDuration(type: SpellDurationType.instantaneous),
-    target: SpellTarget(types: {SpellTargetType.self, SpellTargetType.area}),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.minute,
+      amount: 1,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.self,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.instantaneous,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.self,
+        SpellTargetType.area,
+      },
+    ),
     ritual: true,
     persistentEffects: [
       SpellPersistentEffect(
@@ -14474,7 +18706,10 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'druid', 'ranger'},
+    classIds: {
+      'druid',
+      'ranger',
+    },
   ),
   SpellIds.coneOfCold: SpellDefinition(
     id: SpellIds.coneOfCold,
@@ -14498,8 +18733,12 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 5,
     school: SpellSchool.evocation,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.self),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.self,
+    ),
     area: SpellArea(
       shape: SpellAreaShape.cone,
       origin: SpellAreaOrigin.caster,
@@ -14514,16 +18753,32 @@ const Map<String, SpellDefinition> spellDefinitions = {
         ),
       ],
     ),
-    duration: SpellDuration(type: SpellDurationType.instantaneous),
-    target: SpellTarget(types: {SpellTargetType.area}),
+    duration: SpellDuration(
+      type: SpellDurationType.instantaneous,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.area,
+      },
+    ),
     savingThrow: SpellSavingThrow(
       ability: SpellSavingThrowAbility.constitution,
       onSuccess: SpellSaveSuccess.halfDamage,
     ),
-    damage: [SpellDamage(dice: '8d8', type: SpellDamageType.cold)],
+    damage: [
+      SpellDamage(
+        dice: '8d8',
+        type: SpellDamageType.cold,
+      ),
+    ],
     scaling: SpellScaling(
       type: SpellScalingType.slotLevel,
-      steps: [SpellScalingStep(threshold: 6, additionalDice: '1d8')],
+      steps: [
+        SpellScalingStep(
+          threshold: 6,
+          additionalDice: '1d8',
+        ),
+      ],
     ),
     persistentEffects: [
       SpellPersistentEffect(
@@ -14538,7 +18793,10 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'sorcerer', 'wizard'},
+    classIds: {
+      'sorcerer',
+      'wizard',
+    },
   ),
   SpellIds.legendLore: SpellDefinition(
     id: SpellIds.legendLore,
@@ -14567,7 +18825,9 @@ const Map<String, SpellDefinition> spellDefinitions = {
       type: SpellCastingTimeType.minute,
       amount: 10,
     ),
-    range: SpellRange(type: SpellRangeType.self),
+    range: SpellRange(
+      type: SpellRangeType.self,
+    ),
     components: SpellComponents(
       verbal: true,
       somatic: true,
@@ -14585,8 +18845,14 @@ const Map<String, SpellDefinition> spellDefinitions = {
         ),
       ],
     ),
-    duration: SpellDuration(type: SpellDurationType.instantaneous),
-    target: SpellTarget(types: {SpellTargetType.special}),
+    duration: SpellDuration(
+      type: SpellDurationType.instantaneous,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.special,
+      },
+    ),
     persistentEffects: [
       SpellPersistentEffect(
         id: 'legend_lore_significant_knowledge',
@@ -14602,7 +18868,10 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'bard', 'wizard'},
+    classIds: {
+      'bard',
+      'wizard',
+    },
   ),
   SpellIds.contagion: SpellDefinition(
     id: SpellIds.contagion,
@@ -14628,11 +18897,26 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 5,
     school: SpellSchool.necromancy,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.touch),
-    components: SpellComponents(verbal: true, somatic: true),
-    duration: SpellDuration(type: SpellDurationType.day, amount: 7),
-    target: SpellTarget(types: {SpellTargetType.creature}, maximumTargets: 1),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.touch,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.day,
+      amount: 7,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.creature,
+      },
+      maximumTargets: 1,
+    ),
     attackType: SpellAttackType.melee,
     savingThrow: SpellSavingThrow(
       ability: SpellSavingThrowAbility.constitution,
@@ -14659,7 +18943,10 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'cleric', 'druid'},
+    classIds: {
+      'cleric',
+      'druid',
+    },
   ),
   SpellIds.contactOtherPlane: SpellDefinition(
     id: SpellIds.contactOtherPlane,
@@ -14685,17 +18972,37 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 5,
     school: SpellSchool.divination,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.minute, amount: 1),
-    range: SpellRange(type: SpellRangeType.self),
-    components: SpellComponents(verbal: true),
-    duration: SpellDuration(type: SpellDurationType.minute, amount: 1),
-    target: SpellTarget(types: {SpellTargetType.self, SpellTargetType.special}),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.minute,
+      amount: 1,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.self,
+    ),
+    components: SpellComponents(
+      verbal: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.minute,
+      amount: 1,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.self,
+        SpellTargetType.special,
+      },
+    ),
     ritual: true,
     savingThrow: SpellSavingThrow(
       ability: SpellSavingThrowAbility.intelligence,
       onSuccess: SpellSaveSuccess.special,
     ),
-    damage: [SpellDamage(dice: '6d6', type: SpellDamageType.psychic)],
+    damage: [
+      SpellDamage(
+        dice: '6d6',
+        type: SpellDamageType.psychic,
+      ),
+    ],
     persistentEffects: [
       SpellPersistentEffect(
         id: 'contact_other_plane_answers_and_madness',
@@ -14715,7 +19022,10 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'warlock', 'wizard'},
+    classIds: {
+      'warlock',
+      'wizard',
+    },
   ),
   SpellIds.geas: SpellDefinition(
     id: SpellIds.geas,
@@ -14741,16 +19051,37 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 5,
     school: SpellSchool.enchantment,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.minute, amount: 1),
-    range: SpellRange(type: SpellRangeType.distance, distanceMeters: 18),
-    components: SpellComponents(verbal: true),
-    duration: SpellDuration(type: SpellDurationType.day, amount: 30),
-    target: SpellTarget(types: {SpellTargetType.creature}, maximumTargets: 1),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.minute,
+      amount: 1,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 18,
+    ),
+    components: SpellComponents(
+      verbal: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.day,
+      amount: 30,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.creature,
+      },
+      maximumTargets: 1,
+    ),
     savingThrow: SpellSavingThrow(
       ability: SpellSavingThrowAbility.wisdom,
       onSuccess: SpellSaveSuccess.negates,
     ),
-    damage: [SpellDamage(dice: '5d10', type: SpellDamageType.psychic)],
+    damage: [
+      SpellDamage(
+        dice: '5d10',
+        type: SpellDamageType.psychic,
+      ),
+    ],
     persistentEffects: [
       SpellPersistentEffect(
         id: 'geas_magical_command',
@@ -14769,7 +19100,13 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'bard', 'cleric', 'druid', 'paladin', 'wizard'},
+    classIds: {
+      'bard',
+      'cleric',
+      'druid',
+      'paladin',
+      'wizard',
+    },
   ),
   SpellIds.creation: SpellDefinition(
     id: SpellIds.creation,
@@ -14800,8 +19137,14 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 5,
     school: SpellSchool.illusion,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.minute, amount: 1),
-    range: SpellRange(type: SpellRangeType.distance, distanceMeters: 9),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.minute,
+      amount: 1,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 9,
+    ),
     components: SpellComponents(
       verbal: true,
       somatic: true,
@@ -14812,8 +19155,15 @@ const Map<String, SpellDefinition> spellDefinitions = {
         ),
       ],
     ),
-    duration: SpellDuration(type: SpellDurationType.special),
-    target: SpellTarget(types: {SpellTargetType.object}, maximumTargets: 1),
+    duration: SpellDuration(
+      type: SpellDurationType.special,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.object,
+      },
+      maximumTargets: 1,
+    ),
     persistentEffects: [
       SpellPersistentEffect(
         id: 'creation_shadow_material_object',
@@ -14834,7 +19184,10 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'sorcerer', 'wizard'},
+    classIds: {
+      'sorcerer',
+      'wizard',
+    },
   ),
   SpellIds.massCureWounds: SpellDefinition(
     id: SpellIds.massCureWounds,
@@ -14858,12 +19211,25 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 5,
     school: SpellSchool.evocation,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.distance, distanceMeters: 18),
-    components: SpellComponents(verbal: true, somatic: true),
-    duration: SpellDuration(type: SpellDurationType.instantaneous),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 18,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.instantaneous,
+    ),
     target: SpellTarget(
-      types: {SpellTargetType.creatures, SpellTargetType.area},
+      types: {
+        SpellTargetType.creatures,
+        SpellTargetType.area,
+      },
       maximumTargets: 6,
     ),
     persistentEffects: [
@@ -14880,7 +19246,11 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'bard', 'cleric', 'druid'},
+    classIds: {
+      'bard',
+      'cleric',
+      'druid',
+    },
   ),
   SpellIds.dispelEvilAndGood: SpellDefinition(
     id: SpellIds.dispelEvilAndGood,
@@ -14912,8 +19282,12 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 5,
     school: SpellSchool.abjuration,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.self),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.self,
+    ),
     components: SpellComponents(
       verbal: true,
       somatic: true,
@@ -14928,7 +19302,11 @@ const Map<String, SpellDefinition> spellDefinitions = {
       amount: 1,
       concentration: true,
     ),
-    target: SpellTarget(types: {SpellTargetType.self}),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.self,
+      },
+    ),
     persistentEffects: [
       SpellPersistentEffect(
         id: 'dispel_evil_and_good_protection_and_release',
@@ -14948,7 +19326,10 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'cleric', 'paladin'},
+    classIds: {
+      'cleric',
+      'paladin',
+    },
   ),
   SpellIds.dominatePerson: SpellDefinition(
     id: SpellIds.dominatePerson,
@@ -14980,15 +19361,28 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 5,
     school: SpellSchool.enchantment,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.distance, distanceMeters: 18),
-    components: SpellComponents(verbal: true, somatic: true),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 18,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+    ),
     duration: SpellDuration(
       type: SpellDurationType.minute,
       amount: 1,
       concentration: true,
     ),
-    target: SpellTarget(types: {SpellTargetType.creature}, maximumTargets: 1),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.creature,
+      },
+      maximumTargets: 1,
+    ),
     persistentEffects: [
       SpellPersistentEffect(
         id: 'dominate_person_charm_and_telepathic_control',
@@ -15012,7 +19406,11 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'bard', 'sorcerer', 'wizard'},
+    classIds: {
+      'bard',
+      'sorcerer',
+      'wizard',
+    },
   ),
   SpellIds.conjureElemental: SpellDefinition(
     id: SpellIds.conjureElemental,
@@ -15041,8 +19439,14 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 5,
     school: SpellSchool.conjuration,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.minute, amount: 1),
-    range: SpellRange(type: SpellRangeType.distance, distanceMeters: 27),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.minute,
+      amount: 1,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 27,
+    ),
     area: SpellArea(
       shape: SpellAreaShape.cube,
       origin: SpellAreaOrigin.targetPoint,
@@ -15063,7 +19467,12 @@ const Map<String, SpellDefinition> spellDefinitions = {
       amount: 1,
       concentration: true,
     ),
-    target: SpellTarget(types: {SpellTargetType.point, SpellTargetType.area}),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.point,
+        SpellTargetType.area,
+      },
+    ),
     persistentEffects: [
       SpellPersistentEffect(
         id: 'conjure_elemental_servant',
@@ -15086,7 +19495,10 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'druid', 'wizard'},
+    classIds: {
+      'druid',
+      'wizard',
+    },
   ),
   SpellIds.conjureVolley: SpellDefinition(
     id: SpellIds.conjureVolley,
@@ -15110,8 +19522,13 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 5,
     school: SpellSchool.conjuration,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.distance, distanceMeters: 45),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 45,
+    ),
     area: SpellArea(
       shape: SpellAreaShape.cylinder,
       origin: SpellAreaOrigin.targetPoint,
@@ -15127,8 +19544,14 @@ const Map<String, SpellDefinition> spellDefinitions = {
         ),
       ],
     ),
-    duration: SpellDuration(type: SpellDurationType.instantaneous),
-    target: SpellTarget(types: {SpellTargetType.area}),
+    duration: SpellDuration(
+      type: SpellDurationType.instantaneous,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.area,
+      },
+    ),
     savingThrow: SpellSavingThrow(
       ability: SpellSavingThrowAbility.dexterity,
       onSuccess: SpellSaveSuccess.halfDamage,
@@ -15147,7 +19570,9 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'ranger'},
+    classIds: {
+      'ranger',
+    },
   ),
   SpellIds.swiftQuiver: SpellDefinition(
     id: SpellIds.swiftQuiver,
@@ -15173,8 +19598,12 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 5,
     school: SpellSchool.transmutation,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.bonusAction),
-    range: SpellRange(type: SpellRangeType.touch),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.bonusAction,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.touch,
+    ),
     components: SpellComponents(
       verbal: true,
       somatic: true,
@@ -15189,9 +19618,16 @@ const Map<String, SpellDefinition> spellDefinitions = {
       amount: 1,
       concentration: true,
     ),
-    target: SpellTarget(types: {SpellTargetType.object}, maximumTargets: 1),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.object,
+      },
+      maximumTargets: 1,
+    ),
     repeatableEffects: [
-      SpellRepeatableEffect(actionType: SpellRepeatActionType.bonusAction),
+      SpellRepeatableEffect(
+        actionType: SpellRepeatActionType.bonusAction,
+      ),
     ],
     persistentEffects: [
       SpellPersistentEffect(
@@ -15208,7 +19644,9 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'ranger'},
+    classIds: {
+      'ranger',
+    },
   ),
   SpellIds.mislead: SpellDefinition(
     id: SpellIds.mislead,
@@ -15235,20 +19673,32 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 5,
     school: SpellSchool.illusion,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.self),
-    components: SpellComponents(somatic: true),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.self,
+    ),
+    components: SpellComponents(
+      somatic: true,
+    ),
     duration: SpellDuration(
       type: SpellDurationType.hour,
       amount: 1,
       concentration: true,
     ),
-    target: SpellTarget(types: {SpellTargetType.self}),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.self,
+      },
+    ),
     persistentEffects: [
       SpellPersistentEffect(
         id: 'mislead_invisibility_and_illusory_double',
         type: SpellPersistentEffectType.magicalLink,
-        link: SpellLinkEffect(shareSenses: true),
+        link: SpellLinkEffect(
+          shareSenses: true,
+        ),
         ruleTags: {
           'caster_becomes_invisible_and_double_appears_at_caster_position',
           'invisibility_ends_if_caster_attacks_or_casts_spell',
@@ -15262,7 +19712,10 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'bard', 'wizard'},
+    classIds: {
+      'bard',
+      'wizard',
+    },
   ),
   SpellIds.antiLifeShell: SpellDefinition(
     id: SpellIds.antiLifeShell,
@@ -15287,20 +19740,32 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 5,
     school: SpellSchool.abjuration,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.self),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.self,
+    ),
     area: SpellArea(
       shape: SpellAreaShape.radius,
       origin: SpellAreaOrigin.caster,
       radiusMeters: 3,
     ),
-    components: SpellComponents(verbal: true, somatic: true),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+    ),
     duration: SpellDuration(
       type: SpellDurationType.hour,
       amount: 1,
       concentration: true,
     ),
-    target: SpellTarget(types: {SpellTargetType.self, SpellTargetType.area}),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.self,
+        SpellTargetType.area,
+      },
+    ),
     persistentEffects: [
       SpellPersistentEffect(
         id: 'anti_life_shell_mobile_barrier',
@@ -15318,7 +19783,9 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'druid'},
+    classIds: {
+      'druid',
+    },
   ),
   SpellIds.planarBinding: SpellDefinition(
     id: SpellIds.planarBinding,
@@ -15349,8 +19816,14 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 5,
     school: SpellSchool.abjuration,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.hour, amount: 1),
-    range: SpellRange(type: SpellRangeType.distance, distanceMeters: 18),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.hour,
+      amount: 1,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 18,
+    ),
     components: SpellComponents(
       verbal: true,
       somatic: true,
@@ -15363,8 +19836,16 @@ const Map<String, SpellDefinition> spellDefinitions = {
         ),
       ],
     ),
-    duration: SpellDuration(type: SpellDurationType.day, amount: 1),
-    target: SpellTarget(types: {SpellTargetType.creature}, maximumTargets: 1),
+    duration: SpellDuration(
+      type: SpellDurationType.day,
+      amount: 1,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.creature,
+      },
+      maximumTargets: 1,
+    ),
     savingThrow: SpellSavingThrow(
       ability: SpellSavingThrowAbility.charisma,
       onSuccess: SpellSaveSuccess.negates,
@@ -15389,7 +19870,12 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'bard', 'cleric', 'druid', 'wizard'},
+    classIds: {
+      'bard',
+      'cleric',
+      'druid',
+      'wizard',
+    },
   ),
   SpellIds.rarysTelepathicBond: SpellDefinition(
     id: SpellIds.rarysTelepathicBond,
@@ -15415,8 +19901,13 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 5,
     school: SpellSchool.divination,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.distance, distanceMeters: 9),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 9,
+    ),
     components: SpellComponents(
       verbal: true,
       somatic: true,
@@ -15427,9 +19918,14 @@ const Map<String, SpellDefinition> spellDefinitions = {
         ),
       ],
     ),
-    duration: SpellDuration(type: SpellDurationType.hour, amount: 1),
+    duration: SpellDuration(
+      type: SpellDurationType.hour,
+      amount: 1,
+    ),
     target: SpellTarget(
-      types: {SpellTargetType.willingCreature},
+      types: {
+        SpellTargetType.willingCreature,
+      },
       maximumTargets: 8,
     ),
     ritual: true,
@@ -15437,7 +19933,9 @@ const Map<String, SpellDefinition> spellDefinitions = {
       SpellPersistentEffect(
         id: 'rarys_telepathic_bond_network',
         type: SpellPersistentEffectType.magicalLink,
-        link: SpellLinkEffect(shareSenses: false),
+        link: SpellLinkEffect(
+          shareSenses: false,
+        ),
         ruleTags: {
           'links_up_to_8_willing_creatures_within_9_meters',
           'every_target_is_telepathically_linked_to_every_other_target',
@@ -15449,7 +19947,9 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'wizard'},
+    classIds: {
+      'wizard',
+    },
   ),
   SpellIds.bigbysHand: SpellDefinition(
     id: SpellIds.bigbysHand,
@@ -15489,8 +19989,13 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 5,
     school: SpellSchool.evocation,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.distance, distanceMeters: 36),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 36,
+    ),
     components: SpellComponents(
       verbal: true,
       somatic: true,
@@ -15515,11 +20020,17 @@ const Map<String, SpellDefinition> spellDefinitions = {
     repeatableEffects: [
       SpellRepeatableEffect(
         actionType: SpellRepeatActionType.bonusAction,
-        damage: SpellDamage(dice: '4d8', type: SpellDamageType.force),
+        damage: SpellDamage(
+          dice: '4d8',
+          type: SpellDamageType.force,
+        ),
       ),
       SpellRepeatableEffect(
         actionType: SpellRepeatActionType.bonusAction,
-        damage: SpellDamage(dice: '2d6', type: SpellDamageType.bludgeoning),
+        damage: SpellDamage(
+          dice: '2d6',
+          type: SpellDamageType.bludgeoning,
+        ),
         automatic: true,
         sameTarget: true,
       ),
@@ -15550,7 +20061,9 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'wizard'},
+    classIds: {
+      'wizard',
+    },
   ),
   SpellIds.modifyMemory: SpellDefinition(
     id: SpellIds.modifyMemory,
@@ -15584,15 +20097,28 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 5,
     school: SpellSchool.enchantment,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.distance, distanceMeters: 9),
-    components: SpellComponents(verbal: true, somatic: true),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 9,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+    ),
     duration: SpellDuration(
       type: SpellDurationType.minute,
       amount: 1,
       concentration: true,
     ),
-    target: SpellTarget(types: {SpellTargetType.creature}, maximumTargets: 1),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.creature,
+      },
+      maximumTargets: 1,
+    ),
     savingThrow: SpellSavingThrow(
       ability: SpellSavingThrowAbility.wisdom,
       onSuccess: SpellSaveSuccess.negates,
@@ -15620,7 +20146,10 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'bard', 'wizard'},
+    classIds: {
+      'bard',
+      'wizard',
+    },
   ),
   SpellIds.wallOfForce: SpellDefinition(
     id: SpellIds.wallOfForce,
@@ -15647,8 +20176,13 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 5,
     school: SpellSchool.evocation,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.distance, distanceMeters: 36),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 36,
+    ),
     wall: SpellWallDefinition(
       shape: SpellWallShape.panels,
       lengthMeters: 30,
@@ -15671,7 +20205,12 @@ const Map<String, SpellDefinition> spellDefinitions = {
       amount: 10,
       concentration: true,
     ),
-    target: SpellTarget(types: {SpellTargetType.point, SpellTargetType.area}),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.point,
+        SpellTargetType.area,
+      },
+    ),
     persistentEffects: [
       SpellPersistentEffect(
         id: 'wall_of_force_impenetrable_barrier',
@@ -15693,7 +20232,9 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'wizard'},
+    classIds: {
+      'wizard',
+    },
   ),
   SpellIds.wallOfStone: SpellDefinition(
     id: SpellIds.wallOfStone,
@@ -15726,8 +20267,13 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 5,
     school: SpellSchool.evocation,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.distance, distanceMeters: 36),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 36,
+    ),
     wall: SpellWallDefinition(
       shape: SpellWallShape.panels,
       lengthMeters: 30,
@@ -15738,7 +20284,9 @@ const Map<String, SpellDefinition> spellDefinitions = {
       verbal: true,
       somatic: true,
       materials: [
-        SpellMaterialComponent(description: 'Un piccolo pezzo di granito.'),
+        SpellMaterialComponent(
+          description: 'Un piccolo pezzo di granito.',
+        ),
       ],
     ),
     duration: SpellDuration(
@@ -15746,7 +20294,12 @@ const Map<String, SpellDefinition> spellDefinitions = {
       amount: 10,
       concentration: true,
     ),
-    target: SpellTarget(types: {SpellTargetType.point, SpellTargetType.area}),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.point,
+        SpellTargetType.area,
+      },
+    ),
     savingThrow: SpellSavingThrow(
       ability: SpellSavingThrowAbility.dexterity,
       onSuccess: SpellSaveSuccess.partial,
@@ -15774,7 +20327,11 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'druid', 'sorcerer', 'wizard'},
+    classIds: {
+      'druid',
+      'sorcerer',
+      'wizard',
+    },
   ),
   SpellIds.cloudkill: SpellDefinition(
     id: SpellIds.cloudkill,
@@ -15805,28 +20362,47 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 5,
     school: SpellSchool.conjuration,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.distance, distanceMeters: 36),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 36,
+    ),
     area: SpellArea(
       shape: SpellAreaShape.sphere,
       origin: SpellAreaOrigin.targetPoint,
       radiusMeters: 6,
     ),
-    areaInteraction: SpellAreaInteraction(spreadsAroundCorners: true),
-    components: SpellComponents(verbal: true, somatic: true),
+    areaInteraction: SpellAreaInteraction(
+      spreadsAroundCorners: true,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+    ),
     duration: SpellDuration(
       type: SpellDurationType.minute,
       amount: 10,
       concentration: true,
     ),
-    target: SpellTarget(types: {SpellTargetType.area}),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.area,
+      },
+    ),
     savingThrow: SpellSavingThrow(
       ability: SpellSavingThrowAbility.constitution,
       onSuccess: SpellSaveSuccess.halfDamage,
     ),
     scaling: SpellScaling(
       type: SpellScalingType.slotLevel,
-      steps: [SpellScalingStep(threshold: 6, additionalDice: '1d8')],
+      steps: [
+        SpellScalingStep(
+          threshold: 6,
+          additionalDice: '1d8',
+        ),
+      ],
     ),
     areaTriggeredEffects: [
       SpellAreaTriggeredEffect(
@@ -15834,7 +20410,10 @@ const Map<String, SpellDefinition> spellDefinitions = {
           SpellAreaTriggerEvent.entersAreaFirstTimeOnTurn,
           SpellAreaTriggerEvent.startsTurnInArea,
         },
-        damage: SpellDamage(dice: '5d8', type: SpellDamageType.poison),
+        damage: SpellDamage(
+          dice: '5d8',
+          type: SpellDamageType.poison,
+        ),
         savingThrow: SpellSavingThrow(
           ability: SpellSavingThrowAbility.constitution,
           onSuccess: SpellSaveSuccess.halfDamage,
@@ -15858,7 +20437,10 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'sorcerer', 'wizard'},
+    classIds: {
+      'sorcerer',
+      'wizard',
+    },
   ),
   SpellIds.destructiveWave: SpellDefinition(
     id: SpellIds.destructiveWave,
@@ -15881,26 +20463,46 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 5,
     school: SpellSchool.evocation,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.self),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.self,
+    ),
     area: SpellArea(
       shape: SpellAreaShape.radius,
       origin: SpellAreaOrigin.caster,
       radiusMeters: 9,
     ),
-    components: SpellComponents(verbal: true),
-    duration: SpellDuration(type: SpellDurationType.instantaneous),
+    components: SpellComponents(
+      verbal: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.instantaneous,
+    ),
     target: SpellTarget(
-      types: {SpellTargetType.creatures, SpellTargetType.area},
+      types: {
+        SpellTargetType.creatures,
+        SpellTargetType.area,
+      },
     ),
     savingThrow: SpellSavingThrow(
       ability: SpellSavingThrowAbility.constitution,
       onSuccess: SpellSaveSuccess.halfDamage,
     ),
     damage: [
-      SpellDamage(dice: '5d6', type: SpellDamageType.thunder),
-      SpellDamage(dice: '5d6', type: SpellDamageType.radiant),
-      SpellDamage(dice: '5d6', type: SpellDamageType.necrotic),
+      SpellDamage(
+        dice: '5d6',
+        type: SpellDamageType.thunder,
+      ),
+      SpellDamage(
+        dice: '5d6',
+        type: SpellDamageType.radiant,
+      ),
+      SpellDamage(
+        dice: '5d6',
+        type: SpellDamageType.necrotic,
+      ),
     ],
     persistentEffects: [
       SpellPersistentEffect(
@@ -15917,7 +20519,9 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'paladin'},
+    classIds: {
+      'paladin',
+    },
   ),
   SpellIds.passwall: SpellDefinition(
     id: SpellIds.passwall,
@@ -15943,18 +20547,31 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 5,
     school: SpellSchool.transmutation,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.distance, distanceMeters: 9),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 9,
+    ),
     components: SpellComponents(
       verbal: true,
       somatic: true,
       materials: [
-        SpellMaterialComponent(description: 'Un pizzico di semi di sesamo.'),
+        SpellMaterialComponent(
+          description: 'Un pizzico di semi di sesamo.',
+        ),
       ],
     ),
-    duration: SpellDuration(type: SpellDurationType.hour, amount: 1),
+    duration: SpellDuration(
+      type: SpellDurationType.hour,
+      amount: 1,
+    ),
     target: SpellTarget(
-      types: {SpellTargetType.point, SpellTargetType.object},
+      types: {
+        SpellTargetType.point,
+        SpellTargetType.object,
+      },
       maximumTargets: 1,
     ),
     persistentEffects: [
@@ -15973,7 +20590,9 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'wizard'},
+    classIds: {
+      'wizard',
+    },
   ),
   SpellIds.insectPlague: SpellDefinition(
     id: SpellIds.insectPlague,
@@ -16001,14 +20620,21 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 5,
     school: SpellSchool.conjuration,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.distance, distanceMeters: 90),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 90,
+    ),
     area: SpellArea(
       shape: SpellAreaShape.sphere,
       origin: SpellAreaOrigin.targetPoint,
       radiusMeters: 6,
     ),
-    areaInteraction: SpellAreaInteraction(spreadsAroundCorners: true),
+    areaInteraction: SpellAreaInteraction(
+      spreadsAroundCorners: true,
+    ),
     components: SpellComponents(
       verbal: true,
       somatic: true,
@@ -16024,14 +20650,23 @@ const Map<String, SpellDefinition> spellDefinitions = {
       amount: 10,
       concentration: true,
     ),
-    target: SpellTarget(types: {SpellTargetType.area}),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.area,
+      },
+    ),
     savingThrow: SpellSavingThrow(
       ability: SpellSavingThrowAbility.constitution,
       onSuccess: SpellSaveSuccess.halfDamage,
     ),
     scaling: SpellScaling(
       type: SpellScalingType.slotLevel,
-      steps: [SpellScalingStep(threshold: 6, additionalDice: '1d10')],
+      steps: [
+        SpellScalingStep(
+          threshold: 6,
+          additionalDice: '1d10',
+        ),
+      ],
     ),
     areaTriggeredEffects: [
       SpellAreaTriggeredEffect(
@@ -16040,7 +20675,10 @@ const Map<String, SpellDefinition> spellDefinitions = {
           SpellAreaTriggerEvent.entersAreaFirstTimeOnTurn,
           SpellAreaTriggerEvent.endsTurnInArea,
         },
-        damage: SpellDamage(dice: '4d10', type: SpellDamageType.piercing),
+        damage: SpellDamage(
+          dice: '4d10',
+          type: SpellDamageType.piercing,
+        ),
         savingThrow: SpellSavingThrow(
           ability: SpellSavingThrowAbility.constitution,
           onSuccess: SpellSaveSuccess.halfDamage,
@@ -16070,7 +20708,11 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'cleric', 'druid', 'sorcerer'},
+    classIds: {
+      'cleric',
+      'druid',
+      'sorcerer',
+    },
   ),
   SpellIds.banishingSmite: SpellDefinition(
     id: SpellIds.banishingSmite,
@@ -16097,16 +20739,31 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 5,
     school: SpellSchool.abjuration,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.bonusAction),
-    range: SpellRange(type: SpellRangeType.self),
-    components: SpellComponents(verbal: true),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.bonusAction,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.self,
+    ),
+    components: SpellComponents(
+      verbal: true,
+    ),
     duration: SpellDuration(
       type: SpellDurationType.minute,
       amount: 1,
       concentration: true,
     ),
-    target: SpellTarget(types: {SpellTargetType.self}),
-    damage: [SpellDamage(dice: '5d10', type: SpellDamageType.force)],
+    target: SpellTarget(
+      types: {
+        SpellTargetType.self,
+      },
+    ),
+    damage: [
+      SpellDamage(
+        dice: '5d10',
+        type: SpellDamageType.force,
+      ),
+    ],
     persistentEffects: [
       SpellPersistentEffect(
         id: 'banishing_smite_next_weapon_hit',
@@ -16124,7 +20781,9 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'paladin'},
+    classIds: {
+      'paladin',
+    },
   ),
   SpellIds.raiseDead: SpellDefinition(
     id: SpellIds.raiseDead,
@@ -16153,8 +20812,13 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 5,
     school: SpellSchool.necromancy,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.hour, amount: 1),
-    range: SpellRange(type: SpellRangeType.touch),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.hour,
+      amount: 1,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.touch,
+    ),
     components: SpellComponents(
       verbal: true,
       somatic: true,
@@ -16167,8 +20831,15 @@ const Map<String, SpellDefinition> spellDefinitions = {
         ),
       ],
     ),
-    duration: SpellDuration(type: SpellDurationType.instantaneous),
-    target: SpellTarget(types: {SpellTargetType.creature}, maximumTargets: 1),
+    duration: SpellDuration(
+      type: SpellDurationType.instantaneous,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.creature,
+      },
+      maximumTargets: 1,
+    ),
     persistentEffects: [
       SpellPersistentEffect(
         id: 'raise_dead_restoration_and_recovery_penalty',
@@ -16188,7 +20859,11 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'bard', 'cleric', 'paladin'},
+    classIds: {
+      'bard',
+      'cleric',
+      'paladin',
+    },
   ),
   SpellIds.reincarnate: SpellDefinition(
     id: SpellIds.reincarnate,
@@ -16218,8 +20893,13 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 5,
     school: SpellSchool.transmutation,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.hour, amount: 1),
-    range: SpellRange(type: SpellRangeType.touch),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.hour,
+      amount: 1,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.touch,
+    ),
     components: SpellComponents(
       verbal: true,
       somatic: true,
@@ -16232,8 +20912,15 @@ const Map<String, SpellDefinition> spellDefinitions = {
         ),
       ],
     ),
-    duration: SpellDuration(type: SpellDurationType.instantaneous),
-    target: SpellTarget(types: {SpellTargetType.creature}, maximumTargets: 1),
+    duration: SpellDuration(
+      type: SpellDurationType.instantaneous,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.creature,
+      },
+      maximumTargets: 1,
+    ),
     persistentEffects: [
       SpellPersistentEffect(
         id: 'reincarnate_new_adult_body',
@@ -16252,7 +20939,9 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'druid'},
+    classIds: {
+      'druid',
+    },
   ),
   SpellIds.greaterRestoration: SpellDefinition(
     id: SpellIds.greaterRestoration,
@@ -16277,8 +20966,12 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 5,
     school: SpellSchool.abjuration,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.touch),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.touch,
+    ),
     components: SpellComponents(
       verbal: true,
       somatic: true,
@@ -16291,8 +20984,15 @@ const Map<String, SpellDefinition> spellDefinitions = {
         ),
       ],
     ),
-    duration: SpellDuration(type: SpellDurationType.instantaneous),
-    target: SpellTarget(types: {SpellTargetType.creature}, maximumTargets: 1),
+    duration: SpellDuration(
+      type: SpellDurationType.instantaneous,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.creature,
+      },
+      maximumTargets: 1,
+    ),
     persistentEffects: [
       SpellPersistentEffect(
         id: 'greater_restoration_remove_debilitating_effect',
@@ -16311,7 +21011,11 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'bard', 'cleric', 'druid'},
+    classIds: {
+      'bard',
+      'cleric',
+      'druid',
+    },
   ),
   SpellIds.awaken: SpellDefinition(
     id: SpellIds.awaken,
@@ -16340,8 +21044,13 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 5,
     school: SpellSchool.transmutation,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.hour, amount: 8),
-    range: SpellRange(type: SpellRangeType.touch),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.hour,
+      amount: 8,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.touch,
+    ),
     components: SpellComponents(
       verbal: true,
       somatic: true,
@@ -16354,8 +21063,15 @@ const Map<String, SpellDefinition> spellDefinitions = {
         ),
       ],
     ),
-    duration: SpellDuration(type: SpellDurationType.instantaneous),
-    target: SpellTarget(types: {SpellTargetType.creature}, maximumTargets: 1),
+    duration: SpellDuration(
+      type: SpellDurationType.instantaneous,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.creature,
+      },
+      maximumTargets: 1,
+    ),
     persistentEffects: [
       SpellPersistentEffect(
         id: 'awaken_granted_intelligence_and_speech',
@@ -16375,7 +21091,10 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'bard', 'druid'},
+    classIds: {
+      'bard',
+      'druid',
+    },
   ),
   SpellIds.hallow: SpellDefinition(
     id: SpellIds.hallow,
@@ -16412,8 +21131,13 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 5,
     school: SpellSchool.evocation,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.hour, amount: 24),
-    range: SpellRange(type: SpellRangeType.touch),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.hour,
+      amount: 24,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.touch,
+    ),
     area: SpellArea(
       shape: SpellAreaShape.radius,
       origin: SpellAreaOrigin.targetPoint,
@@ -16434,8 +21158,15 @@ const Map<String, SpellDefinition> spellDefinitions = {
         ),
       ],
     ),
-    duration: SpellDuration(type: SpellDurationType.untilDispelled),
-    target: SpellTarget(types: {SpellTargetType.point, SpellTargetType.area}),
+    duration: SpellDuration(
+      type: SpellDurationType.untilDispelled,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.point,
+        SpellTargetType.area,
+      },
+    ),
     savingThrow: SpellSavingThrow(
       ability: SpellSavingThrowAbility.charisma,
       onSuccess: SpellSaveSuccess.special,
@@ -16469,7 +21200,9 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'cleric'},
+    classIds: {
+      'cleric',
+    },
   ),
   SpellIds.scrying: SpellDefinition(
     id: SpellIds.scrying,
@@ -16504,7 +21237,9 @@ const Map<String, SpellDefinition> spellDefinitions = {
       type: SpellCastingTimeType.minute,
       amount: 10,
     ),
-    range: SpellRange(type: SpellRangeType.self),
+    range: SpellRange(
+      type: SpellRangeType.self,
+    ),
     components: SpellComponents(
       verbal: true,
       somatic: true,
@@ -16522,7 +21257,10 @@ const Map<String, SpellDefinition> spellDefinitions = {
       concentration: true,
     ),
     target: SpellTarget(
-      types: {SpellTargetType.creature, SpellTargetType.point},
+      types: {
+        SpellTargetType.creature,
+        SpellTargetType.point,
+      },
       maximumTargets: 1,
     ),
     savingThrow: SpellSavingThrow(
@@ -16533,7 +21271,9 @@ const Map<String, SpellDefinition> spellDefinitions = {
       SpellPersistentEffect(
         id: 'scrying_invisible_sensor',
         type: SpellPersistentEffectType.magicalLink,
-        link: SpellLinkEffect(shareSenses: true),
+        link: SpellLinkEffect(
+          shareSenses: true,
+        ),
         ruleTags: {
           'creature_target_must_be_on_same_plane_as_caster',
           'target_can_voluntarily_fail_wisdom_save',
@@ -16554,7 +21294,13 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'bard', 'cleric', 'druid', 'warlock', 'wizard'},
+    classIds: {
+      'bard',
+      'cleric',
+      'druid',
+      'warlock',
+      'wizard',
+    },
   ),
   SpellIds.seeming: SpellDefinition(
     id: SpellIds.seeming,
@@ -16585,11 +21331,26 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 5,
     school: SpellSchool.illusion,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
-    range: SpellRange(type: SpellRangeType.distance, distanceMeters: 9),
-    components: SpellComponents(verbal: true, somatic: true),
-    duration: SpellDuration(type: SpellDurationType.hour, amount: 8),
-    target: SpellTarget(types: {SpellTargetType.creatures}),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 9,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.hour,
+      amount: 8,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.creatures,
+      },
+    ),
     savingThrow: SpellSavingThrow(
       ability: SpellSavingThrowAbility.charisma,
       onSuccess: SpellSaveSuccess.negates,
@@ -16614,7 +21375,11 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'bard', 'sorcerer', 'wizard'},
+    classIds: {
+      'bard',
+      'sorcerer',
+      'wizard',
+    },
   ),
   SpellIds.dream: SpellDefinition(
     id: SpellIds.dream,
@@ -16646,8 +21411,13 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ),
     level: 5,
     school: SpellSchool.illusion,
-    castingTime: SpellCastingTime(type: SpellCastingTimeType.minute, amount: 1),
-    range: SpellRange(type: SpellRangeType.special),
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.minute,
+      amount: 1,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.special,
+    ),
     components: SpellComponents(
       verbal: true,
       somatic: true,
@@ -16658,13 +21428,26 @@ const Map<String, SpellDefinition> spellDefinitions = {
         ),
       ],
     ),
-    duration: SpellDuration(type: SpellDurationType.hour, amount: 8),
-    target: SpellTarget(types: {SpellTargetType.creature}, maximumTargets: 1),
+    duration: SpellDuration(
+      type: SpellDurationType.hour,
+      amount: 8,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.creature,
+      },
+      maximumTargets: 1,
+    ),
     savingThrow: SpellSavingThrow(
       ability: SpellSavingThrowAbility.wisdom,
       onSuccess: SpellSaveSuccess.special,
     ),
-    damage: [SpellDamage(dice: '3d6', type: SpellDamageType.psychic)],
+    damage: [
+      SpellDamage(
+        dice: '3d6',
+        type: SpellDamageType.psychic,
+      ),
+    ],
     persistentEffects: [
       SpellPersistentEffect(
         id: 'dream_messenger_and_nightmare',
@@ -16688,7 +21471,11 @@ const Map<String, SpellDefinition> spellDefinitions = {
         },
       ),
     ],
-    classIds: {'bard', 'warlock', 'wizard'},
+    classIds: {
+      'bard',
+      'warlock',
+      'wizard',
+    },
   ),
   SpellIds.telekinesis: SpellDefinition(
     id: SpellIds.telekinesis,
@@ -16827,6 +21614,7 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ],
     classIds: {'druid', 'ranger'},
   ),
+
 };
 
 SpellDefinition? spellDefinitionFor(String id) => spellDefinitions[id];
@@ -16866,7 +21654,9 @@ List<SpellDefinition> spellDefinitionsMatching(
         }
 
         result = result.where(
-          (spell) => constraint.values.any(spell.classIds.contains),
+          (spell) => constraint.values.any(
+            spell.classIds.contains,
+          ),
         );
         break;
     }
