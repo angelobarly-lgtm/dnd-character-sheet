@@ -1168,6 +1168,10 @@ abstract final class SpellIds {
   static const holdMonster = 'hold_monster';
   static const circleOfPower = 'circle_of_power';
   static const teleportationCircle = 'teleportation_circle';
+  static const flameStrike = 'flame_strike';
+  static const commune = 'commune';
+  static const communeWithNature = 'commune_with_nature';
+  static const coneOfCold = 'cone_of_cold';
 }
 
 const Map<String, SpellDefinition> spellDefinitions = {
@@ -18438,6 +18442,324 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ],
     classIds: {
       'bard',
+      'sorcerer',
+      'wizard',
+    },
+  ),
+  SpellIds.flameStrike: SpellDefinition(
+    id: SpellIds.flameStrike,
+    content: RuleContent(
+      id: SpellIds.flameStrike,
+      name: 'Colpo Infuocato',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Una colonna di fuoco divino infligge danni da fuoco e radiosi in un cilindro.',
+        details: 'Una colonna verticale di fuoco divino scende in un cilindro '
+            'di 3 metri di raggio e 12 metri di altezza, centrato su un punto '
+            'entro 18 metri. Ogni creatura nell’area effettua un tiro '
+            'salvezza su Destrezza: se lo fallisce subisce 4d6 danni da fuoco '
+            'e 4d6 danni radiosi, mentre se lo supera subisce metà dei danni. '
+            'Con uno slot di 6° livello o superiore, l’incantatore aumenta di '
+            '1d6 per ogni livello dello slot oltre il 5° i danni da fuoco '
+            'oppure quelli radiosi, scegliendo uno dei due tipi.',
+      ),
+      ownerId: SpellIds.flameStrike,
+    ),
+    level: 5,
+    school: SpellSchool.evocation,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 18,
+    ),
+    area: SpellArea(
+      shape: SpellAreaShape.cylinder,
+      origin: SpellAreaOrigin.targetPoint,
+      radiusMeters: 3,
+      heightMeters: 12,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+      materials: [
+        SpellMaterialComponent(
+          description: 'Un pizzico di zolfo.',
+        ),
+      ],
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.instantaneous,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.point,
+        SpellTargetType.area,
+      },
+    ),
+    savingThrow: SpellSavingThrow(
+      ability: SpellSavingThrowAbility.dexterity,
+      onSuccess: SpellSaveSuccess.halfDamage,
+    ),
+    damage: [
+      SpellDamage(
+        dice: '4d6',
+        type: SpellDamageType.fire,
+      ),
+      SpellDamage(
+        dice: '4d6',
+        type: SpellDamageType.radiant,
+      ),
+    ],
+    scaling: SpellScaling(
+      type: SpellScalingType.slotLevel,
+      steps: [
+        SpellScalingStep(
+          threshold: 6,
+          additionalDice: '1d6',
+        ),
+      ],
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'flame_strike_divine_column',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'creates_3_meter_radius_12_meter_high_cylinder',
+          'failed_dexterity_save_deals_4d6_fire_and_4d6_radiant_damage',
+          'successful_save_deals_half_damage',
+          'slot_level_above_5_adds_1d6_to_fire_or_radiant_damage_casters_choice',
+        },
+      ),
+    ],
+    classIds: {
+      'cleric',
+    },
+  ),
+  SpellIds.commune: SpellDefinition(
+    id: SpellIds.commune,
+    content: RuleContent(
+      id: SpellIds.commune,
+      name: 'Comunione',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Consente di porre fino a tre domande alla propria divinità o a un suo emissario.',
+        details:
+            'L’incantatore contatta la propria divinità o un suo emissario '
+            'e, entro 1 minuto, pone fino a tre domande a cui sia possibile '
+            'rispondere sì o no. Riceve una risposta esatta a ogni domanda, '
+            'ma può ottenere “incerto” quando l’informazione supera le '
+            'conoscenze della divinità. Il DM può fornire una breve frase se '
+            'una risposta di una parola sarebbe fuorviante o contraria agli '
+            'interessi divini. Se l’incantesimo viene lanciato più volte '
+            'prima del successivo riposo lungo, ogni lancio dopo il primo ha '
+            'una probabilità cumulativa del 25 per cento di non ricevere '
+            'alcuna risposta; il DM effettua il tiro in segreto.',
+      ),
+      ownerId: SpellIds.commune,
+    ),
+    level: 5,
+    school: SpellSchool.divination,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.minute,
+      amount: 1,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.self,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+      materials: [
+        SpellMaterialComponent(
+          description: 'Incenso e una fiala di acqua santa o sacrilega.',
+        ),
+      ],
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.minute,
+      amount: 1,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.self,
+        SpellTargetType.special,
+      },
+    ),
+    ritual: true,
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'commune_divine_answers',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'contacts_casters_deity_or_divine_emissary',
+          'allows_up_to_three_yes_or_no_questions',
+          'questions_must_be_asked_before_spell_ends',
+          'answers_are_truthful',
+          'answer_may_be_uncertain_beyond_deitys_knowledge',
+          'dm_may_answer_with_short_phrase_to_avoid_misleading_reply',
+          'each_cast_after_first_before_long_rest_adds_25_percent_no_answer_chance',
+          'dm_rolls_no_answer_chance_secretly',
+          'can_be_cast_as_ritual',
+        },
+      ),
+    ],
+    classIds: {
+      'cleric',
+    },
+  ),
+  SpellIds.communeWithNature: SpellDefinition(
+    id: SpellIds.communeWithNature,
+    content: RuleContent(
+      id: SpellIds.communeWithNature,
+      name: 'Comunione con la Natura',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Rivela fino a tre informazioni sul territorio naturale circostante.',
+        details: 'L’incantatore diventa un tutt’uno con la natura e apprende '
+            'istantaneamente fino a tre fatti sul territorio circostante. '
+            'All’aperto l’area si estende per 4,5 km; nelle caverne e negli '
+            'ambienti sotterranei naturali è limitata a 90 metri. '
+            'L’incantesimo non funziona dove la natura è stata sostituita da '
+            'costruzioni artificiali, come dungeon e paesi. I fatti possono '
+            'riguardare terreni e masse d’acqua; minerali, animali, vegetali '
+            'o popolazioni rilevanti; celestiali, elementali, folletti, '
+            'immondi o non morti potenti; influenze planari oppure edifici.',
+      ),
+      ownerId: SpellIds.communeWithNature,
+    ),
+    level: 5,
+    school: SpellSchool.divination,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.minute,
+      amount: 1,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.self,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.instantaneous,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.self,
+        SpellTargetType.area,
+      },
+    ),
+    ritual: true,
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'commune_with_nature_territorial_knowledge',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'reveals_up_to_three_facts_about_surrounding_territory',
+          'outdoor_radius_is_4_5_kilometers',
+          'natural_underground_radius_is_90_meters',
+          'fails_where_nature_is_replaced_by_artificial_construction',
+          'may_reveal_terrain_and_bodies_of_water',
+          'may_reveal_notable_minerals_creatures_plants_or_peoples',
+          'may_reveal_powerful_celestials_elementals_fey_fiends_or_undead',
+          'may_reveal_planar_influences_or_buildings',
+          'can_be_cast_as_ritual',
+        },
+      ),
+    ],
+    classIds: {
+      'druid',
+      'ranger',
+    },
+  ),
+  SpellIds.coneOfCold: SpellDefinition(
+    id: SpellIds.coneOfCold,
+    content: RuleContent(
+      id: SpellIds.coneOfCold,
+      name: 'Cono di Freddo',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Una scarica gelida investe un cono e può congelare le creature uccise.',
+        details: 'Una scarica di aria fredda prorompe dalle mani '
+            'dell’incantatore in un cono di 18 metri. Ogni creatura nell’area '
+            'effettua un tiro salvezza su Costituzione: se lo fallisce '
+            'subisce 8d8 danni da freddo, mentre se lo supera subisce metà '
+            'dei danni. Una creatura uccisa dall’incantesimo diventa una '
+            'statua di ghiaccio finché non si scioglie. Con uno slot di 6° '
+            'livello o superiore, i danni aumentano di 1d8 per ogni livello '
+            'dello slot oltre il 5°.',
+      ),
+      ownerId: SpellIds.coneOfCold,
+    ),
+    level: 5,
+    school: SpellSchool.evocation,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.self,
+    ),
+    area: SpellArea(
+      shape: SpellAreaShape.cone,
+      origin: SpellAreaOrigin.caster,
+      sizeMeters: 18,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+      materials: [
+        SpellMaterialComponent(
+          description: 'Un piccolo cono di vetro o di cristallo.',
+        ),
+      ],
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.instantaneous,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.area,
+      },
+    ),
+    savingThrow: SpellSavingThrow(
+      ability: SpellSavingThrowAbility.constitution,
+      onSuccess: SpellSaveSuccess.halfDamage,
+    ),
+    damage: [
+      SpellDamage(
+        dice: '8d8',
+        type: SpellDamageType.cold,
+      ),
+    ],
+    scaling: SpellScaling(
+      type: SpellScalingType.slotLevel,
+      steps: [
+        SpellScalingStep(
+          threshold: 6,
+          additionalDice: '1d8',
+        ),
+      ],
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'cone_of_cold_freezing_blast',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'creates_18_meter_cone_from_caster',
+          'failed_constitution_save_deals_8d8_cold_damage',
+          'successful_save_deals_half_damage',
+          'creature_killed_by_spell_becomes_ice_statue_until_it_melts',
+          'slot_level_above_5_adds_1d8_cold_damage_per_level',
+        },
+      ),
+    ],
+    classIds: {
       'sorcerer',
       'wizard',
     },

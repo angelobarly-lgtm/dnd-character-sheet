@@ -6,10 +6,10 @@ Checklist di lavoro per espandere `lib/data/spell_data.dart` con gli incantesimi
 - [x] Blocca Mostri
 - [x] Cerchio di Potere
 - [x] Cerchio di Teletrasporto
-- [ ] Colpo Infuocato
-- [ ] Comunione
-- [ ] Comunione con la Natura
-- [ ] Cono di Freddo
+- [x] Colpo Infuocato
+- [x] Comunione
+- [x] Comunione con la Natura
+- [x] Cono di Freddo
 - [ ] Conoscenza delle Leggende
 - [ ] Contagio
 - [ ] Contattare Altri Piani
