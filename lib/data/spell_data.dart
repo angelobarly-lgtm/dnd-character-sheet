@@ -1172,6 +1172,10 @@ abstract final class SpellIds {
   static const commune = 'commune';
   static const communeWithNature = 'commune_with_nature';
   static const coneOfCold = 'cone_of_cold';
+  static const legendLore = 'legend_lore';
+  static const contagion = 'contagion';
+  static const contactOtherPlane = 'contact_other_plane';
+  static const geas = 'geas';
 }
 
 const Map<String, SpellDefinition> spellDefinitions = {
@@ -18761,6 +18765,316 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ],
     classIds: {
       'sorcerer',
+      'wizard',
+    },
+  ),
+  SpellIds.legendLore: SpellDefinition(
+    id: SpellIds.legendLore,
+    content: RuleContent(
+      id: SpellIds.legendLore,
+      name: 'Conoscenza delle Leggende',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Rivela le conoscenze più significative relative a una persona, un luogo o un oggetto leggendario.',
+        details: 'L’incantatore nomina o descrive una persona, un luogo o un '
+            'oggetto e riceve mentalmente un breve riassunto delle conoscenze '
+            'più significative che lo riguardano, incluse storie attuali, '
+            'racconti dimenticati o segreti mai divenuti di dominio pubblico. '
+            'Se il soggetto non ha importanza leggendaria, non riceve alcuna '
+            'informazione. Più informazioni possiede già, più precisa e '
+            'dettagliata sarà la risposta. Le informazioni sono accurate, ma '
+            'possono essere espresse tramite metafore e allegorie. L’incenso '
+            'del valore di almeno 250 mo viene consumato dal lancio.',
+      ),
+      ownerId: SpellIds.legendLore,
+    ),
+    level: 5,
+    school: SpellSchool.divination,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.minute,
+      amount: 10,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.self,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+      materials: [
+        SpellMaterialComponent(
+          description:
+              'Incenso del valore di almeno 250 mo, consumato dall’incantesimo.',
+          minimumCostGp: 250,
+          consumed: true,
+        ),
+        SpellMaterialComponent(
+          description:
+              'Quattro bastoncini d’avorio del valore di almeno 50 mo ciascuno.',
+          minimumCostGp: 200,
+        ),
+      ],
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.instantaneous,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.special,
+      },
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'legend_lore_significant_knowledge',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'names_or_describes_person_place_or_object',
+          'reveals_significant_current_forgotten_or_secret_lore',
+          'no_information_if_subject_is_not_of_legendary_importance',
+          'more_existing_knowledge_produces_more_precise_information',
+          'information_is_accurate_but_may_use_metaphor_or_allegory',
+          'consumes_incense_worth_at_least_250_gp',
+          'requires_four_ivory_sticks_worth_at_least_50_gp_each',
+        },
+      ),
+    ],
+    classIds: {
+      'bard',
+      'wizard',
+    },
+  ),
+  SpellIds.contagion: SpellDefinition(
+    id: SpellIds.contagion,
+    content: RuleContent(
+      id: SpellIds.contagion,
+      name: 'Contagio',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Trasmette con un attacco a contatto una malattia naturale scelta dall’incantatore.',
+        details: 'L’incantatore effettua un attacco in mischia con questo '
+            'incantesimo contro una creatura a contatto. Se colpisce, sceglie '
+            'una malattia: Carne Putrefatta, Devastazione Vischiosa, Febbre '
+            'Lurida, Fuoco Mentale, Infermità Accecante o Tremarella. Alla '
+            'fine di ogni turno il bersaglio effettua un tiro salvezza su '
+            'Costituzione. Dopo tre fallimenti, non necessariamente '
+            'consecutivi, la malattia permane per tutti i 7 giorni; dopo tre '
+            'successi la creatura si riprende e l’incantesimo termina. Essendo '
+            'una malattia naturale, può essere rimossa o mitigata dagli '
+            'effetti che agiscono sulle malattie.',
+      ),
+      ownerId: SpellIds.contagion,
+    ),
+    level: 5,
+    school: SpellSchool.necromancy,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.touch,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.day,
+      amount: 7,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.creature,
+      },
+      maximumTargets: 1,
+    ),
+    attackType: SpellAttackType.melee,
+    savingThrow: SpellSavingThrow(
+      ability: SpellSavingThrowAbility.constitution,
+      onSuccess: SpellSaveSuccess.special,
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'contagion_natural_disease',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'requires_successful_melee_spell_attack',
+          'caster_chooses_one_of_six_natural_diseases',
+          'target_makes_constitution_save_at_end_of_each_turn',
+          'three_failed_saves_make_disease_last_full_duration',
+          'three_successful_saves_end_spell_and_disease',
+          'successes_and_failures_need_not_be_consecutive',
+          'disease_removal_and_disease_mitigation_effects_apply',
+          'flesh_rot_grants_disadvantage_on_charisma_checks_and_vulnerability_to_all_damage',
+          'slimy_doom_grants_disadvantage_on_constitution_checks_and_saves_and_damage_causes_stun',
+          'filth_fever_grants_disadvantage_on_strength_checks_saves_and_strength_attacks',
+          'mindfire_grants_disadvantage_on_intelligence_checks_and_saves_and_causes_confusion_in_combat',
+          'blinding_sickness_grants_disadvantage_on_wisdom_checks_and_saves_and_blinds',
+          'shakes_grant_disadvantage_on_dexterity_checks_saves_and_dexterity_attacks',
+        },
+      ),
+    ],
+    classIds: {
+      'cleric',
+      'druid',
+    },
+  ),
+  SpellIds.contactOtherPlane: SpellDefinition(
+    id: SpellIds.contactOtherPlane,
+    content: RuleContent(
+      id: SpellIds.contactOtherPlane,
+      name: 'Contattare Altri Piani',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Contatta un’entità extraplanare per porre domande, rischiando danni psichici e follia.',
+        details: 'L’incantatore contatta mentalmente un’entità di un altro '
+            'piano e deve superare un tiro salvezza su Intelligenza con CD '
+            '15. Se lo fallisce subisce 6d6 danni psichici e impazzisce fino '
+            'a quando completa un riposo lungo: non può effettuare azioni, '
+            'non comprende le altre creature, non sa leggere e pronuncia '
+            'soltanto parole senza senso. Ristorare Superiore termina la '
+            'follia. Se supera il tiro, può porre fino a cinque domande entro '
+            '1 minuto. Il DM risponde con una parola come sì, no, forse, mai, '
+            'irrilevante o ignoto, oppure con una breve frase per evitare una '
+            'risposta fuorviante.',
+      ),
+      ownerId: SpellIds.contactOtherPlane,
+    ),
+    level: 5,
+    school: SpellSchool.divination,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.minute,
+      amount: 1,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.self,
+    ),
+    components: SpellComponents(
+      verbal: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.minute,
+      amount: 1,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.self,
+        SpellTargetType.special,
+      },
+    ),
+    ritual: true,
+    savingThrow: SpellSavingThrow(
+      ability: SpellSavingThrowAbility.intelligence,
+      onSuccess: SpellSaveSuccess.special,
+    ),
+    damage: [
+      SpellDamage(
+        dice: '6d6',
+        type: SpellDamageType.psychic,
+      ),
+    ],
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'contact_other_plane_answers_and_madness',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'caster_makes_dc15_intelligence_save',
+          'failed_save_deals_6d6_psychic_damage',
+          'failed_save_causes_madness_until_long_rest',
+          'mad_caster_cannot_take_actions_understand_speech_or_read',
+          'mad_caster_speaks_only_gibberish',
+          'greater_restoration_ends_madness',
+          'successful_save_allows_up_to_five_questions',
+          'questions_must_be_asked_before_spell_ends',
+          'dm_normally_answers_each_question_with_one_word',
+          'dm_may_use_short_phrase_to_avoid_misleading_answer',
+          'can_be_cast_as_ritual',
+        },
+      ),
+    ],
+    classIds: {
+      'warlock',
+      'wizard',
+    },
+  ),
+  SpellIds.geas: SpellDefinition(
+    id: SpellIds.geas,
+    content: RuleContent(
+      id: SpellIds.geas,
+      name: 'Costrizione',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Impone per lungo tempo un comando magico a una creatura capace di comprendere l’incantatore.',
+        details: 'L’incantatore impartisce un comando a una creatura visibile '
+            'entro 18 metri. Se può comprenderlo, la creatura effettua un '
+            'tiro salvezza su Saggezza e, se lo fallisce, è affascinata per '
+            '30 giorni. Quando agisce deliberatamente contro le istruzioni, '
+            'subisce 5d10 danni psichici, ma non più di una volta al giorno. '
+            'Un comando che condurrebbe a morte certa termina l’incantesimo. '
+            'L’incantatore può terminarlo con un’azione; anche Desiderio, '
+            'Rimuovi Maledizione o Ristorare Superiore lo terminano. Con slot '
+            'di 7° o 8° livello dura 1 anno; con uno slot di 9° livello dura '
+            'finché non viene terminato da uno degli incantesimi indicati.',
+      ),
+      ownerId: SpellIds.geas,
+    ),
+    level: 5,
+    school: SpellSchool.enchantment,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.minute,
+      amount: 1,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 18,
+    ),
+    components: SpellComponents(
+      verbal: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.day,
+      amount: 30,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.creature,
+      },
+      maximumTargets: 1,
+    ),
+    savingThrow: SpellSavingThrow(
+      ability: SpellSavingThrowAbility.wisdom,
+      onSuccess: SpellSaveSuccess.negates,
+    ),
+    damage: [
+      SpellDamage(
+        dice: '5d10',
+        type: SpellDamageType.psychic,
+      ),
+    ],
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'geas_magical_command',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'target_must_understand_caster',
+          'failed_wisdom_save_charms_target',
+          'target_must_follow_service_or_prohibition',
+          'deliberate_disobedience_deals_5d10_psychic_damage',
+          'damage_occurs_at_most_once_per_day',
+          'suicidal_command_ends_spell',
+          'caster_may_end_spell_with_action',
+          'wish_remove_curse_or_greater_restoration_ends_spell',
+          'slot_level_7_or_8_extends_duration_to_one_year',
+          'slot_level_9_lasts_until_ended_by_listed_spell',
+        },
+      ),
+    ],
+    classIds: {
+      'bard',
+      'cleric',
+      'druid',
+      'paladin',
       'wizard',
     },
   ),

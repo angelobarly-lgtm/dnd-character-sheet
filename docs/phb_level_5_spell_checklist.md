@@ -10,10 +10,10 @@ Checklist di lavoro per espandere `lib/data/spell_data.dart` con gli incantesimi
 - [x] Comunione
 - [x] Comunione con la Natura
 - [x] Cono di Freddo
-- [ ] Conoscenza delle Leggende
-- [ ] Contagio
-- [ ] Contattare Altri Piani
-- [ ] Costrizione
+- [x] Conoscenza delle Leggende
+- [x] Contagio
+- [x] Contattare Altri Piani
+- [x] Costrizione
 - [ ] Creazione
 - [ ] Cura Ferite di Massa
 - [ ] Dissolvi il Bene e il Male
