@@ -929,6 +929,11 @@ class SpellDefinition {
 /// Verrà popolato progressivamente. Tenere un unico registry permette a
 /// razze, classi, talenti e altri sistemi di riferirsi allo stesso ID.
 abstract final class SpellIds {
+  static const resurrection = 'resurrection';
+  static const mordenkainensMagnificentMansion =
+      'mordenkainens_magnificent_mansion';
+  static const divineWord = 'divine_word';
+  static const delayedBlastFireball = 'delayed_blast_fireball';
   static const mirageArcane = 'mirage_arcane';
   static const reverseGravity = 'reverse_gravity';
   static const projectImage = 'project_image';
@@ -24968,6 +24973,346 @@ const Map<String, SpellDefinition> spellDefinitions = {
       'bard',
       'druid',
       'wizard',
+    },
+  ),
+  SpellIds.delayedBlastFireball: SpellDefinition(
+    id: SpellIds.delayedBlastFireball,
+    content: RuleContent(
+      id: SpellIds.delayedBlastFireball,
+      name: 'Palla di Fuoco Ritardata',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Crea una perla esplosiva che accumula danni da fuoco finché non viene fatta detonare.',
+        details:
+            'Un raggio giallo forma una perla scintillante in un punto entro '
+            'gittata. Quando la concentrazione termina o l’incantatore decide '
+            'di concludere l’incantesimo, la perla esplode con un raggio di '
+            '6 metri e le fiamme si propagano oltre gli angoli. Ogni creatura '
+            'nell’area effettua un tiro salvezza su Destrezza, subendo il '
+            'totale dei danni accumulati se fallisce o la metà se lo supera. '
+            'Il danno base è 12d6 e aumenta di 1d6 alla fine di ogni turno '
+            'dell’incantatore in cui la perla non è ancora esplosa. Una '
+            'creatura che la tocca deve superare un tiro salvezza su Destrezza '
+            'per scagliarla fino a 12 metri; se fallisce, la perla esplode '
+            'immediatamente. Se la perla colpisce una creatura o un oggetto '
+            'solido, esplode. Le fiamme danneggiano gli oggetti e incendiano '
+            'quelli infiammabili non indossati o trasportati. Il danno base '
+            'aumenta di 1d6 per ogni livello dello slot oltre il 7°.',
+      ),
+      ownerId: SpellIds.delayedBlastFireball,
+    ),
+    level: 7,
+    school: SpellSchool.evocation,
+    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 45,
+    ),
+    area: SpellArea(
+      shape: SpellAreaShape.sphere,
+      origin: SpellAreaOrigin.targetPoint,
+      radiusMeters: 6,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+      materials: [
+        SpellMaterialComponent(
+          description: 'Una piccola sfera di sterco di pipistrello e zolfo.',
+        ),
+      ],
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.minute,
+      amount: 1,
+      concentration: true,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.point,
+        SpellTargetType.area,
+      },
+    ),
+    savingThrow: SpellSavingThrow(
+      ability: SpellSavingThrowAbility.dexterity,
+      onSuccess: SpellSaveSuccess.halfDamage,
+    ),
+    damage: [
+      SpellDamage(
+        dice: '12d6',
+        type: SpellDamageType.fire,
+      ),
+    ],
+    scaling: SpellScaling(
+      type: SpellScalingType.slotLevel,
+      steps: [
+        SpellScalingStep(
+          threshold: 8,
+          additionalDice: '1d6',
+        ),
+      ],
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'delayed_blast_fireball_accumulating_bead',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'explosion_radius_6_meters',
+          'explosion_spreads_around_corners',
+          'base_damage_is_12d6_fire',
+          'damage_increases_1d6_at_end_of_each_caster_turn',
+          'caster_can_end_concentration_to_detonate_bead',
+          'interrupted_concentration_detonates_bead',
+          'touching_creature_makes_dexterity_save',
+          'failed_touch_save_detonates_bead',
+          'successful_touch_save_allows_throw_up_to_12_meters',
+          'impact_with_creature_or_solid_object_detonates_bead',
+          'fire_damages_objects_in_area',
+          'fire_ignites_flammable_objects_not_worn_or_carried',
+          'base_damage_gains_1d6_per_slot_level_above_7',
+          'requires_concentration',
+        },
+      ),
+    ],
+    classIds: {
+      'sorcerer',
+      'wizard',
+    },
+  ),
+  SpellIds.divineWord: SpellDefinition(
+    id: SpellIds.divineWord,
+    content: RuleContent(
+      id: SpellIds.divineWord,
+      name: 'Parola Divina',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Pronuncia una parola divina che debilita, uccide o bandisce le creature in base ai loro punti ferita.',
+        details:
+            'L’incantatore sceglie un qualsiasi numero di creature visibili '
+            'entro 9 metri. Ogni creatura in grado di sentirlo deve effettuare '
+            'un tiro salvezza su Carisma. Se lo fallisce, subisce un effetto '
+            'basato sui suoi punti ferita attuali: con 50 o meno è assordata '
+            'per 1 minuto; con 40 o meno è assordata e accecata per 10 minuti; '
+            'con 30 o meno è accecata, assordata e stordita per 1 ora; con '
+            '20 o meno muore istantaneamente. A prescindere dai punti ferita, '
+            'un celestiale, elementale, folletto o immondo che fallisce viene '
+            'respinto sul proprio piano d’origine, se non vi si trova già, '
+            'e non può tornare sul piano attuale per 24 ore se non tramite '
+            'l’incantesimo Desiderio.',
+      ),
+      ownerId: SpellIds.divineWord,
+    ),
+    level: 7,
+    school: SpellSchool.evocation,
+    castingTime: SpellCastingTime(type: SpellCastingTimeType.bonusAction),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 9,
+    ),
+    components: SpellComponents(
+      verbal: true,
+    ),
+    duration: SpellDuration(type: SpellDurationType.instantaneous),
+    target: SpellTarget(
+      types: {SpellTargetType.creatures},
+    ),
+    savingThrow: SpellSavingThrow(
+      ability: SpellSavingThrowAbility.charisma,
+      onSuccess: SpellSaveSuccess.negates,
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'divine_word_hit_point_threshold_effects',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'targets_any_number_of_visible_creatures_in_range',
+          'targets_must_be_able_to_hear_caster',
+          'failed_save_with_50_hp_or_less_deafens_for_1_minute',
+          'failed_save_with_40_hp_or_less_blinds_and_deafens_for_10_minutes',
+          'failed_save_with_30_hp_or_less_blinds_deafens_and_stuns_for_1_hour',
+          'failed_save_with_20_hp_or_less_kills_instantly',
+          'eligible_extraplanar_types_are_celestial_elemental_fey_and_fiend',
+          'failed_save_banishes_eligible_extraplanar_creature_to_home_plane',
+          'already_home_extraplanar_creature_is_not_banished',
+          'banished_creature_cannot_return_for_24_hours',
+          'wish_spell_can_bypass_return_restriction',
+        },
+      ),
+    ],
+    classIds: {
+      'cleric',
+    },
+  ),
+  SpellIds.mordenkainensMagnificentMansion: SpellDefinition(
+    id: SpellIds.mordenkainensMagnificentMansion,
+    content: RuleContent(
+      id: SpellIds.mordenkainensMagnificentMansion,
+      name: 'Reggia Meravigliosa di Mordenkainen',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Evoca una lussuosa dimora extradimensionale con servitori e cibo per cento persone.',
+        details: 'L’incantatore evoca una dimora extradimensionale accessibile '
+            'tramite un portale largo 1,5 metri e alto 3 metri. Soltanto '
+            'l’incantatore e le creature designate al momento del lancio '
+            'possono entrare. L’incantatore può aprire o chiudere il portale '
+            'quando si trova entro 9 metri; da chiuso è invisibile. La '
+            'planimetria può occupare fino a cinquanta cubi con spigolo di '
+            '3 metri, arredati e decorati come desiderato. La dimora contiene '
+            'un banchetto di nove portate per cento persone e cento servitori '
+            'semitrasparenti. I servitori obbediscono agli ordini e svolgono '
+            'i compiti di un normale servitore, ma non possono attaccare o '
+            'ferire direttamente altre creature e non possono uscire. Gli '
+            'oggetti creati si dissolvono in fumo se rimossi dalla dimora. '
+            'Quando l’incantesimo termina, le creature all’interno vengono '
+            'espulse negli spazi liberi più vicini all’entrata.',
+      ),
+      ownerId: SpellIds.mordenkainensMagnificentMansion,
+    ),
+    level: 7,
+    school: SpellSchool.conjuration,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.minute,
+      amount: 1,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 90,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+      materials: [
+        SpellMaterialComponent(
+          description:
+              'Un portale in miniatura scolpito in avorio del valore di almeno 5 mo.',
+          minimumCostGp: 5,
+        ),
+        SpellMaterialComponent(
+          description:
+              'Un frammento di marmo lucido del valore di almeno 5 mo.',
+          minimumCostGp: 5,
+        ),
+        SpellMaterialComponent(
+          description: 'Un cucchiaino d’argento del valore di almeno 5 mo.',
+          minimumCostGp: 5,
+        ),
+      ],
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.day,
+      amount: 1,
+    ),
+    target: SpellTarget(
+      types: {SpellTargetType.point},
+      maximumTargets: 1,
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'mordenkainens_magnificent_mansion_extradimensional_home',
+        type: SpellPersistentEffectType.createdObject,
+        ruleTags: {
+          'creates_extradimensional_dwelling',
+          'entrance_width_1_5_meters',
+          'entrance_height_3_meters',
+          'only_caster_and_designated_creatures_can_enter',
+          'caster_can_open_or_close_portal_within_9_meters',
+          'closed_portal_is_invisible',
+          'layout_maximum_50_cubes_of_3_meters_per_side',
+          'dwelling_is_furnished_and_decorated_as_caster_chooses',
+          'contains_9_course_feast_for_up_to_100_people',
+          'contains_100_semivisible_servants',
+          'servants_obey_casters_orders',
+          'servants_cannot_attack_or_directly_harm_creatures',
+          'servants_cannot_leave_dwelling',
+          'created_objects_turn_to_smoke_outside_dwelling',
+          'occupants_are_ejected_near_entrance_when_spell_ends',
+        },
+      ),
+    ],
+    classIds: {
+      'bard',
+      'wizard',
+    },
+  ),
+  SpellIds.resurrection: SpellDefinition(
+    id: SpellIds.resurrection,
+    content: RuleContent(
+      id: SpellIds.resurrection,
+      name: 'Resurrezione',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Riporta in vita una creatura morta da non più di un secolo, ripristinandone il corpo.',
+        details:
+            'L’incantatore tocca una creatura morta da non più di un secolo '
+            'che non sia morta di vecchiaia e non sia un non morto. Se '
+            'l’anima è libera e consenziente, la creatura torna in vita con '
+            'tutti i punti ferita. L’incantesimo neutralizza i veleni, cura '
+            'le malattie normali, chiude le ferite mortali e ripristina le '
+            'parti del corpo mancanti. Non rimuove malattie magiche, '
+            'maledizioni o afflizioni analoghe. Il bersaglio subisce una '
+            'penalità di -4 ai tiri per colpire, ai tiri salvezza e alle '
+            'prove di caratteristica; la penalità diminuisce di 1 dopo ogni '
+            'riposo lungo. Se la creatura era morta da almeno un anno, '
+            'l’incantatore non può lanciare altri incantesimi e subisce '
+            'svantaggio ai tiri per colpire, alle prove di caratteristica '
+            'e ai tiri salvezza finché non completa un riposo lungo.',
+      ),
+      ownerId: SpellIds.resurrection,
+    ),
+    level: 7,
+    school: SpellSchool.necromancy,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.hour,
+      amount: 1,
+    ),
+    range: SpellRange(type: SpellRangeType.touch),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+      materials: [
+        SpellMaterialComponent(
+          description: 'Un diamante del valore di almeno 1.000 mo.',
+          minimumCostGp: 1000,
+          consumed: true,
+        ),
+      ],
+    ),
+    duration: SpellDuration(type: SpellDurationType.instantaneous),
+    target: SpellTarget(
+      types: {SpellTargetType.creature},
+      maximumTargets: 1,
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'resurrection_restore_dead_creature',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'target_dead_no_more_than_100_years',
+          'target_cannot_have_died_of_old_age',
+          'target_cannot_be_undead',
+          'soul_must_be_free_and_willing',
+          'target_returns_with_all_hit_points',
+          'neutralizes_poison_present_at_death',
+          'cures_normal_diseases_present_at_death',
+          'does_not_remove_magical_diseases',
+          'does_not_remove_curses',
+          'closes_mortal_wounds',
+          'restores_missing_body_parts',
+          'revived_target_has_minus_4_to_attacks_saves_and_ability_checks',
+          'revival_penalty_decreases_by_1_after_each_long_rest',
+          'reviving_target_dead_at_least_1_year_exhausts_caster',
+          'exhausted_caster_cannot_cast_spells_until_long_rest',
+          'exhausted_caster_has_disadvantage_on_attacks_checks_and_saves',
+        },
+      ),
+    ],
+    classIds: {
+      'bard',
+      'cleric',
     },
   ),
 };

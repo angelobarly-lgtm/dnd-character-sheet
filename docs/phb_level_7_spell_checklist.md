@@ -10,10 +10,10 @@ Checklist di lavoro per espandere `lib/data/spell_data.dart` con gli incantesimi
 - [x] Immagine Proiettata
 - [x] Inversione della Gravità
 - [x] Miraggio Arcano
-- [ ] Palla di Fuoco Ritardata
-- [ ] Parola Divina
-- [ ] Reggia Meravigliosa di Mordenkainen
-- [ ] Resurrezione
+- [x] Palla di Fuoco Ritardata
+- [x] Parola Divina
+- [x] Reggia Meravigliosa di Mordenkainen
+- [x] Resurrezione
 - [ ] Rigenerazione
 - [ ] Simbolo
 - [ ] Simulacro
