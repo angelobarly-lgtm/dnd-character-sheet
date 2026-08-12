@@ -1206,6 +1206,10 @@ abstract final class SpellIds {
   static const dream = 'dream';
   static const telekinesis = 'telekinesis';
   static const treeStride = 'tree_stride';
+  static const planarAlly = 'planar_ally';
+  static const sunbeam = 'sunbeam';
+  static const heroesFeast = 'heroes_feast';
+  static const bladeBarrier = 'blade_barrier';
 }
 
 const Map<String, SpellDefinition> spellDefinitions = {
@@ -21614,7 +21618,338 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ],
     classIds: {'druid', 'ranger'},
   ),
-
+  SpellIds.planarAlly: SpellDefinition(
+    id: SpellIds.planarAlly,
+    content: RuleContent(
+      id: SpellIds.planarAlly,
+      name: 'Alleato Planare',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Chiede a un’entità cosmica di inviare una creatura ultraterrena con cui negoziare un servizio.',
+        details:
+            'L’incantatore chiede aiuto a un’entità ultraterrena conosciuta, '
+            'come un dio, un primordiale o un principe dei demoni. L’entità '
+            'invia un celestiale, un elementale o un immondo a lei fedele, che '
+            'appare in uno spazio libero entro 18 metri. L’incantatore può '
+            'richiedere una creatura specifica, ma il DM può inviarne una '
+            'diversa. La creatura non è obbligata ad accettare ordini: '
+            'l’incantatore deve poter comunicare con lei e negoziare servizio '
+            'e pagamento. Come indicazione, un compito misurato in minuti '
+            'costa 100 mo al minuto, uno misurato in ore 1.000 mo all’ora e '
+            'uno misurato in giorni, fino a 10 giorni, 10.000 mo al giorno. '
+            'Il DM può modificare il prezzo in base al rischio, all’etica '
+            'della creatura e alle circostanze. Completato il servizio o '
+            'terminato il periodo concordato, la creatura torna al proprio '
+            'piano. Se non viene raggiunto un accordo, ritorna immediatamente. '
+            'Se si unisce al gruppo, ne diventa un membro e riceve la propria '
+            'quota di punti esperienza.',
+      ),
+      ownerId: SpellIds.planarAlly,
+    ),
+    level: 6,
+    school: SpellSchool.conjuration,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.minute,
+      amount: 10,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 18,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.instantaneous,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.point,
+      },
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'planar_ally_negotiated_service',
+        type: SpellPersistentEffectType.summonedCreature,
+        ruleTags: {
+          'caster_requests_aid_from_known_otherworldly_entity',
+          'entity_sends_loyal_celestial_elemental_or_fiend',
+          'creature_appears_in_unoccupied_space_within_18_meters',
+          'caster_may_request_specific_creature_by_name',
+          'dm_may_send_different_creature',
+          'creature_is_not_compelled_to_accept_service',
+          'caster_must_communicate_and_negotiate_with_creature',
+          'minute_service_suggested_cost_100_gp_per_minute',
+          'hour_service_suggested_cost_1000_gp_per_hour',
+          'day_service_suggested_cost_10000_gp_per_day',
+          'service_can_last_up_to_10_days',
+          'dm_can_adjust_payment_for_ethics_risk_and_circumstances',
+          'non_dangerous_service_usually_costs_half',
+          'suicidal_service_is_rarely_accepted',
+          'creature_returns_home_after_service_or_agreed_duration',
+          'creature_returns_immediately_if_no_agreement_is_reached',
+          'creature_joining_party_receives_share_of_experience',
+          'does_not_require_concentration',
+        },
+      ),
+    ],
+    classIds: {
+      'cleric',
+    },
+  ),
+  SpellIds.sunbeam: SpellDefinition(
+    id: SpellIds.sunbeam,
+    content: RuleContent(
+      id: SpellIds.sunbeam,
+      name: 'Bagliore Solare',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Proietta ripetutamente una linea di luce solare che infligge danni radiosi e può accecare.',
+        details:
+            'Una linea di luce lunga 18 metri e larga 1,5 metri scaturisce '
+            'dalla mano dell’incantatore. Ogni creatura sulla linea effettua '
+            'un tiro salvezza su Costituzione. Se lo fallisce, subisce 6d8 '
+            'danni radiosi ed è accecata fino al turno successivo '
+            'dell’incantatore; se lo supera, subisce metà danni e non è '
+            'accecata. Le melme e i non morti hanno svantaggio al tiro '
+            'salvezza. Finché l’incantesimo permane, l’incantatore può usare '
+            'la propria azione in qualsiasi turno per creare una nuova linea. '
+            'Una scintilla nella sua mano proietta luce intensa entro 9 metri '
+            'e luce fioca per altri 9 metri; questa luce è luce solare.',
+      ),
+      ownerId: SpellIds.sunbeam,
+    ),
+    level: 6,
+    school: SpellSchool.evocation,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.self,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+      materials: [
+        SpellMaterialComponent(
+          description: 'Una lente d’ingrandimento.',
+        ),
+      ],
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.minute,
+      amount: 1,
+      concentration: true,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.area,
+      },
+    ),
+    savingThrow: SpellSavingThrow(
+      ability: SpellSavingThrowAbility.constitution,
+      onSuccess: SpellSaveSuccess.halfDamage,
+    ),
+    damage: [
+      SpellDamage(
+        dice: '6d8',
+        type: SpellDamageType.radiant,
+      ),
+    ],
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'sunbeam_repeating_radiant_line',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'creates_18_meter_long_1_5_meter_wide_line',
+          'each_creature_in_line_makes_constitution_save',
+          'failed_save_deals_6d8_radiant_damage',
+          'failed_save_blinds_until_casters_next_turn',
+          'successful_save_deals_half_damage_and_does_not_blind',
+          'oozes_have_disadvantage_on_save',
+          'undead_have_disadvantage_on_save',
+          'caster_can_use_action_each_turn_to_create_new_line',
+          'casters_hand_emits_bright_light_9_meters',
+          'casters_hand_emits_dim_light_additional_9_meters',
+          'emitted_light_counts_as_sunlight',
+          'requires_concentration',
+        },
+      ),
+    ],
+    classIds: {
+      'druid',
+      'sorcerer',
+      'wizard',
+    },
+  ),
+  SpellIds.heroesFeast: SpellDefinition(
+    id: SpellIds.heroesFeast,
+    content: RuleContent(
+      id: SpellIds.heroesFeast,
+      name: 'Banchetto degli Eroi',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Evoca un banchetto che, dopo un’ora, protegge e rafforza i partecipanti per 24 ore.',
+        details:
+            'L’incantatore evoca un sontuoso banchetto. Consumarlo richiede '
+            '1 ora e i benefici si applicano solo al termine, quando il '
+            'banchetto scompare. Possono partecipare l’incantatore e fino a '
+            'dodici altre creature. Ogni partecipante viene guarito da tutte '
+            'le malattie e dai veleni, diventa immune ai veleni e alla '
+            'condizione di spaventato, ottiene vantaggio a tutti i tiri '
+            'salvezza su Saggezza e aumenta di 2d10 sia il proprio massimo '
+            'dei punti ferita sia i punti ferita attuali. I benefici durano '
+            '24 ore. La scodella da almeno 1.000 mo viene consumata.',
+      ),
+      ownerId: SpellIds.heroesFeast,
+    ),
+    level: 6,
+    school: SpellSchool.conjuration,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.minute,
+      amount: 10,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 9,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+      materials: [
+        SpellMaterialComponent(
+          description:
+              'Una scodella tempestata di gemme del valore di almeno 1.000 mo, consumata dall’incantesimo.',
+          minimumCostGp: 1000,
+          consumed: true,
+        ),
+      ],
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.instantaneous,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.creatures,
+      },
+      maximumTargets: 13,
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'heroes_feast_twenty_four_hour_benefits',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'feast_requires_1_hour_to_consume',
+          'benefits_begin_only_after_feast_is_completed',
+          'caster_and_up_to_12_other_creatures_can_participate',
+          'participants_are_cured_of_all_diseases',
+          'participants_are_cured_of_all_poison',
+          'participants_are_immune_to_poison',
+          'participants_are_immune_to_frightened_condition',
+          'participants_have_advantage_on_wisdom_saving_throws',
+          'maximum_hit_points_increase_by_2d10',
+          'current_hit_points_increase_by_same_2d10_result',
+          'benefits_last_24_hours',
+          'material_component_worth_1000_gp_is_consumed',
+          'does_not_require_concentration',
+        },
+      ),
+    ],
+    classIds: {
+      'cleric',
+      'druid',
+    },
+  ),
+  SpellIds.bladeBarrier: SpellDefinition(
+    id: SpellIds.bladeBarrier,
+    content: RuleContent(
+      id: SpellIds.bladeBarrier,
+      name: 'Barriera di Lame',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Crea un muro di lame turbinanti che ostacola il movimento e lacera chi lo attraversa.',
+        details: 'L’incantatore crea entro 27 metri un muro verticale di lame '
+            'magiche turbinanti. Può essere una parete lunga fino a 30 metri, '
+            'alta 6 metri e spessa 1,5 metri, oppure un muro circolare con '
+            'diametro massimo di 18 metri, alto 6 metri e spesso 1,5 metri. '
+            'Il muro fornisce tre quarti di copertura alle creature dietro di '
+            'esso e il suo spazio è terreno difficile. Quando una creatura '
+            'entra nell’area del muro per la prima volta in un turno o vi '
+            'inizia il proprio turno, effettua un tiro salvezza su Destrezza. '
+            'Se lo fallisce, subisce 6d10 danni taglienti; se lo supera, '
+            'subisce metà danni.',
+      ),
+      ownerId: SpellIds.bladeBarrier,
+    ),
+    level: 6,
+    school: SpellSchool.evocation,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 27,
+    ),
+    wall: SpellWallDefinition(
+      shape: SpellWallShape.special,
+      lengthMeters: 30,
+      heightMeters: 6,
+      thicknessMeters: 1.5,
+      supportsRing: true,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.minute,
+      amount: 10,
+      concentration: true,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.point,
+        SpellTargetType.area,
+      },
+    ),
+    savingThrow: SpellSavingThrow(
+      ability: SpellSavingThrowAbility.dexterity,
+      onSuccess: SpellSaveSuccess.halfDamage,
+    ),
+    damage: [
+      SpellDamage(
+        dice: '6d10',
+        type: SpellDamageType.slashing,
+      ),
+    ],
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'blade_barrier_damaging_wall',
+        type: SpellPersistentEffectType.zone,
+        ruleTags: {
+          'straight_wall_maximum_length_30_meters',
+          'straight_wall_height_6_meters',
+          'wall_thickness_1_5_meters',
+          'circular_wall_maximum_diameter_18_meters',
+          'wall_provides_three_quarters_cover',
+          'wall_space_is_difficult_terrain',
+          'creature_saves_when_first_entering_wall_on_turn',
+          'creature_saves_when_starting_turn_in_wall',
+          'failed_save_deals_6d10_slashing_damage',
+          'successful_save_deals_half_damage',
+          'requires_concentration',
+        },
+      ),
+    ],
+    classIds: {
+      'cleric',
+    },
+  ),
 };
 
 SpellDefinition? spellDefinitionFor(String id) => spellDefinitions[id];
