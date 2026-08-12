@@ -929,6 +929,10 @@ class SpellDefinition {
 /// Verrà popolato progressivamente. Tenere un unico registry permette a
 /// razze, classi, talenti e altri sistemi di riferirsi allo stesso ID.
 abstract final class SpellIds {
+  static const moveEarth = 'move_earth';
+  static const programmedIllusion = 'programmed_illusion';
+  static const heal = 'heal';
+  static const globeOfInvulnerability = 'globe_of_invulnerability';
   static const minorIllusion = 'minor_illusion';
   static const fireBolt = 'fire_bolt';
   static const acidSplash = 'acid_splash';
@@ -22967,6 +22971,298 @@ const Map<String, SpellDefinition> spellDefinitions = {
       ),
     ],
     classIds: {
+      'wizard',
+    },
+  ),
+  SpellIds.globeOfInvulnerability: SpellDefinition(
+    id: SpellIds.globeOfInvulnerability,
+    content: RuleContent(
+      id: SpellIds.globeOfInvulnerability,
+      name: 'Globo di Invulnerabilità',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Crea una barriera immobile che neutralizza gli incantesimi di livello inferiore lanciati dall’esterno.',
+        details:
+            'Una barriera debolmente scintillante forma un globo immobile con '
+            'raggio di 3 metri attorno all’incantatore. Qualsiasi incantesimo '
+            'di 5° livello o inferiore lanciato dall’esterno della barriera '
+            'non può influenzare le creature o gli oggetti al suo interno, '
+            'anche quando viene lanciato usando uno slot di livello superiore. '
+            'L’incantesimo può bersagliare una creatura o un oggetto protetto, '
+            'ma non ha effetto su di esso. Analogamente, l’area interna alla '
+            'barriera è esclusa dalle aree influenzate da tali incantesimi. '
+            'Quando questo incantesimo è lanciato usando uno slot di 7° livello '
+            'o superiore, la barriera blocca gli incantesimi di un livello '
+            'aggiuntivo per ogni livello dello slot oltre il 6°.',
+      ),
+      ownerId: SpellIds.globeOfInvulnerability,
+    ),
+    level: 6,
+    school: SpellSchool.abjuration,
+    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
+    range: SpellRange(type: SpellRangeType.self),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+      materials: [
+        SpellMaterialComponent(
+          description:
+              'Una perla di vetro o cristallo che si frantuma quando l’incantesimo termina.',
+          consumed: true,
+        ),
+      ],
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.minute,
+      amount: 1,
+      concentration: true,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.self,
+        SpellTargetType.area,
+      },
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'globe_of_invulnerability_stationary_barrier',
+        type: SpellPersistentEffectType.zone,
+        ruleTags: {
+          'stationary_barrier_centered_on_initial_caster_position',
+          'barrier_radius_3_meters',
+          'spells_cast_from_inside_are_not_blocked',
+          'outside_spells_level_5_or_lower_cannot_affect_inside',
+          'upcasting_blocked_spell_does_not_bypass_barrier',
+          'protected_creatures_and_objects_can_be_targeted_but_are_unaffected',
+          'protected_area_is_excluded_from_blocked_spell_areas',
+          'slot_level_7_or_higher_blocks_one_additional_spell_level_per_slot_level',
+          'requires_concentration',
+        },
+      ),
+    ],
+    classIds: {
+      'sorcerer',
+      'wizard',
+    },
+  ),
+  SpellIds.heal: SpellDefinition(
+    id: SpellIds.heal,
+    content: RuleContent(
+      id: SpellIds.heal,
+      name: 'Guarigione',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Ripristina 70 punti ferita e pone fine a cecità, sordità e malattie.',
+        details: 'Una creatura visibile scelta entro gittata recupera 70 punti '
+            'ferita. L’incantesimo pone inoltre fine a qualsiasi cecità, '
+            'sordità e malattia che influenza il bersaglio. Non ha effetto '
+            'sui costrutti o sui non morti. Quando viene lanciato usando uno '
+            'slot di 7° livello o superiore, i punti ferita ripristinati '
+            'aumentano di 10 per ogni livello dello slot oltre il 6°.',
+      ),
+      ownerId: SpellIds.heal,
+    ),
+    level: 6,
+    school: SpellSchool.evocation,
+    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 18,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+    ),
+    duration: SpellDuration(type: SpellDurationType.instantaneous),
+    target: SpellTarget(
+      types: {SpellTargetType.creature},
+      maximumTargets: 1,
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'heal_restore_and_cleanse',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'target_must_be_visible',
+          'restores_70_hit_points',
+          'ends_blindness',
+          'ends_deafness',
+          'ends_diseases',
+          'no_effect_on_constructs',
+          'no_effect_on_undead',
+          'slot_level_7_or_higher_restores_10_additional_hit_points_per_slot_level',
+        },
+      ),
+    ],
+    classIds: {
+      'cleric',
+      'druid',
+    },
+  ),
+  SpellIds.programmedIllusion: SpellDefinition(
+    id: SpellIds.programmedIllusion,
+    content: RuleContent(
+      id: SpellIds.programmedIllusion,
+      name: 'Illusione Programmata',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Crea un’illusione dormiente che si manifesta quando si verifica una condizione programmata.',
+        details:
+            'L’incantatore crea l’illusione di un oggetto, una creatura o un '
+            'altro fenomeno visibile entro gittata. L’illusione occupa al '
+            'massimo un cubo con spigolo di 9 metri ed è impercettibile fino '
+            'a quando si verifica la condizione specificata. A quel punto '
+            'l’illusione appare e si comporta nel modo programmato, includendo '
+            'suoni e dialoghi, per un massimo di 5 minuti. Al termine torna '
+            'dormiente per 10 minuti prima di potersi attivare nuovamente. '
+            'La condizione deve basarsi su circostanze visive o udibili che '
+            'si verificano entro 9 metri dall’area. L’interazione fisica '
+            'rivela l’illusione. Una creatura può usare un’azione per '
+            'esaminarla ed effettuare una prova di Intelligenza (Indagare) '
+            'contro la CD del tiro salvezza dell’incantesimo. Se la supera, '
+            'riconosce l’illusione, vede attraverso di essa e i suoi suoni '
+            'diventano indistinti.',
+      ),
+      ownerId: SpellIds.programmedIllusion,
+    ),
+    level: 6,
+    school: SpellSchool.illusion,
+    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 36,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+      materials: [
+        SpellMaterialComponent(
+          description:
+              'Un pezzo di vello e polvere di giada del valore di almeno 25 mo.',
+          minimumCostGp: 25,
+        ),
+      ],
+    ),
+    duration: SpellDuration(type: SpellDurationType.untilDispelled),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.point,
+        SpellTargetType.area,
+      },
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'programmed_illusion_triggered_manifestation',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'illusion_is_initially_imperceptible',
+          'illusion_maximum_size_9_meter_cube',
+          'trigger_based_on_visual_or_audible_conditions',
+          'trigger_senses_conditions_within_9_meters_of_area',
+          'illusion_appears_when_trigger_occurs',
+          'programmed_performance_can_include_sounds_and_dialogue',
+          'performance_last_up_to_5_minutes',
+          'illusion_becomes_dormant_for_10_minutes_after_performance',
+          'illusion_can_trigger_again_after_dormant_period',
+          'physical_interaction_reveals_illusion',
+          'investigation_action_against_spell_save_dc_discerns_illusion',
+          'successful_investigation_allows_seeing_through_illusion',
+          'successful_investigation_makes_illusion_sounds_indistinct',
+        },
+      ),
+    ],
+    classIds: {
+      'bard',
+      'wizard',
+    },
+  ),
+  SpellIds.moveEarth: SpellDefinition(
+    id: SpellIds.moveEarth,
+    content: RuleContent(
+      id: SpellIds.moveEarth,
+      name: 'Muovere il Terreno',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Rimodella gradualmente vaste aree di terra, argilla o sabbia.',
+        details:
+            'L’incantatore sceglie entro gittata un’area di terreno non più '
+            'grande di 12 metri per lato e ne modifica la forma. Può alzare '
+            'o abbassare il terreno, creare o riempire un fossato, erigere '
+            'o appiattire un muro oppure formare una colonna. L’estensione '
+            'verticale della modifica non può superare metà della dimensione '
+            'maggiore dell’area. Ogni modifica richiede 10 minuti e, al '
+            'termine di ogni intervallo di 10 minuti, l’incantatore può '
+            'scegliere una nuova area. I cambiamenti avvengono gradualmente '
+            'e normalmente non possono intrappolare o ferire una creatura. '
+            'L’incantesimo non manipola la pietra naturale o le costruzioni '
+            'in pietra; rocce e strutture si spostano assieme al terreno e '
+            'possono crollare se la nuova conformazione le rende instabili. '
+            'La vegetazione viene trasportata assieme al terreno, ma la sua '
+            'crescita non viene influenzata direttamente.',
+      ),
+      ownerId: SpellIds.moveEarth,
+    ),
+    level: 6,
+    school: SpellSchool.transmutation,
+    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 36,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+      materials: [
+        SpellMaterialComponent(
+          description:
+              'Una lama di ferro e un sacchetto contenente una mistura di argilla, terriccio e sabbia.',
+        ),
+      ],
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.hour,
+      amount: 2,
+      concentration: true,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.point,
+        SpellTargetType.area,
+      },
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'move_earth_gradual_terrain_reshaping',
+        type: SpellPersistentEffectType.zone,
+        ruleTags: {
+          'selected_area_maximum_12_meters_per_side',
+          'affects_clay_dirt_and_sand',
+          'can_raise_or_lower_ground',
+          'can_create_or_fill_ditch',
+          'can_erect_or_flatten_wall',
+          'can_form_terrain_column',
+          'vertical_change_maximum_half_largest_area_dimension',
+          'each_terrain_change_requires_10_minutes',
+          'new_area_can_be_selected_every_10_minutes',
+          'changes_are_gradual',
+          'normally_cannot_trap_or_injure_creatures',
+          'cannot_manipulate_natural_stone',
+          'cannot_directly_manipulate_stone_constructions',
+          'rocks_and_structures_move_with_terrain',
+          'unstable_structures_may_collapse',
+          'vegetation_moves_with_terrain',
+          'does_not_directly_affect_plant_growth',
+          'requires_concentration',
+        },
+      ),
+    ],
+    classIds: {
+      'druid',
+      'sorcerer',
       'wizard',
     },
   ),

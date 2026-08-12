@@ -18,10 +18,10 @@ Checklist di lavoro per espandere `lib/data/spell_data.dart` con gli incantesimi
 - [x] Evocazioni Istantanee di Drawmij
 - [x] Ferire
 - [x] Giara Magica
-- [ ] Globo di Invulnerabilità
-- [ ] Guarigione
-- [ ] Illusione Programmata
-- [ ] Muovere il Terreno
+- [x] Globo di Invulnerabilità
+- [x] Guarigione
+- [x] Illusione Programmata
+- [x] Muovere il Terreno
 - [ ] Muro di Ghiaccio
 - [ ] Muro di Spine
 - [ ] Parola del Ritiro
