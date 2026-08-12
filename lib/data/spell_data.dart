@@ -929,6 +929,10 @@ class SpellDefinition {
 /// Verrà popolato progressivamente. Tenere un unico registry permette a
 /// razze, classi, talenti e altri sistemi di riferirsi allo stesso ID.
 abstract final class SpellIds {
+  static const powerWordStun = 'power_word_stun';
+  static const incendiaryCloud = 'incendiary_cloud';
+  static const glibness = 'glibness';
+  static const maze = 'maze';
   static const animalShapes = 'animal_shapes';
   static const sunburst = 'sunburst';
   static const dominateMonster = 'dominate_monster';
@@ -26648,6 +26652,299 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ],
     classIds: {
       'druid',
+    },
+  ),
+  SpellIds.maze: SpellDefinition(
+    id: SpellIds.maze,
+    content: RuleContent(
+      id: SpellIds.maze,
+      name: 'Labirinto',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Esilia una creatura visibile in un semipiano labirintico dal quale può tentare di fuggire.',
+        details:
+            'Una creatura visibile entro 18 metri viene esiliata in un semipiano '
+            'labirintico senza effettuare un tiro salvezza. Rimane nel labirinto '
+            'fino al termine dell’incantesimo o finché non riesce a fuggire. '
+            'Il bersaglio può usare la propria azione per effettuare una prova '
+            'di Intelligenza con CD 20; in caso di successo fugge e l’incantesimo '
+            'termina. Minotauri e demoni goristro superano automaticamente questa '
+            'prova. Quando l’effetto termina, il bersaglio ricompare nello spazio '
+            'che aveva lasciato o nello spazio libero più vicino se quello spazio '
+            'è occupato.',
+      ),
+      ownerId: SpellIds.maze,
+    ),
+    level: 8,
+    school: SpellSchool.conjuration,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 18,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.minute,
+      amount: 10,
+      concentration: true,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.creature,
+      },
+      maximumTargets: 1,
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'maze_labyrinthine_demiplane',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'visible_target_is_exiled_without_initial_saving_throw',
+          'target_is_confined_in_labyrinthine_demiplane',
+          'target_can_use_action_to_attempt_escape',
+          'escape_requires_dc_20_intelligence_check',
+          'minotaurs_automatically_succeed_escape_check',
+          'goristro_demons_automatically_succeed_escape_check',
+          'successful_check_ends_spell',
+          'target_returns_to_departure_space_when_spell_ends',
+          'occupied_departure_space_uses_nearest_free_space',
+          'requires_concentration',
+        },
+      ),
+    ],
+    classIds: {
+      'wizard',
+    },
+  ),
+  SpellIds.glibness: SpellDefinition(
+    id: SpellIds.glibness,
+    content: RuleContent(
+      id: SpellIds.glibness,
+      name: 'Loquacità',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Garantisce un’eloquenza soprannaturale e rende le parole dell’incantatore indistinguibili dalla verità.',
+        details:
+            'Per 1 ora, quando l’incantatore effettua una prova di Carisma, '
+            'può sostituire il risultato ottenuto con un 15. Inoltre, qualunque '
+            'cosa egli dica viene considerata vera dagli incantesimi e dagli '
+            'altri effetti magici capaci di determinare se una creatura sta '
+            'dicendo la verità.',
+      ),
+      ownerId: SpellIds.glibness,
+    ),
+    level: 8,
+    school: SpellSchool.transmutation,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.self,
+    ),
+    components: SpellComponents(
+      verbal: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.hour,
+      amount: 1,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.self,
+      },
+      maximumTargets: 1,
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'glibness_supernatural_eloquence',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'caster_can_replace_charisma_check_result_with_15',
+          'replacement_is_optional_for_each_charisma_check',
+          'truth_detecting_magic_reports_casters_statements_as_true',
+        },
+      ),
+    ],
+    classIds: {
+      'bard',
+      'warlock',
+    },
+  ),
+  SpellIds.incendiaryCloud: SpellDefinition(
+    id: SpellIds.incendiaryCloud,
+    content: RuleContent(
+      id: SpellIds.incendiaryCloud,
+      name: 'Nube Incendiaria',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Crea una nube mobile di fumo e tizzoni che oscura l’area e infligge ripetutamente danni da fuoco.',
+        details:
+            'Una nube del raggio di 6 metri appare attorno a un punto entro '
+            '45 metri, si diffonde oltre gli angoli e rende la sua area '
+            'pesantemente oscurata. Quando appare, quando una creatura entra '
+            'nell’area per la prima volta in un turno o vi termina il proprio '
+            'turno, quella creatura effettua un tiro salvezza su Destrezza. '
+            'Subisce 10d8 danni da fuoco se fallisce o metà dei danni se lo '
+            'supera. All’inizio di ogni turno dell’incantatore la nube si '
+            'muove di 3 metri direttamente allontanandosi da lui, nella '
+            'direzione scelta dall’incantatore. Un vento moderato o più forte, '
+            'di almeno 15 chilometri orari, disperde la nube.',
+      ),
+      ownerId: SpellIds.incendiaryCloud,
+    ),
+    level: 8,
+    school: SpellSchool.conjuration,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 45,
+    ),
+    area: SpellArea(
+      shape: SpellAreaShape.sphere,
+      origin: SpellAreaOrigin.targetPoint,
+      radiusMeters: 6,
+    ),
+    areaInteraction: SpellAreaInteraction(
+      spreadsAroundCorners: true,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.minute,
+      amount: 1,
+      concentration: true,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.area,
+        SpellTargetType.creatures,
+      },
+    ),
+    savingThrow: SpellSavingThrow(
+      ability: SpellSavingThrowAbility.dexterity,
+      onSuccess: SpellSaveSuccess.halfDamage,
+    ),
+    damage: [
+      SpellDamage(
+        dice: '10d8',
+        type: SpellDamageType.fire,
+      ),
+    ],
+    areaTriggeredEffects: [
+      SpellAreaTriggeredEffect(
+        triggers: {
+          SpellAreaTriggerEvent.areaAppears,
+          SpellAreaTriggerEvent.entersAreaFirstTimeOnTurn,
+          SpellAreaTriggerEvent.endsTurnInArea,
+        },
+        damage: SpellDamage(
+          dice: '10d8',
+          type: SpellDamageType.fire,
+        ),
+        savingThrow: SpellSavingThrow(
+          ability: SpellSavingThrowAbility.dexterity,
+          onSuccess: SpellSaveSuccess.halfDamage,
+        ),
+      ),
+    ],
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'incendiary_cloud_burning_smoke',
+        type: SpellPersistentEffectType.zone,
+        ruleTags: {
+          'cloud_area_is_heavily_obscured',
+          'cloud_spreads_around_corners',
+          'damage_triggers_when_cloud_appears',
+          'damage_triggers_on_first_entry_during_turn',
+          'damage_triggers_when_creature_ends_turn_in_area',
+          'cloud_moves_3_meters_at_start_of_casters_turn',
+          'cloud_moves_directly_away_from_caster',
+          'caster_selects_cloud_movement_direction',
+          'wind_of_at_least_15_kilometers_per_hour_dispels_cloud',
+          'requires_concentration',
+        },
+      ),
+    ],
+    classIds: {
+      'sorcerer',
+      'wizard',
+    },
+  ),
+  SpellIds.powerWordStun: SpellDefinition(
+    id: SpellIds.powerWordStun,
+    content: RuleContent(
+      id: SpellIds.powerWordStun,
+      name: 'Parola del Potere Stordire',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Pronuncia una parola del potere che stordisce una creatura con non più di 150 punti ferita.',
+        details: 'L’incantatore sceglie una creatura visibile entro 18 metri. '
+            'Se il bersaglio possiede 150 punti ferita o meno, viene stordito '
+            'senza effettuare un tiro salvezza iniziale; se possiede più di '
+            '150 punti ferita, l’incantesimo non ha effetto. Alla fine di '
+            'ogni proprio turno il bersaglio stordito effettua un tiro '
+            'salvezza su Costituzione, terminando lo stordimento in caso '
+            'di successo.',
+      ),
+      ownerId: SpellIds.powerWordStun,
+    ),
+    level: 8,
+    school: SpellSchool.enchantment,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 18,
+    ),
+    components: SpellComponents(
+      verbal: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.instantaneous,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.creature,
+      },
+      maximumTargets: 1,
+    ),
+    savingThrow: SpellSavingThrow(
+      ability: SpellSavingThrowAbility.constitution,
+      onSuccess: SpellSaveSuccess.special,
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'power_word_stun_condition',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'target_must_be_visible',
+          'spell_has_no_effect_above_150_current_hit_points',
+          'target_at_150_or_fewer_hit_points_is_stunned',
+          'initial_stunned_effect_allows_no_saving_throw',
+          'target_repeats_constitution_save_at_end_of_each_turn',
+          'successful_constitution_save_ends_stunned_condition',
+        },
+      ),
+    ],
+    classIds: {
+      'bard',
+      'sorcerer',
+      'warlock',
+      'wizard',
     },
   ),
 };

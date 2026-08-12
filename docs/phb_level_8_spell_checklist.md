@@ -10,10 +10,10 @@ Checklist di lavoro per espandere `lib/data/spell_data.dart` con gli incantesimi
 - [x] Dominare Mostri
 - [x] Esplosione Solare
 - [x] Forme Animali
-- [ ] Labirinto
-- [ ] Loquacità
-- [ ] Nube Incendiaria
-- [ ] Parola del Potere Stordire
+- [x] Labirinto
+- [x] Loquacità
+- [x] Nube Incendiaria
+- [x] Parola del Potere Stordire
 - [ ] Regressione Mentale
 - [ ] Semipiano
 - [ ] Telepatia
