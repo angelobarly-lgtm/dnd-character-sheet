@@ -22,10 +22,10 @@ Checklist di lavoro per espandere `lib/data/spell_data.dart` con gli incantesimi
 - [x] Guarigione
 - [x] Illusione Programmata
 - [x] Muovere il Terreno
-- [ ] Muro di Ghiaccio
-- [ ] Muro di Spine
-- [ ] Parola del Ritiro
-- [ ] Portale Arcano
+- [x] Muro di Ghiaccio
+- [x] Muro di Spine
+- [x] Parola del Ritiro
+- [x] Portale Arcano
 - [ ] Proibizione
 - [ ] Scopri il Percorso
 - [ ] Sfera Congelante di Otiluke

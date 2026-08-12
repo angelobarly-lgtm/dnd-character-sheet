@@ -929,6 +929,10 @@ class SpellDefinition {
 /// Verrà popolato progressivamente. Tenere un unico registry permette a
 /// razze, classi, talenti e altri sistemi di riferirsi allo stesso ID.
 abstract final class SpellIds {
+  static const arcaneGate = 'arcane_gate';
+  static const wordOfRecall = 'word_of_recall';
+  static const wallOfThorns = 'wall_of_thorns';
+  static const wallOfIce = 'wall_of_ice';
   static const moveEarth = 'move_earth';
   static const programmedIllusion = 'programmed_illusion';
   static const heal = 'heal';
@@ -23263,6 +23267,403 @@ const Map<String, SpellDefinition> spellDefinitions = {
     classIds: {
       'druid',
       'sorcerer',
+      'wizard',
+    },
+  ),
+  SpellIds.wallOfIce: SpellDefinition(
+    id: SpellIds.wallOfIce,
+    content: RuleContent(
+      id: SpellIds.wallOfIce,
+      name: 'Muro di Ghiaccio',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Crea una parete di ghiaccio che infligge danni quando appare e quando viene attraversata.',
+        details:
+            'L’incantatore crea su una superficie solida una parete composta '
+            'da un massimo di dieci pannelli contigui, ognuno largo e alto '
+            '3 metri, oppure una cupola emisferica o una sfera con raggio '
+            'massimo di 3 metri. La parete è spessa 30 centimetri. Se compare '
+            'nello spazio occupato da una creatura, quella creatura viene '
+            'spinta da un lato e deve effettuare un tiro salvezza su Destrezza, '
+            'subendo 10d6 danni da freddo se fallisce o la metà se lo supera. '
+            'Ogni sezione di 3 metri possiede CA 12 e 30 punti ferita, è '
+            'vulnerabile ai danni da fuoco e può essere distrutta. Una sezione '
+            'distrutta lascia una coltre di aria gelida: una creatura che la '
+            'attraversa per la prima volta nel proprio turno deve effettuare '
+            'un tiro salvezza su Costituzione, subendo 5d6 danni da freddo '
+            'se fallisce o la metà se lo supera. Entrambi i danni aumentano '
+            'di 1d6 per ogni livello dello slot oltre il 6°.',
+      ),
+      ownerId: SpellIds.wallOfIce,
+    ),
+    level: 6,
+    school: SpellSchool.evocation,
+    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 36,
+    ),
+    area: SpellArea(
+      shape: SpellAreaShape.special,
+      origin: SpellAreaOrigin.targetPoint,
+      lengthMeters: 30,
+      heightMeters: 3,
+      widthMeters: 0.3,
+      radiusMeters: 3,
+    ),
+    wall: SpellWallDefinition(
+      shape: SpellWallShape.panels,
+      lengthMeters: 30,
+      heightMeters: 3,
+      thicknessMeters: 0.3,
+      supportsRing: true,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+      materials: [
+        SpellMaterialComponent(
+          description: 'Un piccolo pezzo di quarzo.',
+        ),
+      ],
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.minute,
+      amount: 10,
+      concentration: true,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.point,
+        SpellTargetType.area,
+      },
+    ),
+    savingThrow: SpellSavingThrow(
+      ability: SpellSavingThrowAbility.dexterity,
+      onSuccess: SpellSaveSuccess.halfDamage,
+    ),
+    damage: [
+      SpellDamage(
+        dice: '10d6',
+        type: SpellDamageType.cold,
+      ),
+    ],
+    scaling: SpellScaling(
+      type: SpellScalingType.slotLevel,
+      steps: [
+        SpellScalingStep(
+          threshold: 7,
+          additionalDice: '1d6',
+        ),
+      ],
+    ),
+    areaTriggeredEffects: [
+      SpellAreaTriggeredEffect(
+        triggers: {
+          SpellAreaTriggerEvent.entersAreaFirstTimeOnTurn,
+        },
+        damage: SpellDamage(
+          dice: '5d6',
+          type: SpellDamageType.cold,
+        ),
+        savingThrow: SpellSavingThrow(
+          ability: SpellSavingThrowAbility.constitution,
+          onSuccess: SpellSaveSuccess.halfDamage,
+        ),
+      ),
+    ],
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'wall_of_ice_persistent_sections',
+        type: SpellPersistentEffectType.zone,
+        ruleTags: {
+          'wall_up_to_ten_contiguous_3_meter_panels',
+          'can_form_hemispherical_dome_or_sphere',
+          'dome_or_sphere_maximum_radius_3_meters',
+          'wall_thickness_0_3_meters',
+          'creatures_in_wall_space_are_pushed_to_one_side',
+          'each_3_meter_section_has_ac_12',
+          'each_3_meter_section_has_30_hit_points',
+          'wall_sections_are_vulnerable_to_fire_damage',
+          'destroyed_section_leaves_sheet_of_frigid_air',
+          'frigid_air_damage_triggers_first_crossing_per_turn',
+          'both_damage_rolls_gain_1d6_per_slot_level_above_6',
+          'requires_concentration',
+        },
+      ),
+    ],
+    classIds: {
+      'wizard',
+    },
+  ),
+  SpellIds.wallOfThorns: SpellDefinition(
+    id: SpellIds.wallOfThorns,
+    content: RuleContent(
+      id: SpellIds.wallOfThorns,
+      name: 'Muro di Spine',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Crea una barriera opaca di rovi che ferisce le creature e ne ostacola fortemente il movimento.',
+        details: 'L’incantatore crea su una superficie solida un muro di rovi '
+            'resistenti e flessibili. Può formare una parete lunga fino a '
+            '18 metri, alta 3 metri e spessa 1,5 metri, oppure un cerchio '
+            'con diametro massimo di 6 metri, alto fino a 6 metri e spesso '
+            '1,5 metri. Il muro blocca la linea di vista. Quando appare, '
+            'ogni creatura nella sua area deve effettuare un tiro salvezza '
+            'su Destrezza, subendo 7d8 danni perforanti se fallisce o la '
+            'metà se lo supera. Per percorrere 30 centimetri all’interno '
+            'del muro una creatura deve spendere 1,2 metri di movimento. '
+            'La prima volta in un turno che entra nel muro, oppure se vi '
+            'termina il turno, deve effettuare un tiro salvezza su Destrezza, '
+            'subendo 7d8 danni taglienti se fallisce o la metà se lo supera. '
+            'Entrambi i danni aumentano di 1d8 per ogni livello dello slot '
+            'oltre il 6°.',
+      ),
+      ownerId: SpellIds.wallOfThorns,
+    ),
+    level: 6,
+    school: SpellSchool.conjuration,
+    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 36,
+    ),
+    area: SpellArea(
+      shape: SpellAreaShape.special,
+      origin: SpellAreaOrigin.targetPoint,
+      lengthMeters: 18,
+      heightMeters: 3,
+      widthMeters: 1.5,
+    ),
+    wall: SpellWallDefinition(
+      shape: SpellWallShape.line,
+      lengthMeters: 18,
+      heightMeters: 3,
+      thicknessMeters: 1.5,
+      supportsRing: true,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+      materials: [
+        SpellMaterialComponent(
+          description: 'Una manciata di spine.',
+        ),
+      ],
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.minute,
+      amount: 10,
+      concentration: true,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.point,
+        SpellTargetType.area,
+      },
+    ),
+    savingThrow: SpellSavingThrow(
+      ability: SpellSavingThrowAbility.dexterity,
+      onSuccess: SpellSaveSuccess.halfDamage,
+    ),
+    damage: [
+      SpellDamage(
+        dice: '7d8',
+        type: SpellDamageType.piercing,
+      ),
+    ],
+    scaling: SpellScaling(
+      type: SpellScalingType.slotLevel,
+      steps: [
+        SpellScalingStep(
+          threshold: 7,
+          additionalDice: '1d8',
+        ),
+      ],
+    ),
+    areaTriggeredEffects: [
+      SpellAreaTriggeredEffect(
+        triggers: {
+          SpellAreaTriggerEvent.entersAreaFirstTimeOnTurn,
+          SpellAreaTriggerEvent.endsTurnInArea,
+        },
+        damage: SpellDamage(
+          dice: '7d8',
+          type: SpellDamageType.slashing,
+        ),
+        savingThrow: SpellSavingThrow(
+          ability: SpellSavingThrowAbility.dexterity,
+          onSuccess: SpellSaveSuccess.halfDamage,
+        ),
+        movementModifier: SpellMovementModifier(
+          type: SpellMovementModifierType.multiplier,
+          multiplier: 0.25,
+        ),
+      ),
+    ],
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'wall_of_thorns_persistent_barrier',
+        type: SpellPersistentEffectType.zone,
+        ruleTags: {
+          'wall_blocks_line_of_sight',
+          'linear_wall_maximum_length_18_meters',
+          'linear_wall_height_3_meters',
+          'linear_wall_thickness_1_5_meters',
+          'circular_wall_maximum_diameter_6_meters',
+          'circular_wall_maximum_height_6_meters',
+          'movement_inside_wall_costs_four_times_normal',
+          'triggered_damage_on_first_entry_each_turn',
+          'triggered_damage_when_ending_turn_inside',
+          'both_damage_rolls_gain_1d8_per_slot_level_above_6',
+          'requires_concentration',
+        },
+      ),
+    ],
+    classIds: {
+      'druid',
+    },
+  ),
+  SpellIds.wordOfRecall: SpellDefinition(
+    id: SpellIds.wordOfRecall,
+    content: RuleContent(
+      id: SpellIds.wordOfRecall,
+      name: 'Parola del Ritiro',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Teletrasporta l’incantatore e fino a cinque alleati consenzienti in un santuario preparato.',
+        details:
+            'L’incantatore e fino a cinque creature consenzienti situate entro '
+            '1,5 metri vengono teletrasportati istantaneamente in un santuario '
+            'designato in precedenza. Ogni creatura appare nello spazio libero '
+            'più vicino al punto scelto durante la preparazione del santuario. '
+            'Per designarlo, l’incantatore deve lanciare questo incantesimo '
+            'all’interno di un luogo fortemente legato alla sua divinità, '
+            'come un tempio dedicato o strettamente associato a essa. Se '
+            'l’incantesimo viene lanciato senza avere prima preparato un '
+            'santuario, non produce alcun effetto. L’incantatore può mantenere '
+            'un solo santuario alla volta: una nuova designazione sostituisce '
+            'quella precedente.',
+      ),
+      ownerId: SpellIds.wordOfRecall,
+    ),
+    level: 6,
+    school: SpellSchool.conjuration,
+    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 1.5,
+    ),
+    components: SpellComponents(
+      verbal: true,
+    ),
+    duration: SpellDuration(type: SpellDurationType.instantaneous),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.self,
+        SpellTargetType.willingCreature,
+      },
+      maximumTargets: 6,
+      maximumDistanceBetweenTargetsMeters: 1.5,
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'word_of_recall_prepared_sanctuary',
+        type: SpellPersistentEffectType.magicalLink,
+        ruleTags: {
+          'caster_and_up_to_five_willing_creatures',
+          'companions_must_be_within_1_5_meters',
+          'teleports_targets_instantly_to_prepared_sanctuary',
+          'targets_appear_in_nearest_unoccupied_spaces',
+          'sanctuary_must_be_strongly_linked_to_casters_deity',
+          'casting_without_prepared_sanctuary_has_no_effect',
+          'caster_can_have_only_one_active_sanctuary',
+          'preparing_new_sanctuary_replaces_previous_one',
+        },
+      ),
+    ],
+    classIds: {
+      'cleric',
+    },
+  ),
+  SpellIds.arcaneGate: SpellDefinition(
+    id: SpellIds.arcaneGate,
+    content: RuleContent(
+      id: SpellIds.arcaneGate,
+      name: 'Portale Arcano',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Crea due portali collegati che consentono il passaggio istantaneo tra due punti visibili.',
+        details:
+            'L’incantatore sceglie due punti liberi sul terreno che può vedere: '
+            'uno deve trovarsi entro 3 metri da lui e l’altro entro 150 metri. '
+            'Su ogni punto si apre un portale circolare del diametro di '
+            '3 metri, sospeso verticalmente. Ogni portale è un anello '
+            'bidimensionale visibile e attraversabile soltanto dal lato '
+            'frontale scelto dall’incantatore. Una creatura o un oggetto che '
+            'attraversa il fronte di un portale viene trasferito istantaneamente '
+            'nello spazio libero più vicino all’altro, come se i due portali '
+            'fossero adiacenti. La creatura o l’oggetto emerge nella stessa '
+            'direzione di movimento. Come azione bonus, l’incantatore può '
+            'ruotare entrambi gli anelli per modificarne l’orientamento.',
+      ),
+      ownerId: SpellIds.arcaneGate,
+    ),
+    level: 6,
+    school: SpellSchool.conjuration,
+    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 150,
+    ),
+    area: SpellArea(
+      shape: SpellAreaShape.special,
+      origin: SpellAreaOrigin.targetPoint,
+      radiusMeters: 1.5,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.minute,
+      amount: 10,
+      concentration: true,
+    ),
+    target: SpellTarget(
+      types: {SpellTargetType.point},
+      maximumTargets: 2,
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'arcane_gate_linked_portals',
+        type: SpellPersistentEffectType.magicalLink,
+        ruleTags: {
+          'creates_two_linked_portals',
+          'first_portal_point_must_be_within_3_meters_of_caster',
+          'second_portal_point_must_be_within_150_meters',
+          'both_portal_points_must_be_visible',
+          'both_portal_points_must_be_unoccupied_ground',
+          'each_portal_has_3_meter_diameter',
+          'portals_hover_perpendicular_to_ground',
+          'each_portal_has_a_chosen_front_side',
+          'portals_are_visible_only_from_front_side',
+          'travel_possible_only_through_front_side',
+          'creatures_and_objects_can_pass_through',
+          'traveler_appears_near_other_portal',
+          'traveler_preserves_direction_of_movement',
+          'caster_can_rotate_both_portals_as_bonus_action',
+          'requires_concentration',
+        },
+      ),
+    ],
+    classIds: {
+      'sorcerer',
+      'warlock',
       'wizard',
     },
   ),
