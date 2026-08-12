@@ -14,10 +14,10 @@ Checklist di lavoro per espandere `lib/data/spell_data.dart` con gli incantesimi
 - [x] Contagio
 - [x] Contattare Altri Piani
 - [x] Costrizione
-- [ ] Creazione
-- [ ] Cura Ferite di Massa
-- [ ] Dissolvi il Bene e il Male
-- [ ] Dominare Persone
+- [x] Creazione
+- [x] Cura Ferite di Massa
+- [x] Dissolvi il Bene e il Male
+- [x] Dominare Persone
 - [ ] Evoca Elementale
 - [ ] Evoca Pioggia di Armi
 - [ ] Faretra Rapida

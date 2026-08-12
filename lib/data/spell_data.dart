@@ -1176,6 +1176,10 @@ abstract final class SpellIds {
   static const contagion = 'contagion';
   static const contactOtherPlane = 'contact_other_plane';
   static const geas = 'geas';
+  static const creation = 'creation';
+  static const massCureWounds = 'mass_cure_wounds';
+  static const dispelEvilAndGood = 'dispel_evil_and_good';
+  static const dominatePerson = 'dominate_person';
 }
 
 const Map<String, SpellDefinition> spellDefinitions = {
@@ -19075,6 +19079,310 @@ const Map<String, SpellDefinition> spellDefinitions = {
       'cleric',
       'druid',
       'paladin',
+      'wizard',
+    },
+  ),
+  SpellIds.creation: SpellDefinition(
+    id: SpellIds.creation,
+    content: RuleContent(
+      id: SpellIds.creation,
+      name: 'Creazione',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Modella sostanza d’ombra in un oggetto non vivente di materia vegetale o minerale.',
+        details:
+            'L’incantatore richiama filamenti di sostanza d’ombra dalla Coltre '
+            'Oscura e crea entro 9 metri un oggetto non vivente di materia '
+            'vegetale, come stoffa, corda o legno, oppure di pietra, cristallo '
+            'o metallo. L’oggetto deve avere una forma e un materiale già '
+            'visti dall’incantatore e deve rientrare in un cubo con spigolo di '
+            '1,5 metri. La durata dipende dal materiale: 1 giorno per materia '
+            'vegetale, 12 ore per pietra o cristallo, 1 ora per metalli '
+            'preziosi, 10 minuti per gemme e 1 minuto per adamantio o mithral. '
+            'Se l’oggetto contiene più materiali si applica la durata più '
+            'breve. Usare un materiale così creato come componente materiale '
+            'di un altro incantesimo provoca il fallimento di '
+            'quell’incantesimo. Con uno slot di 6° livello o superiore, lo '
+            'spigolo massimo del cubo aumenta di 1,5 metri per ogni livello '
+            'dello slot superiore al 5°.',
+      ),
+      ownerId: SpellIds.creation,
+    ),
+    level: 5,
+    school: SpellSchool.illusion,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.minute,
+      amount: 1,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 9,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+      materials: [
+        SpellMaterialComponent(
+          description:
+              'Un minuscolo frammento di materia dello stesso tipo dell’oggetto da creare.',
+        ),
+      ],
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.special,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.object,
+      },
+      maximumTargets: 1,
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'creation_shadow_material_object',
+        type: SpellPersistentEffectType.createdObject,
+        ruleTags: {
+          'creates_one_nonliving_object_within_9_meters',
+          'object_made_from_vegetable_matter_stone_crystal_or_metal',
+          'caster_must_have_seen_object_form_and_material_before',
+          'base_object_fits_inside_1_5_meter_cube',
+          'vegetable_matter_duration_1_day',
+          'stone_or_crystal_duration_12_hours',
+          'precious_metal_duration_1_hour',
+          'gem_duration_10_minutes',
+          'adamantine_or_mithral_duration_1_minute',
+          'mixed_material_object_uses_shortest_duration',
+          'created_material_used_as_spell_component_causes_that_spell_to_fail',
+          'slot_level_above_5_increases_cube_edge_by_1_5_meters_per_slot_level',
+        },
+      ),
+    ],
+    classIds: {
+      'sorcerer',
+      'wizard',
+    },
+  ),
+  SpellIds.massCureWounds: SpellDefinition(
+    id: SpellIds.massCureWounds,
+    content: RuleContent(
+      id: SpellIds.massCureWounds,
+      name: 'Cura Ferite di Massa',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Diffonde energia curativa su un punto, restituendo punti ferita a un massimo di sei creature.',
+        details: 'Un’ondata di energia curativa si propaga da un punto scelto '
+            'dall’incantatore entro 18 metri. L’incantatore sceglie fino a sei '
+            'creature in una sfera del raggio di 9 metri centrata su quel '
+            'punto; ogni bersaglio recupera 3d8 punti ferita più il '
+            'modificatore di caratteristica da incantatore. L’incantesimo non '
+            'ha effetto sui costrutti o sui non morti. Con uno slot di 6° '
+            'livello o superiore, la guarigione aumenta di 1d8 per ogni '
+            'livello dello slot superiore al 5°.',
+      ),
+      ownerId: SpellIds.massCureWounds,
+    ),
+    level: 5,
+    school: SpellSchool.evocation,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 18,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.instantaneous,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.creatures,
+        SpellTargetType.area,
+      },
+      maximumTargets: 6,
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'mass_cure_wounds_healing_burst',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'caster_selects_point_within_18_meters',
+          'selects_up_to_6_creatures_in_9_meter_radius_sphere',
+          'each_selected_creature_regains_3d8_plus_spellcasting_modifier_hit_points',
+          'does_not_affect_constructs_or_undead',
+          'slot_level_above_5_increases_healing_by_1d8_per_slot_level',
+          'instantaneous_healing',
+        },
+      ),
+    ],
+    classIds: {
+      'bard',
+      'cleric',
+      'druid',
+    },
+  ),
+  SpellIds.dispelEvilAndGood: SpellDefinition(
+    id: SpellIds.dispelEvilAndGood,
+    content: RuleContent(
+      id: SpellIds.dispelEvilAndGood,
+      name: 'Dissolvi il Bene e il Male',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Protegge l’incantatore dalle creature extraplanari e può congedarle o spezzarne gli influssi.',
+        details:
+            'Per un massimo di 1 minuto, finché mantiene la concentrazione, '
+            'l’incantatore è circondato da un alone protettivo: celestiali, '
+            'elementali, folletti, immondi e non morti hanno svantaggio ai '
+            'tiri per colpire contro di lui. L’incantatore può porre fine '
+            'all’incantesimo usando la propria azione per una delle due '
+            'funzioni. Congedo: effettua un attacco in mischia con incantesimo '
+            'contro una creatura di uno dei tipi indicati entro portata; se '
+            'colpisce, il bersaglio effettua un tiro salvezza su Carisma e, se '
+            'lo fallisce, torna al proprio piano di origine quando non vi si '
+            'trova già. Un non morto viene inviato nella Coltre Oscura e un '
+            'folletto nella Selva Fatata quando quello è il suo piano di '
+            'origine. Spezzare Ammaliamento: l’incantatore tocca una creatura '
+            'entro portata affascinata, spaventata o posseduta da una creatura '
+            'di uno dei tipi indicati, ponendo fine a quella condizione o '
+            'possessione.',
+      ),
+      ownerId: SpellIds.dispelEvilAndGood,
+    ),
+    level: 5,
+    school: SpellSchool.abjuration,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.self,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+      materials: [
+        SpellMaterialComponent(
+          description: 'Acqua santa o polvere d’argento e di ferro.',
+        ),
+      ],
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.minute,
+      amount: 1,
+      concentration: true,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.self,
+      },
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'dispel_evil_and_good_protection_and_release',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'celestials_elementals_fey_fiends_and_undead_have_disadvantage_on_attacks_against_caster',
+          'caster_can_end_spell_with_dismissal_or_break_enchantment_action',
+          'dismissal_requires_melee_spell_attack_against_eligible_creature_in_reach',
+          'dismissal_hit_requires_charisma_save',
+          'failed_dismissal_save_sends_creature_to_home_plane_if_elsewhere',
+          'undead_home_plane_destination_is_shadowfell',
+          'fey_home_plane_destination_is_feywild',
+          'break_enchantment_touches_creature_in_reach',
+          'break_enchantment_ends_charmed_frightened_or_possessed_effect_from_eligible_creature',
+          'using_either_special_function_ends_spell',
+          'requires_concentration',
+        },
+      ),
+    ],
+    classIds: {
+      'cleric',
+      'paladin',
+    },
+  ),
+  SpellIds.dominatePerson: SpellDefinition(
+    id: SpellIds.dominatePerson,
+    content: RuleContent(
+      id: SpellIds.dominatePerson,
+      name: 'Dominare Persone',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Affascina un umanoide e crea un legame telepatico con cui l’incantatore può controllarlo.',
+        details: 'Un umanoide visibile entro 18 metri deve effettuare un tiro '
+            'salvezza su Saggezza, con vantaggio se l’incantatore o i suoi '
+            'alleati lo stanno combattendo. Se lo fallisce, è affascinato '
+            'dall’incantatore per la durata. Finché entrambi si trovano sullo '
+            'stesso piano di esistenza e l’incantatore è cosciente, egli può '
+            'comunicare telepaticamente con il bersaglio e impartirgli ordini '
+            'che questo esegue al meglio delle proprie possibilità. '
+            'L’incantatore può inoltre usare la propria azione per assumere il '
+            'controllo totale del bersaglio fino alla fine del proprio turno '
+            'successivo, decidendone le azioni e usando la propria reazione per '
+            'fargli usare una reazione. Ogni volta che subisce danni, il '
+            'bersaglio ripete il tiro salvezza su Saggezza e termina '
+            'l’incantesimo in caso di successo. Con uno slot di 6° livello la '
+            'durata è concentrazione fino a 10 minuti, con uno slot di 7° '
+            'livello fino a 1 ora e con uno slot di 8° livello o superiore '
+            'fino a 8 ore.',
+      ),
+      ownerId: SpellIds.dominatePerson,
+    ),
+    level: 5,
+    school: SpellSchool.enchantment,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 18,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.minute,
+      amount: 1,
+      concentration: true,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.creature,
+      },
+      maximumTargets: 1,
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'dominate_person_charm_and_telepathic_control',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'targets_one_visible_humanoid_within_18_meters',
+          'target_makes_wisdom_save',
+          'target_has_advantage_if_fighting_caster_or_caster_allies',
+          'failed_save_charms_target',
+          'telepathic_link_functions_while_both_are_on_same_plane_and_caster_is_conscious',
+          'caster_can_issue_commands_without_using_action',
+          'caster_can_action_take_total_precise_control_until_end_of_next_turn',
+          'during_total_control_target_takes_only_actions_chosen_by_caster',
+          'caster_can_use_own_reaction_to_make_target_use_reaction',
+          'target_repeats_wisdom_save_each_time_it_takes_damage',
+          'successful_repeat_save_ends_spell',
+          'slot_level_6_duration_concentration_up_to_10_minutes',
+          'slot_level_7_duration_concentration_up_to_1_hour',
+          'slot_level_8_or_higher_duration_concentration_up_to_8_hours',
+          'requires_concentration',
+        },
+      ),
+    ],
+    classIds: {
+      'bard',
+      'sorcerer',
       'wizard',
     },
   ),
