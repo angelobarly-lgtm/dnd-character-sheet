@@ -50,10 +50,10 @@ Checklist di lavoro per espandere `lib/data/spell_data.dart` con gli incantesimi
 - [x] Ristorare Inferiore
 - [x] Scassinare
 - [x] Scopri Trappole
-- [ ] Scurovisione
-- [ ] Serratura Arcana
-- [ ] Sfera Infuocata
-- [ ] Sfocatura
+- [x] Scurovisione
+- [x] Serratura Arcana
+- [x] Sfera Infuocata
+- [x] Sfocatura
 - [ ] Silenzio
 - [ ] Suggestione
 - [ ] Trova Cavalcatura

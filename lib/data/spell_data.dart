@@ -1070,6 +1070,10 @@ abstract final class SpellIds {
   static const lesserRestoration = 'lesser_restoration';
   static const knock = 'knock';
   static const findTraps = 'find_traps';
+  static const darkvision = 'darkvision';
+  static const arcaneLock = 'arcane_lock';
+  static const flamingSphere = 'flaming_sphere';
+  static const blur = 'blur';
 }
 
 const Map<String, SpellDefinition> spellDefinitions = {
@@ -10960,6 +10964,294 @@ const Map<String, SpellDefinition> spellDefinitions = {
       'cleric',
       'druid',
       'ranger',
+    },
+  ),
+  SpellIds.darkvision: SpellDefinition(
+    id: SpellIds.darkvision,
+    content: RuleContent(
+      id: SpellIds.darkvision,
+      name: 'Scurovisione',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Conferisce a una creatura consenziente la capacità di vedere al buio.',
+        details:
+            'L’incantatore tocca una creatura consenziente per conferirle la '
+            'capacità di vedere nell’oscurità. Per la durata dell’incantesimo, '
+            'quella creatura è dotata di scurovisione fino a 18 metri. '
+            'L’effetto dura 8 ore e non richiede concentrazione.',
+      ),
+      ownerId: SpellIds.darkvision,
+    ),
+    level: 2,
+    school: SpellSchool.transmutation,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.touch,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+      materials: [
+        SpellMaterialComponent(
+          description: 'Un pizzico di carota essiccata o un’agata.',
+        ),
+      ],
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.hour,
+      amount: 8,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.willingCreature,
+      },
+      maximumTargets: 1,
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'darkvision_grants_18_meter_darkvision',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'touched_willing_creature',
+          'target_gains_darkvision_18_meters',
+          'duration_8_hours',
+          'does_not_require_concentration',
+        },
+      ),
+    ],
+    classIds: {
+      'druid',
+      'ranger',
+      'sorcerer',
+      'wizard',
+    },
+  ),
+  SpellIds.arcaneLock: SpellDefinition(
+    id: SpellIds.arcaneLock,
+    content: RuleContent(
+      id: SpellIds.arcaneLock,
+      name: 'Serratura Arcana',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Chiude magicamente un punto di accesso e lo rende più difficile da forzare.',
+        details: 'L’incantatore tocca una porta, una finestra, un portale, un '
+            'forziere o un altro punto di accesso chiuso, che diventa chiuso a '
+            'chiave. L’incantatore e le creature designate al momento del '
+            'lancio possono aprire l’oggetto normalmente. L’incantatore può '
+            'anche stabilire una parola d’ordine che, pronunciata entro 1,5 '
+            'metri dall’oggetto, sopprime l’incantesimo per 1 minuto. Altrimenti '
+            'l’oggetto è impenetrabile finché non viene rotto, o finché '
+            'l’incantesimo non viene dissolto o soppresso. Lanciare Scassinare '
+            'sull’oggetto sopprime Serratura Arcana per 10 minuti. Finché è '
+            'influenzato da questo incantesimo, l’oggetto è più difficile da '
+            'rompere o aprire a forza: la CD per romperlo o scassinarlo aumenta '
+            'di 10. La polvere d’oro richiesta viene consumata.',
+      ),
+      ownerId: SpellIds.arcaneLock,
+    ),
+    level: 2,
+    school: SpellSchool.abjuration,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.touch,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+      materials: [
+        SpellMaterialComponent(
+          description:
+              'Polvere d’oro del valore di almeno 25 mo, consumata dall’incantesimo.',
+          minimumCostGp: 25,
+          consumed: true,
+        ),
+      ],
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.untilDispelled,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.object,
+      },
+      maximumTargets: 1,
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'arcane_lock_magically_locked_access',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'touches_closed_door_window_gate_chest_or_other_entryway',
+          'target_becomes_magically_locked',
+          'caster_and_designated_creatures_can_open_normally',
+          'password_spoken_within_1_5_meters_suppresses_spell_for_1_minute',
+          'otherwise_target_is_impassable_until_broken_dispelled_or_suppressed',
+          'knock_suppresses_arcane_lock_for_10_minutes',
+          'dc_to_break_or_force_open_increases_by_10',
+          'gold_dust_worth_25_gp_is_consumed',
+          'duration_until_dispelled',
+        },
+      ),
+    ],
+    classIds: {
+      'wizard',
+    },
+  ),
+  SpellIds.flamingSphere: SpellDefinition(
+    id: SpellIds.flamingSphere,
+    content: RuleContent(
+      id: SpellIds.flamingSphere,
+      name: 'Sfera Infuocata',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Crea una sfera di fuoco mobile che brucia le creature vicine o urtate.',
+        details:
+            'Una sfera di fuoco del diametro di 1,5 metri appare in uno spazio '
+            'libero scelto dall’incantatore entro gittata e permane per la '
+            'durata. Ogni creatura che termina il proprio turno entro 1,5 metri '
+            'dalla sfera deve effettuare un tiro salvezza su Destrezza: se lo '
+            'fallisce subisce 2d6 danni da fuoco, mentre se lo supera subisce '
+            'metà danni. Con un’azione bonus, l’incantatore può muovere la '
+            'sfera fino a 9 metri. Se la sfera urta una creatura, quella '
+            'creatura effettua il tiro salvezza contro i danni della sfera e la '
+            'sfera non può muoversi oltre in quel turno. Quando viene mossa, la '
+            'sfera può superare barriere alte fino a 1,5 metri e saltare fosse '
+            'larghe fino a 3 metri. Incendia gli oggetti infiammabili non '
+            'indossati né trasportati, proietta luce intensa entro 6 metri e '
+            'luce fioca per altri 6 metri. Richiede concentrazione. Usando uno '
+            'slot di livello superiore al 2°, i danni aumentano di 1d6 per ogni '
+            'livello di slot superiore.',
+      ),
+      ownerId: SpellIds.flamingSphere,
+    ),
+    level: 2,
+    school: SpellSchool.conjuration,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 18,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+      materials: [
+        SpellMaterialComponent(
+          description:
+              'Un frammento di sego, un pizzico di zolfo e una manciata di polvere di ferro.',
+        ),
+      ],
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.minute,
+      amount: 1,
+      concentration: true,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.point,
+      },
+    ),
+    damage: [
+      SpellDamage(
+        dice: '2d6',
+        type: SpellDamageType.fire,
+      ),
+    ],
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'flaming_sphere_mobile_fire_hazard',
+        type: SpellPersistentEffectType.createdObject,
+        ruleTags: {
+          'creates_1_5_meter_diameter_fire_sphere_in_unoccupied_space',
+          'creature_ending_turn_within_1_5_meters_makes_dexterity_save',
+          'failed_save_deals_2d6_fire_damage',
+          'successful_save_takes_half_damage',
+          'caster_can_bonus_action_move_sphere_up_to_9_meters',
+          'creature_ram_by_sphere_makes_save_against_sphere_damage',
+          'sphere_stops_moving_after_hitting_creature_this_turn',
+          'sphere_can_cross_barriers_up_to_1_5_meters_high',
+          'sphere_can_jump_pits_up_to_3_meters_wide',
+          'ignites_flammable_objects_not_worn_or_carried',
+          'sheds_bright_light_6_meters_and_dim_light_6_more_meters',
+          'damage_increases_by_1d6_per_slot_level_above_2',
+          'requires_concentration',
+        },
+      ),
+    ],
+    classIds: {
+      'druid',
+      'wizard',
+    },
+  ),
+  SpellIds.blur: SpellDefinition(
+    id: SpellIds.blur,
+    content: RuleContent(
+      id: SpellIds.blur,
+      name: 'Sfocatura',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Rende l’incantatore sfocato, imponendo svantaggio agli attacchi contro di lui.',
+        details:
+            'Il corpo dell’incantatore diventa sfocato, instabile e ondeggiante '
+            'agli occhi di chi è in grado di vederlo. Per la durata '
+            'dell’incantesimo, le creature subiscono svantaggio ai tiri per '
+            'colpire contro l’incantatore. Un attaccante è immune a questo '
+            'effetto se non si affida alla vista, per esempio se è dotato di '
+            'vista cieca, oppure se è in grado di vedere attraverso le illusioni '
+            'come tramite vista pura. Richiede concentrazione e può durare fino '
+            'a 1 minuto.',
+      ),
+      ownerId: SpellIds.blur,
+    ),
+    level: 2,
+    school: SpellSchool.illusion,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.self,
+    ),
+    components: SpellComponents(
+      verbal: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.minute,
+      amount: 1,
+      concentration: true,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.self,
+      },
+      maximumTargets: 1,
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'blur_disadvantage_on_attacks',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'caster_body_becomes_blurred_shifting_and_wavering',
+          'creatures_have_disadvantage_on_attack_rolls_against_caster',
+          'attacker_immune_if_not_relying_on_sight',
+          'blindsight_or_similar_nonvisual_sense_ignores_effect',
+          'truesight_or_seeing_through_illusions_ignores_effect',
+          'requires_concentration',
+        },
+      ),
+    ],
+    classIds: {
+      'sorcerer',
+      'wizard',
     },
   ),
 };
