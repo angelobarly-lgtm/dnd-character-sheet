@@ -10,10 +10,10 @@ Checklist di lavoro per espandere `lib/data/spell_data.dart` con gli incantesimi
 - [x] Carne in Pietra
 - [x] Catena di Fulmini
 - [x] Cerchio di Morte
-- [ ] Contingenza
-- [ ] Creare Non Morti
-- [ ] Danza Irresistibile di Otto
-- [ ] Disintegrazione
+- [x] Contingenza
+- [x] Creare Non Morti
+- [x] Danza Irresistibile di Otto
+- [x] Disintegrazione
 - [ ] Evoca Folletto
 - [ ] Evocazioni Istantanee di Drawmij
 - [ ] Ferire

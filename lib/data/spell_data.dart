@@ -1214,6 +1214,10 @@ abstract final class SpellIds {
   static const fleshToStone = 'flesh_to_stone';
   static const chainLightning = 'chain_lightning';
   static const circleOfDeath = 'circle_of_death';
+  static const contingency = 'contingency';
+  static const createUndead = 'create_undead';
+  static const ottosIrresistibleDance = 'ottos_irresistible_dance';
+  static const disintegrate = 'disintegrate';
 }
 
 const Map<String, SpellDefinition> spellDefinitions = {
@@ -22290,6 +22294,337 @@ const Map<String, SpellDefinition> spellDefinitions = {
     classIds: {
       'sorcerer',
       'warlock',
+      'wizard',
+    },
+  ),
+  SpellIds.contingency: SpellDefinition(
+    id: SpellIds.contingency,
+    content: RuleContent(
+      id: SpellIds.contingency,
+      name: 'Contingenza',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Predispone un incantesimo personale che si attiva automaticamente al verificarsi di una circostanza.',
+        details:
+            'L’incantatore sceglie un incantesimo di 5° livello o inferiore '
+            'che sia in grado di lanciare, abbia tempo di lancio pari a '
+            '1 azione e possa bersagliare lui stesso. Lo lancia come parte di '
+            'Contingenza, spendendo gli slot per entrambi, ma l’incantesimo '
+            'contingente non ha effetto immediato. L’incantatore descrive una '
+            'circostanza: la prima volta che si verifica entro 10 giorni, '
+            'l’incantesimo contingente ha effetto immediatamente, che egli lo '
+            'desideri o meno, e Contingenza termina. L’effetto può influenzare '
+            'soltanto l’incantatore, anche se normalmente potrebbe bersagliare '
+            'altri. Può esistere una sola Contingenza sull’incantatore; un '
+            'nuovo lancio termina quella precedente. L’incantesimo termina '
+            'anche se la statuetta cessa di trovarsi sulla sua persona.',
+      ),
+      ownerId: SpellIds.contingency,
+    ),
+    level: 6,
+    school: SpellSchool.evocation,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.minute,
+      amount: 10,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.self,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+      materials: [
+        SpellMaterialComponent(
+          description:
+              'Una statuetta dell’incantatore scolpita in avorio e decorata di gemme del valore di almeno 1.500 mo.',
+          minimumCostGp: 1500,
+        ),
+      ],
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.day,
+      amount: 10,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.self,
+      },
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'contingency_stored_self_spell',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'stores_spell_level_5_or_lower',
+          'stored_spell_must_have_casting_time_1_action',
+          'stored_spell_must_be_able_to_target_caster',
+          'caster_spends_slots_for_contingency_and_stored_spell',
+          'stored_spell_has_no_effect_during_initial_casting',
+          'caster_defines_triggering_circumstance',
+          'stored_spell_activates_first_time_circumstance_occurs',
+          'activation_is_immediate_and_not_optional',
+          'activation_ends_contingency',
+          'stored_spell_affects_only_caster',
+          'only_one_contingency_can_affect_caster',
+          'new_casting_ends_previous_contingency',
+          'spell_ends_if_material_component_leaves_casters_person',
+          'duration_10_days',
+          'does_not_require_concentration',
+        },
+      ),
+    ],
+    classIds: {
+      'wizard',
+    },
+  ),
+  SpellIds.createUndead: SpellDefinition(
+    id: SpellIds.createUndead,
+    content: RuleContent(
+      id: SpellIds.createUndead,
+      name: 'Creare Non Morti',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Trasforma fino a tre cadaveri umanoidi in ghoul controllati per 24 ore.',
+        details:
+            'L’incantesimo può essere lanciato soltanto di notte. Fino a tre '
+            'cadaveri umanoidi Medi o Piccoli entro 3 metri diventano ghoul '
+            'sotto il controllo dell’incantatore. Con un’azione bonus egli può '
+            'comandare mentalmente tutte o nessuna delle creature create che '
+            'si trovino entro 36 metri, impartendo loro lo stesso comando. '
+            'Senza comandi si difendono dalle creature ostili; un ordine viene '
+            'seguito finché il compito non è completato. Il controllo dura '
+            '24 ore. Un nuovo lancio prima della scadenza ristabilisce il '
+            'controllo su un massimo di tre creature invece di crearne altre. '
+            'Con uno slot di 7° livello anima o controlla quattro ghoul; con '
+            'uno slot di 8° livello cinque ghoul oppure due ghast o wight; '
+            'con uno slot di 9° livello sei ghoul, tre ghast o wight oppure '
+            'due mummie.',
+      ),
+      ownerId: SpellIds.createUndead,
+    ),
+    level: 6,
+    school: SpellSchool.necromancy,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.minute,
+      amount: 1,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 3,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+      materials: [
+        SpellMaterialComponent(
+          description:
+              'Un vaso d’argilla con terra di cimitero, un vaso d’argilla con acqua salmastra e un’onice da 150 mo per ogni cadavere.',
+          minimumCostGp: 150,
+        ),
+      ],
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.instantaneous,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.object,
+      },
+      maximumTargets: 3,
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'create_undead_controlled_ghouls',
+        type: SpellPersistentEffectType.summonedCreature,
+        ruleTags: {
+          'can_be_cast_only_at_night',
+          'targets_up_to_3_medium_or_small_humanoid_corpses',
+          'each_target_becomes_ghoul',
+          'ghouls_are_controlled_for_24_hours',
+          'bonus_action_commands_created_undead_within_36_meters',
+          'all_commanded_creatures_receive_same_command',
+          'creatures_without_command_defend_themselves',
+          'creatures_follow_order_until_task_is_complete',
+          'recasting_before_expiration_reasserts_control_on_up_to_3',
+          'slot_level_7_creates_or_controls_4_ghouls',
+          'slot_level_8_creates_or_controls_5_ghouls_or_2_ghasts_or_wights',
+          'slot_level_9_creates_or_controls_6_ghouls_3_ghasts_or_wights_or_2_mummies',
+          'requires_one_150_gp_onyx_per_corpse',
+          'does_not_require_concentration',
+        },
+      ),
+    ],
+    classIds: {
+      'cleric',
+      'warlock',
+      'wizard',
+    },
+  ),
+  SpellIds.ottosIrresistibleDance: SpellDefinition(
+    id: SpellIds.ottosIrresistibleDance,
+    content: RuleContent(
+      id: SpellIds.ottosIrresistibleDance,
+      name: 'Danza Irresistibile di Otto',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Costringe una creatura a danzare sul posto, rendendola vulnerabile agli attacchi.',
+        details: 'Una creatura visibile entro 9 metri inizia immediatamente a '
+            'danzare sul posto. Le creature immuni alla condizione di '
+            'affascinato sono immuni all’incantesimo. Il bersaglio deve usare '
+            'tutto il suo movimento per danzare senza lasciare il proprio '
+            'spazio, ha svantaggio ai tiri salvezza su Destrezza e ai tiri '
+            'per colpire, mentre le altre creature hanno vantaggio ai tiri '
+            'per colpire contro di lui. Non è previsto un tiro salvezza '
+            'iniziale. Con un’azione, il bersaglio può effettuare un tiro '
+            'salvezza su Saggezza e terminare l’incantesimo in caso di '
+            'successo.',
+      ),
+      ownerId: SpellIds.ottosIrresistibleDance,
+    ),
+    level: 6,
+    school: SpellSchool.enchantment,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 9,
+    ),
+    components: SpellComponents(
+      verbal: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.minute,
+      amount: 1,
+      concentration: true,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.creature,
+      },
+      maximumTargets: 1,
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'ottos_irresistible_dance_compulsion',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'creature_immune_to_charmed_is_immune',
+          'no_initial_saving_throw',
+          'target_dances_without_leaving_its_space',
+          'target_uses_all_movement_to_dance',
+          'target_has_disadvantage_on_dexterity_saves',
+          'target_has_disadvantage_on_attack_rolls',
+          'attacks_against_target_have_advantage',
+          'target_can_use_action_to_make_wisdom_save',
+          'successful_action_save_ends_spell',
+          'requires_concentration',
+        },
+      ),
+    ],
+    classIds: {
+      'bard',
+      'wizard',
+    },
+  ),
+  SpellIds.disintegrate: SpellDefinition(
+    id: SpellIds.disintegrate,
+    content: RuleContent(
+      id: SpellIds.disintegrate,
+      name: 'Disintegrazione',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Un raggio verde infligge ingenti danni da forza e riduce in polvere ciò che distrugge.',
+        details:
+            'Un raggio verde colpisce una creatura, un oggetto o una creazione '
+            'di forza magica visibile entro 18 metri. Una creatura effettua un '
+            'tiro salvezza su Destrezza: se lo fallisce subisce 10d6 + 40 '
+            'danni da forza, mentre se lo supera non subisce danni. Se viene '
+            'ridotta a 0 punti ferita, la creatura e tutto ciò che indossa e '
+            'trasporta, esclusi gli oggetti magici, diventano polvere; può '
+            'tornare in vita soltanto tramite Desiderio o Resurrezione Pura. '
+            'Un oggetto non magico Grande o inferiore o una creazione di forza '
+            'magica viene disintegrato automaticamente. Di un bersaglio Enorme '
+            'o superiore viene disintegrato un cubo con spigolo di 3 metri. '
+            'Gli oggetti magici non sono influenzati. Con uno slot di 7° '
+            'livello o superiore, i danni aumentano di 3d6 per ogni livello '
+            'dello slot oltre il 6°.',
+      ),
+      ownerId: SpellIds.disintegrate,
+    ),
+    level: 6,
+    school: SpellSchool.transmutation,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 18,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+      materials: [
+        SpellMaterialComponent(
+          description: 'Una calamita e un pizzico di polvere.',
+        ),
+      ],
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.instantaneous,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.creature,
+        SpellTargetType.object,
+      },
+      maximumTargets: 1,
+    ),
+    savingThrow: SpellSavingThrow(
+      ability: SpellSavingThrowAbility.dexterity,
+      onSuccess: SpellSaveSuccess.negates,
+    ),
+    damage: [
+      SpellDamage(
+        dice: '10d6',
+        type: SpellDamageType.force,
+      ),
+    ],
+    scaling: SpellScaling(
+      type: SpellScalingType.slotLevel,
+      steps: [
+        SpellScalingStep(
+          threshold: 7,
+          additionalDice: '3d6',
+        ),
+      ],
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'disintegrate_ray_and_destruction',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'creature_makes_dexterity_save',
+          'failed_save_deals_10d6_plus_40_force_damage',
+          'successful_save_negates_damage',
+          'creature_reduced_to_0_hit_points_is_disintegrated',
+          'worn_and_carried_nonmagical_items_become_dust',
+          'disintegrated_creature_requires_wish_or_true_resurrection',
+          'large_or_smaller_nonmagical_object_is_automatically_disintegrated',
+          'magical_force_creation_is_automatically_disintegrated',
+          'huge_or_larger_target_loses_3_meter_cube',
+          'magic_items_are_unaffected',
+          'slot_level_above_6_adds_3d6_damage_per_level',
+          'instantaneous_transmutation',
+        },
+      ),
+    ],
+    classIds: {
+      'sorcerer',
       'wizard',
     },
   ),
