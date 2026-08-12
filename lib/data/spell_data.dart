@@ -929,6 +929,10 @@ class SpellDefinition {
 /// Verrà popolato progressivamente. Tenere un unico registry permette a
 /// razze, classi, talenti e altri sistemi di riferirsi allo stesso ID.
 abstract final class SpellIds {
+  static const mordenkainensSword = 'mordenkainens_sword';
+  static const simulacrum = 'simulacrum';
+  static const symbol = 'symbol';
+  static const regenerate = 'regenerate';
   static const resurrection = 'resurrection';
   static const mordenkainensMagnificentMansion =
       'mordenkainens_magnificent_mansion';
@@ -25313,6 +25317,335 @@ const Map<String, SpellDefinition> spellDefinitions = {
     classIds: {
       'bard',
       'cleric',
+    },
+  ),
+  SpellIds.regenerate: SpellDefinition(
+    id: SpellIds.regenerate,
+    content: RuleContent(
+      id: SpellIds.regenerate,
+      name: 'Rigenerazione',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Ripristina punti ferita nel tempo e rigenera o rinsalda le parti del corpo recise.',
+        details: 'L’incantatore tocca una creatura e ne amplifica le capacità '
+            'curative naturali. Il bersaglio recupera immediatamente 4d8 + 15 '
+            'punti ferita. Per la durata recupera inoltre 1 punto ferita '
+            'all’inizio di ogni suo turno, equivalenti a 10 punti ferita al '
+            'minuto. Le parti del corpo recise, come dita, gambe o code, '
+            'ricrescono dopo 2 minuti. Se il bersaglio possiede ancora la '
+            'parte recisa e la mantiene appoggiata al troncone, l’incantesimo '
+            'la rinsalda istantaneamente.',
+      ),
+      ownerId: SpellIds.regenerate,
+    ),
+    level: 7,
+    school: SpellSchool.transmutation,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.minute,
+      amount: 1,
+    ),
+    range: SpellRange(type: SpellRangeType.touch),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+      materials: [
+        SpellMaterialComponent(
+          description: 'Una ruota della preghiera e acqua santa.',
+        ),
+      ],
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.hour,
+      amount: 1,
+    ),
+    target: SpellTarget(
+      types: {SpellTargetType.creature},
+      maximumTargets: 1,
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'regenerate_healing_and_limb_restoration',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'target_immediately_recovers_4d8_plus_15_hit_points',
+          'target_recovers_1_hit_point_at_start_of_each_turn',
+          'ongoing_healing_equals_10_hit_points_per_minute',
+          'severed_body_parts_regrow_after_2_minutes',
+          'held_severed_part_can_be_reattached_instantly',
+          'reattachment_requires_part_to_be_held_against_stump',
+        },
+      ),
+    ],
+    classIds: {
+      'bard',
+      'cleric',
+      'druid',
+    },
+  ),
+  SpellIds.symbol: SpellDefinition(
+    id: SpellIds.symbol,
+    content: RuleContent(
+      id: SpellIds.symbol,
+      name: 'Simbolo',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Traccia un glifo quasi invisibile che, quando innescato, genera uno tra otto potenti effetti.',
+        details: 'L’incantatore traccia un glifo su una superficie o dentro un '
+            'oggetto richiudibile. Su una superficie può coprire un’area con '
+            'diametro massimo di 3 metri. Un oggetto contenente il glifo deve '
+            'rimanere entro 3 metri dal luogo del lancio o il glifo si spezza '
+            'senza attivarsi. Per trovarlo è necessaria una prova di '
+            'Intelligenza (Indagare) contro la CD dell’incantesimo. '
+            'L’incantatore stabilisce l’innesco e può limitarlo in base a '
+            'circostanze, caratteristiche fisiche, tipi di creatura o parole '
+            'd’ordine. Quando si attiva, il glifo illumina una sfera con '
+            'raggio di 18 metri per 10 minuti. Sono influenzate le creature '
+            'presenti all’attivazione, quelle che entrano per la prima volta '
+            'in un turno o terminano il turno nell’area. L’incantatore '
+            'sceglie tra Discordia, Disperazione, Dolore, Morte, Paura, '
+            'Pazzia, Sonno e Stordimento, ognuno con il proprio tiro salvezza '
+            'ed effetto.',
+      ),
+      ownerId: SpellIds.symbol,
+    ),
+    level: 7,
+    school: SpellSchool.abjuration,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.minute,
+      amount: 1,
+    ),
+    range: SpellRange(type: SpellRangeType.touch),
+    area: SpellArea(
+      shape: SpellAreaShape.sphere,
+      origin: SpellAreaOrigin.targetPoint,
+      radiusMeters: 18,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+      materials: [
+        SpellMaterialComponent(
+          description:
+              'Mercurio, fosforo e polvere di opale e diamante del valore complessivo di almeno 1.000 mo.',
+          minimumCostGp: 1000,
+          consumed: true,
+        ),
+      ],
+    ),
+    duration: SpellDuration(type: SpellDurationType.untilDispelled),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.object,
+        SpellTargetType.point,
+        SpellTargetType.area,
+      },
+      maximumTargets: 1,
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'symbol_triggered_glyph',
+        type: SpellPersistentEffectType.zone,
+        ruleTags: {
+          'glyph_can_be_placed_on_surface_or_inside_closable_object',
+          'surface_glyph_maximum_diameter_3_meters',
+          'object_glyph_breaks_if_moved_more_than_3_meters',
+          'broken_glyph_ends_without_triggering',
+          'glyph_is_almost_invisible',
+          'investigation_check_against_spell_save_dc_finds_glyph',
+          'caster_defines_trigger_conditions',
+          'trigger_can_use_physical_traits_or_creature_type',
+          'password_can_exclude_creatures_from_trigger',
+          'triggered_effect_radius_18_meters',
+          'triggered_glyph_emits_dim_light_for_10_minutes',
+          'affects_creatures_present_when_triggered',
+          'affects_first_entry_during_turn',
+          'affects_creatures_ending_turn_in_area',
+          'discord_uses_constitution_save_and_disrupts_communication',
+          'discord_gives_disadvantage_on_attacks_and_ability_checks',
+          'despair_uses_charisma_save_and_prevents_attacks_or_hostile_targeting',
+          'pain_uses_constitution_save_and_incapacitates',
+          'death_uses_constitution_save_and_deals_10d10_necrotic_damage',
+          'successful_death_save_halves_damage',
+          'fear_uses_wisdom_save_and_frightens',
+          'madness_uses_intelligence_save_and_prevents_actions',
+          'sleep_uses_wisdom_save_and_causes_unconsciousness',
+          'sleep_ends_on_damage_or_waking_action',
+          'stunning_uses_wisdom_save_and_stuns_for_1_minute',
+          'spell_ends_after_triggered_effect_finishes',
+        },
+      ),
+    ],
+    classIds: {
+      'bard',
+      'cleric',
+      'wizard',
+    },
+  ),
+  SpellIds.simulacrum: SpellDefinition(
+    id: SpellIds.simulacrum,
+    content: RuleContent(
+      id: SpellIds.simulacrum,
+      name: 'Simulacro',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Crea un duplicato parzialmente reale di una bestia o di un umanoide usando neve e ghiaccio.',
+        details:
+            'L’incantatore crea un duplicato illusorio di una bestia o di un '
+            'umanoide che rimane entro contatto per tutte le 12 ore del '
+            'lancio. Il duplicato, fatto di neve o ghiaccio, può agire ed '
+            'essere influenzato come una normale creatura. Ha l’aspetto e le '
+            'statistiche dell’originale, ma metà dei suoi punti ferita massimi '
+            'e nessun equipaggiamento. È amichevole verso l’incantatore e le '
+            'creature designate, obbedisce agli ordini vocali e in combattimento '
+            'agisce nel turno dell’incantatore. Non può apprendere, salire di '
+            'livello, aumentare le caratteristiche o recuperare slot spesi. '
+            'Può essere riparato in un laboratorio alchemico spendendo '
+            '100 mo di minerali ed erbe rare per ogni punto ferita recuperato. '
+            'A 0 punti ferita torna neve e si scioglie. Se l’incantatore '
+            'lancia nuovamente Simulacro, il suo duplicato precedente viene '
+            'distrutto istantaneamente.',
+      ),
+      ownerId: SpellIds.simulacrum,
+    ),
+    level: 7,
+    school: SpellSchool.illusion,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.hour,
+      amount: 12,
+    ),
+    range: SpellRange(type: SpellRangeType.touch),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+      materials: [
+        SpellMaterialComponent(
+          description:
+              'Neve o ghiaccio sufficienti a creare una copia a grandezza naturale.',
+        ),
+        SpellMaterialComponent(
+          description:
+              'Una ciocca di capelli, un’unghia o un’altra parte del corpo della creatura da duplicare.',
+        ),
+        SpellMaterialComponent(
+          description: 'Polvere di rubino del valore di almeno 1.500 mo.',
+          minimumCostGp: 1500,
+          consumed: true,
+        ),
+      ],
+    ),
+    duration: SpellDuration(type: SpellDurationType.untilDispelled),
+    target: SpellTarget(
+      types: {SpellTargetType.creature},
+      maximumTargets: 1,
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'simulacrum_created_duplicate',
+        type: SpellPersistentEffectType.createdCreature,
+        ruleTags: {
+          'target_must_be_beast_or_humanoid',
+          'target_must_remain_in_touch_for_entire_12_hour_casting',
+          'duplicate_is_partially_real_illusion_of_snow_or_ice',
+          'duplicate_can_act_and_be_affected_as_normal_creature',
+          'duplicate_uses_original_creatures_statistics',
+          'duplicate_has_half_original_hit_point_maximum',
+          'duplicate_is_created_without_equipment',
+          'duplicate_is_friendly_to_caster_and_designated_creatures',
+          'duplicate_obeys_casters_verbal_commands',
+          'duplicate_acts_on_casters_turn',
+          'duplicate_cannot_learn_or_gain_levels',
+          'duplicate_cannot_increase_ability_scores',
+          'duplicate_cannot_recover_expended_spell_slots',
+          'repair_costs_100_gp_per_hit_point',
+          'repair_requires_alchemical_laboratory',
+          'duplicate_turns_to_snow_and_melts_at_0_hit_points',
+          'casting_spell_again_destroys_previous_active_duplicate',
+        },
+      ),
+    ],
+    classIds: {
+      'wizard',
+    },
+  ),
+  SpellIds.mordenkainensSword: SpellDefinition(
+    id: SpellIds.mordenkainensSword,
+    content: RuleContent(
+      id: SpellIds.mordenkainensSword,
+      name: 'Spada di Mordenkainen',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Crea una spada di forza fluttuante che può muoversi e attaccare ripetutamente.',
+        details:
+            'L’incantatore crea entro gittata un piano di forza a forma di '
+            'spada. Quando appare, effettua un attacco in mischia con '
+            'incantesimo contro un bersaglio entro 1,5 metri dalla spada. '
+            'Se colpisce, infligge 3d10 danni da forza. Per la durata, '
+            'l’incantatore può usare un’azione bonus in ogni suo turno per '
+            'muovere la spada fino a 6 metri verso un punto visibile e '
+            'ripetere l’attacco contro lo stesso bersaglio o uno diverso.',
+      ),
+      ownerId: SpellIds.mordenkainensSword,
+    ),
+    level: 7,
+    school: SpellSchool.evocation,
+    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 18,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+      materials: [
+        SpellMaterialComponent(
+          description:
+              'Una spada di platino in miniatura con impugnatura e pomolo di rame e zinco, del valore di almeno 250 mo.',
+          minimumCostGp: 250,
+        ),
+      ],
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.minute,
+      amount: 1,
+      concentration: true,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.point,
+        SpellTargetType.creature,
+      },
+    ),
+    attackType: SpellAttackType.melee,
+    damage: [
+      SpellDamage(
+        dice: '3d10',
+        type: SpellDamageType.force,
+      ),
+    ],
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'mordenkainens_sword_repeatable_attack',
+        type: SpellPersistentEffectType.createdObject,
+        ruleTags: {
+          'creates_floating_sword_shaped_plane_of_force',
+          'initial_melee_spell_attack_occurs_when_sword_appears',
+          'target_must_be_within_1_5_meters_of_sword',
+          'hit_deals_3d10_force_damage',
+          'bonus_action_moves_sword_up_to_6_meters',
+          'destination_point_must_be_visible',
+          'bonus_action_repeats_melee_spell_attack',
+          'repeat_attack_can_use_same_or_different_target',
+          'requires_concentration',
+        },
+      ),
+    ],
+    classIds: {
+      'bard',
+      'wizard',
     },
   ),
 };

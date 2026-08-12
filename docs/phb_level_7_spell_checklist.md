@@ -14,10 +14,10 @@ Checklist di lavoro per espandere `lib/data/spell_data.dart` con gli incantesimi
 - [x] Parola Divina
 - [x] Reggia Meravigliosa di Mordenkainen
 - [x] Resurrezione
-- [ ] Rigenerazione
-- [ ] Simbolo
-- [ ] Simulacro
-- [ ] Spada di Mordenkainen
+- [x] Rigenerazione
+- [x] Simbolo
+- [x] Simulacro
+- [x] Spada di Mordenkainen
 - [ ] Spostamento Planare
 - [ ] Spruzzo Prismatico
 - [ ] Teletrasporto
