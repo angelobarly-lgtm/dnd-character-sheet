@@ -1145,6 +1145,10 @@ abstract final class SpellIds {
   static const blight = 'blight';
   static const giantInsect = 'giant_insect';
   static const deathWard = 'death_ward';
+  static const greaterInvisibility = 'greater_invisibility';
+  static const freedomOfMovement = 'freedom_of_movement';
+  static const locateCreature = 'locate_creature';
+  static const polymorph = 'polymorph';
 }
 
 const Map<String, SpellDefinition> spellDefinitions = {
@@ -16573,6 +16577,304 @@ const Map<String, SpellDefinition> spellDefinitions = {
     classIds: {
       'cleric',
       'paladin',
+    },
+  ),
+  SpellIds.greaterInvisibility: SpellDefinition(
+    id: SpellIds.greaterInvisibility,
+    content: RuleContent(
+      id: SpellIds.greaterInvisibility,
+      name: 'Invisibilità Superiore',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Rende invisibile una creatura e tutto ciò che indossa o trasporta.',
+        details:
+            'L’incantatore o una creatura da lui toccata diventa invisibile '
+            'finché l’incantesimo non termina. Anche tutto ciò che il '
+            'bersaglio indossa o trasporta è invisibile finché rimane sulla '
+            'sua persona. L’effetto richiede concentrazione e può durare fino '
+            'a 1 minuto.',
+      ),
+      ownerId: SpellIds.greaterInvisibility,
+    ),
+    level: 4,
+    school: SpellSchool.illusion,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.touch,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.minute,
+      amount: 1,
+      concentration: true,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.creature,
+      },
+      maximumTargets: 1,
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'greater_invisibility_effect',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'target_becomes_invisible',
+          'caster_may_target_self_by_touch',
+          'worn_and_carried_items_are_invisible_while_on_target',
+          'invisibility_does_not_end_after_attacking_or_casting',
+          'requires_concentration',
+        },
+      ),
+    ],
+    classIds: {
+      'bard',
+      'sorcerer',
+      'wizard',
+    },
+  ),
+  SpellIds.freedomOfMovement: SpellDefinition(
+    id: SpellIds.freedomOfMovement,
+    content: RuleContent(
+      id: SpellIds.freedomOfMovement,
+      name: 'Libertà di Movimento',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Protegge una creatura dalle limitazioni magiche e ambientali al movimento.',
+        details: 'L’incantatore tocca una creatura consenziente. Per 1 ora, il '
+            'terreno difficile non influenza il suo movimento e gli '
+            'incantesimi o altri effetti magici non possono ridurne la '
+            'velocità né renderla paralizzata o trattenuta. Il bersaglio può '
+            'spendere 1,5 metri di movimento per liberarsi automaticamente da '
+            'costrizioni non magiche, come manette o la presa di una creatura. '
+            'Quando si trova sott’acqua, non subisce penalità al movimento o '
+            'agli attacchi.',
+      ),
+      ownerId: SpellIds.freedomOfMovement,
+    ),
+    level: 4,
+    school: SpellSchool.abjuration,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.touch,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+      materials: [
+        SpellMaterialComponent(
+          description:
+              'Una cinghia di cuoio legata attorno al braccio o a un’appendice simile.',
+        ),
+      ],
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.hour,
+      amount: 1,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.willingCreature,
+      },
+      maximumTargets: 1,
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'freedom_of_movement_protection',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'difficult_terrain_does_not_affect_target_movement',
+          'magic_cannot_reduce_target_speed',
+          'magic_cannot_paralyze_target',
+          'magic_cannot_restrain_target',
+          'spend_1_5_meters_to_escape_nonmagical_restraints',
+          'spend_1_5_meters_to_escape_nonmagical_grapple',
+          'no_underwater_movement_penalty',
+          'no_underwater_attack_penalty',
+          'does_not_require_concentration',
+        },
+      ),
+    ],
+    classIds: {
+      'bard',
+      'cleric',
+      'druid',
+      'ranger',
+    },
+  ),
+  SpellIds.locateCreature: SpellDefinition(
+    id: SpellIds.locateCreature,
+    content: RuleContent(
+      id: SpellIds.locateCreature,
+      name: 'Localizza Creatura',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Individua la direzione di una creatura familiare entro 300 metri.',
+        details:
+            'L’incantatore descrive o nomina una creatura a lui familiare e '
+            'ne percepisce la direzione, purché si trovi entro 300 metri. Se '
+            'la creatura si muove, apprende anche la direzione del movimento. '
+            'Può cercare una specifica creatura conosciuta oppure la creatura '
+            'più vicina di un tipo indicato, purché abbia visto da vicino, '
+            'entro 9 metri, una creatura corrispondente almeno una volta. '
+            'L’incantesimo non individua il bersaglio se questo ha assunto una '
+            'forma diversa, né se un corso d’acqua largo almeno 3 metri '
+            'interrompe il percorso diretto tra esso e l’incantatore.',
+      ),
+      ownerId: SpellIds.locateCreature,
+    ),
+    level: 4,
+    school: SpellSchool.divination,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.self,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+      materials: [
+        SpellMaterialComponent(
+          description: 'Un ciuffo di pelo strappato a un segugio.',
+        ),
+      ],
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.hour,
+      amount: 1,
+      concentration: true,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.special,
+      },
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'locate_creature_direction_sense',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'locates_named_or_described_familiar_creature_within_300_meters',
+          'reveals_direction_to_creature',
+          'reveals_movement_direction_if_creature_moves',
+          'may_locate_nearest_creature_of_specific_type',
+          'caster_must_have_seen_matching_creature_within_9_meters_once',
+          'does_not_locate_creature_in_different_form',
+          'blocked_by_running_water_at_least_3_meters_wide',
+          'requires_concentration',
+        },
+      ),
+    ],
+    classIds: {
+      'bard',
+      'cleric',
+      'druid',
+      'paladin',
+      'ranger',
+      'wizard',
+    },
+  ),
+  SpellIds.polymorph: SpellDefinition(
+    id: SpellIds.polymorph,
+    content: RuleContent(
+      id: SpellIds.polymorph,
+      name: 'Metamorfosi',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Trasforma temporaneamente una creatura in una bestia di potenza adeguata.',
+        details:
+            'Una creatura visibile entro gittata assume una nuova forma. Un '
+            'bersaglio non consenziente può evitare l’effetto superando un '
+            'tiro salvezza su Saggezza. L’incantesimo non influenza un '
+            'mutaforma o una creatura a 0 punti ferita. La nuova forma deve '
+            'essere una bestia con grado di sfida non superiore a quello del '
+            'bersaglio, o al suo livello se non possiede un grado di sfida. '
+            'Le statistiche della bestia sostituiscono quelle del bersaglio, '
+            'compresi i punteggi mentali, ma allineamento e personalità '
+            'rimangono invariati. Il bersaglio assume i punti ferita della '
+            'nuova forma. Quando torna normale recupera i punti ferita che '
+            'aveva prima della trasformazione; gli eventuali danni eccedenti '
+            'si trasferiscono alla forma normale. Le sue azioni sono limitate '
+            'dalla nuova anatomia e non può parlare, lanciare incantesimi o '
+            'compiere azioni che richiedano mani o parola. L’equipaggiamento '
+            'si fonde nella nuova forma e non può essere usato né fornire '
+            'benefici. La trasformazione termina con l’incantesimo, quando la '
+            'nuova forma scende a 0 punti ferita o quando il bersaglio muore.',
+      ),
+      ownerId: SpellIds.polymorph,
+    ),
+    level: 4,
+    school: SpellSchool.transmutation,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 18,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+      materials: [
+        SpellMaterialComponent(
+          description: 'Il bozzolo di un bruco.',
+        ),
+      ],
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.hour,
+      amount: 1,
+      concentration: true,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.creature,
+      },
+      maximumTargets: 1,
+    ),
+    savingThrow: SpellSavingThrow(
+      ability: SpellSavingThrowAbility.wisdom,
+      onSuccess: SpellSaveSuccess.negates,
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'polymorph_beast_transformation',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'unwilling_target_makes_wisdom_save',
+          'no_effect_on_shapechanger_or_creature_at_0_hp',
+          'new_form_must_be_beast',
+          'beast_cr_cannot_exceed_target_cr_or_level',
+          'beast_statistics_replace_target_statistics_including_mental_scores',
+          'target_keeps_alignment_and_personality',
+          'target_assumes_new_form_hit_points',
+          'returning_restores_pre_transformation_hit_points',
+          'excess_damage_carries_over_to_normal_form',
+          'actions_limited_by_new_form',
+          'cannot_speak_cast_spells_or_use_hands',
+          'equipment_merges_and_cannot_be_used_or_grant_benefits',
+          'ends_at_0_new_form_hp_target_death_or_spell_end',
+          'requires_concentration',
+        },
+      ),
+    ],
+    classIds: {
+      'bard',
+      'druid',
+      'sorcerer',
+      'wizard',
     },
   ),
 };

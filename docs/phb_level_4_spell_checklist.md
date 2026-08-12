@@ -18,10 +18,10 @@ Checklist di lavoro per espandere `lib/data/spell_data.dart` con gli incantesimi
 - [x] Inaridire
 - [x] Insetto Gigante
 - [x] Interdizione alla Morte
-- [ ] Invisibilità Superiore
-- [ ] Libertà di Movimento
-- [ ] Localizza Creatura
-- [ ] Metamorfosi
+- [x] Invisibilità Superiore
+- [x] Libertà di Movimento
+- [x] Localizza Creatura
+- [x] Metamorfosi
 - [ ] Muro di Fuoco
 - [ ] Occhio Arcano
 - [ ] Pelle di Pietra
