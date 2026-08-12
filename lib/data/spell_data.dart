@@ -929,6 +929,10 @@ class SpellDefinition {
 /// Verrà popolato progressivamente. Tenere un unico registry permette a
 /// razze, classi, talenti e altri sistemi di riferirsi allo stesso ID.
 abstract final class SpellIds {
+  static const massHeal = 'mass_heal';
+  static const timeStop = 'time_stop';
+  static const weird = 'weird';
+  static const wish = 'wish';
   static const mindBlank = 'mind_blank';
   static const tsunami = 'tsunami';
   static const earthquake = 'earthquake';
@@ -27494,6 +27498,233 @@ const Map<String, SpellDefinition> spellDefinitions = {
       'bard',
       'wizard',
     },
+  ),
+  SpellIds.wish: SpellDefinition(
+    id: SpellIds.wish,
+    content: RuleContent(
+      id: SpellIds.wish,
+      name: 'Desiderio',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Altera la realtà per duplicare incantesimi o produrre altri effetti straordinari.',
+        details:
+            'L’uso base duplica qualsiasi incantesimo di 8° livello o inferiore senza richiederne '
+            'alcun requisito, incluse le componenti costose. In alternativa può creare un oggetto '
+            'non magico del valore massimo di 25.000 mo e non più grande di 90 metri in ogni '
+            'dimensione; far recuperare tutti i punti ferita a un massimo di venti creature visibili '
+            'e applicare loro Ristorare Superiore; conferire a dieci creature visibili resistenza a '
+            'un tipo di danno oppure immunità a un incantesimo o effetto magico per 8 ore; o '
+            'imporre la ripetizione di un tiro effettuato nell’ultimo round, con vantaggio o '
+            'svantaggio, scegliendo poi quale risultato usare. Un desiderio più ambizioso è '
+            'interpretato dal DM e può fallire, riuscire solo in parte o produrre conseguenze '
+            'impreviste. Se non duplica un incantesimo, l’incantatore subisce 1d10 danni necrotici '
+            'per livello di ogni incantesimo lanciato prima del successivo riposo lungo; la sua '
+            'Forza diventa 3 per 2d4 giorni e ha il 33 per cento di probabilità di non poter mai '
+            'più lanciare Desiderio. I danni causati da questa tensione non possono essere ridotti '
+            'o prevenuti.',
+      ),
+      ownerId: SpellIds.wish,
+    ),
+    level: 9,
+    school: SpellSchool.conjuration,
+    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
+    range: SpellRange(type: SpellRangeType.self),
+    components: SpellComponents(verbal: true),
+    duration: SpellDuration(type: SpellDurationType.instantaneous),
+    target: SpellTarget(
+      types: {SpellTargetType.self, SpellTargetType.special},
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'wish_reality_alteration',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'can_duplicate_any_spell_of_8th_level_or_lower',
+          'duplicated_spell_ignores_all_requirements_and_costly_components',
+          'can_create_nonmagical_object_worth_up_to_25000_gp',
+          'created_object_is_at_most_90_meters_in_each_dimension',
+          'can_fully_heal_up_to_20_visible_creatures_and_apply_greater_restoration',
+          'can_grant_up_to_10_visible_creatures_resistance_to_one_damage_type',
+          'can_grant_up_to_10_visible_creatures_immunity_to_one_spell_or_magical_effect_for_8_hours',
+          'can_force_reroll_of_roll_made_within_last_round',
+          'reroll_can_have_advantage_or_disadvantage',
+          'caster_can_choose_original_or_repeated_roll',
+          'greater_wish_is_adjudicated_by_dm_and_may_fail_or_have_unexpected_consequences',
+          'non_duplication_use_causes_wish_stress',
+          'spellcasting_before_long_rest_causes_1d10_necrotic_damage_per_spell_level',
+          'wish_stress_damage_cannot_be_reduced_or_prevented',
+          'wish_stress_sets_strength_to_3_for_2d4_days_if_higher',
+          'resting_day_with_only_light_activity_reduces_recovery_by_2_days',
+          'wish_stress_has_33_percent_chance_to_prevent_future_wish_casting',
+        },
+      ),
+    ],
+    classIds: {'sorcerer', 'wizard'},
+  ),
+  SpellIds.weird: SpellDefinition(
+    id: SpellIds.weird,
+    content: RuleContent(
+      id: SpellIds.weird,
+      name: 'Fatale',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Manifesta gli incubi peggiori delle creature in un’area, spaventandole e ferendone la mente.',
+        details:
+            'Ogni creatura in una sfera del raggio di 9 metri centrata su un punto entro 36 metri '
+            'effettua un tiro salvezza su Saggezza. Se lo fallisce, diventa spaventata per la '
+            'durata. Alla fine di ogni proprio turno, una creatura spaventata ripete il tiro '
+            'salvezza. Se lo fallisce subisce 4d10 danni psichici; se lo supera, l’incantesimo '
+            'termina per quella creatura.',
+      ),
+      ownerId: SpellIds.weird,
+    ),
+    level: 9,
+    school: SpellSchool.illusion,
+    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 36,
+    ),
+    area: SpellArea(
+      shape: SpellAreaShape.sphere,
+      origin: SpellAreaOrigin.targetPoint,
+      radiusMeters: 9,
+    ),
+    components: SpellComponents(verbal: true, somatic: true),
+    duration: SpellDuration(
+      type: SpellDurationType.minute,
+      amount: 1,
+      concentration: true,
+    ),
+    target: SpellTarget(
+      types: {SpellTargetType.area, SpellTargetType.creatures},
+    ),
+    savingThrow: SpellSavingThrow(
+      ability: SpellSavingThrowAbility.wisdom,
+      onSuccess: SpellSaveSuccess.negates,
+    ),
+    damage: [
+      SpellDamage(dice: '4d10', type: SpellDamageType.psychic),
+    ],
+    areaTriggeredEffects: [
+      SpellAreaTriggeredEffect(
+        triggers: {SpellAreaTriggerEvent.endsTurnInArea},
+        damage: SpellDamage(
+          dice: '4d10',
+          type: SpellDamageType.psychic,
+        ),
+        savingThrow: SpellSavingThrow(
+          ability: SpellSavingThrowAbility.wisdom,
+          onSuccess: SpellSaveSuccess.negates,
+        ),
+      ),
+    ],
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'weird_deepest_fears',
+        type: SpellPersistentEffectType.zone,
+        ruleTags: {
+          'failed_initial_wisdom_save_causes_frightened_condition',
+          'illusory_creatures_are_visible_only_to_affected_creatures',
+          'affected_creature_repeats_wisdom_save_at_end_of_own_turn',
+          'failed_repeat_save_deals_4d10_psychic_damage',
+          'successful_repeat_save_ends_spell_for_creature',
+          'requires_concentration',
+        },
+      ),
+    ],
+    classIds: {'wizard'},
+  ),
+  SpellIds.timeStop: SpellDefinition(
+    id: SpellIds.timeStop,
+    content: RuleContent(
+      id: SpellIds.timeStop,
+      name: 'Fermare il Tempo',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Arresta temporaneamente il tempo per tutti tranne l’incantatore, che ottiene 1d4 + 1 turni consecutivi.',
+        details:
+            'L’incantatore effettua 1d4 + 1 turni consecutivi durante i quali può muoversi e '
+            'agire normalmente, mentre per le altre creature il tempo non trascorre. L’effetto '
+            'termina immediatamente se una sua azione o un effetto da lui creato influenza una '
+            'creatura diversa da lui oppure un oggetto indossato o trasportato da un’altra '
+            'creatura. Termina anche se l’incantatore si allontana più di 300 metri dal punto '
+            'in cui ha lanciato l’incantesimo.',
+      ),
+      ownerId: SpellIds.timeStop,
+    ),
+    level: 9,
+    school: SpellSchool.transmutation,
+    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
+    range: SpellRange(type: SpellRangeType.self),
+    components: SpellComponents(verbal: true),
+    duration: SpellDuration(type: SpellDurationType.instantaneous),
+    target: SpellTarget(
+      types: {SpellTargetType.self},
+      maximumTargets: 1,
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'time_stop_extra_turns',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'caster_takes_1d4_plus_1_consecutive_turns',
+          'time_does_not_pass_for_other_creatures',
+          'caster_can_move_and_act_normally_during_extra_turns',
+          'spell_ends_if_casters_action_or_effect_affects_another_creature',
+          'spell_ends_if_casters_action_or_effect_affects_object_worn_or_carried_by_another',
+          'spell_ends_if_caster_moves_more_than_300_meters_from_casting_point',
+        },
+      ),
+    ],
+    classIds: {'sorcerer', 'wizard'},
+  ),
+  SpellIds.massHeal: SpellDefinition(
+    id: SpellIds.massHeal,
+    content: RuleContent(
+      id: SpellIds.massHeal,
+      name: 'Guarigione di Massa',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Distribuisce fino a 700 punti ferita tra qualsiasi numero di creature visibili e ne cura vari stati debilitanti.',
+        details:
+            'L’incantatore ripristina fino a 700 punti ferita, distribuendoli come preferisce '
+            'tra un qualsiasi numero di creature visibili entro 18 metri. Ogni creatura guarita '
+            'viene inoltre curata da tutte le malattie e da qualsiasi effetto che la renda '
+            'accecata o assordata. L’incantesimo non ha effetto sui costrutti o sui non morti.',
+      ),
+      ownerId: SpellIds.massHeal,
+    ),
+    level: 9,
+    school: SpellSchool.evocation,
+    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 18,
+    ),
+    components: SpellComponents(verbal: true, somatic: true),
+    duration: SpellDuration(type: SpellDurationType.instantaneous),
+    target: SpellTarget(types: {SpellTargetType.creatures}),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'mass_heal_restoration_pool',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'caster_distributes_up_to_700_hit_points',
+          'healing_can_be_divided_among_any_number_of_visible_creatures_in_range',
+          'healed_creatures_are_cured_of_all_diseases',
+          'healed_creatures_end_effects_causing_blinded_condition',
+          'healed_creatures_end_effects_causing_deafened_condition',
+          'spell_has_no_effect_on_constructs',
+          'spell_has_no_effect_on_undead',
+        },
+      ),
+    ],
+    classIds: {'cleric'},
   ),
 };
 
