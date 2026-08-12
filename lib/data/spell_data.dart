@@ -1066,6 +1066,10 @@ abstract final class SpellIds {
   static const scorchingRay = 'scorching_ray';
   static const web = 'web';
   static const gentleRepose = 'gentle_repose';
+  static const heatMetal = 'heat_metal';
+  static const lesserRestoration = 'lesser_restoration';
+  static const knock = 'knock';
+  static const findTraps = 'find_traps';
 }
 
 const Map<String, SpellDefinition> spellDefinitions = {
@@ -10676,6 +10680,286 @@ const Map<String, SpellDefinition> spellDefinitions = {
     classIds: {
       'cleric',
       'wizard',
+    },
+  ),
+  SpellIds.heatMetal: SpellDefinition(
+    id: SpellIds.heatMetal,
+    content: RuleContent(
+      id: SpellIds.heatMetal,
+      name: 'Riscaldare il Metallo',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Rende incandescente un oggetto metallico artificiale, danneggiando chi lo tocca.',
+        details:
+            'L’incantatore sceglie un oggetto artificiale di metallo entro '
+            'gittata e che sia in grado di vedere, come un’arma di metallo o '
+            'un’armatura di metallo media o pesante. L’oggetto diventa '
+            'incandescente. Ogni creatura a contatto fisico con l’oggetto '
+            'subisce 2d8 danni da fuoco quando l’incantesimo viene lanciato. '
+            'Finché l’incantesimo non termina, l’incantatore può usare '
+            'un’azione bonus in ogni turno successivo per infliggere di nuovo '
+            'quei danni. Se una creatura indossa o impugna l’oggetto e subisce '
+            'i danni, deve superare un tiro salvezza su Costituzione o lasciar '
+            'cadere l’oggetto se può farlo. Se non lo lascia cadere, subisce '
+            'svantaggio ai tiri per colpire e alle prove di caratteristica fino '
+            'all’inizio del turno successivo dell’incantatore. Richiede '
+            'concentrazione. Usando uno slot di livello superiore al 2°, i '
+            'danni aumentano di 1d8 per ogni livello di slot superiore.',
+      ),
+      ownerId: SpellIds.heatMetal,
+    ),
+    level: 2,
+    school: SpellSchool.transmutation,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 18,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+      materials: [
+        SpellMaterialComponent(
+          description: 'Un pezzo di ferro e una fiamma.',
+        ),
+      ],
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.minute,
+      amount: 1,
+      concentration: true,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.object,
+      },
+      maximumTargets: 1,
+    ),
+    damage: [
+      SpellDamage(
+        dice: '2d8',
+        type: SpellDamageType.fire,
+      ),
+    ],
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'heat_metal_glowing_object_damage',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'targets_visible_manufactured_metal_object_within_18_meters',
+          'object_becomes_red_hot',
+          'creature_in_physical_contact_takes_2d8_fire_damage_on_cast',
+          'caster_can_bonus_action_repeat_fire_damage_on_later_turns',
+          'creature_wearing_or_holding_object_makes_constitution_save_after_damage',
+          'failed_save_creature_drops_object_if_possible',
+          'if_creature_does_not_drop_object_disadvantage_on_attack_rolls_and_ability_checks',
+          'disadvantage_until_start_of_casters_next_turn',
+          'damage_increases_by_1d8_per_slot_level_above_2',
+          'requires_concentration',
+          'uses_spellcasting_bonus_action_type_bonusAction',
+        },
+      ),
+    ],
+    classIds: {
+      'bard',
+      'druid',
+    },
+  ),
+  SpellIds.lesserRestoration: SpellDefinition(
+    id: SpellIds.lesserRestoration,
+    content: RuleContent(
+      id: SpellIds.lesserRestoration,
+      name: 'Ristorare Inferiore',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Termina una malattia o una condizione debilitante su una creatura toccata.',
+        details: 'L’incantatore tocca una creatura e può porre termine a una '
+            'malattia oppure a una condizione che la affligge. La condizione '
+            'rimossa può essere accecato, assordato, avvelenato o paralizzato. '
+            'L’incantesimo ha durata istantanea e richiede componenti verbali e '
+            'somatiche.',
+      ),
+      ownerId: SpellIds.lesserRestoration,
+    ),
+    level: 2,
+    school: SpellSchool.abjuration,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.touch,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.instantaneous,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.creature,
+      },
+      maximumTargets: 1,
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'lesser_restoration_end_disease_or_condition',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'touched_creature',
+          'can_end_one_disease',
+          'can_end_blinded_condition',
+          'can_end_deafened_condition',
+          'can_end_poisoned_condition',
+          'can_end_paralyzed_condition',
+          'instantaneous_restoration',
+        },
+      ),
+    ],
+    classIds: {
+      'bard',
+      'cleric',
+      'druid',
+      'paladin',
+      'ranger',
+    },
+  ),
+  SpellIds.knock: SpellDefinition(
+    id: SpellIds.knock,
+    content: RuleContent(
+      id: SpellIds.knock,
+      name: 'Scassinare',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Apre o sblocca un oggetto chiuso, bloccato o protetto magicamente.',
+        details:
+            'L’incantatore sceglie un oggetto entro gittata e che sia in grado '
+            'di vedere. Può trattarsi di una porta, uno scrigno, un forziere, '
+            'un paio di manette, un lucchetto o un altro oggetto dotato di un '
+            'mezzo normale o magico per impedire l’accesso. Un bersaglio tenuto '
+            'chiuso da una serratura magica, incastrato o sbarrato cessa di '
+            'esserlo. Se l’oggetto è protetto da più serrature, soltanto una di '
+            'esse viene sbloccata. Se il bersaglio è chiuso da Serratura '
+            'Arcana, quell’incantesimo è soppresso per 10 minuti, durante i '
+            'quali l’oggetto può essere aperto e chiuso normalmente. Quando '
+            'l’incantesimo viene lanciato, l’oggetto emette un forte rumore '
+            'simile al bussare, udibile fino a 90 metri di distanza.',
+      ),
+      ownerId: SpellIds.knock,
+    ),
+    level: 2,
+    school: SpellSchool.transmutation,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 18,
+    ),
+    components: SpellComponents(
+      verbal: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.instantaneous,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.object,
+      },
+      maximumTargets: 1,
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'knock_unlock_or_suppress_lock',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'targets_visible_object_within_18_meters',
+          'can_open_door_chest_shackles_padlock_or_similar_access_barrier',
+          'unlocks_one_magical_lock_jammed_barred_or_locked_restraint',
+          'if_multiple_locks_only_one_is_unlocked',
+          'suppresses_arcane_lock_for_10_minutes',
+          'object_can_be_opened_and_closed_normally_while_arcane_lock_suppressed',
+          'creates_loud_knocking_noise_audible_to_90_meters',
+        },
+      ),
+    ],
+    classIds: {
+      'bard',
+      'sorcerer',
+      'wizard',
+    },
+  ),
+  SpellIds.findTraps: SpellDefinition(
+    id: SpellIds.findTraps,
+    content: RuleContent(
+      id: SpellIds.findTraps,
+      name: 'Scopri Trappole',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Rivela la presenza di trappole entro gittata e linea di vista, ma non la loro posizione esatta.',
+        details: 'L’incantatore percepisce la presenza di ogni trappola entro '
+            'gittata e in linea di vista. Ai fini dell’incantesimo, una '
+            'trappola è qualcosa che infliggerebbe un effetto improvviso o '
+            'inaspettato considerato dannoso o indesiderabile dall’incantatore '
+            'e specificamente inteso come tale dal suo creatore. Può quindi '
+            'individuare un’area sotto l’effetto di Allarme, un glifo di '
+            'interdizione o una fossa ad apertura meccanica, ma non rivela un '
+            'cedimento naturale del pavimento, un soffitto instabile o un buco '
+            'nascosto nel terreno. L’incantesimo rivela soltanto che una '
+            'trappola è presente: non indica l’ubicazione di ogni trappola, ma '
+            'solo la natura generale del pericolo percepito.',
+      ),
+      ownerId: SpellIds.findTraps,
+    ),
+    level: 2,
+    school: SpellSchool.divination,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 36,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.instantaneous,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.area,
+      },
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'find_traps_presence_and_general_nature',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'detects_presence_of_traps_within_36_meters',
+          'only_detects_traps_in_line_of_sight',
+          'trap_must_be_intentionally_created_to_cause_harmful_or_unwanted_effect',
+          'can_detect_alarm_spell_area',
+          'can_detect_glyph_of_warding',
+          'can_detect_mechanical_pit_trap',
+          'does_not_detect_natural_floor_weakness_unstable_ceiling_or_hidden_hole',
+          'does_not_reveal_exact_location_of_each_trap',
+          'reveals_general_nature_of_perceived_danger',
+        },
+      ),
+    ],
+    classIds: {
+      'cleric',
+      'druid',
+      'ranger',
     },
   ),
 };

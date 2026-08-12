@@ -46,10 +46,10 @@ Checklist di lavoro per espandere `lib/data/spell_data.dart` con gli incantesimi
 - [x] Raggio Rovente
 - [x] Ragnatela
 - [x] Riposo Inviolato
-- [ ] Riscaldare il Metallo
-- [ ] Ristorare Inferiore
-- [ ] Scassinare
-- [ ] Scopri Trappole
+- [x] Riscaldare il Metallo
+- [x] Ristorare Inferiore
+- [x] Scassinare
+- [x] Scopri Trappole
 - [ ] Scurovisione
 - [ ] Serratura Arcana
 - [ ] Sfera Infuocata
