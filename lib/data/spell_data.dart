@@ -929,6 +929,10 @@ class SpellDefinition {
 /// Verrà popolato progressivamente. Tenere un unico registry permette a
 /// razze, classi, talenti e altri sistemi di riferirsi allo stesso ID.
 abstract final class SpellIds {
+  static const shapechange = 'shapechange';
+  static const stormOfVengeance = 'storm_of_vengeance';
+  static const meteorSwarm = 'meteor_swarm';
+  static const trueResurrection = 'true_resurrection';
   static const astralProjection = 'astral_projection';
   static const foresight = 'foresight';
   static const gate = 'gate';
@@ -28320,6 +28324,308 @@ const Map<String, SpellDefinition> spellDefinitions = {
       ),
     ],
     classIds: {'cleric', 'warlock', 'wizard'},
+  ),
+  SpellIds.trueResurrection: SpellDefinition(
+    id: SpellIds.trueResurrection,
+    content: RuleContent(
+      id: SpellIds.trueResurrection,
+      name: 'Resurrezione Pura',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Riporta pienamente in vita una creatura morta da non più di 200 anni, ricostruendone perfino il corpo.',
+        details:
+            'L’incantatore tocca una creatura morta da non più di 200 anni per una causa diversa '
+            'dalla vecchiaia. Se l’anima è libera e consenziente, il bersaglio torna in vita con '
+            'tutti i punti ferita. L’incantesimo chiude tutte le ferite, neutralizza i veleni, '
+            'cura tutte le malattie, annulla le maledizioni presenti al momento della morte e '
+            'ripristina organi e arti danneggiati o mancanti. Se la creatura era diventata un '
+            'non morto, ritorna alla forma originaria che possedeva in vita. Se il corpo non '
+            'esiste più, l’incantatore può pronunciare il nome della creatura per fornirle un '
+            'nuovo corpo, che appare in uno spazio libero entro 3 metri.',
+      ),
+      ownerId: SpellIds.trueResurrection,
+    ),
+    level: 9,
+    school: SpellSchool.necromancy,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.hour,
+      amount: 1,
+    ),
+    range: SpellRange(type: SpellRangeType.touch),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+      materials: [
+        SpellMaterialComponent(
+          description: 'Uno spruzzo d’acqua santa.',
+        ),
+        SpellMaterialComponent(
+          description:
+              'Diamanti del valore complessivo di almeno 25.000 mo, consumati dall’incantesimo.',
+          minimumCostGp: 25000,
+          consumed: true,
+        ),
+      ],
+    ),
+    duration: SpellDuration(type: SpellDurationType.instantaneous),
+    target: SpellTarget(
+      types: {SpellTargetType.creature},
+      maximumTargets: 1,
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'true_resurrection_complete_restoration',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'target_must_have_died_no_more_than_200_years_ago',
+          'spell_cannot_restore_creature_that_died_of_old_age',
+          'soul_must_be_free_and_willing',
+          'target_returns_to_life_with_all_hit_points',
+          'closes_all_wounds',
+          'neutralizes_all_poisons',
+          'cures_all_diseases',
+          'removes_all_curses_present_at_death',
+          'restores_damaged_or_missing_organs_and_limbs',
+          'former_undead_returns_to_original_living_form',
+          'caster_can_create_new_body_if_original_no_longer_exists',
+          'creating_new_body_requires_speaking_creatures_name',
+          'new_body_appears_in_unoccupied_space_within_3_meters',
+        },
+      ),
+    ],
+    classIds: {'cleric', 'druid'},
+  ),
+  SpellIds.meteorSwarm: SpellDefinition(
+    id: SpellIds.meteorSwarm,
+    content: RuleContent(
+      id: SpellIds.meteorSwarm,
+      name: 'Sciame di Meteore',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Fa precipitare meteore infuocate su quattro punti, infliggendo ingenti danni da fuoco e contundenti.',
+        details:
+            'L’incantatore sceglie quattro punti differenti che sia in grado di vedere entro '
+            '1,5 km. Attorno a ciascun punto si genera una sfera del raggio di 12 metri che si '
+            'propaga oltre gli angoli. Ogni creatura nell’area effettua un tiro salvezza su '
+            'Destrezza: se lo fallisce subisce 20d6 danni da fuoco e 20d6 danni contundenti, '
+            'mentre con un successo subisce la metà di entrambi. Una creatura compresa in più '
+            'esplosioni viene influenzata una sola volta. L’incantesimo danneggia gli oggetti '
+            'nell’area e incendia quelli infiammabili che non sono indossati o trasportati.',
+      ),
+      ownerId: SpellIds.meteorSwarm,
+    ),
+    level: 9,
+    school: SpellSchool.evocation,
+    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 1500,
+    ),
+    area: SpellArea(
+      shape: SpellAreaShape.sphere,
+      origin: SpellAreaOrigin.targetPoint,
+      radiusMeters: 12,
+    ),
+    areaInteraction: SpellAreaInteraction(
+      spreadsAroundCorners: true,
+      objectInteraction: SpellAreaObjectInteractionType.ignite,
+      objectConditions: {
+        SpellAreaObjectCondition.flammable,
+        SpellAreaObjectCondition.notWorn,
+        SpellAreaObjectCondition.notCarried,
+      },
+    ),
+    components: SpellComponents(verbal: true, somatic: true),
+    duration: SpellDuration(type: SpellDurationType.instantaneous),
+    target: SpellTarget(types: {SpellTargetType.area}),
+    savingThrow: SpellSavingThrow(
+      ability: SpellSavingThrowAbility.dexterity,
+      onSuccess: SpellSaveSuccess.halfDamage,
+    ),
+    damage: [
+      SpellDamage(dice: '20d6', type: SpellDamageType.fire),
+      SpellDamage(
+        dice: '20d6',
+        type: SpellDamageType.bludgeoning,
+      ),
+    ],
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'meteor_swarm_four_explosions',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'caster_selects_4_different_visible_points_in_range',
+          'each_point_creates_12_meter_radius_sphere',
+          'explosions_spread_around_corners',
+          'failed_dexterity_save_deals_20d6_fire_and_20d6_bludgeoning_damage',
+          'successful_dexterity_save_halves_both_damage_types',
+          'creature_in_multiple_explosions_is_affected_only_once',
+          'spell_damages_objects_in_area',
+          'spell_ignites_flammable_objects_not_worn_or_carried',
+        },
+      ),
+    ],
+    classIds: {'sorcerer', 'wizard'},
+  ),
+  SpellIds.stormOfVengeance: SpellDefinition(
+    id: SpellIds.stormOfVengeance,
+    content: RuleContent(
+      id: SpellIds.stormOfVengeance,
+      name: 'Tempesta di Vendetta',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Genera una vasta nube tempestosa che produce effetti diversi e sempre più devastanti per dieci round.',
+        details:
+            'Una nube del raggio di 108 metri appare su un punto visibile. Quando compare, ogni '
+            'creatura sotto la nube ed entro 1.500 metri da essa effettua un tiro salvezza su '
+            'Costituzione: se lo fallisce subisce 2d6 danni da tuono ed è assordata per 5 minuti. '
+            'Nel secondo round ogni creatura e oggetto sotto la nube subisce 1d6 danni da acido. '
+            'Nel terzo round sei fulmini colpiscono sei creature o oggetti differenti scelti '
+            'dall’incantatore, infliggendo 10d6 danni da fulmine, dimezzati superando un tiro '
+            'salvezza su Destrezza. Nel quarto round ogni creatura subisce 2d6 danni contundenti. '
+            'Dal quinto al decimo round l’area diventa terreno difficile e pesantemente oscurato; '
+            'ogni creatura subisce 1d6 danni da freddo, gli attacchi con armi a distanza sono '
+            'impossibili e vento e pioggia ostacolano la concentrazione. Il vento disperde '
+            'automaticamente nebbia, foschia e fenomeni analoghi, anche magici.',
+      ),
+      ownerId: SpellIds.stormOfVengeance,
+    ),
+    level: 9,
+    school: SpellSchool.conjuration,
+    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
+    range: SpellRange(type: SpellRangeType.sight),
+    area: SpellArea(
+      shape: SpellAreaShape.radius,
+      origin: SpellAreaOrigin.targetPoint,
+      radiusMeters: 108,
+      heightMeters: 1500,
+    ),
+    components: SpellComponents(verbal: true, somatic: true),
+    duration: SpellDuration(
+      type: SpellDurationType.minute,
+      amount: 1,
+      concentration: true,
+    ),
+    target: SpellTarget(types: {SpellTargetType.area}),
+    savingThrow: SpellSavingThrow(
+      ability: SpellSavingThrowAbility.constitution,
+      onSuccess: SpellSaveSuccess.special,
+    ),
+    damage: [
+      SpellDamage(dice: '2d6', type: SpellDamageType.thunder),
+      SpellDamage(dice: '1d6', type: SpellDamageType.acid),
+      SpellDamage(dice: '10d6', type: SpellDamageType.lightning),
+      SpellDamage(
+        dice: '2d6',
+        type: SpellDamageType.bludgeoning,
+      ),
+      SpellDamage(dice: '1d6', type: SpellDamageType.cold),
+    ],
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'storm_of_vengeance_round_sequence',
+        type: SpellPersistentEffectType.zone,
+        ruleTags: {
+          'cloud_has_108_meter_radius_and_affects_up_to_1500_meters_below',
+          'round_1_failed_constitution_save_deals_2d6_thunder_damage',
+          'round_1_failed_constitution_save_causes_deafened_condition_for_5_minutes',
+          'round_2_deals_1d6_acid_damage_to_every_creature_and_object_under_cloud',
+          'round_3_caster_selects_6_different_creatures_or_objects_for_lightning',
+          'round_3_each_lightning_bolt_deals_10d6_lightning_damage',
+          'round_3_successful_dexterity_save_halves_lightning_damage',
+          'round_4_deals_2d6_bludgeoning_damage_to_each_creature_under_cloud',
+          'rounds_5_to_10_area_is_difficult_terrain_and_heavily_obscured',
+          'rounds_5_to_10_deal_1d6_cold_damage_to_each_creature_in_area',
+          'rounds_5_to_10_ranged_weapon_attacks_in_area_are_impossible',
+          'rounds_5_to_10_wind_and_rain_are_severe_distraction_for_concentration',
+          'strong_wind_disperses_nonmagical_and_magical_fog_mist_and_similar_phenomena',
+          'requires_concentration',
+        },
+      ),
+    ],
+    classIds: {'druid'},
+  ),
+  SpellIds.shapechange: SpellDefinition(
+    id: SpellIds.shapechange,
+    content: RuleContent(
+      id: SpellIds.shapechange,
+      name: 'Trasformazione',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Permette all’incantatore di assumere e cambiare forme di creature potenti conservando parte delle proprie capacità.',
+        details:
+            'L’incantatore assume la forma di una creatura che abbia visto almeno una volta, '
+            'con grado di sfida non superiore al proprio livello e che non sia un costrutto o '
+            'un non morto. La forma è un esemplare normale senza livelli di classe né il tratto '
+            'Incantesimi. Le statistiche vengono sostituite, ma l’incantatore conserva '
+            'allineamento, Intelligenza, Saggezza, Carisma e le proprie competenze, ottenendo '
+            'anche quelle migliori della nuova forma; non può usare azioni leggendarie o di '
+            'tana. Assume punti ferita e Dadi Vita della forma, mantenendo i privilegi che la '
+            'nuova anatomia consente di usare. Decide se lasciare cadere, fondere o indossare '
+            'l’equipaggiamento. Durante l’incantesimo può usare un’azione per assumere una '
+            'forma diversa; se questa possiede più punti ferita dei suoi punti ferita attuali, '
+            'il valore attuale non aumenta.',
+      ),
+      ownerId: SpellIds.shapechange,
+    ),
+    level: 9,
+    school: SpellSchool.transmutation,
+    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
+    range: SpellRange(type: SpellRangeType.self),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+      materials: [
+        SpellMaterialComponent(
+          description:
+              'Un diadema di giada del valore di almeno 1.500 mo, che deve essere indossato prima del lancio.',
+          minimumCostGp: 1500,
+        ),
+      ],
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.hour,
+      amount: 1,
+      concentration: true,
+    ),
+    target: SpellTarget(
+      types: {SpellTargetType.self},
+      maximumTargets: 1,
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'shapechange_adaptive_form',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'new_form_must_be_creature_caster_has_seen_at_least_once',
+          'new_form_challenge_rating_cannot_exceed_casters_level',
+          'new_form_cannot_be_construct_or_undead',
+          'new_form_is_normal_specimen_without_class_levels_or_spellcasting_trait',
+          'new_form_replaces_game_statistics',
+          'caster_retains_alignment_intelligence_wisdom_and_charisma',
+          'caster_retains_skill_and_saving_throw_proficiencies',
+          'caster_gains_new_forms_skill_and_saving_throw_proficiencies',
+          'higher_proficiency_bonus_is_used_for_shared_proficiencies',
+          'caster_cannot_use_legendary_actions_or_lair_actions',
+          'caster_assumes_new_forms_hit_points_and_hit_dice',
+          'excess_damage_carries_over_when_caster_returns_to_normal_form',
+          'caster_retains_class_race_and_other_features_if_form_can_physically_use_them',
+          'caster_uses_special_senses_only_if_new_form_has_them',
+          'caster_can_speak_only_if_new_form_can_normally_speak',
+          'caster_chooses_whether_equipment_drops_merges_or_is_worn',
+          'equipment_does_not_change_size_or_shape',
+          'merged_equipment_has_no_effect',
+          'caster_can_use_action_to_assume_different_valid_form',
+          'changing_to_form_with_more_hit_points_does_not_increase_current_hit_points',
+          'requires_concentration',
+        },
+      ),
+    ],
+    classIds: {'druid', 'wizard'},
   ),
 };
 

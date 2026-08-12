@@ -14,7 +14,7 @@ Checklist di lavoro per espandere `lib/data/spell_data.dart` con gli incantesimi
 - [x] Portale
 - [x] Previsione
 - [x] Proiezione Astrale
-- [ ] Resurrezione Pura
-- [ ] Sciame di Meteore
-- [ ] Tempesta di Vendetta
-- [ ] Trasformazione
+- [x] Resurrezione Pura
+- [x] Sciame di Meteore
+- [x] Tempesta di Vendetta
+- [x] Trasformazione
