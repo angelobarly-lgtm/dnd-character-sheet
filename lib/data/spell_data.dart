@@ -1157,6 +1157,10 @@ abstract final class SpellIds {
   static const graspingVine = 'grasping_vine';
   static const mordenkainensPrivateSanctum = 'mordenkainens_private_sanctum';
   static const stoneShape = 'stone_shape';
+  static const leomundsSecretChest = 'leomunds_secret_chest';
+  static const fireShield = 'fire_shield';
+  static const mordenkainensFaithfulHound = 'mordenkainens_faithful_hound';
+  static const otilukesResilientSphere = 'otilukes_resilient_sphere';
 }
 
 const Map<String, SpellDefinition> spellDefinitions = {
@@ -17278,7 +17282,7 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ],
     persistentEffects: [
       SpellPersistentEffect(
-        id: 'staggering_smitemite_next_melee_hit',
+        id: 'staggering_smite_next_melee_hit',
         type: SpellPersistentEffectType.special,
         ruleTags: {
           'triggers_on_next_melee_weapon_hit_during_duration',
@@ -17468,7 +17472,8 @@ const Map<String, SpellDefinition> spellDefinitions = {
             'passaggio in una parete spessa non più di 1,5 metri oppure '
             'modellare una porta e i suoi stipiti per sigillarla. L’oggetto '
             'creato può includere al massimo due cardini e un coperchio, ma '
-            'non può possedere meccanismi più raffinati.',
+            'non può possedere meccanismi più raffinati. L’effetto '
+            'dell’incantesimo è istantaneo.',
       ),
       ownerId: SpellIds.stoneShape,
     ),
@@ -17519,6 +17524,320 @@ const Map<String, SpellDefinition> spellDefinitions = {
     classIds: {
       'cleric',
       'druid',
+      'wizard',
+    },
+  ),
+  SpellIds.leomundsSecretChest: SpellDefinition(
+    id: SpellIds.leomundsSecretChest,
+    content: RuleContent(
+      id: SpellIds.leomundsSecretChest,
+      name: 'Scrigno Segreto di Leomund',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Nasconde uno scrigno sul Piano Etereo e permette di richiamarlo tramite una riproduzione.',
+        details:
+            'L’incantatore tocca uno scrigno pregiato e la sua riproduzione '
+            'Minuscola, nascondendo sul Piano Etereo lo scrigno e il suo '
+            'contenuto non vivente. Toccando la riproduzione e usando '
+            'un’azione può richiamare lo scrigno in uno spazio libero entro '
+            '1,5 metri, oppure rimandarlo sul Piano Etereo toccando entrambi. '
+            'Dopo 60 giorni esiste una probabilità cumulativa del 5 per cento '
+            'al giorno che l’effetto termini. L’effetto termina anche se '
+            'l’incantesimo viene lanciato di nuovo, se la riproduzione viene '
+            'distrutta o se l’incantatore lo termina con un’azione. Se in '
+            'quel momento lo scrigno si trova sul Piano Etereo, è perduto '
+            'irrimediabilmente.',
+      ),
+      ownerId: SpellIds.leomundsSecretChest,
+    ),
+    level: 4,
+    school: SpellSchool.conjuration,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.touch,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+      materials: [
+        SpellMaterialComponent(
+          description:
+              'Uno scrigno pregiato di 90 × 60 × 60 centimetri, fatto di materiali rari e del valore di almeno 5.000 monete d’oro.',
+          minimumCostGp: 5000,
+        ),
+        SpellMaterialComponent(
+          description:
+              'Una riproduzione Minuscola dello scrigno, fatta degli stessi materiali e del valore di almeno 50 monete d’oro.',
+          minimumCostGp: 50,
+        ),
+      ],
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.instantaneous,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.object,
+      },
+      maximumTargets: 1,
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'leomunds_secret_chest_ethereal_storage',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'hides_chest_and_contents_on_ethereal_plane',
+          'chest_capacity_90_by_60_by_60_centimeters',
+          'chest_may_contain_only_nonliving_material',
+          'caster_action_and_replica_recall_chest_within_1_5_meters',
+          'caster_action_touching_both_returns_chest_to_ethereal_plane',
+          'after_60_days_cumulative_5_percent_daily_end_chance',
+          'recasting_spell_ends_previous_effect',
+          'destroying_replica_ends_effect',
+          'caster_may_end_effect_with_action',
+          'chest_is_lost_if_effect_ends_while_chest_is_ethereal',
+        },
+      ),
+    ],
+    classIds: {
+      'wizard',
+    },
+  ),
+  SpellIds.fireShield: SpellDefinition(
+    id: SpellIds.fireShield,
+    content: RuleContent(
+      id: SpellIds.fireShield,
+      name: 'Scudo di Fuoco',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Avvolge l’incantatore in fiamme protettive calde o fredde che danneggiano gli aggressori.',
+        details: 'Fiamme spettrali avvolgono l’incantatore per 10 minuti, '
+            'proiettando luce intensa entro 3 metri e luce fioca per altri 3 '
+            'metri. L’incantatore sceglie uno scudo ardente, che conferisce '
+            'resistenza ai danni da freddo e infligge 2d8 danni da fuoco, '
+            'oppure uno scudo gelido, che conferisce resistenza ai danni da '
+            'fuoco e infligge 2d8 danni da freddo. Il danno si attiva ogni '
+            'volta che una creatura entro 1,5 metri colpisce l’incantatore con '
+            'un attacco in mischia. L’incantatore può terminare '
+            'anticipatamente l’effetto usando un’azione.',
+      ),
+      ownerId: SpellIds.fireShield,
+    ),
+    level: 4,
+    school: SpellSchool.evocation,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.self,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+      materials: [
+        SpellMaterialComponent(
+          description: 'Un frammento di zolfo o una lucciola.',
+        ),
+      ],
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.minute,
+      amount: 10,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.self,
+      },
+      maximumTargets: 1,
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'fire_shield_warm_or_chill_flames',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'caster_chooses_warm_shield_or_chill_shield',
+          'warm_shield_grants_cold_resistance',
+          'warm_shield_retaliates_with_2d8_fire_damage',
+          'chill_shield_grants_fire_resistance',
+          'chill_shield_retaliates_with_2d8_cold_damage',
+          'retaliates_when_creature_within_1_5_meters_hits_with_melee_attack',
+          'emits_bright_light_3_meters_and_dim_light_3_more_meters',
+          'caster_may_end_effect_with_action',
+          'does_not_require_concentration',
+        },
+      ),
+    ],
+    classIds: {
+      'wizard',
+    },
+  ),
+  SpellIds.mordenkainensFaithfulHound: SpellDefinition(
+    id: SpellIds.mordenkainensFaithfulHound,
+    content: RuleContent(
+      id: SpellIds.mordenkainensFaithfulHound,
+      name: 'Segugio Fedele di Mordenkainen',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Evoca un segugio fantasma che sorveglia un luogo, avvisa delle intrusioni e attacca i nemici.',
+        details:
+            'Un cane da guardia fantasma compare in uno spazio libero visibile '
+            'entro gittata e resta fermo fino a 8 ore. Scompare se '
+            'l’incantatore lo congeda con un’azione o si allontana oltre 30 '
+            'metri. È invisibile a tutti tranne che all’incantatore e non può '
+            'subire danni. Quando una creatura di taglia Piccola o superiore '
+            'arriva entro 9 metri senza pronunciare la parola d’ordine scelta '
+            'al lancio, il segugio abbaia. Vede le creature invisibili e il '
+            'Piano Etereo e ignora le illusioni. All’inizio di ogni turno '
+            'dell’incantatore tenta di mordere una creatura ostile entro 1,5 '
+            'metri. Il suo bonus di attacco è pari al modificatore di '
+            'caratteristica da incantatore più il bonus di competenza; se '
+            'colpisce, infligge 4d8 danni perforanti.',
+      ),
+      ownerId: SpellIds.mordenkainensFaithfulHound,
+    ),
+    level: 4,
+    school: SpellSchool.conjuration,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 9,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+      materials: [
+        SpellMaterialComponent(
+          description: 'Un fischietto d’argento, un pezzo d’osso e un filo.',
+        ),
+      ],
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.hour,
+      amount: 8,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.point,
+      },
+    ),
+    damage: [
+      SpellDamage(
+        dice: '4d8',
+        type: SpellDamageType.piercing,
+      ),
+    ],
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'mordenkainens_faithful_hound_guardian',
+        type: SpellPersistentEffectType.summonedCreature,
+        ruleTags: {
+          'hound_appears_in_seen_unoccupied_space_within_range',
+          'hound_is_stationary',
+          'hound_is_invisible_to_all_except_caster',
+          'hound_cannot_be_damaged',
+          'hound_disappears_if_dismissed_or_caster_moves_beyond_30_meters',
+          'hound_barks_when_small_or_larger_creature_without_password_enters_9_meters',
+          'hound_sees_invisible_creatures_and_ethereal_plane',
+          'hound_ignores_illusions',
+          'at_start_of_casters_turn_hound_attacks_hostile_within_1_5_meters',
+          'attack_bonus_equals_spellcasting_modifier_plus_proficiency_bonus',
+          'bite_hit_deals_4d8_piercing_damage',
+          'does_not_require_concentration',
+        },
+      ),
+    ],
+    classIds: {
+      'wizard',
+    },
+  ),
+  SpellIds.otilukesResilientSphere: SpellDefinition(
+    id: SpellIds.otilukesResilientSphere,
+    content: RuleContent(
+      id: SpellIds.otilukesResilientSphere,
+      name: 'Sfera Elastica di Otiluke',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Racchiude una creatura o un oggetto in una sfera di forza impenetrabile e mobile.',
+        details:
+            'Una sfera di forza racchiude una creatura o un oggetto di taglia '
+            'Grande o inferiore entro gittata. Una creatura non consenziente '
+            'deve superare un tiro salvezza su Destrezza o resta rinchiusa per '
+            'la durata. Oggetti fisici, energia ed effetti magici non possono '
+            'attraversare la barriera, ma una creatura all’interno può '
+            'respirare. La sfera è immune a tutti i danni; ciò che contiene '
+            'non può essere danneggiato dall’esterno e non può danneggiare '
+            'nulla all’esterno. La sfera non ha peso e si adatta al contenuto. '
+            'Una creatura rinchiusa può usare un’azione per farla rotolare a '
+            'metà della propria velocità, e altre creature possono sollevarla '
+            'o muoverla. Un incantesimo disintegrazione distrugge la sfera '
+            'senza danneggiare il contenuto.',
+      ),
+      ownerId: SpellIds.otilukesResilientSphere,
+    ),
+    level: 4,
+    school: SpellSchool.evocation,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 9,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+      materials: [
+        SpellMaterialComponent(
+          description:
+              'Una semisfera di cristallo trasparente e una semisfera corrispondente di resina.',
+        ),
+      ],
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.minute,
+      amount: 1,
+      concentration: true,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.creature,
+        SpellTargetType.object,
+      },
+      maximumTargets: 1,
+    ),
+    savingThrow: SpellSavingThrow(
+      ability: SpellSavingThrowAbility.dexterity,
+      onSuccess: SpellSaveSuccess.negates,
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'otilukes_resilient_sphere_barrier',
+        type: SpellPersistentEffectType.zone,
+        ruleTags: {
+          'targets_large_or_smaller_creature_or_object',
+          'unwilling_creature_makes_dexterity_save',
+          'nothing_physical_magical_or_energy_based_crosses_barrier',
+          'contained_creature_can_breathe',
+          'sphere_is_immune_to_all_damage',
+          'contained_target_cannot_be_damaged_from_outside',
+          'contained_creature_cannot_damage_outside',
+          'sphere_is_weightless_and_sized_to_contents',
+          'contained_creature_action_rolls_sphere_at_half_speed',
+          'other_creatures_may_lift_or_move_sphere',
+          'disintegrate_destroys_sphere_without_harming_contents',
+          'requires_concentration',
+        },
+      ),
+    ],
+    classIds: {
       'wizard',
     },
   ),

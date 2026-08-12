@@ -30,10 +30,10 @@ Checklist di lavoro per espandere `lib/data/spell_data.dart` con gli incantesimi
 - [x] Rampicante Afferrante
 - [x] Santuario Privato di Mordenkainen
 - [x] Scolpire Pietra
-- [ ] Scrigno Segreto di Leomund
-- [ ] Scudo di Fuoco
-- [ ] Segugio Fedele di Mordenkainen
-- [ ] Sfera Elastica di Otiluke
+- [x] Scrigno Segreto di Leomund
+- [x] Scudo di Fuoco
+- [x] Segugio Fedele di Mordenkainen
+- [x] Sfera Elastica di Otiluke
 - [ ] Tempesta di Ghiaccio
 - [ ] Tentacoli Neri di Evard
 - [ ] Terreno Illusorio
