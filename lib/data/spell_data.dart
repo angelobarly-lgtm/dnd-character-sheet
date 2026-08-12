@@ -1054,6 +1054,10 @@ abstract final class SpellIds {
   static const locateObject = 'locate_object';
   static const spiderClimb = 'spider_climb';
   static const darkness = 'darkness';
+  static const passWithoutTrace = 'pass_without_trace';
+  static const mistyStep = 'misty_step';
+  static const barkskin = 'barkskin';
+  static const beastSense = 'beast_sense';
 }
 
 const Map<String, SpellDefinition> spellDefinitions = {
@@ -9852,6 +9856,261 @@ const Map<String, SpellDefinition> spellDefinitions = {
       'sorcerer',
       'warlock',
       'wizard',
+    },
+  ),
+  SpellIds.passWithoutTrace: SpellDefinition(
+    id: SpellIds.passWithoutTrace,
+    content: RuleContent(
+      id: SpellIds.passWithoutTrace,
+      name: 'Passare Senza Tracce',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Avvolge l’incantatore e creature scelte in un velo che migliora la furtività e nasconde le tracce.',
+        details: 'L’incantatore è avvolto da un velo d’ombra e di silenzio che '
+            'impedisce a lui e ai suoi compagni di essere individuati. Per la '
+            'durata dell’incantesimo, ogni creatura scelta dall’incantatore e '
+            'situata entro 9 metri da lui, incluso l’incantatore stesso, ottiene '
+            'un bonus di +10 alle prove di Destrezza (Furtività). Inoltre, le '
+            'tracce delle creature influenzate sono impossibili da seguire se '
+            'non tramite mezzi magici: una creatura che riceve il bonus non '
+            'lascia impronte o altre tracce del proprio passaggio. Richiede '
+            'concentrazione e può durare fino a 1 ora.',
+      ),
+      ownerId: SpellIds.passWithoutTrace,
+    ),
+    level: 2,
+    school: SpellSchool.abjuration,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.self,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+      materials: [
+        SpellMaterialComponent(
+          description:
+              'Cenere di una foglia di vischio bruciata e un rametto di abete.',
+        ),
+      ],
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.hour,
+      amount: 1,
+      concentration: true,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.self,
+        SpellTargetType.creatures,
+      },
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'pass_without_trace_stealth_bonus',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'caster_and_chosen_creatures_within_9_meters',
+          'affected_creatures_gain_plus_10_dexterity_stealth_checks',
+          'affected_creatures_tracks_can_only_be_followed_by_magical_means',
+          'affected_creatures_leave_no_footprints_or_other_traces',
+          'requires_concentration',
+        },
+      ),
+    ],
+    classIds: {
+      'druid',
+      'ranger',
+    },
+  ),
+  SpellIds.mistyStep: SpellDefinition(
+    id: SpellIds.mistyStep,
+    content: RuleContent(
+      id: SpellIds.mistyStep,
+      name: 'Passo Velato',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Teletrasporta l’incantatore in uno spazio libero visibile entro breve distanza.',
+        details:
+            'L’incantatore è avvolto per un istante da una foschia argentata e '
+            'si teletrasporta di un massimo di 9 metri fino a uno spazio libero '
+            'che sia in grado di vedere. L’incantesimo viene lanciato come '
+            'azione bonus, ha solo componente verbale e la sua durata è '
+            'istantanea.',
+      ),
+      ownerId: SpellIds.mistyStep,
+    ),
+    level: 2,
+    school: SpellSchool.conjuration,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.bonusAction,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.self,
+    ),
+    components: SpellComponents(
+      verbal: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.instantaneous,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.self,
+      },
+      maximumTargets: 1,
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'misty_step_short_teleport',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'bonus_action_spell',
+          'caster_teleports_up_to_9_meters',
+          'destination_must_be_unoccupied_space',
+          'destination_must_be_visible_to_caster',
+          'instantaneous_teleportation',
+        },
+      ),
+    ],
+    classIds: {
+      'sorcerer',
+      'warlock',
+      'wizard',
+    },
+  ),
+  SpellIds.barkskin: SpellDefinition(
+    id: SpellIds.barkskin,
+    content: RuleContent(
+      id: SpellIds.barkskin,
+      name: 'Pelle Coriacea',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Rende la pelle di una creatura ruvida come corteccia e impone una CA minima.',
+        details: 'L’incantatore tocca una creatura consenziente. Finché '
+            'l’incantesimo non termina, la pelle del bersaglio assume un '
+            'aspetto ruvido simile alla corteccia e la sua Classe Armatura non '
+            'può essere inferiore a 16, a prescindere dal tipo di armatura che '
+            'indossa. L’incantesimo richiede concentrazione e può durare fino a '
+            '1 ora.',
+      ),
+      ownerId: SpellIds.barkskin,
+    ),
+    level: 2,
+    school: SpellSchool.transmutation,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.touch,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+      materials: [
+        SpellMaterialComponent(
+          description: 'Un frammento di corteccia di quercia.',
+        ),
+      ],
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.hour,
+      amount: 1,
+      concentration: true,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.willingCreature,
+      },
+      maximumTargets: 1,
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'barkskin_minimum_armor_class',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'touched_willing_creature',
+          'target_skin_becomes_rough_like_bark',
+          'target_armor_class_cannot_be_lower_than_16',
+          'minimum_ac_applies_regardless_of_armor_worn',
+          'requires_concentration',
+        },
+      ),
+    ],
+    classIds: {
+      'druid',
+      'ranger',
+    },
+  ),
+  SpellIds.beastSense: SpellDefinition(
+    id: SpellIds.beastSense,
+    content: RuleContent(
+      id: SpellIds.beastSense,
+      name: 'Percezione delle Bestie',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Permette all’incantatore di percepire attraverso i sensi di una bestia consenziente.',
+        details: 'L’incantatore tocca una bestia consenziente. Per la durata '
+            'dell’incantesimo, può usare la sua azione per vedere attraverso '
+            'gli occhi della bestia e sentire ciò che essa sente, continuando a '
+            'farlo finché non usa la propria azione per tornare ai suoi sensi '
+            'normali. Finché percepisce il mondo attraverso i sensi della '
+            'bestia, l’incantatore ottiene i benefici di qualsiasi senso '
+            'speciale posseduto dalla creatura, ma resta accecato e assordato '
+            'nei confronti di ciò che accade attorno a lui. Richiede '
+            'concentrazione, può durare fino a 1 ora e può essere lanciato come '
+            'rituale.',
+      ),
+      ownerId: SpellIds.beastSense,
+    ),
+    level: 2,
+    ritual: true,
+    school: SpellSchool.divination,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.touch,
+    ),
+    components: SpellComponents(
+      somatic: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.hour,
+      amount: 1,
+      concentration: true,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.willingCreature,
+      },
+      maximumTargets: 1,
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'beast_sense_shared_senses',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'ritual_spell',
+          'touched_willing_beast',
+          'caster_can_action_see_through_beasts_eyes',
+          'caster_can_action_hear_what_beast_hears',
+          'caster_can_action_return_to_normal_senses',
+          'caster_gains_benefit_of_beasts_special_senses',
+          'caster_blinded_and_deafened_to_own_surroundings_while_using_beast_senses',
+          'requires_concentration',
+        },
+      ),
+    ],
+    classIds: {
+      'druid',
+      'ranger',
     },
   ),
 };

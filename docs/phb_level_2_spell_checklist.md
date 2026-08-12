@@ -34,10 +34,10 @@ Checklist di lavoro per espandere `lib/data/spell_data.dart` con gli incantesimi
 - [x] Movimenti del Ragno
 - [x] Nube di Pugnali
 - [x] Oscurità
-- [ ] Passare Senza Tracce
-- [ ] Passo Velato
-- [ ] Pelle Coriacea
-- [ ] Percezione delle Bestie
+- [x] Passare Senza Tracce
+- [x] Passo Velato
+- [x] Pelle Coriacea
+- [x] Percezione delle Bestie
 - [ ] Preghiera di Guarigione
 - [ ] Presagio
 - [ ] Protezione dai Veleni
