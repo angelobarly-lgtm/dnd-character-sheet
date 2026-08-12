@@ -929,6 +929,10 @@ class SpellDefinition {
 /// Verrà popolato progressivamente. Tenere un unico registry permette a
 /// razze, classi, talenti e altri sistemi di riferirsi allo stesso ID.
 abstract final class SpellIds {
+  static const powerWordHeal = 'power_word_heal';
+  static const prismaticWall = 'prismatic_wall';
+  static const truePolymorph = 'true_polymorph';
+  static const imprisonment = 'imprisonment';
   static const massHeal = 'mass_heal';
   static const timeStop = 'time_stop';
   static const weird = 'weird';
@@ -27725,6 +27729,327 @@ const Map<String, SpellDefinition> spellDefinitions = {
       ),
     ],
     classIds: {'cleric'},
+  ),
+  SpellIds.imprisonment: SpellDefinition(
+    id: SpellIds.imprisonment,
+    content: RuleContent(
+      id: SpellIds.imprisonment,
+      name: 'Imprigionare',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Vincola una creatura in una prigionia magica scelta tra cinque forme, impedendole di invecchiare e di essere localizzata.',
+        details:
+            'Una creatura visibile entro 9 metri effettua un tiro salvezza su Saggezza. Se lo '
+            'fallisce, viene imprigionata nella forma scelta dall’incantatore: Ceppi la trattiene '
+            'e impedisce ogni movimento; Prigione Delimitata la trasporta in un semipiano '
+            'interdetto al teletrasporto e ai viaggi planari; Prigione Ridotta la rimpicciolisce '
+            'e la rinchiude in una gemma; Sepoltura la confina in una sfera di forza nelle '
+            'profondità della terra; Sonno la addormenta senza possibilità di risveglio. Il '
+            'bersaglio non deve respirare, mangiare o bere, non invecchia e non può essere '
+            'localizzato o percepito tramite divinazione. Se supera il tiro salvezza, diventa '
+            'immune ai successivi lanci dell’incantatore. Al lancio può essere stabilita una '
+            'condizione ragionevole e osservabile che liberi il bersaglio. Dissolvi Magie può '
+            'terminare la prigionia soltanto se lanciato al 9° livello sulla prigione o sulla '
+            'componente speciale. Riutilizzare la stessa componente libera il bersaglio precedente.',
+      ),
+      ownerId: SpellIds.imprisonment,
+    ),
+    level: 9,
+    school: SpellSchool.abjuration,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.minute,
+      amount: 1,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 9,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+      materials: [
+        SpellMaterialComponent(
+          description:
+              'Un ritratto su pergamena o una statuetta che riproduce le fattezze del bersaglio.',
+        ),
+        SpellMaterialComponent(
+          description:
+              'La componente speciale richiesta dalla forma scelta, del valore di almeno 500 mo per ogni Dado Vita del bersaglio.',
+          minimumCostGp: 500,
+        ),
+      ],
+    ),
+    duration: SpellDuration(type: SpellDurationType.untilDispelled),
+    target: SpellTarget(
+      types: {SpellTargetType.creature},
+      maximumTargets: 1,
+    ),
+    savingThrow: SpellSavingThrow(
+      ability: SpellSavingThrowAbility.wisdom,
+      onSuccess: SpellSaveSuccess.negates,
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'imprisonment_magical_binding',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'successful_wisdom_save_grants_immunity_to_future_casts_by_same_caster',
+          'imprisoned_target_does_not_need_to_breathe_eat_or_drink',
+          'imprisoned_target_does_not_age',
+          'divination_spells_cannot_locate_or_perceive_target',
+          'caster_chooses_shackles_hedged_prison_minimus_containment_burial_or_slumber',
+          'shackles_restrain_target_and_prevent_all_movement_or_forced_movement',
+          'hedged_prison_places_target_in_teleportation_and_planar_travel_warded_demiplane',
+          'minimus_containment_reduces_target_to_2_5_centimeters_inside_transparent_gem',
+          'minimus_gem_blocks_everything_except_light_and_cannot_be_cut_or_broken',
+          'burial_places_target_deep_underground_inside_impenetrable_force_sphere',
+          'slumber_puts_target_to_sleep_and_target_cannot_be_awakened',
+          'caster_can_define_reasonable_observable_release_condition',
+          'release_condition_cannot_use_intangible_values_such_as_level_class_or_hit_points',
+          'dispel_magic_must_be_cast_at_9th_level_on_prison_or_special_component',
+          'same_special_component_can_support_only_one_prison',
+          'reusing_special_component_immediately_releases_previous_target',
+        },
+      ),
+    ],
+    classIds: {'warlock', 'wizard'},
+  ),
+  SpellIds.truePolymorph: SpellDefinition(
+    id: SpellIds.truePolymorph,
+    content: RuleContent(
+      id: SpellIds.truePolymorph,
+      name: 'Metamorfosi Pura',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Trasforma una creatura o un oggetto in una nuova creatura oppure trasforma una creatura in un oggetto.',
+        details:
+            'L’incantatore trasforma una creatura o un oggetto non magico visibile entro 9 metri. '
+            'Una creatura non consenziente può evitare l’effetto superando un tiro salvezza su '
+            'Saggezza; i mutaforma e le creature a 0 punti ferita non sono influenzati. Una '
+            'creatura può diventare una creatura con grado di sfida non superiore al proprio '
+            'grado di sfida o livello, sostituendo le statistiche ma mantenendo allineamento e '
+            'personalità. Un oggetto può diventare una creatura di taglia non superiore '
+            'all’oggetto e grado di sfida massimo 9, inizialmente amichevole e controllata '
+            'dall’incantatore. Una creatura può diventare un oggetto assieme al suo '
+            'equipaggiamento e non ricorda il tempo trascorso in quella forma. L’effetto termina '
+            'a 0 punti ferita o alla morte; se la concentrazione viene mantenuta per l’intera '
+            'ora, la trasformazione permane finché non viene dissolta.',
+      ),
+      ownerId: SpellIds.truePolymorph,
+    ),
+    level: 9,
+    school: SpellSchool.transmutation,
+    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 9,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+      materials: [
+        SpellMaterialComponent(
+          description:
+              'Una goccia di mercurio, una sfera di resina e uno sbuffo di fumo.',
+        ),
+      ],
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.hour,
+      amount: 1,
+      concentration: true,
+    ),
+    target: SpellTarget(
+      types: {SpellTargetType.creature, SpellTargetType.object},
+      maximumTargets: 1,
+    ),
+    savingThrow: SpellSavingThrow(
+      ability: SpellSavingThrowAbility.wisdom,
+      onSuccess: SpellSaveSuccess.negates,
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'true_polymorph_transformation',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'can_transform_creature_into_creature',
+          'can_transform_creature_into_object',
+          'can_transform_nonmagical_object_into_creature',
+          'object_target_cannot_be_worn_or_carried',
+          'spell_does_not_affect_shapechangers',
+          'spell_does_not_affect_creatures_at_0_hit_points',
+          'unwilling_creature_can_negate_with_wisdom_save',
+          'transformation_ends_if_target_reaches_0_hit_points_or_dies',
+          'concentrating_for_full_duration_makes_transformation_last_until_dispelled',
+          'creature_form_challenge_rating_cannot_exceed_target_challenge_rating_or_level',
+          'creature_form_replaces_game_statistics_including_mental_abilities',
+          'creature_form_retains_alignment_and_personality',
+          'creature_form_uses_new_forms_hit_points',
+          'excess_damage_carries_over_when_target_returns_to_normal_form',
+          'new_form_limits_actions_speech_spellcasting_and_equipment_use',
+          'object_to_creature_form_cannot_be_larger_than_object',
+          'object_to_creature_form_has_maximum_challenge_rating_9',
+          'created_creature_is_friendly_and_obeys_caster_during_concentration',
+          'permanent_created_creature_is_no_longer_controlled',
+          'creature_to_object_merges_worn_and_carried_equipment',
+          'creature_to_object_replaces_statistics_with_object_statistics',
+          'creature_remembers_nothing_about_time_spent_as_object',
+          'requires_concentration',
+        },
+      ),
+    ],
+    classIds: {'bard', 'warlock', 'wizard'},
+  ),
+  SpellIds.prismaticWall: SpellDefinition(
+    id: SpellIds.prismaticWall,
+    content: RuleContent(
+      id: SpellIds.prismaticWall,
+      name: 'Muro Prismatico',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Crea un muro o una sfera opaca di sette strati colorati, ciascuno dotato di un effetto e di un metodo di distruzione specifici.',
+        details:
+            'Il muro può essere un piano verticale lungo fino a 27 metri, alto 9 metri e spesso '
+            '2,5 cm, oppure una sfera del diametro massimo di 9 metri. Se attraversa lo spazio '
+            'di una creatura, il lancio fallisce. Emette luce intensa per 30 metri e fioca per '
+            'altri 30. Le creature designate dall’incantatore sono immuni; le altre, se vedono '
+            'il muro entro 6 metri o vi iniziano il turno, effettuano un tiro salvezza su '
+            'Costituzione o restano accecate per 1 minuto. Attraversare ogni strato richiede un '
+            'tiro salvezza su Destrezza. Rosso, arancione, giallo, verde e blu infliggono 10d6 '
+            'danni rispettivamente da fuoco, acido, fulmine, veleno e freddo, dimezzati con un '
+            'successo. Indaco può trattenere e pietrificare; viola può accecare e trasportare su '
+            'un altro piano. Ogni strato deve essere distrutto separatamente e in ordine.',
+      ),
+      ownerId: SpellIds.prismaticWall,
+    ),
+    level: 9,
+    school: SpellSchool.abjuration,
+    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 18,
+    ),
+    area: SpellArea(
+      shape: SpellAreaShape.special,
+      origin: SpellAreaOrigin.targetPoint,
+      lengthMeters: 27,
+      heightMeters: 9,
+    ),
+    areaExclusion: SpellAreaExclusion(
+      type: SpellAreaExclusionType.chosenOnCast,
+    ),
+    wall: SpellWallDefinition(
+      shape: SpellWallShape.special,
+      lengthMeters: 27,
+      heightMeters: 9,
+      thicknessMeters: 0.025,
+    ),
+    components: SpellComponents(verbal: true, somatic: true),
+    duration: SpellDuration(
+      type: SpellDurationType.minute,
+      amount: 10,
+    ),
+    target: SpellTarget(types: {SpellTargetType.area}),
+    savingThrow: SpellSavingThrow(
+      ability: SpellSavingThrowAbility.dexterity,
+      onSuccess: SpellSaveSuccess.special,
+    ),
+    damage: [
+      SpellDamage(dice: '10d6', type: SpellDamageType.fire),
+      SpellDamage(dice: '10d6', type: SpellDamageType.acid),
+      SpellDamage(dice: '10d6', type: SpellDamageType.lightning),
+      SpellDamage(dice: '10d6', type: SpellDamageType.poison),
+      SpellDamage(dice: '10d6', type: SpellDamageType.cold),
+    ],
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'prismatic_wall_seven_layers',
+        type: SpellPersistentEffectType.zone,
+        ruleTags: {
+          'wall_can_be_vertical_plane_or_sphere_up_to_9_meter_diameter',
+          'spell_fails_if_wall_passes_through_occupied_space',
+          'wall_is_opaque',
+          'wall_emits_bright_light_for_30_meters_and_dim_light_for_30_more',
+          'caster_and_creatures_designated_on_cast_ignore_wall_effects',
+          'creature_seeing_wall_within_6_meters_or_starting_turn_there_makes_constitution_save',
+          'failed_constitution_save_causes_blinded_condition_for_1_minute',
+          'creature_crosses_or_reaches_through_wall_one_layer_at_a_time',
+          'each_layer_requires_separate_dexterity_save',
+          'red_deals_10d6_fire_damage_half_on_success_and_blocks_nonmagical_ranged_attacks',
+          'red_is_destroyed_by_at_least_25_cold_damage',
+          'orange_deals_10d6_acid_damage_half_on_success_and_blocks_magical_ranged_attacks',
+          'orange_is_destroyed_by_strong_wind',
+          'yellow_deals_10d6_lightning_damage_half_on_success',
+          'yellow_is_destroyed_by_at_least_60_force_damage',
+          'green_deals_10d6_poison_damage_half_on_success',
+          'green_is_destroyed_by_passwall_or_equal_or_higher_level_portal_spell',
+          'blue_deals_10d6_cold_damage_half_on_success',
+          'blue_is_destroyed_by_at_least_25_fire_damage',
+          'indigo_failed_save_restrains_target',
+          'indigo_target_makes_constitution_save_at_end_of_each_turn',
+          'three_indigo_successes_end_effect',
+          'three_indigo_failures_permanently_petrify_target',
+          'indigo_blocks_spellcasting_through_wall',
+          'indigo_is_destroyed_by_daylight_or_equal_or_higher_level_bright_light_spell',
+          'violet_failed_save_blinds_target',
+          'violet_target_makes_wisdom_save_at_start_of_casters_next_turn',
+          'failed_violet_wisdom_save_transports_target_to_dm_chosen_plane',
+          'violet_is_destroyed_by_dispel_magic_or_equal_or_higher_level_magic_ending_spell',
+          'layers_must_be_destroyed_in_order_from_red_to_violet',
+          'antimagic_field_does_not_affect_wall',
+          'dispel_magic_affects_only_violet_layer',
+        },
+      ),
+    ],
+    classIds: {'wizard'},
+  ),
+  SpellIds.powerWordHeal: SpellDefinition(
+    id: SpellIds.powerWordHeal,
+    content: RuleContent(
+      id: SpellIds.powerWordHeal,
+      name: 'Parola del Potere Guarire',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Guarisce completamente una creatura toccata e pone fine a varie condizioni debilitanti.',
+        details:
+            'Una creatura toccata recupera tutti i suoi punti ferita. Se è affascinata, '
+            'paralizzata, spaventata o stordita, quelle condizioni terminano. Se è prona, può '
+            'usare la sua reazione per rialzarsi. L’incantesimo non ha effetto sui costrutti o '
+            'sui non morti.',
+      ),
+      ownerId: SpellIds.powerWordHeal,
+    ),
+    level: 9,
+    school: SpellSchool.evocation,
+    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
+    range: SpellRange(type: SpellRangeType.touch),
+    components: SpellComponents(verbal: true, somatic: true),
+    duration: SpellDuration(type: SpellDurationType.instantaneous),
+    target: SpellTarget(
+      types: {SpellTargetType.creature},
+      maximumTargets: 1,
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'power_word_heal_full_restoration',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'target_recovers_all_hit_points',
+          'ends_charmed_condition',
+          'ends_paralyzed_condition',
+          'ends_frightened_condition',
+          'ends_stunned_condition',
+          'prone_target_can_use_reaction_to_stand_up',
+          'spell_has_no_effect_on_constructs',
+          'spell_has_no_effect_on_undead',
+        },
+      ),
+    ],
+    classIds: {'bard'},
   ),
 };
 

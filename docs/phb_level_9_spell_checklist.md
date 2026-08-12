@@ -6,10 +6,10 @@ Checklist di lavoro per espandere `lib/data/spell_data.dart` con gli incantesimi
 - [x] Fatale
 - [x] Fermare il Tempo
 - [x] Guarigione di Massa
-- [ ] Imprigionare
-- [ ] Metamorfosi Pura
-- [ ] Muro Prismatico
-- [ ] Parola del Potere Guarire
+- [x] Imprigionare
+- [x] Metamorfosi Pura
+- [x] Muro Prismatico
+- [x] Parola del Potere Guarire
 - [ ] Parola del Potere Uccidere
 - [ ] Portale
 - [ ] Previsione
