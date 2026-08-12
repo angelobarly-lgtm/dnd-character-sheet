@@ -1085,6 +1085,10 @@ abstract final class SpellIds {
   static const nondetection = 'nondetection';
   static const elementalWeapon = 'elemental_weapon';
   static const auraOfVitality = 'aura_of_vitality';
+  static const waterWalk = 'water_walk';
+  static const leomundsTinyHut = 'leomunds_tiny_hut';
+  static const magicCircle = 'magic_circle';
+  static const clairvoyance = 'clairvoyance';
 }
 
 const Map<String, SpellDefinition> spellDefinitions = {
@@ -12043,6 +12047,326 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ],
     classIds: {
       'paladin',
+    },
+  ),
+  SpellIds.waterWalk: SpellDefinition(
+    id: SpellIds.waterWalk,
+    content: RuleContent(
+      id: SpellIds.waterWalk,
+      name: 'Camminare sull\'Acqua',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Permette fino a dieci creature consenzienti di muoversi sulle superfici liquide come terreno solido.',
+        details:
+            'Questo incantesimo conferisce la capacità di muoversi su qualsiasi '
+            'superficie liquida, come acqua, acido, fango, neve, sabbie mobili '
+            'o lava, come se fosse un innocuo terreno solido. Le creature che '
+            'attraversano lava fusa possono comunque subire danni dal calore. '
+            'Fino a dieci creature consenzienti entro gittata e visibili '
+            'dall’incantatore ottengono questa capacità per 1 ora. Se '
+            'l’incantatore bersaglia una creatura immersa in un liquido, '
+            'l’incantesimo la porta alla superficie a una velocità di 18 metri '
+            'per round. Può essere lanciato come rituale e non richiede '
+            'concentrazione.',
+      ),
+      ownerId: SpellIds.waterWalk,
+    ),
+    level: 3,
+    ritual: true,
+    school: SpellSchool.transmutation,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 9,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+      materials: [
+        SpellMaterialComponent(
+          description: 'Un pezzo di sughero.',
+        ),
+      ],
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.hour,
+      amount: 1,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.willingCreature,
+        SpellTargetType.creatures,
+      },
+      maximumTargets: 10,
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'water_walk_liquid_surfaces',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'ritual_spell',
+          'up_to_ten_willing_visible_creatures_within_9_meters',
+          'targets_can_move_across_liquid_surfaces_as_solid_ground',
+          'valid_surfaces_include_water_acid_mud_snow_quicksand_and_lava',
+          'lava_heat_can_still_damage_creatures',
+          'submerged_target_rises_to_surface_18_meters_per_round',
+          'duration_1_hour',
+          'does_not_require_concentration',
+        },
+      ),
+    ],
+    classIds: {
+      'cleric',
+      'druid',
+      'ranger',
+      'sorcerer',
+    },
+  ),
+  SpellIds.leomundsTinyHut: SpellDefinition(
+    id: SpellIds.leomundsTinyHut,
+    content: RuleContent(
+      id: SpellIds.leomundsTinyHut,
+      name: 'Capanna di Leomund',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Crea una cupola di forza immobile che protegge l’incantatore e fino a nove creature.',
+        details:
+            'Una cupola di forza immobile del raggio di 3 metri si materializza '
+            'attorno all’incantatore e sopra di lui, rimanendo stazionaria per '
+            '8 ore. L’incantesimo termina se l’incantatore esce dalla sua area. '
+            'Nove creature di taglia Media o inferiore possono stare dentro la '
+            'cupola assieme all’incantatore; l’incantesimo fallisce se l’area '
+            'include una creatura più grande o più di nove creature. Le creature '
+            'e gli oggetti presenti all’interno al momento del lancio possono '
+            'attraversare la cupola liberamente, mentre tutte le altre creature '
+            'e oggetti non possono attraversarla. Incantesimi e altri effetti '
+            'magici non possono estendersi attraverso la cupola o essere lanciati '
+            'attraverso di essa. L’atmosfera interna è gradevole e asciutta. '
+            'L’incantatore può scegliere luce fioca o oscurità all’interno; la '
+            'cupola è opaca dall’esterno e trasparente dall’interno. Può essere '
+            'lanciato come rituale.',
+      ),
+      ownerId: SpellIds.leomundsTinyHut,
+    ),
+    level: 3,
+    ritual: true,
+    school: SpellSchool.evocation,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.minute,
+      amount: 1,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.self,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+      materials: [
+        SpellMaterialComponent(
+          description: 'Una biglia di cristallo.',
+        ),
+      ],
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.hour,
+      amount: 8,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.self,
+        SpellTargetType.area,
+      },
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'leomunds_tiny_hut_force_dome',
+        type: SpellPersistentEffectType.createdObject,
+        ruleTags: {
+          'ritual_spell',
+          'creates_immobile_3_meter_radius_force_dome_around_and_above_caster',
+          'spell_ends_if_caster_leaves_area',
+          'holds_caster_plus_up_to_nine_medium_or_smaller_creatures',
+          'spell_fails_if_area_contains_larger_creature_or_more_than_nine_creatures',
+          'creatures_and_objects_inside_on_cast_can_pass_freely',
+          'other_creatures_and_objects_cannot_pass_through_dome',
+          'spells_and_magical_effects_cannot_extend_or_be_cast_through_dome',
+          'interior_atmosphere_is_comfortable_and_dry',
+          'caster_chooses_dim_light_or_darkness_inside',
+          'dome_opaque_from_outside_and_transparent_from_inside',
+          'duration_8_hours',
+        },
+      ),
+    ],
+    classIds: {
+      'bard',
+      'wizard',
+    },
+  ),
+  SpellIds.magicCircle: SpellDefinition(
+    id: SpellIds.magicCircle,
+    content: RuleContent(
+      id: SpellIds.magicCircle,
+      name: 'Cerchio Magico',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Crea un cilindro magico che protegge contro creature di tipi scelti o le imprigiona.',
+        details:
+            'L’incantatore crea un cilindro di energia magica del raggio di 3 '
+            'metri e alto 6 metri, centrato su un punto del terreno entro '
+            'gittata che egli sia in grado di vedere. Sceglie uno o più tipi di '
+            'creature: celestiali, elementali, folletti, immondi o non morti. '
+            'Le creature dei tipi scelti non possono entrare volontariamente nel '
+            'cilindro con mezzi non magici; se tentano di farlo con teletrasporto '
+            'o viaggio interplanare, devono prima superare un tiro salvezza su '
+            'Carisma. Subiscono svantaggio ai tiri per colpire contro bersagli '
+            'all’interno del cilindro, e i bersagli all’interno non possono '
+            'essere affascinati, spaventati o posseduti da quelle creature. Al '
+            'momento del lancio l’incantatore può invertire la magia, impedendo '
+            'alle creature specificate di uscire dal cilindro e proteggendo i '
+            'bersagli all’esterno. Usando uno slot di 4° livello o superiore, la '
+            'durata aumenta di 1 ora per ogni livello di slot superiore al 3°.',
+      ),
+      ownerId: SpellIds.magicCircle,
+    ),
+    level: 3,
+    school: SpellSchool.abjuration,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.minute,
+      amount: 1,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 3,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+      materials: [
+        SpellMaterialComponent(
+          description:
+              'Acqua santa o polvere d’argento e di ferro del valore di almeno 100 mo, consumata dall’incantesimo.',
+          minimumCostGp: 100,
+          consumed: true,
+        ),
+      ],
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.hour,
+      amount: 1,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.area,
+      },
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'magic_circle_protective_or_inverted_cylinder',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'creates_3_meter_radius_6_meter_high_cylinder_on_ground_point_within_3_meters',
+          'chosen_types_celestial_elemental_fey_fiend_or_undead',
+          'chosen_creatures_cannot_enter_cylinder_by_nonmagical_means',
+          'teleport_or_interplanar_entry_requires_charisma_save',
+          'chosen_creatures_have_disadvantage_on_attacks_against_targets_inside',
+          'targets_inside_cannot_be_charmed_frightened_or_possessed_by_chosen_creatures',
+          'caster_can_reverse_effect_to_trap_chosen_creatures_inside',
+          'inverted_circle_protects_targets_outside',
+          'material_component_worth_100_gp_is_consumed',
+          'slot_level_above_3_increases_duration_by_1_hour_per_slot_level',
+        },
+      ),
+    ],
+    classIds: {
+      'cleric',
+      'paladin',
+      'warlock',
+      'wizard',
+    },
+  ),
+  SpellIds.clairvoyance: SpellDefinition(
+    id: SpellIds.clairvoyance,
+    content: RuleContent(
+      id: SpellIds.clairvoyance,
+      name: 'Chiaroveggenza',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Crea un sensore invisibile remoto che permette di vedere o udire da un luogo entro 1,5 km.',
+        details:
+            'L’incantatore crea un sensore invisibile entro gittata in un luogo '
+            'familiare, cioè visitato o visto in precedenza, oppure in un luogo '
+            'ovvio non familiare, come dietro una porta, oltre un angolo o in '
+            'mezzo a un boschetto. Il sensore rimane al suo posto per la durata '
+            'dell’incantesimo e non può essere attaccato o manipolato. Quando '
+            'lancia l’incantesimo, l’incantatore sceglie vista o udito e può '
+            'usare quel senso tramite il sensore come se si trovasse nel suo '
+            'spazio. Usando la propria azione, può passare da vista a udito o '
+            'viceversa. Una creatura in grado di vedere il sensore, per esempio '
+            'grazie a Vedere Invisibilità o vista pura, lo percepisce come un '
+            'globo luminoso e intangibile grande circa quanto il pugno '
+            'dell’incantatore. Richiede concentrazione.',
+      ),
+      ownerId: SpellIds.clairvoyance,
+    ),
+    level: 3,
+    school: SpellSchool.divination,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.minute,
+      amount: 10,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 1500,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+      materials: [
+        SpellMaterialComponent(
+          description:
+              'Un focus del valore di almeno 100 mo: un cornetto acustico ingioiellato per l’udito o un occhio di vetro per la vista.',
+          minimumCostGp: 100,
+        ),
+      ],
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.minute,
+      amount: 10,
+      concentration: true,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.point,
+      },
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'clairvoyance_invisible_remote_sensor',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'creates_invisible_sensor_within_1_5_km',
+          'sensor_can_be_placed_in_familiar_location',
+          'sensor_can_be_placed_in_obvious_unfamiliar_location',
+          'sensor_cannot_be_attacked_or_interacted_with',
+          'caster_chooses_sight_or_hearing_on_cast',
+          'caster_uses_chosen_sense_through_sensor_as_if_in_its_space',
+          'caster_can_action_switch_between_sight_and_hearing',
+          'creature_seeing_sensor_perceives_luminous_intangible_orb',
+          'requires_concentration',
+        },
+      ),
+    ],
+    classIds: {
+      'bard',
+      'cleric',
+      'sorcerer',
+      'wizard',
     },
   ),
 };

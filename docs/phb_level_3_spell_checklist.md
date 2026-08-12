@@ -6,10 +6,10 @@ Checklist di lavoro per espandere `lib/data/spell_data.dart` con gli incantesimi
 - [x] Anti-Individuazione
 - [x] Arma Elementale
 - [x] Aura di Vitalità
-- [ ] Camminare sull'Acqua
-- [ ] Capanna di Leomund
-- [ ] Cerchio Magico
-- [ ] Chiaroveggenza
+- [x] Camminare sull'Acqua
+- [x] Capanna di Leomund
+- [x] Cerchio Magico
+- [x] Chiaroveggenza
 - [ ] Controincantesimo
 - [ ] Creare Cibo e Acqua
 - [ ] Crescita Vegetale
