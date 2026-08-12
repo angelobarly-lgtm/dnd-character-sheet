@@ -1188,6 +1188,10 @@ abstract final class SpellIds {
   static const planarBinding = 'planar_binding';
   static const rarysTelepathicBond = 'rarys_telepathic_bond';
   static const bigbysHand = 'bigbys_hand';
+  static const modifyMemory = 'modify_memory';
+  static const wallOfForce = 'wall_of_force';
+  static const wallOfStone = 'wall_of_stone';
+  static const cloudkill = 'cloudkill';
 }
 
 const Map<String, SpellDefinition> spellDefinitions = {
@@ -20044,6 +20048,383 @@ const Map<String, SpellDefinition> spellDefinitions = {
       ),
     ],
     classIds: {
+      'wizard',
+    },
+  ),
+  SpellIds.modifyMemory: SpellDefinition(
+    id: SpellIds.modifyMemory,
+    content: RuleContent(
+      id: SpellIds.modifyMemory,
+      name: 'Modificare Memoria',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Affascina una creatura e altera permanentemente il ricordo di un evento.',
+        details:
+            'Una creatura visibile entro 9 metri effettua un tiro salvezza '
+            'su Saggezza, con vantaggio se sta combattendo contro '
+            'l’incantatore. Se lo fallisce, è affascinata, incapacitata e '
+            'inconsapevole dell’ambiente, ma può ancora udire '
+            'l’incantatore. Se subisce danni o viene bersagliata da un altro '
+            'incantesimo, Modificare Memoria termina senza modificare alcun '
+            'ricordo. Durante il minuto di concentrazione, l’incantatore può '
+            'eliminare, rendere perfettamente nitido, alterare o sostituire '
+            'il ricordo di un evento durato al massimo 10 minuti e avvenuto '
+            'nelle ultime 24 ore. Deve descrivere verbalmente il nuovo '
+            'ricordo in una lingua compresa dal bersaglio; se non completa '
+            'la descrizione prima della fine dell’incantesimo, il ricordo '
+            'non cambia. Rimuovi Maledizione o Ristorare Superiore '
+            'ripristinano i veri ricordi. Con slot superiori si può '
+            'modificare un evento risalente fino a 7 giorni al 6° livello, '
+            '30 giorni al 7°, 1 anno all’8° o qualsiasi momento del passato '
+            'al 9°.',
+      ),
+      ownerId: SpellIds.modifyMemory,
+    ),
+    level: 5,
+    school: SpellSchool.enchantment,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 9,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.minute,
+      amount: 1,
+      concentration: true,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.creature,
+      },
+      maximumTargets: 1,
+    ),
+    savingThrow: SpellSavingThrow(
+      ability: SpellSavingThrowAbility.wisdom,
+      onSuccess: SpellSaveSuccess.negates,
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'modify_memory_charm_and_memory_rewrite',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'target_has_advantage_on_wisdom_save_if_fighting_caster',
+          'failed_save_charms_and_incapacitiates_target',
+          'charmed_target_is_unaware_of_surroundings_but_can_hear_caster',
+          'damage_or_another_spell_targeting_creature_ends_spell_without_memory_change',
+          'base_spell_alters_event_within_last_24_hours',
+          'event_can_have_maximum_duration_of_10_minutes',
+          'caster_can_erase_clarify_alter_or_replace_memory',
+          'caster_must_describe_modified_memory_in_language_target_understands',
+          'incomplete_description_causes_no_memory_change',
+          'remove_curse_or_greater_restoration_restores_true_memory',
+          'slot_level_6_reaches_event_within_7_days',
+          'slot_level_7_reaches_event_within_30_days',
+          'slot_level_8_reaches_event_within_1_year',
+          'slot_level_9_reaches_any_time_in_target_past',
+          'requires_concentration',
+        },
+      ),
+    ],
+    classIds: {
+      'bard',
+      'wizard',
+    },
+  ),
+  SpellIds.wallOfForce: SpellDefinition(
+    id: SpellIds.wallOfForce,
+    content: RuleContent(
+      id: SpellIds.wallOfForce,
+      name: 'Muro di Forza',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Crea una barriera invisibile e indistruttibile che blocca il passaggio fisico ed etereo.',
+        details: 'Un muro di forza invisibile appare entro 36 metri, orientato '
+            'orizzontalmente, verticalmente o in diagonale; può fluttuare o '
+            'poggiare su una superficie. Può formare una sfera o semisfera '
+            'con raggio massimo di 3 metri, oppure una superficie composta '
+            'da dieci pannelli contigui di 3 metri per 3 metri. Il muro è '
+            'spesso 0,5 cm. Se attraversa lo spazio di una creatura quando '
+            'appare, l’incantatore la spinge sul lato del muro che sceglie. '
+            'Nulla può attraversarlo fisicamente: è immune a tutti i danni '
+            'e non può essere dissolto da Dissolvi Magie. Disintegrazione lo '
+            'distrugge istantaneamente. Il muro si estende anche sul Piano '
+            'Etereo e impedisce di attraversarlo tramite viaggi eterei.',
+      ),
+      ownerId: SpellIds.wallOfForce,
+    ),
+    level: 5,
+    school: SpellSchool.evocation,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 36,
+    ),
+    wall: SpellWallDefinition(
+      shape: SpellWallShape.panels,
+      lengthMeters: 30,
+      heightMeters: 3,
+      thicknessMeters: 0.005,
+      supportsRing: true,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+      materials: [
+        SpellMaterialComponent(
+          description:
+              'Un pizzico di polvere ricavato dalla distruzione di una gemma trasparente.',
+        ),
+      ],
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.minute,
+      amount: 10,
+      concentration: true,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.point,
+        SpellTargetType.area,
+      },
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'wall_of_force_impenetrable_barrier',
+        type: SpellPersistentEffectType.createdObject,
+        ruleTags: {
+          'invisible_wall_can_be_horizontal_vertical_or_inclined',
+          'wall_can_float_or_rest_on_solid_surface',
+          'can_form_3_meter_radius_sphere_or_hemisphere',
+          'flat_form_uses_up_to_10_contiguous_3_meter_square_panels',
+          'wall_is_0_5_centimeters_thick',
+          'creature_in_wall_space_is_pushed_to_side_chosen_by_caster',
+          'nothing_can_physically_pass_through_wall',
+          'wall_is_immune_to_all_damage',
+          'dispel_magic_cannot_end_wall',
+          'disintegrate_destroys_wall_instantly',
+          'wall_extends_into_ethereal_plane',
+          'wall_blocks_ethereal_travel_through_it',
+          'requires_concentration',
+        },
+      ),
+    ],
+    classIds: {
+      'wizard',
+    },
+  ),
+  SpellIds.wallOfStone: SpellDefinition(
+    id: SpellIds.wallOfStone,
+    content: RuleContent(
+      id: SpellIds.wallOfStone,
+      name: 'Muro di Pietra',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Crea un muro di pietra modellabile che diventa permanente mantenendo la concentrazione.',
+        details:
+            'Un muro non magico di pietra appare da un punto entro 36 metri. '
+            'La forma base comprende dieci pannelli contigui di 3 metri per '
+            '3 metri, spessi 15 cm; in alternativa, ogni pannello può essere '
+            'largo 3 metri e alto 6 metri, ma spesso soltanto 7,5 cm. Una '
+            'creatura nello spazio del muro viene spinta su un lato scelto '
+            'dall’incantatore. Se resterebbe completamente circondata, può '
+            'superare un tiro salvezza su Destrezza e usare la propria '
+            'reazione per muoversi fino alla sua velocità ed evitare di '
+            'rimanere intrappolata. Il muro può assumere qualsiasi forma, '
+            'ma deve fondersi ed essere sostenuto da pietra già esistente; '
+            'può formare rampe o ponti. Un’arcata più lunga di 6 metri '
+            'richiede pannelli dimezzati per ricavare sostegni. Ogni '
+            'pannello ha CA 15 e 30 punti ferita per ogni 2,5 cm di '
+            'spessore. Se la concentrazione viene mantenuta per tutti i 10 '
+            'minuti, il muro diventa permanente e non può essere dissolto; '
+            'altrimenti scompare al termine dell’incantesimo.',
+      ),
+      ownerId: SpellIds.wallOfStone,
+    ),
+    level: 5,
+    school: SpellSchool.evocation,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 36,
+    ),
+    wall: SpellWallDefinition(
+      shape: SpellWallShape.panels,
+      lengthMeters: 30,
+      heightMeters: 3,
+      thicknessMeters: 0.15,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+      materials: [
+        SpellMaterialComponent(
+          description: 'Un piccolo pezzo di granito.',
+        ),
+      ],
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.minute,
+      amount: 10,
+      concentration: true,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.point,
+        SpellTargetType.area,
+      },
+    ),
+    savingThrow: SpellSavingThrow(
+      ability: SpellSavingThrowAbility.dexterity,
+      onSuccess: SpellSaveSuccess.partial,
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'wall_of_stone_solid_panels',
+        type: SpellPersistentEffectType.createdObject,
+        ruleTags: {
+          'creates_10_contiguous_3_by_3_meter_panels_15_centimeters_thick',
+          'alternate_panels_are_3_by_6_meters_and_7_5_centimeters_thick',
+          'creature_in_wall_space_is_pushed_to_side_chosen_by_caster',
+          'surrounded_creature_can_dexterity_save_and_reaction_move_up_to_speed',
+          'wall_cannot_share_space_with_creature_or_object',
+          'wall_must_merge_with_and_be_supported_by_existing_stone',
+          'wall_can_form_ramp_or_bridge',
+          'arch_longer_than_6_meters_requires_halved_panels_for_supports',
+          'panels_can_be_roughly_shaped_with_crenellations_or_arrow_slits',
+          'each_panel_has_ac_15',
+          'each_panel_has_30_hit_points_per_2_5_centimeters_of_thickness',
+          'destroyed_panel_may_cause_other_panels_to_collapse',
+          'full_10_minute_concentration_makes_wall_permanent_and_not_dispellable',
+          'otherwise_wall_disappears_when_spell_ends',
+          'requires_concentration_until_permanent',
+        },
+      ),
+    ],
+    classIds: {
+      'druid',
+      'sorcerer',
+      'wizard',
+    },
+  ),
+  SpellIds.cloudkill: SpellDefinition(
+    id: SpellIds.cloudkill,
+    content: RuleContent(
+      id: SpellIds.cloudkill,
+      name: 'Nube Mortale',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Crea una nube velenosa mobile che oscura l’area e danneggia chi la attraversa.',
+        details:
+            'Una sfera di nebbia velenosa giallo-verdastra del raggio di 6 '
+            'metri appare attorno a un punto entro 36 metri. La nube si '
+            'diffonde oltre gli angoli e rende l’area pesantemente oscurata. '
+            'Una creatura che entra nell’area per la prima volta in un turno '
+            'o vi inizia il proprio turno effettua un tiro salvezza su '
+            'Costituzione: subisce 5d8 danni da veleno se lo fallisce o metà '
+            'danni se lo supera. Trattenere il respiro o non avere bisogno '
+            'di respirare non protegge dalla nube. All’inizio di ogni turno '
+            'dell’incantatore, la nebbia si allontana da lui di 3 metri '
+            'strisciando sul terreno. Essendo più pesante dell’aria, rimane '
+            'al livello del suolo e scende nelle aperture. Un vento forte '
+            'disperde la nube e termina l’incantesimo. Con uno slot di 6° '
+            'livello o superiore, i danni aumentano di 1d8 per ogni livello '
+            'dello slot superiore al 5°.',
+      ),
+      ownerId: SpellIds.cloudkill,
+    ),
+    level: 5,
+    school: SpellSchool.conjuration,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 36,
+    ),
+    area: SpellArea(
+      shape: SpellAreaShape.sphere,
+      origin: SpellAreaOrigin.targetPoint,
+      radiusMeters: 6,
+    ),
+    areaInteraction: SpellAreaInteraction(
+      spreadsAroundCorners: true,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.minute,
+      amount: 10,
+      concentration: true,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.area,
+      },
+    ),
+    savingThrow: SpellSavingThrow(
+      ability: SpellSavingThrowAbility.constitution,
+      onSuccess: SpellSaveSuccess.halfDamage,
+    ),
+    scaling: SpellScaling(
+      type: SpellScalingType.slotLevel,
+      steps: [
+        SpellScalingStep(
+          threshold: 6,
+          additionalDice: '1d8',
+        ),
+      ],
+    ),
+    areaTriggeredEffects: [
+      SpellAreaTriggeredEffect(
+        triggers: {
+          SpellAreaTriggerEvent.entersAreaFirstTimeOnTurn,
+          SpellAreaTriggerEvent.startsTurnInArea,
+        },
+        damage: SpellDamage(
+          dice: '5d8',
+          type: SpellDamageType.poison,
+        ),
+        savingThrow: SpellSavingThrow(
+          ability: SpellSavingThrowAbility.constitution,
+          onSuccess: SpellSaveSuccess.halfDamage,
+        ),
+      ),
+    ],
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'cloudkill_mobile_poison_cloud',
+        type: SpellPersistentEffectType.zone,
+        ruleTags: {
+          'creates_6_meter_radius_poisonous_fog_sphere',
+          'fog_spreads_around_corners',
+          'area_is_heavily_obscured',
+          'holding_breath_or_not_needing_to_breathe_does_not_prevent_damage',
+          'fog_moves_3_meters_away_from_caster_at_start_of_each_caster_turn',
+          'vapors_stay_at_ground_level_and_sink_into_openings',
+          'strong_wind_disperses_cloud_and_ends_spell',
+          'slot_level_above_5_increases_damage_by_1d8_per_slot_level',
+          'requires_concentration',
+        },
+      ),
+    ],
+    classIds: {
+      'sorcerer',
       'wizard',
     },
   ),

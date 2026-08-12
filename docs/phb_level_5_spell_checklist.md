@@ -26,10 +26,10 @@ Checklist di lavoro per espandere `lib/data/spell_data.dart` con gli incantesimi
 - [x] Legame Planare
 - [x] Legame Telepatico di Rary
 - [x] Mano di Bigby
-- [ ] Modificare Memoria
-- [ ] Muro di Forza
-- [ ] Muro di Pietra
-- [ ] Nube Mortale
+- [x] Modificare Memoria
+- [x] Muro di Forza
+- [x] Muro di Pietra
+- [x] Nube Mortale
 - [ ] Onda Distruttiva
 - [ ] Passapareti
 - [ ] Piaga degli Insetti
