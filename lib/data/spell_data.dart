@@ -929,6 +929,10 @@ class SpellDefinition {
 /// Verrà popolato progressivamente. Tenere un unico registry permette a
 /// razze, classi, talenti e altri sistemi di riferirsi allo stesso ID.
 abstract final class SpellIds {
+  static const astralProjection = 'astral_projection';
+  static const foresight = 'foresight';
+  static const gate = 'gate';
+  static const powerWordKill = 'power_word_kill';
   static const powerWordHeal = 'power_word_heal';
   static const prismaticWall = 'prismatic_wall';
   static const truePolymorph = 'true_polymorph';
@@ -28050,6 +28054,272 @@ const Map<String, SpellDefinition> spellDefinitions = {
       ),
     ],
     classIds: {'bard'},
+  ),
+  SpellIds.powerWordKill: SpellDefinition(
+    id: SpellIds.powerWordKill,
+    content: RuleContent(
+      id: SpellIds.powerWordKill,
+      name: 'Parola del Potere Uccidere',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Pronuncia una parola del potere che uccide istantaneamente una creatura con non più di 100 punti ferita.',
+        details:
+            'L’incantatore sceglie una creatura che sia in grado di vedere entro 18 metri. Se '
+            'il bersaglio possiede 100 punti ferita o meno, muore istantaneamente senza '
+            'effettuare alcun tiro salvezza. Se possiede più di 100 punti ferita, '
+            'l’incantesimo non produce alcun effetto.',
+      ),
+      ownerId: SpellIds.powerWordKill,
+    ),
+    level: 9,
+    school: SpellSchool.enchantment,
+    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 18,
+    ),
+    components: SpellComponents(verbal: true),
+    duration: SpellDuration(type: SpellDurationType.instantaneous),
+    target: SpellTarget(
+      types: {SpellTargetType.creature},
+      maximumTargets: 1,
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'power_word_kill_hit_point_threshold',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'target_must_be_visible_to_caster',
+          'target_with_100_or_fewer_current_hit_points_dies_instantly',
+          'target_with_more_than_100_current_hit_points_is_unaffected',
+          'effect_requires_no_attack_roll',
+          'effect_allows_no_saving_throw',
+        },
+      ),
+    ],
+    classIds: {'bard', 'sorcerer', 'warlock', 'wizard'},
+  ),
+  SpellIds.gate: SpellDefinition(
+    id: SpellIds.gate,
+    content: RuleContent(
+      id: SpellIds.gate,
+      name: 'Portale',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Apre un portale bidirezionale verso un punto preciso di un altro piano o richiama una creatura extraplanare nominata.',
+        details:
+            'L’incantatore crea in uno spazio libero visibile entro 18 metri un’apertura circolare '
+            'del diametro compreso tra 1,5 e 6 metri, orientata come desidera e collegata a un '
+            'punto preciso di un diverso piano di esistenza. Il passaggio funziona soltanto dal '
+            'lato anteriore su ciascun piano e trasporta istantaneamente creature e oggetti nello '
+            'spazio libero più vicino all’altra estremità. Le divinità e gli altri signori '
+            'planari possono impedire l’apertura del portale nei loro domini. Al lancio '
+            'l’incantatore può pronunciare il vero nome di una creatura specifica su un altro '
+            'piano: il portale si apre vicino a essa e la attira attraverso l’apertura. '
+            'Pseudonimi, titoli e soprannomi non funzionano. La creatura richiamata non è '
+            'controllata e rimane libera di agire come stabilito dal DM.',
+      ),
+      ownerId: SpellIds.gate,
+    ),
+    level: 9,
+    school: SpellSchool.conjuration,
+    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 18,
+    ),
+    area: SpellArea(
+      shape: SpellAreaShape.special,
+      origin: SpellAreaOrigin.targetPoint,
+      sizeMeters: 6,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+      materials: [
+        SpellMaterialComponent(
+          description: 'Un diamante del valore di almeno 5.000 mo.',
+          minimumCostGp: 5000,
+        ),
+      ],
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.minute,
+      amount: 1,
+      concentration: true,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.point,
+        SpellTargetType.area,
+        SpellTargetType.special,
+      },
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'gate_interplanar_portal',
+        type: SpellPersistentEffectType.zone,
+        ruleTags: {
+          'portal_connects_visible_unoccupied_space_to_precise_location_on_another_plane',
+          'portal_diameter_is_between_1_5_and_6_meters',
+          'caster_chooses_portal_orientation',
+          'portal_has_front_and_back_on_each_plane',
+          'travel_is_possible_only_through_front_side',
+          'creatures_and_objects_crossing_front_are_transported_instantly',
+          'travelers_appear_in_nearest_unoccupied_space_on_other_side',
+          'deities_and_planar_rulers_can_block_portal_in_their_presence_or_domains',
+          'caster_can_name_specific_creature_on_another_plane',
+          'aliases_titles_and_nicknames_do_not_identify_creature',
+          'named_creature_is_drawn_through_portal_to_nearest_unoccupied_space',
+          'caster_gains_no_control_over_named_creature',
+          'requires_concentration',
+        },
+      ),
+    ],
+    classIds: {'cleric', 'sorcerer', 'wizard'},
+  ),
+  SpellIds.foresight: SpellDefinition(
+    id: SpellIds.foresight,
+    content: RuleContent(
+      id: SpellIds.foresight,
+      name: 'Previsione',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Conferisce a una creatura consenziente una percezione limitata del futuro e numerosi vantaggi per 8 ore.',
+        details:
+            'L’incantatore tocca una creatura consenziente, che per 8 ore non può essere '
+            'sorpresa e dispone di vantaggio ai tiri per colpire, alle prove di caratteristica '
+            'e ai tiri salvezza. Inoltre, tutte le altre creature subiscono svantaggio ai tiri '
+            'per colpire contro il bersaglio. L’incantesimo termina immediatamente sul '
+            'bersaglio se l’incantatore lo lancia di nuovo prima della fine della durata.',
+      ),
+      ownerId: SpellIds.foresight,
+    ),
+    level: 9,
+    school: SpellSchool.divination,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.minute,
+      amount: 1,
+    ),
+    range: SpellRange(type: SpellRangeType.touch),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+      materials: [
+        SpellMaterialComponent(description: 'Una piuma di colibrì.'),
+      ],
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.hour,
+      amount: 8,
+    ),
+    target: SpellTarget(
+      types: {SpellTargetType.willingCreature},
+      maximumTargets: 1,
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'foresight_future_awareness',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'target_cannot_be_surprised',
+          'target_has_advantage_on_attack_rolls',
+          'target_has_advantage_on_ability_checks',
+          'target_has_advantage_on_saving_throws',
+          'other_creatures_have_disadvantage_on_attack_rolls_against_target',
+          'spell_ends_immediately_if_caster_casts_foresight_again_before_duration_ends',
+        },
+      ),
+    ],
+    classIds: {'bard', 'druid', 'warlock', 'wizard'},
+  ),
+  SpellIds.astralProjection: SpellDefinition(
+    id: SpellIds.astralProjection,
+    content: RuleContent(
+      id: SpellIds.astralProjection,
+      name: 'Proiezione Astrale',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Proietta sul Piano Astrale l’incantatore e fino a otto creature consenzienti, lasciandone i corpi in animazione sospesa.',
+        details:
+            'L’incantatore e fino a otto creature consenzienti entro 3 metri proiettano le loro '
+            'forme astrali sul Piano Astrale; il lancio fallisce se l’incantatore si trova già '
+            'su quel piano. I corpi fisici restano privi di sensi in animazione sospesa, senza '
+            'bisogno di cibo o aria e senza invecchiare. Ogni forma astrale replica statistiche '
+            'e proprietà ed è collegata al corpo da un cordone argentato: se viene reciso, la '
+            'creatura muore. Attraversando un portale verso un altro piano, corpo ed '
+            'equipaggiamento vengono trasportati e la creatura rientra nel corpo. Danni ed '
+            'effetti subiti dalla forma astrale non si trasferiscono al corpo. L’incantatore '
+            'può terminare l’effetto con un’azione. Dissolvi Magie su una forma o sul corpo, '
+            'oppure la riduzione a 0 punti ferita di uno dei due, termina l’effetto per quella '
+            'creatura. Se l’incantatore rientra prima dei compagni, essi devono trovare da soli '
+            'la via del ritorno.',
+      ),
+      ownerId: SpellIds.astralProjection,
+    ),
+    level: 9,
+    school: SpellSchool.necromancy,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.hour,
+      amount: 1,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 3,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+      materials: [
+        SpellMaterialComponent(
+          description:
+              'Per ogni creatura influenzata, un giacinto del valore di almeno 1.000 mo, consumato dall’incantesimo.',
+          minimumCostGp: 1000,
+          consumed: true,
+        ),
+        SpellMaterialComponent(
+          description:
+              'Per ogni creatura influenzata, un lingotto d’argento finemente decorato del valore di almeno 100 mo, consumato dall’incantesimo.',
+          minimumCostGp: 100,
+          consumed: true,
+        ),
+      ],
+    ),
+    duration: SpellDuration(type: SpellDurationType.special),
+    target: SpellTarget(
+      types: {SpellTargetType.self, SpellTargetType.willingCreature},
+      maximumTargets: 9,
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'astral_projection_silver_cord',
+        type: SpellPersistentEffectType.magicalLink,
+        ruleTags: {
+          'caster_and_up_to_8_willing_creatures_are_projected',
+          'spell_fails_if_caster_is_already_on_astral_plane',
+          'physical_body_is_unconscious_and_in_suspended_animation',
+          'physical_body_does_not_need_food_or_air_and_does_not_age',
+          'astral_form_replicates_game_statistics_and_possessions',
+          'silver_cord_connects_astral_form_to_physical_body',
+          'severed_silver_cord_causes_instant_death',
+          'astral_form_can_travel_freely_on_astral_plane',
+          'astral_form_can_use_astral_portals_to_reach_other_planes',
+          'entering_another_plane_transports_body_and_possessions_along_cord',
+          'damage_and_effects_on_astral_form_do_not_affect_physical_body',
+          'damage_and_effects_on_astral_form_do_not_persist_after_return',
+          'caster_can_end_spell_for_group_with_an_action',
+          'successful_dispel_magic_on_form_or_body_ends_spell_for_that_creature',
+          'spell_ends_for_creature_if_physical_body_or_astral_form_reaches_0_hit_points',
+          'intact_cord_returns_astral_form_to_body_when_spell_ends',
+          'companions_remain_projected_if_caster_returns_early',
+        },
+      ),
+    ],
+    classIds: {'cleric', 'warlock', 'wizard'},
   ),
 };
 

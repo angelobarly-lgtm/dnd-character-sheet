@@ -10,10 +10,10 @@ Checklist di lavoro per espandere `lib/data/spell_data.dart` con gli incantesimi
 - [x] Metamorfosi Pura
 - [x] Muro Prismatico
 - [x] Parola del Potere Guarire
-- [ ] Parola del Potere Uccidere
-- [ ] Portale
-- [ ] Previsione
-- [ ] Proiezione Astrale
+- [x] Parola del Potere Uccidere
+- [x] Portale
+- [x] Previsione
+- [x] Proiezione Astrale
 - [ ] Resurrezione Pura
 - [ ] Sciame di Meteore
 - [ ] Tempesta di Vendetta
