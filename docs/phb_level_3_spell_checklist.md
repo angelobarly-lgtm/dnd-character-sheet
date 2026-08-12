@@ -42,10 +42,10 @@ Checklist di lavoro per espandere `lib/data/spell_data.dart` con gli incantesimi
 - [x] Parola Guaritrice di Massa
 - [x] Paura
 - [x] Protezione dall'Energia
-- [ ] Punizione Accecante
-- [ ] Respirare sott'Acqua
-- [ ] Rimuovi Maledizione
-- [ ] Rinascita
+- [x] Punizione Accecante
+- [x] Respirare sott'Acqua
+- [x] Rimuovi Maledizione
+- [x] Rinascita
 - [ ] Scagliare Maledizione
 - [ ] Tempesta di Nevischio
 - [ ] Tocco del Vampiro

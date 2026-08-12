@@ -1119,6 +1119,10 @@ abstract final class SpellIds {
   static const massHealingWord = 'mass_healing_word';
   static const fear = 'fear';
   static const protectionFromEnergy = 'protection_from_energy';
+  static const blindingSmite = 'blinding_smite';
+  static const waterBreathing = 'water_breathing';
+  static const removeCurse = 'remove_curse';
+  static const revivify = 'revivify';
 }
 
 const Map<String, SpellDefinition> spellDefinitions = {
@@ -14678,6 +14682,265 @@ const Map<String, SpellDefinition> spellDefinitions = {
       'ranger',
       'sorcerer',
       'wizard',
+    },
+  ),
+  SpellIds.blindingSmite: SpellDefinition(
+    id: SpellIds.blindingSmite,
+    content: RuleContent(
+      id: SpellIds.blindingSmite,
+      name: 'Punizione Accecante',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Potenzia il prossimo colpo in mischia, infliggendo danni radiosi e potendo accecare il bersaglio.',
+        details:
+            'La prossima volta che l’incantatore colpisce una creatura con un '
+            'attacco con un’arma da mischia prima che l’incantesimo termini, '
+            'l’attacco infligge 3d8 danni radiosi extra. Il bersaglio deve '
+            'superare un tiro salvezza su Costituzione o resta accecato finché '
+            'l’incantesimo non termina. Una creatura accecata in questo modo '
+            'ripete il tiro salvezza alla fine di ogni suo turno, terminando '
+            'l’effetto su se stessa in caso di successo.',
+      ),
+      ownerId: SpellIds.blindingSmite,
+    ),
+    level: 3,
+    school: SpellSchool.evocation,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.bonusAction,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.self,
+    ),
+    components: SpellComponents(
+      verbal: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.minute,
+      amount: 1,
+      concentration: true,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.self,
+        SpellTargetType.creature,
+      },
+      maximumTargets: 1,
+    ),
+    damage: [
+      SpellDamage(
+        dice: '3d8',
+        type: SpellDamageType.radiant,
+      ),
+    ],
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'blinding_smite_empowered_hit',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'next_melee_weapon_hit_during_duration_deals_extra_damage',
+          'hit_deals_3d8_extra_radiant_damage',
+          'target_makes_constitution_save_on_hit',
+          'failed_save_blinds_target_until_spell_ends',
+          'blinded_target_repeats_save_at_end_of_each_turn',
+          'successful_repeat_save_ends_blinded_effect',
+          'requires_concentration',
+        },
+      ),
+    ],
+    classIds: {
+      'paladin',
+    },
+  ),
+  SpellIds.waterBreathing: SpellDefinition(
+    id: SpellIds.waterBreathing,
+    content: RuleContent(
+      id: SpellIds.waterBreathing,
+      name: 'Respirare sott\'Acqua',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Permette a un massimo di dieci creature consenzienti di respirare sott’acqua per 24 ore.',
+        details: 'L’incantesimo conferisce a un massimo di dieci creature '
+            'consenzienti entro gittata e visibili all’incantatore la capacità '
+            'di respirare sott’acqua finché l’incantesimo non termina. Le '
+            'creature influenzate conservano anche la loro normale modalità di '
+            'respirazione. L’incantesimo può essere lanciato come rituale.',
+      ),
+      ownerId: SpellIds.waterBreathing,
+    ),
+    level: 3,
+    school: SpellSchool.transmutation,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 9,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+      materials: [
+        SpellMaterialComponent(
+          description: 'Un piccolo giunco o una paglia.',
+        ),
+      ],
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.hour,
+      amount: 24,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.creatures,
+      },
+      maximumTargets: 10,
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'water_breathing_underwater_respiration',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'affects_up_to_10_willing_creatures_in_range_seen_by_caster',
+          'affected_creatures_can_breathe_underwater',
+          'affected_creatures_retain_normal_mode_of_respiration',
+          'duration_24_hours',
+          'can_be_cast_as_ritual',
+        },
+      ),
+    ],
+    classIds: {
+      'druid',
+      'ranger',
+      'sorcerer',
+      'wizard',
+    },
+  ),
+  SpellIds.removeCurse: SpellDefinition(
+    id: SpellIds.removeCurse,
+    content: RuleContent(
+      id: SpellIds.removeCurse,
+      name: 'Rimuovi Maledizione',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Pone fine alle maledizioni su una creatura o spezza la sintonia con un oggetto magico maledetto.',
+        details:
+            'Al tocco dell’incantatore, tutte le maledizioni che affliggono una '
+            'creatura o un oggetto terminano. Se il bersaglio è un oggetto '
+            'magico maledetto, la maledizione rimane, ma l’incantesimo spezza '
+            'la sintonia del proprietario con l’oggetto, consentendogli di '
+            'rimuoverlo o di scartarlo.',
+      ),
+      ownerId: SpellIds.removeCurse,
+    ),
+    level: 3,
+    school: SpellSchool.abjuration,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.touch,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.instantaneous,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.creature,
+        SpellTargetType.object,
+      },
+      maximumTargets: 1,
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'remove_curse_touched_target',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'ends_all_curses_affecting_touched_creature_or_object',
+          'cursed_magic_item_retains_its_curse',
+          'breaks_owner_attunement_to_cursed_magic_item',
+          'allows_cursed_item_to_be_removed_or_discarded',
+          'instantaneous_abjuration',
+        },
+      ),
+    ],
+    classIds: {
+      'cleric',
+      'paladin',
+      'warlock',
+      'wizard',
+    },
+  ),
+  SpellIds.revivify: SpellDefinition(
+    id: SpellIds.revivify,
+    content: RuleContent(
+      id: SpellIds.revivify,
+      name: 'Rinascita',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Riporta in vita con 1 punto ferita una creatura morta entro l’ultimo minuto.',
+        details:
+            'L’incantatore tocca una creatura morta entro l’ultimo minuto. La '
+            'creatura torna in vita con 1 punto ferita. L’incantesimo non può '
+            'riportare in vita una creatura morta di vecchiaia e non può '
+            'ripristinare le eventuali parti del corpo mancanti. I diamanti '
+            'del valore complessivo di 300 mo vengono consumati.',
+      ),
+      ownerId: SpellIds.revivify,
+    ),
+    level: 3,
+    school: SpellSchool.necromancy,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.touch,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+      materials: [
+        SpellMaterialComponent(
+          description:
+              'Diamanti del valore di 300 mo, consumati dall’incantesimo.',
+          minimumCostGp: 300,
+          consumed: true,
+        ),
+      ],
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.instantaneous,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.creature,
+      },
+      maximumTargets: 1,
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'revivify_recently_dead_creature',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'targets_creature_dead_no_longer_than_1_minute',
+          'target_returns_to_life_with_1_hit_point',
+          'cannot_restore_creature_dead_of_old_age',
+          'cannot_restore_missing_body_parts',
+          'diamonds_worth_300_gp_are_consumed',
+          'instantaneous_necromancy',
+        },
+      ),
+    ],
+    classIds: {
+      'cleric',
+      'paladin',
     },
   ),
 };
