@@ -929,6 +929,10 @@ class SpellDefinition {
 /// Verrà popolato progressivamente. Tenere un unico registry permette a
 /// razze, classi, talenti e altri sistemi di riferirsi allo stesso ID.
 abstract final class SpellIds {
+  static const clone = 'clone';
+  static const antimagicField = 'antimagic_field';
+  static const holyAura = 'holy_aura';
+  static const antipathySympathy = 'antipathy_sympathy';
   static const fireStorm = 'fire_storm';
   static const teleport = 'teleport';
   static const prismaticSpray = 'prismatic_spray';
@@ -25970,6 +25974,347 @@ const Map<String, SpellDefinition> spellDefinitions = {
       'cleric',
       'druid',
       'sorcerer',
+    },
+  ),
+  SpellIds.antipathySympathy: SpellDefinition(
+    id: SpellIds.antipathySympathy,
+    content: RuleContent(
+      id: SpellIds.antipathySympathy,
+      name: 'Antipatia/Simpatia',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Infonde in un bersaglio un’aura che attira o respinge un tipo specifico di creatura intelligente.',
+        details:
+            'L’incantatore sceglie entro 18 metri un oggetto, una creatura di taglia Enorme o inferiore '
+            'oppure un’area non più grande di un cubo con spigolo di 60 metri, poi specifica un tipo '
+            'di creatura intelligente e sceglie Antipatia o Simpatia. Con Antipatia, una creatura del '
+            'tipo scelto che vede il bersaglio o giunge entro 18 metri deve superare un tiro salvezza '
+            'su Saggezza o diventare spaventata, usando il proprio movimento per raggiungere il punto '
+            'sicuro più vicino dal quale non possa più vedere il bersaglio. Con Simpatia, la creatura '
+            'deve superare un tiro salvezza su Saggezza o usare il proprio movimento per avvicinarsi '
+            'al bersaglio e non può allontanarsene volontariamente. Una creatura influenzata effettua '
+            'un nuovo tiro salvezza quando termina il turno oltre 18 metri dal bersaglio o senza '
+            'poterlo vedere, ogni 24 ore e, per Simpatia, quando il bersaglio le infligge danni o le '
+            'nuoce. Un successo termina l’effetto e rende la creatura immune per 1 minuto.',
+      ),
+      ownerId: SpellIds.antipathySympathy,
+    ),
+    level: 8,
+    school: SpellSchool.enchantment,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.hour,
+      amount: 1,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 18,
+    ),
+    area: SpellArea(
+      shape: SpellAreaShape.cube,
+      origin: SpellAreaOrigin.targetPoint,
+      sizeMeters: 60,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+      materials: [
+        SpellMaterialComponent(
+          description:
+              'Un frammento di allume immerso nell’aceto per Antipatia oppure una goccia di miele per Simpatia.',
+        ),
+      ],
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.day,
+      amount: 10,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.object,
+        SpellTargetType.creature,
+        SpellTargetType.area,
+      },
+      maximumTargets: 1,
+    ),
+    savingThrow: SpellSavingThrow(
+      ability: SpellSavingThrowAbility.wisdom,
+      onSuccess: SpellSaveSuccess.special,
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'antipathy_sympathy_emotional_aura',
+        type: SpellPersistentEffectType.zone,
+        ruleTags: {
+          'caster_selects_intelligent_creature_type',
+          'caster_selects_antipathy_or_sympathy',
+          'target_may_be_huge_or_smaller_creature_object_or_60_meter_cube',
+          'effect_triggers_on_seeing_target_or_entering_18_meters',
+          'wisdom_save_negates_initial_effect',
+          'antipathy_causes_frightened_condition',
+          'antipathy_requires_movement_toward_nearest_safe_location',
+          'antipathy_reactivates_if_target_is_seen_or_approached_again',
+          'sympathy_requires_movement_toward_target',
+          'sympathy_prevents_voluntary_movement_away_from_target',
+          'harm_from_sympathy_target_allows_another_save',
+          'ending_turn_beyond_18_meters_or_without_sight_allows_save',
+          'affected_creature_repeats_save_every_24_hours',
+          'successful_save_grants_one_minute_immunity',
+        },
+      ),
+    ],
+    classIds: {
+      'druid',
+      'wizard',
+    },
+  ),
+  SpellIds.holyAura: SpellDefinition(
+    id: SpellIds.holyAura,
+    content: RuleContent(
+      id: SpellIds.holyAura,
+      name: 'Aura Sacra',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Avvolge le creature scelte in una luce divina che rafforza le loro difese e acceca immondi e non morti.',
+        details:
+            'Le creature scelte dall’incantatore entro 9 metri al momento del lancio proiettano luce '
+            'fioca entro 1,5 metri e dispongono di vantaggio a tutti i tiri salvezza. Le altre creature '
+            'subiscono svantaggio ai tiri per colpire contro le creature protette. Quando un immondo '
+            'o un non morto colpisce in mischia una creatura influenzata, deve superare un tiro '
+            'salvezza su Costituzione o restare accecato fino al termine dell’incantesimo. '
+            'L’effetto richiede concentrazione e dura fino a 1 minuto.',
+      ),
+      ownerId: SpellIds.holyAura,
+    ),
+    level: 8,
+    school: SpellSchool.abjuration,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.self,
+    ),
+    area: SpellArea(
+      shape: SpellAreaShape.radius,
+      origin: SpellAreaOrigin.caster,
+      radiusMeters: 9,
+    ),
+    areaExclusion: SpellAreaExclusion(
+      type: SpellAreaExclusionType.chosenOnCast,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+      materials: [
+        SpellMaterialComponent(
+          description:
+              'Un minuscolo reliquiario contenente una reliquia sacra.',
+          minimumCostGp: 1000,
+        ),
+      ],
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.minute,
+      amount: 1,
+      concentration: true,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.creatures,
+      },
+    ),
+    savingThrow: SpellSavingThrow(
+      ability: SpellSavingThrowAbility.constitution,
+      onSuccess: SpellSaveSuccess.negates,
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'holy_aura_divine_protection',
+        type: SpellPersistentEffectType.zone,
+        ruleTags: {
+          'caster_selects_creatures_in_9_meter_radius_on_cast',
+          'selected_creatures_emit_dim_light_in_1_5_meter_radius',
+          'selected_creatures_have_advantage_on_all_saving_throws',
+          'attacks_against_selected_creatures_have_disadvantage',
+          'fiend_or_undead_melee_hit_triggers_constitution_save',
+          'failed_save_blinds_attacker_until_spell_ends',
+          'requires_concentration',
+        },
+      ),
+    ],
+    classIds: {
+      'cleric',
+    },
+  ),
+  SpellIds.antimagicField: SpellDefinition(
+    id: SpellIds.antimagicField,
+    content: RuleContent(
+      id: SpellIds.antimagicField,
+      name: 'Campo Anti-Magia',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Circonda l’incantatore con una sfera mobile che sopprime incantesimi, oggetti magici e altri effetti magici.',
+        details:
+            'Una sfera invisibile di anti-magia del raggio di 3 metri circonda l’incantatore e si '
+            'muove con lui. Al suo interno non è possibile lanciare incantesimi, le creature evocate '
+            'scompaiono temporaneamente e le proprietà degli oggetti magici sono soppresse. Gli '
+            'incantesimi e gli effetti magici non possono estendersi nella sfera e quelli già presenti '
+            'sono soppressi, anche se il tempo trascorso continua a essere sottratto dalla loro durata. '
+            'Sono inoltre soppressi il teletrasporto, i viaggi planari, i portali, gli spazi '
+            'extradimensionali e le creature o gli oggetti evocati o creati magicamente. Gli effetti '
+            'generati da artefatti o divinità non sono soppressi. Dissolvi Magie non influenza il '
+            'campo e più campi anti-magia sovrapposti non si annullano a vicenda.',
+      ),
+      ownerId: SpellIds.antimagicField,
+    ),
+    level: 8,
+    school: SpellSchool.abjuration,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.self,
+    ),
+    area: SpellArea(
+      shape: SpellAreaShape.sphere,
+      origin: SpellAreaOrigin.caster,
+      radiusMeters: 3,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+      materials: [
+        SpellMaterialComponent(
+          description: 'Un pizzico di polvere o di limatura di ferro.',
+        ),
+      ],
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.hour,
+      amount: 1,
+      concentration: true,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.self,
+        SpellTargetType.area,
+      },
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'antimagic_field_suppression_zone',
+        type: SpellPersistentEffectType.zone,
+        ruleTags: {
+          'three_meter_radius_sphere_centered_on_caster',
+          'sphere_moves_with_caster',
+          'spells_cannot_be_cast_inside_sphere',
+          'spell_slots_spent_on_suppressed_spells_are_consumed',
+          'targeted_magical_effects_do_not_affect_targets_inside',
+          'magical_areas_cannot_extend_inside_sphere',
+          'existing_magical_effects_are_suppressed_inside',
+          'suppressed_effect_duration_continues_to_elapse',
+          'magic_item_properties_and_powers_are_suppressed',
+          'magic_weapons_function_as_nonmagical_inside',
+          'teleportation_and_planar_travel_do_not_function',
+          'portals_and_extradimensional entrances_temporarily_close',
+          'magically_summoned_or_created_creatures_and_objects_vanish',
+          'suppressed_creatures_and_objects_reappear_after_leaving_area',
+          'artifact_and_deity_effects_are_not_suppressed',
+          'dispel_magic_does_not_affect_field',
+          'overlapping_antimagic_fields_do_not_cancel_each_other',
+          'requires_concentration',
+        },
+      ),
+    ],
+    classIds: {
+      'cleric',
+      'wizard',
+    },
+  ),
+  SpellIds.clone: SpellDefinition(
+    id: SpellIds.clone,
+    content: RuleContent(
+      id: SpellIds.clone,
+      name: 'Clone',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Sviluppa in un involucro sigillato un duplicato inerte destinato ad accogliere l’anima della creatura originale.',
+        details:
+            'Il clone di una creatura vivente si sviluppa all’interno di un involucro sigillato e '
+            'raggiunge la taglia completa e la maturità dopo 120 giorni. L’incantatore può scegliere '
+            'che sia una versione più giovane della creatura. Una volta maturo, se la creatura '
+            'originale muore, la sua anima si trasferisce nel clone purché sia libera e disposta a '
+            'tornare. Il clone è fisicamente identico all’originale e ne possiede personalità, '
+            'ricordi e capacità, ma non l’equipaggiamento. Gli eventuali resti dell’originale '
+            'diventano inerti e non possono essere riportati in vita perché l’anima si trova altrove. '
+            'Il clone resta inerte a tempo indeterminato finché l’involucro non viene disturbato.',
+      ),
+      ownerId: SpellIds.clone,
+    ),
+    level: 8,
+    school: SpellSchool.necromancy,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.hour,
+      amount: 1,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.touch,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+      materials: [
+        SpellMaterialComponent(
+          description: 'Un diamante.',
+          minimumCostGp: 1000,
+          consumed: true,
+        ),
+        SpellMaterialComponent(
+          description:
+              'Un cubo di carne della creatura da clonare con spigolo di almeno 2,5 centimetri.',
+          consumed: true,
+        ),
+        SpellMaterialComponent(
+          description:
+              'Un involucro con coperchio sigillabile, abbastanza grande da contenere una creatura Media.',
+          minimumCostGp: 2000,
+        ),
+      ],
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.instantaneous,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.creature,
+      },
+      maximumTargets: 1,
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'clone_inert_duplicate',
+        type: SpellPersistentEffectType.createdCreature,
+        ruleTags: {
+          'target_must_be_living_creature',
+          'clone_develops_inside_sealed_vessel',
+          'clone_reaches_maturity_after_120_days',
+          'caster_can_choose_younger_version',
+          'clone_remains_inert_until_original_dies',
+          'clone_persists_while_vessel_is_undisturbed',
+          'mature_clone_receives_soul_if_free_and_willing',
+          'clone_is_physically_identical_to_original',
+          'clone_retains_personality_memories_and_abilities',
+          'clone_does_not_receive_original_equipment',
+          'original_remains_become_inert_after_soul_transfer',
+          'original_cannot_be_restored_while_soul_is_in_clone',
+        },
+      ),
+    ],
+    classIds: {
+      'wizard',
     },
   ),
 };
