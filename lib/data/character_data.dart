@@ -494,11 +494,113 @@ class RaceDefinition {
   });
 }
 
+/// Privilegio narrativo e meccanico concesso da un background.
+class BackgroundFeatureDefinition {
+  final String id;
+  final RuleContent content;
+
+  /// Tag stabili utilizzabili dal runtime per riconoscere gli effetti
+  /// che non possono essere rappresentati come semplici bonus numerici.
+  final Set<String> ruleTags;
+
+  const BackgroundFeatureDefinition({
+    required this.id,
+    required this.content,
+    this.ruleTags = const {},
+  });
+}
+
+/// Una voce di una tabella casuale associata a un background.
+///
+/// Un intervallo permette di rappresentare sia risultati singoli sia
+/// gruppi di risultati senza duplicare lo stesso testo.
+class BackgroundTableEntry {
+  final int minimumRoll;
+  final int maximumRoll;
+  final String label;
+
+  /// Allineamento eventualmente associato a un ideale.
+  final String? alignment;
+
+  const BackgroundTableEntry({
+    required this.minimumRoll,
+    required this.maximumRoll,
+    required this.label,
+    this.alignment,
+  })  : assert(minimumRoll > 0),
+        assert(maximumRoll >= minimumRoll);
+
+  bool matches(int roll) => roll >= minimumRoll && roll <= maximumRoll;
+}
+
+/// Tabella tirabile appartenente a un background.
+///
+/// Può rappresentare specializzazioni, eventi determinanti, truffe,
+/// attività professionali o qualsiasi altra scelta prevista dal PHB.
+class BackgroundTableDefinition {
+  final String id;
+  final String name;
+  final int dieSides;
+  final List<BackgroundTableEntry> entries;
+
+  const BackgroundTableDefinition({
+    required this.id,
+    required this.name,
+    required this.dieSides,
+    required this.entries,
+  }) : assert(dieSides > 0);
+
+  BackgroundTableEntry? entryForRoll(int roll) {
+    if (roll < 1 || roll > dieSides) return null;
+
+    for (final entry in entries) {
+      if (entry.matches(roll)) return entry;
+    }
+
+    return null;
+  }
+}
+
+/// Tabelle suggerite per definire la personalità del personaggio.
+class BackgroundSuggestedCharacteristics {
+  final BackgroundTableDefinition? personalityTraits;
+  final BackgroundTableDefinition? ideals;
+  final BackgroundTableDefinition? bonds;
+  final BackgroundTableDefinition? flaws;
+
+  const BackgroundSuggestedCharacteristics({
+    this.personalityTraits,
+    this.ideals,
+    this.bonds,
+    this.flaws,
+  });
+
+  bool get isComplete =>
+      personalityTraits != null &&
+      ideals != null &&
+      bonds != null &&
+      flaws != null;
+}
+
 class BackgroundDefinition {
   final String id;
   final String name;
   final RuleContent content;
   final CharacterEffects effects;
+
+  /// ID del background principale da cui deriva una variante ufficiale.
+  ///
+  /// Null identifica un background principale.
+  final String? parentBackgroundId;
+
+  /// Privilegio specifico concesso dal background.
+  final BackgroundFeatureDefinition? feature;
+
+  /// Tabelle aggiuntive previste dal background, escluse le quattro
+  /// tabelle standard delle caratteristiche personali.
+  final List<BackgroundTableDefinition> tables;
+
+  final BackgroundSuggestedCharacteristics suggestedCharacteristics;
 
   /// Monete iniziali espresse con le sigle già usate da HeroData:
   /// MR, MA, ME, MO, MP.
@@ -513,10 +615,16 @@ class BackgroundDefinition {
     required this.name,
     required this.content,
     this.effects = const CharacterEffects(),
+    this.parentBackgroundId,
+    this.feature,
+    this.tables = const [],
+    this.suggestedCharacteristics = const BackgroundSuggestedCharacteristics(),
     this.startingCoins = const {},
     this.startingEquipmentPacks = const [],
     this.homebrew = false,
   });
+
+  bool get isVariant => parentBackgroundId != null;
 }
 
 /// Famiglia universale di requisito valutabile sul personaggio.
@@ -767,9 +875,4 @@ class CharacterChoiceSelection {
 /// Tenerlo separato dalla UI evita nuovi `if (race == ...)` dentro HeroData.
 const Map<String, RaceDefinition> raceDefinitions = {};
 
-const Map<String, BackgroundDefinition> backgroundDefinitions = {};
-
 RaceDefinition? raceDefinitionFor(String id) => raceDefinitions[id];
-
-BackgroundDefinition? backgroundDefinitionFor(String id) =>
-    backgroundDefinitions[id];
