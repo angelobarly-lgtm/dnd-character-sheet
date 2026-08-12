@@ -38,10 +38,10 @@ Checklist di lavoro per espandere `lib/data/spell_data.dart` con gli incantesimi
 - [x] Passo Velato
 - [x] Pelle Coriacea
 - [x] Percezione delle Bestie
-- [ ] Preghiera di Guarigione
-- [ ] Presagio
-- [ ] Protezione dai Veleni
-- [ ] Punizione Marchiante
+- [x] Preghiera di Guarigione
+- [x] Presagio
+- [x] Protezione dai Veleni
+- [x] Punizione Marchiante
 - [ ] Raggio di Affaticamento
 - [ ] Raggio Rovente
 - [ ] Ragnatela

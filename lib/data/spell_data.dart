@@ -1058,6 +1058,10 @@ abstract final class SpellIds {
   static const mistyStep = 'misty_step';
   static const barkskin = 'barkskin';
   static const beastSense = 'beast_sense';
+  static const prayerOfHealing = 'prayer_of_healing';
+  static const augury = 'augury';
+  static const protectionFromPoison = 'protection_from_poison';
+  static const brandingSmite = 'branding_smite';
 }
 
 const Map<String, SpellDefinition> spellDefinitions = {
@@ -10111,6 +10115,274 @@ const Map<String, SpellDefinition> spellDefinitions = {
     classIds: {
       'druid',
       'ranger',
+    },
+  ),
+  SpellIds.prayerOfHealing: SpellDefinition(
+    id: SpellIds.prayerOfHealing,
+    content: RuleContent(
+      id: SpellIds.prayerOfHealing,
+      name: 'Preghiera di Guarigione',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Guarisce fino a sei creature visibili entro gittata dopo un lancio di 10 minuti.',
+        details:
+            'Fino a sei creature scelte dall’incantatore, situate entro gittata '
+            'e che egli sia in grado di vedere, recuperano punti ferita pari a '
+            '2d8 + il modificatore della caratteristica da incantatore. '
+            'L’incantesimo ha tempo di lancio di 10 minuti e durata '
+            'istantanea. Non ha effetto sui costrutti o sui non morti. Usando '
+            'uno slot di livello superiore al 2°, la guarigione aumenta di 1d8 '
+            'per ogni livello di slot superiore.',
+      ),
+      ownerId: SpellIds.prayerOfHealing,
+    ),
+    level: 2,
+    school: SpellSchool.evocation,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.minute,
+      amount: 10,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 9,
+    ),
+    components: SpellComponents(
+      verbal: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.instantaneous,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.creatures,
+      },
+      maximumTargets: 6,
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'prayer_of_healing_six_creatures_heal',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'up_to_six_visible_creatures_within_9_meters',
+          'each_target_heals_2d8_plus_spellcasting_modifier',
+          'no_effect_on_constructs',
+          'no_effect_on_undead',
+          'healing_increases_by_1d8_per_slot_level_above_2',
+          'casting_time_10_minutes',
+        },
+      ),
+    ],
+    classIds: {
+      'cleric',
+    },
+  ),
+  SpellIds.augury: SpellDefinition(
+    id: SpellIds.augury,
+    content: RuleContent(
+      id: SpellIds.augury,
+      name: 'Presagio',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Riceve un presagio su un corso d’azione specifico da intraprendere entro 30 minuti.',
+        details:
+            'Lanciando bastoncini incastonati di gemme, ossa di drago, carte '
+            'illustrate o altri strumenti di divinazione, l’incantatore riceve '
+            'un segno da un’entità ultraterrena sul risultato di un corso '
+            'd’azione specifico che intende intraprendere entro i successivi 30 '
+            'minuti. Il DM sceglie uno dei presagi: ventura per risultati '
+            'positivi, sventura per risultati negativi, ventura e sventura se '
+            'ci sono sia risultati positivi sia negativi, oppure nulla se non '
+            'sono previsti risultati rilevanti. L’incantesimo non considera '
+            'circostanze future che potrebbero alterare l’esito, come il lancio '
+            'di altri incantesimi o la perdita o acquisizione di compagni. Può '
+            'essere lanciato come rituale.',
+      ),
+      ownerId: SpellIds.augury,
+    ),
+    level: 2,
+    ritual: true,
+    school: SpellSchool.divination,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.minute,
+      amount: 1,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.self,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+      materials: [
+        SpellMaterialComponent(
+          description:
+              'Bastoncini, ossa o amuleti analoghi ricoperti di segni del valore di almeno 25 mo.',
+          minimumCostGp: 25,
+        ),
+      ],
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.instantaneous,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.self,
+      },
+      maximumTargets: 1,
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'augury_omen_for_course_of_action',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'ritual_spell',
+          'asks_about_specific_course_of_action_within_next_30_minutes',
+          'dm_returns_omen_weal_woe_weal_and_woe_or_nothing',
+          'weal_positive_results',
+          'woe_negative_results',
+          'weal_and_woe_positive_and_negative_results',
+          'nothing_no_relevant_positive_or_negative_result',
+          'does_not_account_for_later_circumstances_that_change_outcome',
+          'material_component_worth_at_least_25_gp',
+        },
+      ),
+    ],
+    classIds: {
+      'cleric',
+    },
+  ),
+  SpellIds.protectionFromPoison: SpellDefinition(
+    id: SpellIds.protectionFromPoison,
+    content: RuleContent(
+      id: SpellIds.protectionFromPoison,
+      name: 'Protezione dai Veleni',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Neutralizza un veleno su una creatura e le concede difese contro veleno.',
+        details:
+            'L’incantatore tocca una creatura. Se quella creatura è avvelenata, '
+            'il veleno viene neutralizzato. Se il bersaglio è afflitto da più '
+            'veleni, l’incantatore neutralizza un veleno di cui conosce la '
+            'presenza oppure ne neutralizza uno a caso. Per la durata '
+            'dell’incantesimo, il bersaglio dispone di vantaggio ai tiri '
+            'salvezza per non essere avvelenato e di resistenza ai danni da '
+            'veleno. L’effetto dura 1 ora e non richiede concentrazione.',
+      ),
+      ownerId: SpellIds.protectionFromPoison,
+    ),
+    level: 2,
+    school: SpellSchool.abjuration,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.touch,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.hour,
+      amount: 1,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.creature,
+      },
+      maximumTargets: 1,
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'protection_from_poison_neutralize_and_resist',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'touched_creature',
+          'neutralizes_poison_if_target_is_poisoned',
+          'if_multiple_poisons_caster_neutralizes_known_poison_or_random_poison',
+          'target_has_advantage_on_saves_against_being_poisoned',
+          'target_has_resistance_to_poison_damage',
+          'does_not_require_concentration',
+        },
+      ),
+    ],
+    classIds: {
+      'cleric',
+      'druid',
+      'paladin',
+      'ranger',
+    },
+  ),
+  SpellIds.brandingSmite: SpellDefinition(
+    id: SpellIds.brandingSmite,
+    content: RuleContent(
+      id: SpellIds.brandingSmite,
+      name: 'Punizione Marchiante',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Carica il prossimo colpo con un bagliore radioso che rivela il bersaglio.',
+        details:
+            'La prossima volta che l’incantatore colpisce una creatura con un '
+            'attacco con un’arma entro la durata dell’incantesimo, l’arma '
+            'risplende di un bagliore astrale al momento dell’impatto. '
+            'L’attacco infligge 2d6 danni radiosi extra al bersaglio. Se il '
+            'bersaglio è invisibile, diventa visibile, proietta luce fioca in '
+            'un raggio di 1,5 metri attorno a sé e non può diventare invisibile '
+            'finché l’incantesimo non termina. Richiede concentrazione e dura '
+            'fino a 1 minuto. Usando uno slot di livello superiore al 2°, i '
+            'danni extra aumentano di 1d6 per ogni livello di slot superiore.',
+      ),
+      ownerId: SpellIds.brandingSmite,
+    ),
+    level: 2,
+    school: SpellSchool.evocation,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.bonusAction,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.self,
+    ),
+    components: SpellComponents(
+      verbal: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.minute,
+      amount: 1,
+      concentration: true,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.self,
+      },
+      maximumTargets: 1,
+    ),
+    damage: [
+      SpellDamage(
+        dice: '2d6',
+        type: SpellDamageType.radiant,
+      ),
+    ],
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'branding_smite_radiant_reveal',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'bonus_action_spell',
+          'next_weapon_attack_hit_before_spell_ends_triggers_effect',
+          'hit_deals_2d6_extra_radiant_damage',
+          'invisible_target_becomes_visible',
+          'target_sheds_dim_light_1_5_meters',
+          'target_cannot_become_invisible_until_spell_ends',
+          'extra_damage_increases_by_1d6_per_slot_level_above_2',
+          'requires_concentration',
+        },
+      ),
+    ],
+    classIds: {
+      'paladin',
     },
   ),
 };
