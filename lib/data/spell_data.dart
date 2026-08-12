@@ -1062,6 +1062,10 @@ abstract final class SpellIds {
   static const augury = 'augury';
   static const protectionFromPoison = 'protection_from_poison';
   static const brandingSmite = 'branding_smite';
+  static const rayOfEnfeeblement = 'ray_of_enfeeblement';
+  static const scorchingRay = 'scorching_ray';
+  static const web = 'web';
+  static const gentleRepose = 'gentle_repose';
 }
 
 const Map<String, SpellDefinition> spellDefinitions = {
@@ -10383,6 +10387,295 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ],
     classIds: {
       'paladin',
+    },
+  ),
+  SpellIds.rayOfEnfeeblement: SpellDefinition(
+    id: SpellIds.rayOfEnfeeblement,
+    content: RuleContent(
+      id: SpellIds.rayOfEnfeeblement,
+      name: 'Raggio di Affaticamento',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Colpisce una creatura con energia logorante e dimezza i danni dei suoi attacchi di Forza.',
+        details: 'Un raggio nero di energia logorante scaturisce dal dito '
+            'dell’incantatore verso una creatura entro gittata. L’incantatore '
+            'effettua un attacco a distanza con questo incantesimo contro il '
+            'bersaglio. Se colpisce, il bersaglio infligge soltanto metà danni '
+            'con gli attacchi con le armi basati sulla Forza finché '
+            'l’incantesimo non termina. Alla fine di ogni proprio turno, il '
+            'bersaglio può effettuare un tiro salvezza su Costituzione; se lo '
+            'supera, l’incantesimo termina. Richiede concentrazione e può '
+            'durare fino a 1 minuto.',
+      ),
+      ownerId: SpellIds.rayOfEnfeeblement,
+    ),
+    level: 2,
+    school: SpellSchool.necromancy,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 18,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.minute,
+      amount: 1,
+      concentration: true,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.creature,
+      },
+      maximumTargets: 1,
+    ),
+    attackType: SpellAttackType.ranged,
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'ray_of_enfeeblement_strength_weapon_damage_halved',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'ranged_spell_attack_against_creature_within_18_meters',
+          'hit_halves_targets_strength_based_weapon_attack_damage',
+          'target_repeats_constitution_save_at_end_of_each_turn',
+          'successful_repeat_save_ends_spell',
+          'requires_concentration',
+        },
+      ),
+    ],
+    classIds: {
+      'warlock',
+      'wizard',
+    },
+  ),
+  SpellIds.scorchingRay: SpellDefinition(
+    id: SpellIds.scorchingRay,
+    content: RuleContent(
+      id: SpellIds.scorchingRay,
+      name: 'Raggio Rovente',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Crea tre raggi di fuoco che possono colpire uno o più bersagli.',
+        details:
+            'L’incantatore crea tre raggi di fuoco e li scaglia contro uno o '
+            'più bersagli entro gittata. Effettua un attacco a distanza con '
+            'questo incantesimo per ogni raggio. Se un raggio colpisce, il '
+            'bersaglio subisce 2d6 danni da fuoco. I raggi possono essere '
+            'diretti contro lo stesso bersaglio o contro bersagli diversi entro '
+            'gittata. Usando uno slot di 3° livello o superiore, l’incantatore '
+            'crea un raggio aggiuntivo per ogni livello di slot superiore al 2°.',
+      ),
+      ownerId: SpellIds.scorchingRay,
+    ),
+    level: 2,
+    school: SpellSchool.evocation,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 36,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.instantaneous,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.creature,
+        SpellTargetType.object,
+      },
+    ),
+    attackType: SpellAttackType.ranged,
+    damage: [
+      SpellDamage(
+        dice: '2d6',
+        type: SpellDamageType.fire,
+      ),
+    ],
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'scorching_ray_three_fire_rays',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'creates_three_fire_rays',
+          'rays_can_target_one_or_more_targets_within_36_meters',
+          'make_one_ranged_spell_attack_for_each_ray',
+          'each_hit_deals_2d6_fire_damage',
+          'one_additional_ray_per_slot_level_above_2',
+        },
+      ),
+    ],
+    classIds: {
+      'sorcerer',
+      'wizard',
+    },
+  ),
+  SpellIds.web: SpellDefinition(
+    id: SpellIds.web,
+    content: RuleContent(
+      id: SpellIds.web,
+      name: 'Ragnatela',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Evoca un cubo di ragnatele che rende il terreno difficile, oscura e trattiene le creature.',
+        details:
+            'L’incantatore evoca una massa di filamenti spessi e viscosi in un '
+            'punto entro gittata. Le ragnatele riempiono un cubo con spigolo di '
+            '6 metri generato da quel punto per la durata. L’area è terreno '
+            'difficile ed è leggermente oscurata. Se le ragnatele non sono '
+            'ancorate tra masse solide o stese su pavimento, muro o soffitto, '
+            'collassano e l’incantesimo termina all’inizio del turno successivo '
+            'dell’incantatore; su una superficie piatta hanno profondità di 1,5 '
+            'metri. Ogni creatura che inizia il turno nelle ragnatele o vi entra '
+            'durante il proprio turno effettua un tiro salvezza su Destrezza. '
+            'Se fallisce, è trattenuta finché rimane tra le ragnatele o finché '
+            'non si libera spezzandole. Una creatura trattenuta può usare la '
+            'sua azione per effettuare una prova di Forza contro la CD '
+            'dell’incantesimo; se ha successo, non è più trattenuta. Le '
+            'ragnatele sono infiammabili: un cubo con spigolo di 1,5 metri '
+            'brucia in 1 round e infligge 2d4 danni da fuoco alle creature che '
+            'iniziano il turno tra le fiamme. Richiede concentrazione.',
+      ),
+      ownerId: SpellIds.web,
+    ),
+    level: 2,
+    school: SpellSchool.conjuration,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 18,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+      materials: [
+        SpellMaterialComponent(
+          description: 'Un frammento di ragnatela comune.',
+        ),
+      ],
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.hour,
+      amount: 1,
+      concentration: true,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.area,
+      },
+    ),
+    damage: [
+      SpellDamage(
+        dice: '2d4',
+        type: SpellDamageType.fire,
+      ),
+    ],
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'web_restraining_flammable_area',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'creates_6_meter_cube_of_webs_centered_on_point_within_18_meters',
+          'web_area_is_difficult_terrain',
+          'web_area_is_lightly_obscured',
+          'webs_collapse_if_not_anchored_or_supported',
+          'unsupported_webs_end_spell_at_start_of_casters_next_turn',
+          'webs_on_flat_surface_have_1_5_meter_depth',
+          'creature_starting_turn_in_webs_makes_dexterity_save',
+          'creature_entering_webs_on_turn_makes_dexterity_save',
+          'failed_save_creature_restrained',
+          'restrained_creature_can_action_strength_check_to_break_free',
+          'webs_are_flammable',
+          'burning_1_5_meter_web_cube_deals_2d4_fire_to_creatures_starting_turn_in_flames',
+          'requires_concentration',
+        },
+      ),
+    ],
+    classIds: {
+      'sorcerer',
+      'wizard',
+    },
+  ),
+  SpellIds.gentleRepose: SpellDefinition(
+    id: SpellIds.gentleRepose,
+    content: RuleContent(
+      id: SpellIds.gentleRepose,
+      name: 'Riposo Inviolato',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Protegge un cadavere dalla decomposizione e dall’essere trasformato in non morto.',
+        details:
+            'L’incantatore tocca un cadavere o resti di altro tipo. Per la '
+            'durata dell’incantesimo, il bersaglio è protetto dalla '
+            'decomposizione e non può diventare un non morto. Inoltre, '
+            'l’incantesimo estende a tutti gli effetti il limite di tempo entro '
+            'cui rianimare il bersaglio dalla morte: i giorni trascorsi sotto '
+            'l’influenza dell’incantesimo non contano per determinare il limite '
+            'di tempo di incantesimi come rianimare morti. L’effetto dura 10 '
+            'giorni e può essere lanciato come rituale.',
+      ),
+      ownerId: SpellIds.gentleRepose,
+    ),
+    level: 2,
+    ritual: true,
+    school: SpellSchool.necromancy,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.touch,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+      materials: [
+        SpellMaterialComponent(
+          description:
+              'Un pizzico di sale e due monete di rame da collocare sugli occhi del cadavere per la durata.',
+        ),
+      ],
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.day,
+      amount: 10,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.object,
+      },
+      maximumTargets: 1,
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'gentle_repose_preserve_corpse',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'ritual_spell',
+          'touches_corpse_or_other_remains',
+          'target_protected_from_decay',
+          'target_cannot_become_undead',
+          'days_under_spell_do_not_count_against_raise_dead_time_limit',
+          'duration_10_days',
+        },
+      ),
+    ],
+    classIds: {
+      'cleric',
+      'wizard',
     },
   ),
 };

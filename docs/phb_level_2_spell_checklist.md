@@ -42,10 +42,10 @@ Checklist di lavoro per espandere `lib/data/spell_data.dart` con gli incantesimi
 - [x] Presagio
 - [x] Protezione dai Veleni
 - [x] Punizione Marchiante
-- [ ] Raggio di Affaticamento
-- [ ] Raggio Rovente
-- [ ] Ragnatela
-- [ ] Riposo Inviolato
+- [x] Raggio di Affaticamento
+- [x] Raggio Rovente
+- [x] Ragnatela
+- [x] Riposo Inviolato
 - [ ] Riscaldare il Metallo
 - [ ] Ristorare Inferiore
 - [ ] Scassinare
