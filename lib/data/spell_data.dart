@@ -1108,6 +1108,10 @@ abstract final class SpellIds {
   static const callLightning = 'call_lightning';
   static const sending = 'sending';
   static const slow = 'slow';
+  static const tongues = 'tongues';
+  static const daylight = 'daylight';
+  static const crusadersMantle = 'crusaders_mantle';
+  static const feignDeath = 'feign_death';
 }
 
 const Map<String, SpellDefinition> spellDefinitions = {
@@ -13861,6 +13865,288 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ],
     classIds: {
       'sorcerer',
+      'wizard',
+    },
+  ),
+  SpellIds.tongues: SpellDefinition(
+    id: SpellIds.tongues,
+    content: RuleContent(
+      id: SpellIds.tongues,
+      name: 'Linguaggi',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Permette alla creatura toccata di comprendere e farsi comprendere in qualsiasi linguaggio parlato.',
+        details:
+            'L’incantatore tocca una creatura. Per la durata dell’incantesimo, '
+            'il bersaglio comprende qualsiasi linguaggio che sente parlare. '
+            'Inoltre, quando il bersaglio parla, ogni creatura che conosca '
+            'almeno un linguaggio e sia in grado di udirlo capisce ciò che il '
+            'bersaglio sta dicendo. L’effetto dura 1 ora e non richiede '
+            'concentrazione.',
+      ),
+      ownerId: SpellIds.tongues,
+    ),
+    level: 3,
+    school: SpellSchool.divination,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.touch,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      materials: [
+        SpellMaterialComponent(
+          description: 'Una piccola riproduzione in argilla di una ziggurat.',
+        ),
+      ],
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.hour,
+      amount: 1,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.creature,
+      },
+      maximumTargets: 1,
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'tongues_understand_and_be_understood',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'touched_creature',
+          'target_understands_any_spoken_language_it_hears',
+          'when_target_speaks_creatures_that_know_a_language_and_can_hear_understand',
+          'duration_1_hour',
+          'does_not_require_concentration',
+        },
+      ),
+    ],
+    classIds: {
+      'bard',
+      'cleric',
+      'sorcerer',
+      'warlock',
+      'wizard',
+    },
+  ),
+  SpellIds.daylight: SpellDefinition(
+    id: SpellIds.daylight,
+    content: RuleContent(
+      id: SpellIds.daylight,
+      name: 'Luce Diurna',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Crea una grande sfera di luce intensa che può anche dissolvere oscurità magica minore.',
+        details:
+            'Una sfera di luce del raggio di 18 metri si diffonde da un punto '
+            'entro gittata scelto dall’incantatore. La sfera è pervasa da luce '
+            'intensa e proietta luce fioca per altri 18 metri. Se il punto '
+            'scelto si trova su un oggetto impugnato dall’incantatore o non '
+            'indossato né trasportato da nessuno, la luce si diffonde '
+            'dall’oggetto e si muove assieme a esso. Coprire completamente la '
+            'fonte di luce con un oggetto opaco blocca la luce. Se una parte '
+            'dell’area si sovrappone a un’area di oscurità creata da un '
+            'incantesimo di 3° livello o inferiore, l’incantesimo di oscurità '
+            'viene dissolto. L’effetto dura 1 ora e non richiede concentrazione.',
+      ),
+      ownerId: SpellIds.daylight,
+    ),
+    level: 3,
+    school: SpellSchool.evocation,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 18,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.hour,
+      amount: 1,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.point,
+        SpellTargetType.object,
+        SpellTargetType.area,
+      },
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'daylight_bright_light_sphere',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'creates_18_meter_radius_sphere_of_bright_light',
+          'sheds_dim_light_for_additional_18_meters',
+          'light_can_radiate_from_held_or_unattended_object',
+          'light_moves_with_object_if_cast_on_valid_object',
+          'opaque_cover_blocks_light',
+          'dispels_overlapping_darkness_spell_level_3_or_lower',
+          'duration_1_hour',
+          'does_not_require_concentration',
+        },
+      ),
+    ],
+    classIds: {
+      'cleric',
+      'druid',
+      'paladin',
+      'ranger',
+      'sorcerer',
+    },
+  ),
+  SpellIds.crusadersMantle: SpellDefinition(
+    id: SpellIds.crusadersMantle,
+    content: RuleContent(
+      id: SpellIds.crusadersMantle,
+      name: 'Manto del Crociato',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Emana un’aura che fa infliggere danni radiosi extra agli attacchi con arma degli alleati.',
+        details:
+            'Dall’incantatore si irradia un’aura del raggio di 9 metri che '
+            'infonde coraggio nelle creature amiche. Finché l’incantesimo non '
+            'termina, l’aura si muove assieme all’incantatore ed è centrata su '
+            'di lui. Ogni creatura non ostile situata entro l’aura, incluso '
+            'l’incantatore, infligge 1d4 danni radiosi extra quando colpisce '
+            'con un attacco con un’arma. Richiede concentrazione e può durare '
+            'fino a 1 minuto.',
+      ),
+      ownerId: SpellIds.crusadersMantle,
+    ),
+    level: 3,
+    school: SpellSchool.evocation,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.self,
+    ),
+    components: SpellComponents(
+      verbal: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.minute,
+      amount: 1,
+      concentration: true,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.self,
+        SpellTargetType.area,
+      },
+    ),
+    damage: [
+      SpellDamage(
+        dice: '1d4',
+        type: SpellDamageType.radiant,
+      ),
+    ],
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'crusaders_mantle_radiant_weapon_aura',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'creates_9_meter_radius_aura_centered_on_caster',
+          'aura_moves_with_caster',
+          'aura_inspires_friendly_creatures',
+          'nonhostile_creatures_in_aura_include_caster',
+          'nonhostile_creature_in_aura_deals_extra_1d4_radiant_on_weapon_hit',
+          'requires_concentration',
+        },
+      ),
+    ],
+    classIds: {
+      'paladin',
+    },
+  ),
+  SpellIds.feignDeath: SpellDefinition(
+    id: SpellIds.feignDeath,
+    content: RuleContent(
+      id: SpellIds.feignDeath,
+      name: 'Morte Apparente',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Pone una creatura consenziente in uno stato catatonico indistinguibile dalla morte.',
+        details:
+            'L’incantatore tocca una creatura consenziente e la pone in uno '
+            'stato catatonico indistinguibile dalla morte. Per la durata, o '
+            'finché l’incantatore non usa un’azione per toccare il bersaglio e '
+            'terminare l’incantesimo, il bersaglio appare morto a ogni ispezione '
+            'esterna e agli incantesimi usati per determinarne lo status. Il '
+            'bersaglio è accecato e incapacitato, e la sua velocità scende a 0. '
+            'Il bersaglio dispone di resistenza a tutti i danni tranne i danni '
+            'psichici. Se il bersaglio è ammalato o avvelenato quando '
+            'l’incantesimo viene lanciato, o se diventa ammalato o avvelenato '
+            'durante l’effetto, la malattia e il veleno non hanno effetto finché '
+            'l’incantesimo non termina. Può essere lanciato come rituale.',
+      ),
+      ownerId: SpellIds.feignDeath,
+    ),
+    level: 3,
+    ritual: true,
+    school: SpellSchool.necromancy,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.touch,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+      materials: [
+        SpellMaterialComponent(
+          description: 'Un pizzico di terriccio prelevato da un cimitero.',
+        ),
+      ],
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.hour,
+      amount: 1,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.willingCreature,
+      },
+      maximumTargets: 1,
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'feign_death_cataleptic_false_death',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'ritual_spell',
+          'touched_willing_creature_enters_cataleptic_state',
+          'target_appears_dead_to_external_inspection',
+          'target_appears_dead_to_spells_that_determine_status',
+          'caster_can_action_touch_target_to_end_spell',
+          'target_is_blinded',
+          'target_is_incapacitated',
+          'target_speed_becomes_0',
+          'target_has_resistance_to_all_damage_except_psychic',
+          'disease_and_poison_have_no_effect_while_spell_lasts',
+          'duration_1_hour',
+          'does_not_require_concentration',
+        },
+      ),
+    ],
+    classIds: {
+      'bard',
+      'cleric',
+      'druid',
       'wizard',
     },
   ),

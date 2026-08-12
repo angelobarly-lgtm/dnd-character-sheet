@@ -30,10 +30,10 @@ Checklist di lavoro per espandere `lib/data/spell_data.dart` con gli incantesimi
 - [x] Invocare il Fulmine
 - [x] Inviare
 - [x] Lentezza
-- [ ] Linguaggi
-- [ ] Luce Diurna
-- [ ] Manto del Crociato
-- [ ] Morte Apparente
+- [x] Linguaggi
+- [x] Luce Diurna
+- [x] Manto del Crociato
+- [x] Morte Apparente
 - [ ] Muro di Vento
 - [ ] Nube Maleodorante
 - [ ] Palla di Fuoco
