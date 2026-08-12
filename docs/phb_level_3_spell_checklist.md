@@ -22,10 +22,10 @@ Checklist di lavoro per espandere `lib/data/spell_data.dart` con gli incantesimi
 - [x] Fondersi nella Pietra
 - [x] Forma Gassosa
 - [x] Freccia Folgorante
-- [ ] Fulmine
-- [ ] Glifo di Interdizione
-- [ ] Guardiani Spirituali
-- [ ] Immagine Maggiore
+- [x] Fulmine
+- [x] Glifo di Interdizione
+- [x] Guardiani Spirituali
+- [x] Immagine Maggiore
 - [ ] Intermittenza
 - [ ] Invocare il Fulmine
 - [ ] Inviare

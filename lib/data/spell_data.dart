@@ -1101,6 +1101,9 @@ abstract final class SpellIds {
   static const meldIntoStone = 'meld_into_stone';
   static const gaseousForm = 'gaseous_form';
   static const lightningArrow = 'lightning_arrow';
+  static const lightningBolt = 'lightning_bolt';
+  static const glyphOfWarding = 'glyph_of_warding';
+  static const majorImage = 'major_image';
 }
 
 const Map<String, SpellDefinition> spellDefinitions = {
@@ -13254,6 +13257,290 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ],
     classIds: {
       'ranger',
+    },
+  ),
+  SpellIds.lightningBolt: SpellDefinition(
+    id: SpellIds.lightningBolt,
+    content: RuleContent(
+      id: SpellIds.lightningBolt,
+      name: 'Fulmine',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Scaglia una linea di fulmine che danneggia le creature e incendia oggetti infiammabili.',
+        details:
+            'Un fulmine parte dall’incantatore in una direzione a sua scelta, '
+            'formando una linea lunga 30 metri e larga 1,5 metri. Ogni creatura '
+            'nella linea deve effettuare un tiro salvezza su Destrezza. Se lo '
+            'fallisce, subisce 8d6 danni da fulmine; se lo supera, subisce metà '
+            'danni. Il fulmine incendia gli oggetti infiammabili nell’area che '
+            'non sono indossati o trasportati. Usando uno slot di 4° livello o '
+            'superiore, i danni aumentano di 1d6 per ogni livello di slot '
+            'superiore al 3°.',
+      ),
+      ownerId: SpellIds.lightningBolt,
+    ),
+    level: 3,
+    school: SpellSchool.evocation,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.self,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+      materials: [
+        SpellMaterialComponent(
+          description:
+              'Un ciuffo di pelo e una verga d’ambra, di cristallo o di vetro.',
+        ),
+      ],
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.instantaneous,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.area,
+      },
+    ),
+    damage: [
+      SpellDamage(
+        dice: '8d6',
+        type: SpellDamageType.lightning,
+      ),
+    ],
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'lightning_bolt_line_damage',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'creates_30_meter_long_1_5_meter_wide_line_from_caster',
+          'line_extends_in_direction_chosen_by_caster',
+          'each_creature_in_line_makes_dexterity_save',
+          'failed_save_deals_8d6_lightning_damage',
+          'successful_save_deals_half_damage',
+          'ignites_flammable_objects_not_worn_or_carried_in_area',
+          'slot_level_above_3_increases_damage_by_1d6_per_slot_level',
+          'instantaneous_evocation',
+        },
+      ),
+    ],
+    classIds: {
+      'sorcerer',
+      'wizard',
+    },
+  ),
+  SpellIds.glyphOfWarding: SpellDefinition(
+    id: SpellIds.glyphOfWarding,
+    content: RuleContent(
+      id: SpellIds.glyphOfWarding,
+      name: 'Glifo di Interdizione',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Traccia un glifo quasi invisibile che si attiva con condizioni scelte, custodendo un incantesimo o esplodendo.',
+        details:
+            'L’incantatore traccia un glifo su una superficie o all’interno di '
+            'un oggetto chiudibile per nasconderlo. Il glifo può coprire al '
+            'massimo un’area di 3 metri di diametro; se la superficie o '
+            'l’oggetto viene spostato per più di 3 metri dal punto del lancio, '
+            'il glifo si infrange e l’incantesimo termina senza attivarsi. Il '
+            'glifo è quasi invisibile e richiede una prova di Intelligenza '
+            '(Indagare) contro la CD dell’incantesimo per essere trovato. '
+            'L’incantatore stabilisce l’innesco, può limitarlo tramite '
+            'circostanze, caratteristiche fisiche, tipo di creatura, allineamento '
+            'o parola d’ordine, e sceglie tra glifo magico e rune esplosive. Con '
+            'glifo magico custodisce un incantesimo preparato di 3° livello o '
+            'inferiore che bersagli una singola creatura o un’area; quando il '
+            'glifo si innesca, quell’incantesimo viene lanciato. Con rune '
+            'esplosive, il glifo crea una sfera di 6 metri di raggio; ogni '
+            'creatura nell’area effettua un tiro salvezza su Destrezza e subisce '
+            '5d8 danni da acido, freddo, fulmine, fuoco o tuono a scelta '
+            'dell’incantatore, o metà danni se supera il tiro. Il materiale da '
+            '200 mo viene consumato. Con slot superiori, il glifo magico può '
+            'custodire incantesimi di livello pari allo slot usato e le rune '
+            'esplosive aumentano i danni di 1d8 per livello di slot superiore al '
+            '3°.',
+      ),
+      ownerId: SpellIds.glyphOfWarding,
+    ),
+    level: 3,
+    school: SpellSchool.abjuration,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.hour,
+      amount: 1,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.touch,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+      materials: [
+        SpellMaterialComponent(
+          description:
+              'Incenso e polvere di diamante del valore di almeno 200 mo, consumati dall’incantesimo.',
+          minimumCostGp: 200,
+          consumed: true,
+        ),
+      ],
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.untilDispelled,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.object,
+        SpellTargetType.area,
+      },
+      maximumTargets: 1,
+    ),
+    damage: [
+      SpellDamage(
+        dice: '5d8',
+        type: SpellDamageType.acid,
+      ),
+      SpellDamage(
+        dice: '5d8',
+        type: SpellDamageType.cold,
+      ),
+      SpellDamage(
+        dice: '5d8',
+        type: SpellDamageType.lightning,
+      ),
+      SpellDamage(
+        dice: '5d8',
+        type: SpellDamageType.fire,
+      ),
+      SpellDamage(
+        dice: '5d8',
+        type: SpellDamageType.thunder,
+      ),
+    ],
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'glyph_of_warding_hidden_triggered_glyph',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'traces_hidden_glyph_on_surface_or_inside_closable_object',
+          'glyph_covers_maximum_3_meter_diameter_area',
+          'glyph_breaks_if_moved_more_than_3_meters_from_casting_point',
+          'broken_glyph_ends_without_triggering',
+          'glyph_requires_intelligence_investigation_check_to_find',
+          'caster_defines_trigger_when_casting_spell',
+          'trigger_can_be_refined_by_circumstance_physical_trait_creature_type_alignment_or_password',
+          'caster_chooses_spell_glyph_or_explosive_runes',
+          'spell_glyph_stores_prepared_spell_level_3_or_lower',
+          'stored_spell_must_target_single_creature_or_area',
+          'stored_spell_casts_when_glyph_triggers',
+          'stored_concentration_spell_lasts_to_full_duration',
+          'explosive_runes_create_6_meter_radius_sphere',
+          'creatures_in_explosion_make_dexterity_save',
+          'failed_save_deals_5d8_chosen_acid_cold_lightning_fire_or_thunder_damage',
+          'successful_save_deals_half_damage',
+          'material_component_worth_200_gp_is_consumed',
+          'slot_level_above_3_allows_spell_glyph_of_slot_level_or_lower',
+          'slot_level_above_3_explosive_runes_damage_increases_by_1d8_per_slot_level',
+        },
+      ),
+    ],
+    classIds: {
+      'bard',
+      'cleric',
+      'wizard',
+    },
+  ),
+  SpellIds.majorImage: SpellDefinition(
+    id: SpellIds.majorImage,
+    content: RuleContent(
+      id: SpellIds.majorImage,
+      name: 'Immagine Maggiore',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Crea un’illusione visiva realistica con suoni, odori e temperatura appropriati.',
+        details:
+            'L’incantatore crea l’immagine di un oggetto, una creatura o un '
+            'altro fenomeno visibile non più grande di un cubo con spigolo di 6 '
+            'metri. L’immagine appare in un punto entro gittata che '
+            'l’incantatore può vedere e sembra completamente reale, includendo '
+            'temperature, suoni e odori appropriati. Non può però creare calore '
+            'o freddo sufficienti a infliggere danni, rumori abbastanza forti da '
+            'infliggere danni da tuono o assordare, né odori capaci di rendere '
+            'inferma una creatura. Finché l’incantatore resta entro gittata, può '
+            'usare la sua azione per muovere l’immagine in un altro punto entro '
+            'gittata e modificarne l’aspetto in modo naturale, facendole anche '
+            'generare suoni diversi o partecipare a una conversazione. '
+            'L’interazione fisica rivela che è un’illusione, perché gli oggetti '
+            'la attraversano. Una creatura può usare la propria azione per '
+            'esaminarla con una prova di Intelligenza (Indagare) contro la CD '
+            'dell’incantesimo; se ha successo, vede attraverso l’immagine e le '
+            'qualità sensoriali si attenuano per lei. Con uno slot di 6° livello '
+            'o superiore, l’incantesimo dura finché non viene dissolto e non '
+            'richiede concentrazione.',
+      ),
+      ownerId: SpellIds.majorImage,
+    ),
+    level: 3,
+    school: SpellSchool.illusion,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 36,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+      materials: [
+        SpellMaterialComponent(
+          description: 'Un ciuffo di lana.',
+        ),
+      ],
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.minute,
+      amount: 10,
+      concentration: true,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.point,
+        SpellTargetType.area,
+      },
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'major_image_multisensory_illusion',
+        type: SpellPersistentEffectType.createdObject,
+        ruleTags: {
+          'creates_visible_image_of_object_creature_or_other_phenomenon',
+          'illusion_maximum_6_meter_cube',
+          'image_appears_at_visible_point_within_36_meters',
+          'illusion_includes_appropriate_temperature_sounds_and_smells',
+          'cannot_create_damaging_heat_or_cold',
+          'cannot_create_thunder_damage_or_deafening_sound',
+          'cannot_create_sickening_smell',
+          'caster_can_action_move_image_to_another_point_within_range',
+          'caster_can_alter_image_appearance_to_match_natural_movement',
+          'illusion_can_generate_different_sounds_and_converse',
+          'physical_interaction_reveals_illusion',
+          'creature_can_action_investigate_to_disbelieve',
+          'successful_investigation_sees_through_image_and_dulls_sensory_qualities',
+          'slot_level_6_or_higher_duration_until_dispersed_without_concentration',
+          'requires_concentration_at_base_level',
+        },
+      ),
+    ],
+    classIds: {
+      'bard',
+      'sorcerer',
+      'warlock',
+      'wizard',
     },
   ),
 };
