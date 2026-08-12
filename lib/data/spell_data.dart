@@ -929,6 +929,10 @@ class SpellDefinition {
 /// Verrà popolato progressivamente. Tenere un unico registry permette a
 /// razze, classi, talenti e altri sistemi di riferirsi allo stesso ID.
 abstract final class SpellIds {
+  static const fireStorm = 'fire_storm';
+  static const teleport = 'teleport';
+  static const prismaticSpray = 'prismatic_spray';
+  static const planeShift = 'plane_shift';
   static const mordenkainensSword = 'mordenkainens_sword';
   static const simulacrum = 'simulacrum';
   static const symbol = 'symbol';
@@ -25646,6 +25650,326 @@ const Map<String, SpellDefinition> spellDefinitions = {
     classIds: {
       'bard',
       'wizard',
+    },
+  ),
+  SpellIds.planeShift: SpellDefinition(
+    id: SpellIds.planeShift,
+    content: RuleContent(
+      id: SpellIds.planeShift,
+      name: 'Spostamento Planare',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Trasporta un gruppo consenziente su un altro piano o tenta di esiliarvi una creatura ostile.',
+        details:
+            'L’incantatore e fino a otto creature consenzienti che si tengono '
+            'per mano formando un cerchio vengono trasportati su un altro '
+            'piano. L’incantatore può indicare genericamente una destinazione '
+            'e comparire lì o nelle vicinanze, a discrezione del DM. Se '
+            'conosce la sequenza di un cerchio di teletrasporto situato sul '
+            'piano scelto, può raggiungerlo direttamente; le creature che non '
+            'entrano nel cerchio compaiono negli spazi liberi più vicini. '
+            'In alternativa, può tentare di esiliare una creatura non '
+            'consenziente effettuando un attacco in mischia con incantesimo. '
+            'Se colpisce, il bersaglio deve superare un tiro salvezza su '
+            'Carisma o essere trasportato in un luogo casuale del piano '
+            'specificato e dover trovare autonomamente un modo per tornare.',
+      ),
+      ownerId: SpellIds.planeShift,
+    ),
+    level: 7,
+    school: SpellSchool.conjuration,
+    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
+    range: SpellRange(type: SpellRangeType.touch),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+      materials: [
+        SpellMaterialComponent(
+          description:
+              'Una verga biforcuta di metallo del valore di almeno 250 mo, in sintonia con un particolare piano di esistenza.',
+          minimumCostGp: 250,
+        ),
+      ],
+    ),
+    duration: SpellDuration(type: SpellDurationType.instantaneous),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.self,
+        SpellTargetType.willingCreature,
+        SpellTargetType.creature,
+      },
+      maximumTargets: 9,
+    ),
+    attackType: SpellAttackType.melee,
+    savingThrow: SpellSavingThrow(
+      ability: SpellSavingThrowAbility.charisma,
+      onSuccess: SpellSaveSuccess.negates,
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'plane_shift_planar_transport_or_banishment',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'transports_caster_and_up_to_8_willing_creatures',
+          'willing_travelers_must_hold_hands_in_circle',
+          'all_travelers_move_to_another_plane',
+          'generic_destination_arrival_is_at_or_near_target',
+          'dm_determines_exact_arrival_for_generic_destination',
+          'known_planar_teleportation_circle_can_be_targeted_exactly',
+          'overflowing_travelers_appear_near_destination_circle',
+          'hostile_target_requires_melee_spell_attack',
+          'hostile_target_makes_charisma_save_on_hit',
+          'failed_save_sends_hostile_target_to_random_location_on_chosen_plane',
+          'banished_target_must_find_own_way_back',
+        },
+      ),
+    ],
+    classIds: {
+      'cleric',
+      'druid',
+      'sorcerer',
+      'warlock',
+      'wizard',
+    },
+  ),
+  SpellIds.prismaticSpray: SpellDefinition(
+    id: SpellIds.prismaticSpray,
+    content: RuleContent(
+      id: SpellIds.prismaticSpray,
+      name: 'Spruzzo Prismatico',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Proietta un cono di raggi multicolori che infliggono un effetto casuale a ogni creatura.',
+        details: 'Otto raggi di colori differenti si propagano in un cono di '
+            '18 metri. Ogni creatura nell’area effettua un tiro salvezza su '
+            'Destrezza e tira un d8 per determinare il raggio subito. Rosso, '
+            'arancione, giallo, verde e blu infliggono rispettivamente 10d6 '
+            'danni da fuoco, acido, fulmine, veleno o freddo, dimezzati con '
+            'un tiro salvezza riuscito. Indaco trattiene il bersaglio; alla '
+            'fine di ogni turno effettua un tiro salvezza su Costituzione: '
+            'tre successi terminano l’effetto, mentre tre fallimenti lo '
+            'pietrificano permanentemente. Viola acceca il bersaglio, che '
+            'all’inizio del turno successivo dell’incantatore effettua un '
+            'tiro salvezza su Saggezza: se lo supera termina l’effetto, se '
+            'lo fallisce viene trasferito su un piano scelto dal DM. Con '
+            'un risultato di 8 il bersaglio subisce due raggi diversi.',
+      ),
+      ownerId: SpellIds.prismaticSpray,
+    ),
+    level: 7,
+    school: SpellSchool.evocation,
+    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
+    range: SpellRange(type: SpellRangeType.self),
+    area: SpellArea(
+      shape: SpellAreaShape.cone,
+      origin: SpellAreaOrigin.caster,
+      lengthMeters: 18,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+    ),
+    duration: SpellDuration(type: SpellDurationType.instantaneous),
+    target: SpellTarget(
+      types: {SpellTargetType.area},
+    ),
+    savingThrow: SpellSavingThrow(
+      ability: SpellSavingThrowAbility.dexterity,
+      onSuccess: SpellSaveSuccess.special,
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'prismatic_spray_random_ray_effect',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'each_target_rolls_d8_for_ray_color',
+          'red_deals_10d6_fire_damage',
+          'orange_deals_10d6_acid_damage',
+          'yellow_deals_10d6_lightning_damage',
+          'green_deals_10d6_poison_damage',
+          'blue_deals_10d6_cold_damage',
+          'successful_initial_save_halves_damage_ray',
+          'indigo_failed_save_restrains_target',
+          'indigo_target_makes_constitution_save_each_turn',
+          'three_indigo_successes_end_effect',
+          'three_indigo_failures_permanently_petrify_target',
+          'indigo_successes_and_failures_need_not_be_consecutive',
+          'violet_failed_save_blinds_target',
+          'violet_target_makes_wisdom_save_at_start_of_casters_next_turn',
+          'successful_violet_wisdom_save_ends_blindness',
+          'failed_violet_wisdom_save_transports_target_to_dm_chosen_plane',
+          'ray_roll_of_8_applies_two_other_random_rays',
+          'additional_ray_rolls_ignore_result_8',
+        },
+      ),
+    ],
+    classIds: {
+      'sorcerer',
+      'wizard',
+    },
+  ),
+  SpellIds.teleport: SpellDefinition(
+    id: SpellIds.teleport,
+    content: RuleContent(
+      id: SpellIds.teleport,
+      name: 'Teletrasporto',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Trasporta istantaneamente un gruppo o un oggetto verso una destinazione conosciuta sullo stesso piano.',
+        details: 'L’incantatore trasporta se stesso e fino a otto creature '
+            'consenzienti visibili entro 3 metri, oppure un singolo oggetto '
+            'visibile contenuto in un cubo di 3 metri e non impugnato o '
+            'trasportato da una creatura non consenziente. La destinazione '
+            'deve essere conosciuta e trovarsi sullo stesso piano. Un cerchio '
+            'permanente noto o un oggetto prelevato dalla destinazione negli '
+            'ultimi sei mesi garantiscono l’arrivo corretto. Negli altri casi '
+            'il DM tira un d100 in base alla familiarità: il viaggio può '
+            'riuscire, terminare fuori bersaglio, condurre in un’area simile '
+            'o provocare un errore. Un errore infligge 3d10 danni da forza '
+            'a ogni creatura o all’oggetto e richiede un nuovo tiro, potendo '
+            'ripetersi più volte.',
+      ),
+      ownerId: SpellIds.teleport,
+    ),
+    level: 7,
+    school: SpellSchool.conjuration,
+    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 3,
+    ),
+    components: SpellComponents(
+      verbal: true,
+    ),
+    duration: SpellDuration(type: SpellDurationType.instantaneous),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.self,
+        SpellTargetType.willingCreature,
+        SpellTargetType.object,
+      },
+      maximumTargets: 9,
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'teleport_destination_resolution',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'transports_caster_and_up_to_8_willing_creatures',
+          'targets_must_be_visible_and_within_3_meters',
+          'can_instead_transport_one_visible_object',
+          'object_must_fit_inside_3_meter_cube',
+          'object_cannot_be_held_or_carried_by_unwilling_creature',
+          'destination_must_be_known_to_caster',
+          'destination_must_be_on_same_plane',
+          'known_permanent_circle_always_arrives_on_target',
+          'associated_object_always_arrives_on_target',
+          'associated_object_must_have_been_taken_within_last_6_months',
+          'very_familiar_01_to_05_mishap',
+          'very_familiar_06_to_13_similar_area',
+          'very_familiar_14_to_24_off_target',
+          'very_familiar_25_to_100_on_target',
+          'seen_casually_01_to_33_mishap',
+          'seen_casually_34_to_43_similar_area',
+          'seen_casually_44_to_53_off_target',
+          'seen_casually_54_to_100_on_target',
+          'viewed_once_or_described_01_to_43_mishap',
+          'viewed_once_or_described_44_to_53_similar_area',
+          'viewed_once_or_described_54_to_73_off_target',
+          'viewed_once_or_described_74_to_100_on_target',
+          'false_destination_01_to_50_mishap',
+          'false_destination_51_to_100_similar_area',
+          'off_target_distance_is_1d10_times_1d10_percent',
+          'similar_area_is_visually_or_thematically_similar',
+          'mishap_deals_3d10_force_damage_to_every_traveler_or_object',
+          'mishap_requires_repeating_destination_roll',
+          'multiple_mishaps_apply_damage_each_time',
+        },
+      ),
+    ],
+    classIds: {
+      'bard',
+      'sorcerer',
+      'wizard',
+    },
+  ),
+  SpellIds.fireStorm: SpellDefinition(
+    id: SpellIds.fireStorm,
+    content: RuleContent(
+      id: SpellIds.fireStorm,
+      name: 'Tempesta di Fuoco',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Genera una tempesta di fiamme in dieci cubi contigui, potendo risparmiare la vegetazione.',
+        details:
+            'Una cortina di fiamme rombanti riempie dieci cubi con spigolo '
+            'di 3 metri disposti dall’incantatore entro gittata. Ogni cubo '
+            'deve condividere almeno un lato con un altro cubo. Ogni creatura '
+            'nell’area deve effettuare un tiro salvezza su Destrezza, subendo '
+            '7d10 danni da fuoco se fallisce o la metà se lo supera. Il fuoco '
+            'danneggia gli oggetti e incendia quelli infiammabili che non sono '
+            'indossati o trasportati. L’incantatore può scegliere di lasciare '
+            'indenni le forme di vita vegetali presenti nell’area.',
+      ),
+      ownerId: SpellIds.fireStorm,
+    ),
+    level: 7,
+    school: SpellSchool.evocation,
+    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 45,
+    ),
+    area: SpellArea(
+      shape: SpellAreaShape.special,
+      origin: SpellAreaOrigin.targetPoint,
+      sizeMeters: 3,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+    ),
+    duration: SpellDuration(type: SpellDurationType.instantaneous),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.point,
+        SpellTargetType.area,
+      },
+    ),
+    savingThrow: SpellSavingThrow(
+      ability: SpellSavingThrowAbility.dexterity,
+      onSuccess: SpellSaveSuccess.halfDamage,
+    ),
+    damage: [
+      SpellDamage(
+        dice: '7d10',
+        type: SpellDamageType.fire,
+      ),
+    ],
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'fire_storm_connected_cubes',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'area_contains_10_cubes',
+          'each_cube_has_3_meter_sides',
+          'each_cube_must_share_side_with_another_cube',
+          'failed_save_takes_7d10_fire_damage',
+          'successful_save_takes_half_damage',
+          'fire_damages_objects_in_area',
+          'fire_ignites_flammable_objects_not_worn_or_carried',
+          'caster_can_exclude_plant_life_from_effect',
+        },
+      ),
+    ],
+    classIds: {
+      'cleric',
+      'druid',
+      'sorcerer',
     },
   ),
 };

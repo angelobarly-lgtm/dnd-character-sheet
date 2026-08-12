@@ -18,7 +18,7 @@ Checklist di lavoro per espandere `lib/data/spell_data.dart` con gli incantesimi
 - [x] Simbolo
 - [x] Simulacro
 - [x] Spada di Mordenkainen
-- [ ] Spostamento Planare
-- [ ] Spruzzo Prismatico
-- [ ] Teletrasporto
-- [ ] Tempesta di Fuoco
+- [x] Spostamento Planare
+- [x] Spruzzo Prismatico
+- [x] Teletrasporto
+- [x] Tempesta di Fuoco
