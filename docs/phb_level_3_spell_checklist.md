@@ -38,10 +38,10 @@ Checklist di lavoro per espandere `lib/data/spell_data.dart` con gli incantesimi
 - [x] Nube Maleodorante
 - [x] Palla di Fuoco
 - [x] Parlare con i Morti
-- [ ] Parlare con i Vegetali
-- [ ] Parola Guaritrice di Massa
-- [ ] Paura
-- [ ] Protezione dall'Energia
+- [x] Parlare con i Vegetali
+- [x] Parola Guaritrice di Massa
+- [x] Paura
+- [x] Protezione dall'Energia
 - [ ] Punizione Accecante
 - [ ] Respirare sott'Acqua
 - [ ] Rimuovi Maledizione

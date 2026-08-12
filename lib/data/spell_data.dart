@@ -1115,6 +1115,10 @@ abstract final class SpellIds {
   static const windWall = 'wind_wall';
   static const stinkingCloud = 'stinking_cloud';
   static const speakWithDead = 'speak_with_dead';
+  static const speakWithPlants = 'speak_with_plants';
+  static const massHealingWord = 'mass_healing_word';
+  static const fear = 'fear';
+  static const protectionFromEnergy = 'protection_from_energy';
 }
 
 const Map<String, SpellDefinition> spellDefinitions = {
@@ -14400,6 +14404,280 @@ const Map<String, SpellDefinition> spellDefinitions = {
     classIds: {
       'bard',
       'cleric',
+    },
+  ),
+  SpellIds.speakWithPlants: SpellDefinition(
+    id: SpellIds.speakWithPlants,
+    content: RuleContent(
+      id: SpellIds.speakWithPlants,
+      name: 'Parlare con i Vegetali',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Anima temporaneamente i vegetali vicini, permettendo di comunicare con loro e influenzare il terreno.',
+        details:
+            'L’incantatore infonde nei vegetali entro 9 metri una parvenza di '
+            'animazione e volontà, consentendo loro di comunicare e obbedire a '
+            'comandi semplici. Può interrogarli sugli eventi avvenuti '
+            'nell’area durante la giornata precedente, comprese le creature '
+            'transitate, il clima e altre circostanze. Può trasformare un '
+            'terreno difficile prodotto dalla vegetazione in terreno normale, '
+            'oppure rendere difficile un terreno ordinario che contenga '
+            'vegetali, per la durata dell’incantesimo. Le piante possono '
+            'muovere liberamente rami, rampicanti e viticci, ma non possono '
+            'sradicarsi e camminare. L’incantatore può comunicare con una '
+            'creatura vegetale come se condividessero un linguaggio, senza '
+            'ottenere il controllo magico su di essa. Può inoltre ordinare ai '
+            'vegetali creati da Intralciare di liberare una creatura '
+            'trattenuta.',
+      ),
+      ownerId: SpellIds.speakWithPlants,
+    ),
+    level: 3,
+    school: SpellSchool.transmutation,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.self,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.minute,
+      amount: 10,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.self,
+        SpellTargetType.area,
+      },
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'speak_with_plants_animated_vegetation',
+        type: SpellPersistentEffectType.zone,
+        ruleTags: {
+          'affects_plants_within_9_meters_of_caster',
+          'plants_gain_semblance_of_animation_and_will',
+          'plants_can_communicate_and_follow_simple_commands',
+          'caster_can_ask_about_events_in_area_during_previous_day',
+          'plants_can_report_creatures_weather_and_other_circumstances',
+          'plant_based_difficult_terrain_can_become_normal_terrain',
+          'normal_terrain_with_plants_can_become_difficult_terrain',
+          'plants_can_move_branches_vines_and_tendrils',
+          'plants_cannot_uproot_themselves_or_walk',
+          'caster_can_communicate_with_plant_creatures_as_shared_language',
+          'spell_does_not_magically_influence_plant_creatures',
+          'plants_created_by_entangle_can_release_restrained_creature',
+          'duration_10_minutes',
+          'does_not_require_concentration',
+        },
+      ),
+    ],
+    classIds: {
+      'bard',
+      'druid',
+      'ranger',
+    },
+  ),
+  SpellIds.massHealingWord: SpellDefinition(
+    id: SpellIds.massHealingWord,
+    content: RuleContent(
+      id: SpellIds.massHealingWord,
+      name: 'Parola Guaritrice di Massa',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Pronuncia parole risananti che curano fino a sei creature visibili entro gittata.',
+        details: 'Fino a sei creature scelte dall’incantatore, situate entro '
+            'gittata e che egli sia in grado di vedere, recuperano punti '
+            'ferita pari a 1d4 più il modificatore della caratteristica da '
+            'incantatore. L’incantesimo non ha effetto sui costrutti o sui '
+            'non morti. Usando uno slot di 4° livello o superiore, la '
+            'guarigione aumenta di 1d4 per ogni livello di slot superiore al '
+            '3°.',
+      ),
+      ownerId: SpellIds.massHealingWord,
+    ),
+    level: 3,
+    school: SpellSchool.evocation,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.bonusAction,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 18,
+    ),
+    components: SpellComponents(
+      verbal: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.instantaneous,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.creatures,
+      },
+      maximumTargets: 6,
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'mass_healing_word_restore_hit_points',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'targets_up_to_six_visible_creatures_within_18_meters',
+          'each_target_regains_1d4_plus_spellcasting_ability_modifier_hit_points',
+          'has_no_effect_on_constructs',
+          'has_no_effect_on_undead',
+          'slot_level_above_3_increases_healing_by_1d4_per_slot_level',
+          'casting_time_bonus_action',
+          'instantaneous_duration',
+        },
+      ),
+    ],
+    classIds: {
+      'cleric',
+    },
+  ),
+  SpellIds.fear: SpellDefinition(
+    id: SpellIds.fear,
+    content: RuleContent(
+      id: SpellIds.fear,
+      name: 'Paura',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Proietta le peggiori paure delle creature in un cono, costringendole a fuggire.',
+        details:
+            'L’incantatore proietta un’immagine illusoria delle peggiori paure '
+            'delle creature. Ogni creatura entro un cono di 9 metri effettua '
+            'un tiro salvezza su Saggezza. Se lo fallisce, lascia cadere ciò '
+            'che tiene in mano e diventa spaventata per la durata. Finché è '
+            'spaventata, deve usare l’azione di Scatto e muoversi per '
+            'allontanarsi dall’incantatore lungo il percorso più sicuro '
+            'possibile a ogni turno, a meno che non abbia alcun luogo dove '
+            'andare. Se termina il turno in un luogo dal quale non possiede '
+            'linea di vista fino all’incantatore, può ripetere il tiro '
+            'salvezza su Saggezza; se lo supera, l’incantesimo termina per '
+            'quella creatura. Richiede concentrazione.',
+      ),
+      ownerId: SpellIds.fear,
+    ),
+    level: 3,
+    school: SpellSchool.illusion,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.self,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+      materials: [
+        SpellMaterialComponent(
+          description: 'Una piuma bianca o un cuore di pollo.',
+        ),
+      ],
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.minute,
+      amount: 1,
+      concentration: true,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.area,
+        SpellTargetType.creatures,
+      },
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'fear_illusory_terror_cone',
+        type: SpellPersistentEffectType.zone,
+        ruleTags: {
+          'creates_9_meter_cone_from_caster',
+          'each_creature_in_cone_makes_wisdom_save',
+          'failed_save_creature_drops_what_it_is_holding',
+          'failed_save_creature_becomes_frightened',
+          'frightened_creature_must_take_dash_action_each_turn',
+          'frightened_creature_moves_away_by_safest_available_route',
+          'creature_does_not_dash_if_there_is_nowhere_to_move',
+          'creature_out_of_casters_line_of_sight_at_turn_end_repeats_wisdom_save',
+          'successful_repeat_save_ends_spell_for_that_creature',
+          'requires_concentration',
+        },
+      ),
+    ],
+    classIds: {
+      'bard',
+      'sorcerer',
+      'warlock',
+      'wizard',
+    },
+  ),
+  SpellIds.protectionFromEnergy: SpellDefinition(
+    id: SpellIds.protectionFromEnergy,
+    content: RuleContent(
+      id: SpellIds.protectionFromEnergy,
+      name: 'Protezione dall\'Energia',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Conferisce a una creatura consenziente resistenza a un tipo di danno energetico.',
+        details:
+            'L’incantatore tocca una creatura consenziente. Per la durata, il '
+            'bersaglio dispone di resistenza a un tipo di danno scelto al '
+            'momento del lancio: acido, freddo, fulmine, fuoco o tuono. '
+            'Richiede concentrazione.',
+      ),
+      ownerId: SpellIds.protectionFromEnergy,
+    ),
+    level: 3,
+    school: SpellSchool.abjuration,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.touch,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.hour,
+      amount: 1,
+      concentration: true,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.willingCreature,
+      },
+      maximumTargets: 1,
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'protection_from_energy_resistance',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'targets_one_touched_willing_creature',
+          'caster_chooses_acid_cold_lightning_fire_or_thunder',
+          'target_gains_resistance_to_chosen_damage_type',
+          'duration_up_to_1_hour',
+          'requires_concentration',
+        },
+      ),
+    ],
+    classIds: {
+      'cleric',
+      'druid',
+      'ranger',
+      'sorcerer',
+      'wizard',
     },
   ),
 };
