@@ -38,9 +38,9 @@ Checklist di lavoro per espandere `lib/data/spell_data.dart` con gli incantesimi
 - [x] Reincarnazione
 - [x] Ristorare Superiore
 - [x] Risveglio
-- [ ] Santificare
-- [ ] Scrutare
-- [ ] Sembrare
-- [ ] Sogno
+- [x] Santificare
+- [x] Scrutare
+- [x] Sembrare
+- [x] Sogno
 - [ ] Telecinesi
 - [ ] Traslazione Arborea

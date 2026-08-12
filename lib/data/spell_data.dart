@@ -1200,6 +1200,10 @@ abstract final class SpellIds {
   static const reincarnate = 'reincarnate';
   static const greaterRestoration = 'greater_restoration';
   static const awaken = 'awaken';
+  static const hallow = 'hallow';
+  static const scrying = 'scrying';
+  static const seeming = 'seeming';
+  static const dream = 'dream';
 }
 
 const Map<String, SpellDefinition> spellDefinitions = {
@@ -21088,6 +21092,387 @@ const Map<String, SpellDefinition> spellDefinitions = {
     classIds: {
       'bard',
       'druid',
+    },
+  ),
+  SpellIds.hallow: SpellDefinition(
+    id: SpellIds.hallow,
+    content: RuleContent(
+      id: SpellIds.hallow,
+      name: 'Santificare',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Consacra o profana permanentemente una vasta area, proteggendola e applicandovi un effetto speciale.',
+        details:
+            'L’incantatore tocca un punto e infonde potere sacro o sacrilego '
+            'in un’area con raggio massimo di 18 metri. Il lancio fallisce '
+            'se il raggio comprende già un’altra area Santificata. '
+            'Celestiali, elementali, folletti, immondi e non morti non '
+            'possono entrare nell’area né affascinare, spaventare o '
+            'possedere creature al suo interno; una creatura già influenzata '
+            'da uno di questi esseri non lo è più quando entra. '
+            'L’incantatore può escludere uno o più di tali tipi da questa '
+            'protezione. Inoltre sceglie un effetto aggiuntivo, applicabile '
+            'a tutte le creature o a gruppi specifici. Una creatura '
+            'influenzata può effettuare un tiro salvezza su Carisma quando '
+            'entra per la prima volta in un turno o vi inizia il turno; se '
+            'lo supera, ignora l’effetto aggiuntivo finché non esce. Le '
+            'opzioni sono: impedire la paura; impedire che i cadaveri '
+            'diventino non morti; bloccare teletrasporto e viaggi '
+            'extradimensionali o planari; consentire la comunicazione senza '
+            'linguaggio condiviso; creare luce diurna o oscurità resistenti '
+            'agli incantesimi di livello inferiore; causare paura; conferire '
+            'resistenza o vulnerabilità a un tipo di danno non fisico; '
+            'oppure impedire a qualsiasi suono di attraversare il confine.',
+      ),
+      ownerId: SpellIds.hallow,
+    ),
+    level: 5,
+    school: SpellSchool.evocation,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.hour,
+      amount: 24,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.touch,
+    ),
+    area: SpellArea(
+      shape: SpellAreaShape.radius,
+      origin: SpellAreaOrigin.targetPoint,
+      radiusMeters: 18,
+    ),
+    areaExclusion: SpellAreaExclusion(
+      type: SpellAreaExclusionType.chosenOnCast,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+      materials: [
+        SpellMaterialComponent(
+          description:
+              'Erbe, oli e incenso del valore di almeno 1.000 mo, consumati dall’incantesimo.',
+          minimumCostGp: 1000,
+          consumed: true,
+        ),
+      ],
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.untilDispelled,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.point,
+        SpellTargetType.area,
+      },
+    ),
+    savingThrow: SpellSavingThrow(
+      ability: SpellSavingThrowAbility.charisma,
+      onSuccess: SpellSaveSuccess.special,
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'hallow_permanent_sacred_or_unholy_area',
+        type: SpellPersistentEffectType.zone,
+        ruleTags: {
+          'creates_area_with_maximum_18_meter_radius',
+          'fails_if_area_overlaps_another_hallow_area',
+          'celestials_elementals_fey_fiends_and_undead_cannot_enter',
+          'blocked_creature_types_cannot_charm_frighten_or_possess_inside_area',
+          'entering_area_ends_charm_fear_or_possession_caused_by_blocked_type',
+          'caster_can_exclude_one_or_more_creature_types_from_base_protection',
+          'caster_selects_one_additional_area_effect',
+          'additional_effect_can_apply_to_all_or_specified_creature_groups',
+          'affected_creature_can_charisma_save_on_first_entry_or_turn_start',
+          'successful_save_ignores_additional_effect_until_leaving_area',
+          'courage_option_prevents_frightened_condition',
+          'everlasting_rest_option_prevents_buried_corpses_becoming_undead',
+          'extradimensional_interference_blocks_teleportation_and_extraplanar_travel',
+          'tongues_option_allows_communication_without_shared_language',
+          'daylight_option_creates_bright_light_resistant_to_lower_level_magical_darkness',
+          'darkness_option_blocks_normal_and_lower_level_magical_light',
+          'fear_option_frightens_affected_creatures',
+          'energy_protection_option_grants_resistance_to_one_nonphysical_damage_type',
+          'silence_option_blocks_all_sound_across_area_boundary',
+          'energy_vulnerability_option_grants_vulnerability_to_one_nonphysical_damage_type',
+          'material_components_worth_1000_gp_are_consumed',
+        },
+      ),
+    ],
+    classIds: {
+      'cleric',
+    },
+  ),
+  SpellIds.scrying: SpellDefinition(
+    id: SpellIds.scrying,
+    content: RuleContent(
+      id: SpellIds.scrying,
+      name: 'Scrutare',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Crea un sensore magico per osservare a distanza una creatura o un luogo conosciuto.',
+        details: 'L’incantatore tenta di vedere e udire una creatura specifica '
+            'sul suo stesso piano di esistenza. Il bersaglio effettua un '
+            'tiro salvezza su Saggezza, che può fallire volontariamente. Il '
+            'tiro riceve +5 se l’incantatore ne ha soltanto sentito parlare, '
+            '+0 se lo ha incontrato e -5 se lo conosce bene; una descrizione '
+            'o immagine impone -2, un oggetto personale o abito -4 e una '
+            'parte del corpo, ciocca di capelli o unghia -10. Se il tiro '
+            'riesce, il bersaglio non è influenzato e non può essere '
+            'bersagliato nuovamente da questo incantesimo per 24 ore. Se '
+            'fallisce, appare un sensore invisibile entro 3 metri dal '
+            'bersaglio: l’incantatore vede e sente attraverso di esso, che '
+            'segue il bersaglio restando entro 3 metri. Chi vede gli oggetti '
+            'invisibili percepisce il sensore come un globo luminoso grande '
+            'quanto un pugno. In alternativa, l’incantatore può osservare '
+            'un luogo già visto: il sensore compare lì e rimane immobile.',
+      ),
+      ownerId: SpellIds.scrying,
+    ),
+    level: 5,
+    school: SpellSchool.divination,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.minute,
+      amount: 10,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.self,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+      materials: [
+        SpellMaterialComponent(
+          description:
+              'Un focus del valore di almeno 1.000 mo, come una sfera di cristallo, uno specchio d’argento o un bacile pieno di acqua santa.',
+          minimumCostGp: 1000,
+        ),
+      ],
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.minute,
+      amount: 10,
+      concentration: true,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.creature,
+        SpellTargetType.point,
+      },
+      maximumTargets: 1,
+    ),
+    savingThrow: SpellSavingThrow(
+      ability: SpellSavingThrowAbility.wisdom,
+      onSuccess: SpellSaveSuccess.negates,
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'scrying_invisible_sensor',
+        type: SpellPersistentEffectType.magicalLink,
+        link: SpellLinkEffect(
+          shareSenses: true,
+        ),
+        ruleTags: {
+          'creature_target_must_be_on_same_plane_as_caster',
+          'target_can_voluntarily_fail_wisdom_save',
+          'secondhand_knowledge_gives_target_plus_5_to_save',
+          'firsthand_knowledge_gives_no_save_modifier',
+          'familiar_knowledge_gives_target_minus_5_to_save',
+          'likeness_or_picture_gives_target_minus_2_to_save',
+          'possession_or_garment_gives_target_minus_4_to_save',
+          'body_part_hair_or_nail_gives_target_minus_10_to_save',
+          'successful_save_prevents_new_scrying_attempt_for_24_hours',
+          'failed_save_creates_invisible_sensor_within_3_meters_of_target',
+          'caster_sees_and_hears_through_sensor',
+          'sensor_follows_creature_remaining_within_3_meters',
+          'sensor_appears_as_fist_sized_luminous_orb_to_see_invisible',
+          'can_instead_target_location_caster_has_seen',
+          'location_sensor_remains_stationary',
+          'requires_concentration',
+        },
+      ),
+    ],
+    classIds: {
+      'bard',
+      'cleric',
+      'druid',
+      'warlock',
+      'wizard',
+    },
+  ),
+  SpellIds.seeming: SpellDefinition(
+    id: SpellIds.seeming,
+    content: RuleContent(
+      id: SpellIds.seeming,
+      name: 'Sembrare',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Conferisce un nuovo aspetto illusorio a qualsiasi numero di creature visibili nelle vicinanze.',
+        details: 'L’incantatore altera per 8 ore l’aspetto di qualsiasi numero '
+            'di creature visibili entro 9 metri. Un bersaglio non '
+            'consenziente può effettuare un tiro salvezza su Carisma e non '
+            'subisce l’effetto in caso di successo. L’illusione modifica '
+            'l’aspetto fisico, gli abiti, l’armatura, le armi e '
+            'l’equipaggiamento. Una creatura può apparire fino a 30 cm più '
+            'alta o più bassa e più magra, più grassa o di corporatura '
+            'normale, ma deve conservare lo stesso tipo di corpo e la stessa '
+            'disposizione basilare degli arti. L’illusione non supera '
+            'un’ispezione fisica: gli oggetti attraversano elementi '
+            'illusori e il tatto rivela forma e dimensioni reali. Una '
+            'creatura può usare la propria azione per ispezionare un '
+            'bersaglio ed effettuare una prova di Intelligenza (Indagare) '
+            'contro la CD dell’incantesimo; se ha successo, riconosce il '
+            'camuffamento.',
+      ),
+      ownerId: SpellIds.seeming,
+    ),
+    level: 5,
+    school: SpellSchool.illusion,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 9,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.hour,
+      amount: 8,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.creatures,
+      },
+    ),
+    savingThrow: SpellSavingThrow(
+      ability: SpellSavingThrowAbility.charisma,
+      onSuccess: SpellSaveSuccess.negates,
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'seeming_mass_illusory_disguise',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'affects_any_number_of_visible_creatures_within_9_meters',
+          'unwilling_target_can_make_charisma_save',
+          'successful_save_prevents_disguise',
+          'changes_physical_appearance_clothing_armor_weapons_and_equipment',
+          'apparent_height_can_change_by_up_to_30_centimeters',
+          'creature_can_appear_thin_fat_or_average',
+          'body_type_and_basic_limb_arrangement_cannot_change',
+          'physical_inspection_reveals_illusion',
+          'objects_pass_through_illusory_features',
+          'touch_reveals_actual_body_dimensions',
+          'creature_can_action_investigate_disguise_against_spell_save_dc',
+          'successful_investigation_identifies_target_as_disguised',
+        },
+      ),
+    ],
+    classIds: {
+      'bard',
+      'sorcerer',
+      'wizard',
+    },
+  ),
+  SpellIds.dream: SpellDefinition(
+    id: SpellIds.dream,
+    content: RuleContent(
+      id: SpellIds.dream,
+      name: 'Sogno',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Invia un messaggero nei sogni di una creatura, oppure trasforma il contatto in un incubo dannoso.',
+        details: 'L’incantatore sceglie una creatura conosciuta sul suo stesso '
+            'piano. Le creature che non dormono, come gli elfi, non possono '
+            'essere contattate. L’incantatore o una creatura consenziente '
+            'toccata entra in trance come messaggero: percepisce l’ambiente '
+            'circostante, ma non può agire o muoversi. Se il bersaglio dorme, '
+            'il messaggero appare nel sogno, può conversare con lui e '
+            'modellare paesaggi, oggetti e immagini; il bersaglio ricorda '
+            'perfettamente il sogno al risveglio. Se è sveglio, il '
+            'messaggero può terminare l’incantesimo o attendere che si '
+            'addormenti. In alternativa, il messaggero può apparire '
+            'mostruoso e comunicare fino a dieci parole. Il bersaglio '
+            'effettua allora un tiro salvezza su Saggezza; se lo fallisce, '
+            'l’incubo gli impedisce di ottenere benefici dal riposo e, al '
+            'risveglio, gli infligge 3d6 danni psichici. Possedere una parte '
+            'del corpo, una ciocca di capelli, un’unghia o materiale analogo '
+            'del bersaglio gli impone svantaggio al tiro salvezza.',
+      ),
+      ownerId: SpellIds.dream,
+    ),
+    level: 5,
+    school: SpellSchool.illusion,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.minute,
+      amount: 1,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.special,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+      materials: [
+        SpellMaterialComponent(
+          description:
+              'Una manciata di sabbia, una goccia d’inchiostro o una penna strappata a un uccello che dorme.',
+        ),
+      ],
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.hour,
+      amount: 8,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.creature,
+      },
+      maximumTargets: 1,
+    ),
+    savingThrow: SpellSavingThrow(
+      ability: SpellSavingThrowAbility.wisdom,
+      onSuccess: SpellSaveSuccess.special,
+    ),
+    damage: [
+      SpellDamage(
+        dice: '3d6',
+        type: SpellDamageType.psychic,
+      ),
+    ],
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'dream_messenger_and_nightmare',
+        type: SpellPersistentEffectType.magicalLink,
+        ruleTags: {
+          'target_must_be_known_to_caster_and_on_same_plane',
+          'creatures_that_do_not_sleep_cannot_be_contacted',
+          'caster_or_touched_willing_creature_serves_as_messenger',
+          'messenger_enters_trance_and_cannot_move_or_take_actions',
+          'messenger_remains_aware_of_own_surroundings',
+          'sleeping_target_can_converse_with_messenger_in_dream',
+          'messenger_can_shape_dream_landscapes_objects_and_images',
+          'target_remembers_dream_perfectly_after_waking',
+          'messenger_can_wait_for_awake_target_to_fall_asleep',
+          'messenger_can_end_trance_and_spell_early',
+          'monstrous_messenger_can_deliver_message_up_to_10_words',
+          'failed_wisdom_save_creates_nightmare_for_remaining_sleep',
+          'nightmare_prevents_all_benefits_from_that_rest',
+          'target_takes_3d6_psychic_damage_when_waking_after_failed_save',
+          'body_part_hair_or_nail_imposes_disadvantage_on_target_save',
+        },
+      ),
+    ],
+    classIds: {
+      'bard',
+      'warlock',
+      'wizard',
     },
   ),
 };
