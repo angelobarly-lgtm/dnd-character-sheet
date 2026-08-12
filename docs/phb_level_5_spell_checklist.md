@@ -22,10 +22,10 @@ Checklist di lavoro per espandere `lib/data/spell_data.dart` con gli incantesimi
 - [x] Evoca Pioggia di Armi
 - [x] Faretra Rapida
 - [x] Fuorviare
-- [ ] Guscio Anti-Vita
-- [ ] Legame Planare
-- [ ] Legame Telepatico di Rary
-- [ ] Mano di Bigby
+- [x] Guscio Anti-Vita
+- [x] Legame Planare
+- [x] Legame Telepatico di Rary
+- [x] Mano di Bigby
 - [ ] Modificare Memoria
 - [ ] Muro di Forza
 - [ ] Muro di Pietra

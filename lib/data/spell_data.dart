@@ -1184,6 +1184,10 @@ abstract final class SpellIds {
   static const conjureVolley = 'conjure_volley';
   static const swiftQuiver = 'swift_quiver';
   static const mislead = 'mislead';
+  static const antiLifeShell = 'anti_life_shell';
+  static const planarBinding = 'planar_binding';
+  static const rarysTelepathicBond = 'rarys_telepathic_bond';
+  static const bigbysHand = 'bigbys_hand';
 }
 
 const Map<String, SpellDefinition> spellDefinitions = {
@@ -19692,6 +19696,354 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ],
     classIds: {
       'bard',
+      'wizard',
+    },
+  ),
+  SpellIds.antiLifeShell: SpellDefinition(
+    id: SpellIds.antiLifeShell,
+    content: RuleContent(
+      id: SpellIds.antiLifeShell,
+      name: 'Guscio Anti-Vita',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Crea una barriera mobile che respinge le creature viventi attorno all’incantatore.',
+        details: 'Una barriera scintillante del raggio di 3 metri si estende '
+            'dall’incantatore, resta centrata su di lui e si muove assieme a '
+            'lui. La barriera respinge tutte le creature tranne costrutti e '
+            'non morti. Una creatura influenzata non può attraversare la '
+            'barriera né protendersi oltre di essa, ma può lanciare '
+            'incantesimi ed effettuare attacchi con armi a distanza o con '
+            'armi dotate di portata attraverso la barriera. Se '
+            'l’incantatore si muove in modo da costringere una creatura '
+            'influenzata ad attraversarla, l’incantesimo termina.',
+      ),
+      ownerId: SpellIds.antiLifeShell,
+    ),
+    level: 5,
+    school: SpellSchool.abjuration,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.self,
+    ),
+    area: SpellArea(
+      shape: SpellAreaShape.radius,
+      origin: SpellAreaOrigin.caster,
+      radiusMeters: 3,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.hour,
+      amount: 1,
+      concentration: true,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.self,
+        SpellTargetType.area,
+      },
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'anti_life_shell_mobile_barrier',
+        type: SpellPersistentEffectType.zone,
+        ruleTags: {
+          'creates_3_meter_radius_barrier_centered_on_caster',
+          'barrier_moves_with_caster',
+          'constructs_and_undead_are_not_affected',
+          'other_creatures_cannot_cross_or_reach_through_barrier',
+          'spells_can_be_cast_through_barrier',
+          'ranged_weapon_attacks_can_cross_barrier',
+          'reach_weapon_attacks_can_cross_barrier',
+          'spell_ends_if_caster_movement_forces_affected_creature_through_barrier',
+          'requires_concentration',
+        },
+      ),
+    ],
+    classIds: {
+      'druid',
+    },
+  ),
+  SpellIds.planarBinding: SpellDefinition(
+    id: SpellIds.planarBinding,
+    content: RuleContent(
+      id: SpellIds.planarBinding,
+      name: 'Legame Planare',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Vincola un celestiale, elementale, folletto o immondo, obbligandolo a servire l’incantatore.',
+        details: 'Il bersaglio deve essere un celestiale, un elementale, un '
+            'folletto o un immondo e deve rimanere entro 18 metri per '
+            'l’intera ora necessaria al lancio. Completato il lancio, la '
+            'creatura effettua un tiro salvezza su Carisma. Se lo fallisce, '
+            'deve servire l’incantatore per 24 ore ed eseguire le sue '
+            'istruzioni al meglio delle proprie capacità. Se era stata '
+            'evocata o creata da un altro incantesimo, la durata di '
+            'quell’incantesimo viene estesa fino a coincidere con quella di '
+            'Legame Planare. Una creatura ostile obbedisce alla lettera, ma '
+            'può interpretare le istruzioni a proprio vantaggio. Se completa '
+            'l’incarico in anticipo, torna dall’incantatore per riferire se '
+            'si trova sul suo stesso piano; altrimenti ritorna nel luogo in '
+            'cui è stata vincolata. Con slot superiori la durata diventa 10 '
+            'giorni al 6° livello, 30 giorni al 7°, 180 giorni all’8° e un '
+            'anno e un giorno al 9°.',
+      ),
+      ownerId: SpellIds.planarBinding,
+    ),
+    level: 5,
+    school: SpellSchool.abjuration,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.hour,
+      amount: 1,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 18,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+      materials: [
+        SpellMaterialComponent(
+          description:
+              'Un gioiello del valore di almeno 1.000 mo, consumato dall’incantesimo.',
+          minimumCostGp: 1000,
+          consumed: true,
+        ),
+      ],
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.day,
+      amount: 1,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.creature,
+      },
+      maximumTargets: 1,
+    ),
+    savingThrow: SpellSavingThrow(
+      ability: SpellSavingThrowAbility.charisma,
+      onSuccess: SpellSaveSuccess.negates,
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'planar_binding_compelled_service',
+        type: SpellPersistentEffectType.magicalLink,
+        ruleTags: {
+          'target_must_be_celestial_elemental_fey_or_fiend',
+          'target_must_remain_within_18_meters_for_entire_casting_time',
+          'failed_charisma_save_compels_service',
+          'bound_creature_follows_instructions_to_best_of_ability',
+          'hostile_creature_can_interpret_instructions_literally_to_serve_own_goals',
+          'extends_duration_of_spell_that_summoned_or_created_target',
+          'completed_task_is_reported_if_caster_is_on_same_plane',
+          'otherwise_creature_returns_to_binding_location_until_spell_ends',
+          'slot_level_6_duration_10_days',
+          'slot_level_7_duration_30_days',
+          'slot_level_8_duration_180_days',
+          'slot_level_9_duration_1_year_and_1_day',
+        },
+      ),
+    ],
+    classIds: {
+      'bard',
+      'cleric',
+      'druid',
+      'wizard',
+    },
+  ),
+  SpellIds.rarysTelepathicBond: SpellDefinition(
+    id: SpellIds.rarysTelepathicBond,
+    content: RuleContent(
+      id: SpellIds.rarysTelepathicBond,
+      name: 'Legame Telepatico di Rary',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Collega telepaticamente fino a otto creature consenzienti per un’ora.',
+        details:
+            'L’incantatore sceglie fino a otto creature consenzienti entro '
+            '9 metri e stabilisce un legame telepatico che collega ogni '
+            'bersaglio a tutti gli altri. Le creature con Intelligenza pari '
+            'o inferiore a 2 non sono influenzate. Per un’ora, le creature '
+            'collegate possono comunicare telepaticamente tra loro anche se '
+            'non condividono alcun linguaggio. La comunicazione funziona a '
+            'qualsiasi distanza, purché i partecipanti si trovino sullo '
+            'stesso piano di esistenza. L’incantesimo può essere lanciato '
+            'come rituale.',
+      ),
+      ownerId: SpellIds.rarysTelepathicBond,
+    ),
+    level: 5,
+    school: SpellSchool.divination,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 9,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+      materials: [
+        SpellMaterialComponent(
+          description:
+              'Pezzi di gusci d’uovo appartenenti a due tipi diversi di creature.',
+        ),
+      ],
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.hour,
+      amount: 1,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.willingCreature,
+      },
+      maximumTargets: 8,
+    ),
+    ritual: true,
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'rarys_telepathic_bond_network',
+        type: SpellPersistentEffectType.magicalLink,
+        link: SpellLinkEffect(
+          shareSenses: false,
+        ),
+        ruleTags: {
+          'links_up_to_8_willing_creatures_within_9_meters',
+          'every_target_is_telepathically_linked_to_every_other_target',
+          'creatures_with_intelligence_2_or_lower_are_unaffected',
+          'linked_creatures_need_no_shared_language',
+          'telepathy_functions_at_any_distance',
+          'telepathy_cannot_cross_planes_of_existence',
+          'can_be_cast_as_ritual',
+        },
+      ),
+    ],
+    classIds: {
+      'wizard',
+    },
+  ),
+  SpellIds.bigbysHand: SpellDefinition(
+    id: SpellIds.bigbysHand,
+    content: RuleContent(
+      id: SpellIds.bigbysHand,
+      name: 'Mano di Bigby',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Crea una grande mano di forza che può proteggere, spingere, afferrare o colpire.',
+        details:
+            'L’incantatore crea una mano di forza Grande in uno spazio libero '
+            'visibile entro 36 metri. La mano ha CA 20, punti ferita pari ai '
+            'punti ferita massimi dell’incantatore, Forza 26 (+8) e Destrezza '
+            '10 (+0); non riempie il proprio spazio e l’incantesimo termina '
+            'se raggiunge 0 punti ferita. Al lancio e, nei turni successivi, '
+            'come azione bonus, l’incantatore può muoverla fino a 18 metri e '
+            'scegliere un effetto. Mano Interposta: resta tra l’incantatore '
+            'e una creatura, fornendo metà copertura; una creatura con Forza '
+            'pari o inferiore a 26 non può attraversarla, mentre una più '
+            'forte considera quello spazio terreno difficile. Mano Possente: '
+            'effettua una prova di Forza contrapposta a Forza (Atletica) di '
+            'una creatura entro 1,5 metri, con vantaggio contro bersagli Medi '
+            'o inferiori; se vince, la spinge di 1,5 metri più altri 1,5 '
+            'metri per ogni punto del modificatore da incantatore. Mano '
+            'Stritolatrice: tenta di afferrare una creatura Enorme o '
+            'inferiore entro 1,5 metri usando Forza, con vantaggio contro '
+            'bersagli Medi o inferiori; finché la trattiene può stritolarla '
+            'con un’azione bonus, infliggendo 2d6 danni contundenti più il '
+            'modificatore da incantatore. Pugno Serrato: effettua un attacco '
+            'in mischia con incantesimo contro una creatura o un oggetto '
+            'entro 1,5 metri e infligge 4d8 danni da forza se colpisce. Per '
+            'ogni livello dello slot superiore al 5°, Mano Stritolatrice '
+            'infligge 2d6 danni aggiuntivi e Pugno Serrato 2d8 aggiuntivi.',
+      ),
+      ownerId: SpellIds.bigbysHand,
+    ),
+    level: 5,
+    school: SpellSchool.evocation,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 36,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+      materials: [
+        SpellMaterialComponent(
+          description: 'Un guscio d’uovo e un guanto di pelle di serpente.',
+        ),
+      ],
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.minute,
+      amount: 1,
+      concentration: true,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.point,
+        SpellTargetType.creature,
+        SpellTargetType.object,
+      },
+    ),
+    repeatableEffects: [
+      SpellRepeatableEffect(
+        actionType: SpellRepeatActionType.bonusAction,
+        damage: SpellDamage(
+          dice: '4d8',
+          type: SpellDamageType.force,
+        ),
+      ),
+      SpellRepeatableEffect(
+        actionType: SpellRepeatActionType.bonusAction,
+        damage: SpellDamage(
+          dice: '2d6',
+          type: SpellDamageType.bludgeoning,
+        ),
+        automatic: true,
+        sameTarget: true,
+      ),
+    ],
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'bigbys_hand_force_construct',
+        type: SpellPersistentEffectType.createdObject,
+        ruleTags: {
+          'creates_large_translucent_force_hand_in_visible_unoccupied_space',
+          'hand_has_ac_20_and_hit_points_equal_to_caster_maximum_hit_points',
+          'hand_has_strength_26_and_dexterity_10',
+          'hand_does_not_fill_its_space',
+          'spell_ends_when_hand_reaches_0_hit_points',
+          'on_cast_and_later_bonus_action_moves_hand_up_to_18_meters',
+          'interposing_hand_grants_half_cover_against_selected_creature',
+          'interposing_hand_blocks_target_with_strength_26_or_lower',
+          'stronger_target_treats_hand_space_as_difficult_terrain',
+          'forceful_hand_uses_opposed_strength_check_to_push',
+          'forceful_hand_has_advantage_against_medium_or_smaller_target',
+          'grasping_hand_can_grapple_huge_or_smaller_creature',
+          'grasping_hand_has_advantage_against_medium_or_smaller_target',
+          'grasping_hand_crush_deals_2d6_plus_spellcasting_modifier_bludgeoning_damage',
+          'clenched_fist_uses_melee_spell_attack_and_deals_4d8_force_damage',
+          'slot_level_above_5_adds_2d6_to_grasping_hand_per_slot_level',
+          'slot_level_above_5_adds_2d8_to_clenched_fist_per_slot_level',
+          'requires_concentration',
+        },
+      ),
+    ],
+    classIds: {
       'wizard',
     },
   ),
