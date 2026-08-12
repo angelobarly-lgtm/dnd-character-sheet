@@ -30,10 +30,10 @@ Checklist di lavoro per espandere `lib/data/spell_data.dart` con gli incantesimi
 - [x] Muro di Forza
 - [x] Muro di Pietra
 - [x] Nube Mortale
-- [ ] Onda Distruttiva
-- [ ] Passapareti
-- [ ] Piaga degli Insetti
-- [ ] Punizione Esiliante
+- [x] Onda Distruttiva
+- [x] Passapareti
+- [x] Piaga degli Insetti
+- [x] Punizione Esiliante
 - [ ] Rianimare Morti
 - [ ] Reincarnazione
 - [ ] Ristorare Superiore

@@ -1192,6 +1192,10 @@ abstract final class SpellIds {
   static const wallOfForce = 'wall_of_force';
   static const wallOfStone = 'wall_of_stone';
   static const cloudkill = 'cloudkill';
+  static const destructiveWave = 'destructive_wave';
+  static const passwall = 'passwall';
+  static const insectPlague = 'insect_plague';
+  static const banishingSmite = 'banishing_smite';
 }
 
 const Map<String, SpellDefinition> spellDefinitions = {
@@ -20426,6 +20430,349 @@ const Map<String, SpellDefinition> spellDefinitions = {
     classIds: {
       'sorcerer',
       'wizard',
+    },
+  ),
+  SpellIds.destructiveWave: SpellDefinition(
+    id: SpellIds.destructiveWave,
+    content: RuleContent(
+      id: SpellIds.destructiveWave,
+      name: 'Onda Distruttiva',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Sprigiona un’onda divina che danneggia e abbatte le creature scelte attorno all’incantatore.',
+        details:
+            'L’incantatore colpisce il terreno e genera un’ondata di energia '
+            'divina. Ogni creatura da lui scelta entro 9 metri effettua un '
+            'tiro salvezza su Costituzione. Se lo fallisce, subisce 5d6 '
+            'danni da tuono più 5d6 danni radiosi o necrotici, a scelta '
+            'dell’incantatore, e cade a terra prona. Se supera il tiro '
+            'salvezza, subisce metà dei danni e non cade a terra prona.',
+      ),
+      ownerId: SpellIds.destructiveWave,
+    ),
+    level: 5,
+    school: SpellSchool.evocation,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.self,
+    ),
+    area: SpellArea(
+      shape: SpellAreaShape.radius,
+      origin: SpellAreaOrigin.caster,
+      radiusMeters: 9,
+    ),
+    components: SpellComponents(
+      verbal: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.instantaneous,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.creatures,
+        SpellTargetType.area,
+      },
+    ),
+    savingThrow: SpellSavingThrow(
+      ability: SpellSavingThrowAbility.constitution,
+      onSuccess: SpellSaveSuccess.halfDamage,
+    ),
+    damage: [
+      SpellDamage(
+        dice: '5d6',
+        type: SpellDamageType.thunder,
+      ),
+      SpellDamage(
+        dice: '5d6',
+        type: SpellDamageType.radiant,
+      ),
+      SpellDamage(
+        dice: '5d6',
+        type: SpellDamageType.necrotic,
+      ),
+    ],
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'destructive_wave_divine_blast',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'caster_selects_affected_creatures_within_9_meters',
+          'failed_constitution_save_deals_5d6_thunder_damage',
+          'caster_chooses_5d6_radiant_or_necrotic_additional_damage',
+          'failed_save_knocks_creature_prone',
+          'successful_save_deals_half_damage',
+          'successful_save_does_not_knock_creature_prone',
+          'instantaneous_divine_wave',
+        },
+      ),
+    ],
+    classIds: {
+      'paladin',
+    },
+  ),
+  SpellIds.passwall: SpellDefinition(
+    id: SpellIds.passwall,
+    content: RuleContent(
+      id: SpellIds.passwall,
+      name: 'Passapareti',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Apre temporaneamente un passaggio attraverso una superficie di legno, pietra o intonaco.',
+        details:
+            'Un passaggio si apre in un punto visibile entro 9 metri su una '
+            'superficie di legno, pietra o intonaco, come una parete, un '
+            'soffitto o un pavimento. L’incantatore sceglie le dimensioni '
+            'dell’apertura, che può essere larga al massimo 1,5 metri, alta '
+            '2,4 metri e profonda 6 metri. Il passaggio dura 1 ora e non '
+            'rende instabile la struttura circostante. Quando l’apertura '
+            'scompare, ogni creatura o oggetto ancora al suo interno viene '
+            'espulso senza subire danni nello spazio libero più vicino alla '
+            'superficie sulla quale l’incantesimo è stato lanciato.',
+      ),
+      ownerId: SpellIds.passwall,
+    ),
+    level: 5,
+    school: SpellSchool.transmutation,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 9,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+      materials: [
+        SpellMaterialComponent(
+          description: 'Un pizzico di semi di sesamo.',
+        ),
+      ],
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.hour,
+      amount: 1,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.point,
+        SpellTargetType.object,
+      },
+      maximumTargets: 1,
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'passwall_temporary_passage',
+        type: SpellPersistentEffectType.createdObject,
+        ruleTags: {
+          'opens_passage_in_visible_wood_stone_or_plaster_surface',
+          'surface_can_be_wall_ceiling_or_floor',
+          'opening_maximum_width_1_5_meters',
+          'opening_maximum_height_2_4_meters',
+          'passage_maximum_depth_6_meters',
+          'passage_does_not_destabilize_surrounding_structure',
+          'creatures_and_objects_inside_when_spell_ends_are_ejected_without_damage',
+          'ejection_uses_nearest_unoccupied_space_to_casting_surface',
+        },
+      ),
+    ],
+    classIds: {
+      'wizard',
+    },
+  ),
+  SpellIds.insectPlague: SpellDefinition(
+    id: SpellIds.insectPlague,
+    content: RuleContent(
+      id: SpellIds.insectPlague,
+      name: 'Piaga degli Insetti',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Riempie una vasta sfera con locuste fameliche che oscurano, rallentano e feriscono le creature.',
+        details:
+            'Uno sciame di locuste fameliche riempie una sfera del raggio di '
+            '6 metri centrata su un punto entro 90 metri. Lo sciame si '
+            'diffonde oltre gli angoli, rende l’area leggermente oscurata e '
+            'la trasforma in terreno difficile. Quando la sfera compare, '
+            'ogni creatura al suo interno effettua un tiro salvezza su '
+            'Costituzione. Una creatura ripete il tiro quando entra '
+            'nell’area per la prima volta in un turno o vi termina il '
+            'proprio turno. Se fallisce subisce 4d10 danni perforanti, '
+            'mentre se supera il tiro subisce metà danni. Con uno slot di '
+            '6° livello o superiore, i danni aumentano di 1d10 per ogni '
+            'livello dello slot superiore al 5°.',
+      ),
+      ownerId: SpellIds.insectPlague,
+    ),
+    level: 5,
+    school: SpellSchool.conjuration,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 90,
+    ),
+    area: SpellArea(
+      shape: SpellAreaShape.sphere,
+      origin: SpellAreaOrigin.targetPoint,
+      radiusMeters: 6,
+    ),
+    areaInteraction: SpellAreaInteraction(
+      spreadsAroundCorners: true,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+      materials: [
+        SpellMaterialComponent(
+          description:
+              'Alcuni granelli di zucchero, alcuni chicchi di grano e un pezzetto di grasso animale.',
+        ),
+      ],
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.minute,
+      amount: 10,
+      concentration: true,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.area,
+      },
+    ),
+    savingThrow: SpellSavingThrow(
+      ability: SpellSavingThrowAbility.constitution,
+      onSuccess: SpellSaveSuccess.halfDamage,
+    ),
+    scaling: SpellScaling(
+      type: SpellScalingType.slotLevel,
+      steps: [
+        SpellScalingStep(
+          threshold: 6,
+          additionalDice: '1d10',
+        ),
+      ],
+    ),
+    areaTriggeredEffects: [
+      SpellAreaTriggeredEffect(
+        triggers: {
+          SpellAreaTriggerEvent.areaAppears,
+          SpellAreaTriggerEvent.entersAreaFirstTimeOnTurn,
+          SpellAreaTriggerEvent.endsTurnInArea,
+        },
+        damage: SpellDamage(
+          dice: '4d10',
+          type: SpellDamageType.piercing,
+        ),
+        savingThrow: SpellSavingThrow(
+          ability: SpellSavingThrowAbility.constitution,
+          onSuccess: SpellSaveSuccess.halfDamage,
+        ),
+        movementModifier: SpellMovementModifier(
+          type: SpellMovementModifierType.multiplier,
+          multiplier: 0.5,
+        ),
+      ),
+    ],
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'insect_plague_hungry_locust_swarm',
+        type: SpellPersistentEffectType.zone,
+        ruleTags: {
+          'creates_6_meter_radius_sphere_of_locusts',
+          'swarm_spreads_around_corners',
+          'area_is_lightly_obscured',
+          'area_is_difficult_terrain',
+          'creatures_save_when_area_appears',
+          'creatures_save_when_entering_first_time_on_turn',
+          'creatures_save_when_ending_turn_in_area',
+          'failed_save_deals_4d10_piercing_damage',
+          'successful_save_deals_half_damage',
+          'slot_level_above_5_increases_damage_by_1d10_per_slot_level',
+          'requires_concentration',
+        },
+      ),
+    ],
+    classIds: {
+      'cleric',
+      'druid',
+      'sorcerer',
+    },
+  ),
+  SpellIds.banishingSmite: SpellDefinition(
+    id: SpellIds.banishingSmite,
+    content: RuleContent(
+      id: SpellIds.banishingSmite,
+      name: 'Punizione Esiliante',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Potenzia il prossimo attacco con un’arma e può esiliare un bersaglio gravemente ferito.',
+        details:
+            'La prossima volta che l’incantatore colpisce una creatura con '
+            'un attacco con un’arma prima che l’incantesimo termini, '
+            'l’attacco infligge 5d10 danni da forza aggiuntivi. Se dopo '
+            'questo attacco il bersaglio possiede 50 punti ferita o meno, '
+            'viene esiliato. Se è originario di un altro piano di esistenza, '
+            'scompare e ritorna sul proprio piano natio. Se è originario del '
+            'piano attuale, viene inviato in un semipiano innocuo, dove '
+            'rimane incapacitato fino al termine dell’incantesimo. Poi '
+            'ricompare nello spazio che occupava o nello spazio libero più '
+            'vicino, se quello spazio è occupato.',
+      ),
+      ownerId: SpellIds.banishingSmite,
+    ),
+    level: 5,
+    school: SpellSchool.abjuration,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.bonusAction,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.self,
+    ),
+    components: SpellComponents(
+      verbal: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.minute,
+      amount: 1,
+      concentration: true,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.self,
+      },
+    ),
+    damage: [
+      SpellDamage(
+        dice: '5d10',
+        type: SpellDamageType.force,
+      ),
+    ],
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'banishing_smite_next_weapon_hit',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'next_weapon_attack_hit_during_duration_triggers_effect',
+          'triggering_hit_deals_5d10_extra_force_damage',
+          'target_with_50_or_fewer_hit_points_after_attack_is_banished',
+          'target_native_to_another_plane_returns_to_home_plane',
+          'target_native_to_current_plane_enters_harmless_demiplane',
+          'target_in_demiplane_is_incapacitated',
+          'same_plane_target_returns_when_spell_ends',
+          'returning_target_uses_original_or_nearest_unoccupied_space',
+          'requires_concentration_until_triggered_or_duration_ends',
+        },
+      ),
+    ],
+    classIds: {
+      'paladin',
     },
   ),
 };
