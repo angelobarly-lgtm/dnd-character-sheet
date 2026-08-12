@@ -1016,6 +1016,7 @@ abstract final class SpellIds {
   static const witchBolt = 'witch_bolt';
   static const shield = 'shield';
   static const bladeWard = 'blade_ward';
+  static const thornWhip = 'thorn_whip';
   static const chillTouch = 'chill_touch';
   static const dancingLights = 'dancing_lights';
   static const druidcraft = 'druidcraft';
@@ -1296,6 +1297,92 @@ abstract final class SpellIds {
 }
 
 const Map<String, SpellDefinition> spellDefinitions = {
+  SpellIds.thornWhip: SpellDefinition(
+    id: SpellIds.thornWhip,
+    content: RuleContent(
+      id: SpellIds.thornWhip,
+      name: 'Frusta di Spine',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Una frusta vegetale spinata colpisce una creatura e può trascinarla verso l’incantatore.',
+        details: 'L’incantatore crea una lunga frusta simile a un rampicante '
+            'e coperta di spine, effettuando un attacco in mischia con '
+            'incantesimo contro una creatura entro 9 metri. Se l’attacco '
+            'colpisce, il bersaglio subisce 1d6 danni perforanti. Se il '
+            'bersaglio è di taglia Grande o inferiore, l’incantatore può '
+            'trascinarlo fino a 3 metri verso di sé. Il danno aumenta a '
+            '2d6 al 5° livello, 3d6 all’11° livello e 4d6 al 17° livello.',
+      ),
+      ownerId: SpellIds.thornWhip,
+    ),
+    level: 0,
+    school: SpellSchool.transmutation,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 9,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+      materials: [
+        SpellMaterialComponent(
+          description: 'Il gambo di una pianta spinata.',
+        ),
+      ],
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.instantaneous,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.creature,
+      },
+      maximumTargets: 1,
+    ),
+    attackType: SpellAttackType.melee,
+    damage: [
+      SpellDamage(
+        dice: '1d6',
+        type: SpellDamageType.piercing,
+      ),
+    ],
+    scaling: SpellScaling(
+      type: SpellScalingType.characterLevel,
+      steps: [
+        SpellScalingStep(
+          threshold: 5,
+          damageDice: '2d6',
+        ),
+        SpellScalingStep(
+          threshold: 11,
+          damageDice: '3d6',
+        ),
+        SpellScalingStep(
+          threshold: 17,
+          damageDice: '4d6',
+        ),
+      ],
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'thorn_whip_pull',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'hit_target_takes_piercing_damage',
+          'large_or_smaller_target_can_be_pulled',
+          'target_can_be_pulled_up_to_3_meters_toward_caster',
+          'pull_is_optional',
+        },
+      ),
+    ],
+    classIds: {
+      'druid',
+    },
+  ),
   SpellIds.spiritGuardians: SpellDefinition(
     id: SpellIds.spiritGuardians,
     content: RuleContent(
@@ -2563,7 +2650,7 @@ const Map<String, SpellDefinition> spellDefinitions = {
     id: SpellIds.druidcraft,
     content: RuleContent(
       id: SpellIds.druidcraft,
-      name: 'Arte Druidica',
+      name: 'Artificio Druidico',
       type: RuleContentType.spell,
       description: RuleDescription(
         summary: 'Produce un piccolo effetto naturale o sensoriale.',

@@ -2,14 +2,21 @@
 
 ## Stato attuale
 
-Il catalogo incantesimi attuale copre i trucchetti PHB 2014 dichiarati in `SpellIds`.
+Il catalogo copre tutti i trucchetti e gli incantesimi del Manuale del Giocatore 2014.
 
-- PHB cantrips / livello 0: completati
-- Incantesimi PHB livello 1-9: da inserire
-- Xanathar: da inserire dopo completamento PHB
-- Tasha: da inserire dopo completamento PHB
+- PHB trucchetti / livello 0: 27 completati
+- PHB livello 1: 62 completati
+- PHB livello 2: 59 completati
+- PHB livello 3: 50 completati
+- PHB livello 4: 35 completati
+- PHB livello 5: 42 completati
+- PHB livello 6: 32 completati
+- PHB livello 7: 20 completati
+- PHB livello 8: 18 completati
+- PHB livello 9: 16 completati
+- Totale PHB 2014: 361
 
-## Nota importante
+## Espansioni future
 
-Il conteggio attuale di 35 incantesimi non rappresenta tutti gli incantesimi del Manuale del Giocatore 2014.
-Rappresenta solo gli incantesimi/trucchetti già dichiarati nel progetto.
+- Xanathar: da inserire
+- Tasha: da inserire
