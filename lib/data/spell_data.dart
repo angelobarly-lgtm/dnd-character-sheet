@@ -1149,6 +1149,10 @@ abstract final class SpellIds {
   static const freedomOfMovement = 'freedom_of_movement';
   static const locateCreature = 'locate_creature';
   static const polymorph = 'polymorph';
+  static const wallOfFire = 'wall_of_fire';
+  static const arcaneEye = 'arcane_eye';
+  static const stoneskin = 'stoneskin';
+  static const dimensionDoor = 'dimension_door';
 }
 
 const Map<String, SpellDefinition> spellDefinitions = {
@@ -16874,6 +16878,344 @@ const Map<String, SpellDefinition> spellDefinitions = {
       'bard',
       'druid',
       'sorcerer',
+      'wizard',
+    },
+  ),
+  SpellIds.wallOfFire: SpellDefinition(
+    id: SpellIds.wallOfFire,
+    content: RuleContent(
+      id: SpellIds.wallOfFire,
+      name: 'Muro di Fuoco',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Crea un muro di fiamme opaco che brucia le creature su un lato scelto.',
+        details: 'L’incantatore crea su una superficie solida entro gittata un '
+            'muro lungo fino a 18 metri, alto 6 metri e spesso 30 centimetri, '
+            'oppure un muro circolare con diametro massimo di 6 metri e le '
+            'stesse altezza e spessore. Quando appare, ogni creatura nella sua '
+            'area effettua un tiro salvezza su Destrezza: subisce 5d8 danni '
+            'da fuoco se lo fallisce o metà danni se lo supera. Un lato del '
+            'muro, scelto al lancio, infligge 5d8 danni da fuoco a una '
+            'creatura che entra nel muro per la prima volta in un turno o '
+            'termina il turno nel muro o entro 3 metri da quel lato. L’altro '
+            'lato non infligge danni. Usando uno slot di 5° livello o '
+            'superiore, i danni aumentano di 1d8 per ogni livello di slot '
+            'superiore al 4°.',
+      ),
+      ownerId: SpellIds.wallOfFire,
+    ),
+    level: 4,
+    school: SpellSchool.evocation,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 36,
+    ),
+    wall: SpellWallDefinition(
+      shape: SpellWallShape.special,
+      lengthMeters: 18,
+      heightMeters: 6,
+      thicknessMeters: 0.3,
+      supportsRing: true,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+      materials: [
+        SpellMaterialComponent(
+          description: 'Un frammento di fosforo.',
+        ),
+      ],
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.minute,
+      amount: 1,
+      concentration: true,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.point,
+        SpellTargetType.area,
+      },
+    ),
+    savingThrow: SpellSavingThrow(
+      ability: SpellSavingThrowAbility.dexterity,
+      onSuccess: SpellSaveSuccess.halfDamage,
+    ),
+    damage: [
+      SpellDamage(
+        dice: '5d8',
+        type: SpellDamageType.fire,
+      ),
+    ],
+    scaling: SpellScaling(
+      type: SpellScalingType.slotLevel,
+      steps: [
+        SpellScalingStep(
+          threshold: 5,
+          additionalDice: '1d8',
+        ),
+      ],
+    ),
+    areaTriggeredEffects: [
+      SpellAreaTriggeredEffect(
+        triggers: {
+          SpellAreaTriggerEvent.entersAreaFirstTimeOnTurn,
+          SpellAreaTriggerEvent.endsTurnInArea,
+        },
+        damage: SpellDamage(
+          dice: '5d8',
+          type: SpellDamageType.fire,
+        ),
+      ),
+    ],
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'wall_of_fire_persistent_wall',
+        type: SpellPersistentEffectType.zone,
+        ruleTags: {
+          'wall_must_be_created_on_solid_surface',
+          'wall_is_opaque',
+          'straight_wall_max_18_meters_long',
+          'circular_wall_max_6_meters_diameter',
+          'wall_is_6_meters_high_and_0_3_meters_thick',
+          'caster_selects_one_damaging_side',
+          'damaging_side_reaches_3_meters',
+          'other_side_deals_no_damage',
+          'entering_or_ending_turn_triggers_5d8_fire_damage_without_save',
+          'slot_level_above_4_adds_1d8_damage_per_level',
+          'requires_concentration',
+        },
+      ),
+    ],
+    classIds: {
+      'druid',
+      'sorcerer',
+      'wizard',
+    },
+  ),
+  SpellIds.arcaneEye: SpellDefinition(
+    id: SpellIds.arcaneEye,
+    content: RuleContent(
+      id: SpellIds.arcaneEye,
+      name: 'Occhio Arcano',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Crea un occhio magico invisibile e mobile attraverso cui l’incantatore può vedere.',
+        details: 'Un occhio magico invisibile compare entro gittata e fluttua '
+            'nell’aria. L’incantatore riceve mentalmente ciò che l’occhio '
+            'vede; l’occhio possiede visione normale e scurovisione entro 9 '
+            'metri e può guardare in ogni direzione. Con un’azione, '
+            'l’incantatore può muoverlo di 9 metri in qualsiasi direzione. '
+            'Non esiste un limite alla distanza dall’incantatore, ma l’occhio '
+            'non può passare su un altro piano di esistenza. Le barriere '
+            'solide ne bloccano il movimento, mentre può attraversare '
+            'un’apertura con diametro di almeno 2,5 centimetri.',
+      ),
+      ownerId: SpellIds.arcaneEye,
+    ),
+    level: 4,
+    school: SpellSchool.divination,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 9,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+      materials: [
+        SpellMaterialComponent(
+          description: 'Un ciuffo di pelo di pipistrello.',
+        ),
+      ],
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.hour,
+      amount: 1,
+      concentration: true,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.point,
+      },
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'arcane_eye_sensor',
+        type: SpellPersistentEffectType.createdObject,
+        ruleTags: {
+          'creates_invisible_floating_magical_eye_within_range',
+          'caster_receives_visual_information_mentally',
+          'eye_has_normal_vision_and_9_meter_darkvision',
+          'eye_can_look_in_every_direction',
+          'caster_action_moves_eye_up_to_9_meters',
+          'no_maximum_distance_from_caster_on_same_plane',
+          'eye_cannot_enter_another_plane',
+          'solid_barrier_blocks_eye_movement',
+          'eye_passes_through_opening_at_least_2_5_centimeters_wide',
+          'requires_concentration',
+        },
+      ),
+    ],
+    classIds: {
+      'wizard',
+    },
+  ),
+  SpellIds.stoneskin: SpellDefinition(
+    id: SpellIds.stoneskin,
+    content: RuleContent(
+      id: SpellIds.stoneskin,
+      name: 'Pelle di Pietra',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Indurisce la carne di una creatura, proteggendola dai danni fisici non magici.',
+        details: 'L’incantatore tocca una creatura consenziente e ne rende la '
+            'carne dura come la pietra. Finché l’incantesimo permane, il '
+            'bersaglio possiede resistenza ai danni contundenti, perforanti e '
+            'taglienti non magici. L’effetto richiede concentrazione e può '
+            'durare fino a 1 ora.',
+      ),
+      ownerId: SpellIds.stoneskin,
+    ),
+    level: 4,
+    school: SpellSchool.abjuration,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.touch,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+      materials: [
+        SpellMaterialComponent(
+          description:
+              'Polvere di diamante del valore di almeno 100 monete d’oro, consumata dall’incantesimo.',
+          minimumCostGp: 100,
+          consumed: true,
+        ),
+      ],
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.hour,
+      amount: 1,
+      concentration: true,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.willingCreature,
+      },
+      maximumTargets: 1,
+    ),
+    defensiveEffects: [
+      SpellDefensiveEffect(
+        resistances: [
+          SpellDamageResistance(
+            damageTypes: {
+              SpellDamageType.bludgeoning,
+              SpellDamageType.piercing,
+              SpellDamageType.slashing,
+            },
+            sourceRestriction:
+                SpellDamageSourceRestriction.nonMagicalWeaponAttack,
+          ),
+        ],
+      ),
+    ],
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'stoneskin_physical_resistance',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'resistance_to_nonmagical_bludgeoning_damage',
+          'resistance_to_nonmagical_piercing_damage',
+          'resistance_to_nonmagical_slashing_damage',
+          'material_cost_100_gp_and_consumed',
+          'requires_concentration',
+        },
+      ),
+    ],
+    classIds: {
+      'druid',
+      'ranger',
+      'sorcerer',
+      'wizard',
+    },
+  ),
+  SpellIds.dimensionDoor: SpellDefinition(
+    id: SpellIds.dimensionDoor,
+    content: RuleContent(
+      id: SpellIds.dimensionDoor,
+      name: 'Porta Dimensionale',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Teletrasporta l’incantatore e, facoltativamente, un compagno consenziente entro 150 metri.',
+        details:
+            'L’incantatore si teletrasporta in un punto entro 150 metri che '
+            'sia in grado di vedere o descrivere indicandone distanza e '
+            'direzione. Può portare oggetti entro la propria capacità di '
+            'trasporto e una creatura consenziente di taglia non superiore '
+            'alla sua, situata entro 1,5 metri e con equipaggiamento entro la '
+            'propria capacità di trasporto. Se il punto di arrivo è occupato '
+            'da una creatura o da un oggetto, il teletrasporto fallisce e ogni '
+            'creatura che avrebbe viaggiato subisce 4d6 danni da forza.',
+      ),
+      ownerId: SpellIds.dimensionDoor,
+    ),
+    level: 4,
+    school: SpellSchool.conjuration,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 150,
+    ),
+    components: SpellComponents(
+      verbal: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.instantaneous,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.self,
+        SpellTargetType.point,
+        SpellTargetType.willingCreature,
+      },
+      maximumTargets: 2,
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'dimension_door_teleportation',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'teleports_caster_to_destination_within_150_meters',
+          'destination_may_be_seen_or_described_by_distance_and_direction',
+          'caster_may_bring_objects_within_carrying_capacity',
+          'caster_may_bring_one_willing_creature',
+          'companion_size_cannot_exceed_caster_size',
+          'companion_must_be_within_1_5_meters_on_cast',
+          'occupied_destination_causes_teleport_to_fail',
+          'occupied_destination_deals_4d6_force_damage_to_each_traveler',
+          'instantaneous_teleportation',
+        },
+      ),
+    ],
+    classIds: {
+      'bard',
+      'sorcerer',
+      'warlock',
       'wizard',
     },
   ),

@@ -22,10 +22,10 @@ Checklist di lavoro per espandere `lib/data/spell_data.dart` con gli incantesimi
 - [x] Libertà di Movimento
 - [x] Localizza Creatura
 - [x] Metamorfosi
-- [ ] Muro di Fuoco
-- [ ] Occhio Arcano
-- [ ] Pelle di Pietra
-- [ ] Porta Dimensionale
+- [x] Muro di Fuoco
+- [x] Occhio Arcano
+- [x] Pelle di Pietra
+- [x] Porta Dimensionale
 - [ ] Punizione Demoralizzante
 - [ ] Rampicante Afferrante
 - [ ] Santuario Privato di Mordenkainen
