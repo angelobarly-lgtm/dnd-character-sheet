@@ -1141,6 +1141,10 @@ abstract final class SpellIds {
   static const conjureWoodlandBeings = 'conjure_woodland_beings';
   static const conjureMinorElementals = 'conjure_minor_elementals';
   static const fabricate = 'fabricate';
+  static const guardianOfFaith = 'guardian_of_faith';
+  static const blight = 'blight';
+  static const giantInsect = 'giant_insect';
+  static const deathWard = 'death_ward';
 }
 
 const Map<String, SpellDefinition> spellDefinitions = {
@@ -16287,6 +16291,288 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ],
     classIds: {
       'wizard',
+    },
+  ),
+  SpellIds.guardianOfFaith: SpellDefinition(
+    id: SpellIds.guardianOfFaith,
+    content: RuleContent(
+      id: SpellIds.guardianOfFaith,
+      name: 'Guardiano della Fede',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Evoca un guardiano spettrale che punisce le creature ostili che si avvicinano.',
+        details:
+            'Un guardiano spettrale di taglia Grande compare in uno spazio '
+            'libero visibile entro gittata, occupandolo per la durata. La sua '
+            'figura è indistinta, salvo una spada scintillante e uno scudo '
+            'decorati con il simbolo della divinità dell’incantatore. Quando '
+            'una creatura ostile si muove per la prima volta in un turno fino '
+            'a uno spazio entro 3 metri dal guardiano, deve effettuare un tiro '
+            'salvezza su Destrezza. Se lo fallisce subisce 20 danni radiosi; '
+            'se lo supera ne subisce 10. Il guardiano svanisce dopo aver '
+            'inflitto complessivamente 60 danni.',
+      ),
+      ownerId: SpellIds.guardianOfFaith,
+    ),
+    level: 4,
+    school: SpellSchool.conjuration,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 9,
+    ),
+    area: SpellArea(
+      shape: SpellAreaShape.radius,
+      origin: SpellAreaOrigin.targetPoint,
+      radiusMeters: 3,
+    ),
+    components: SpellComponents(
+      verbal: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.hour,
+      amount: 8,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.point,
+        SpellTargetType.area,
+      },
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'guardian_of_faith_spectral_guardian',
+        type: SpellPersistentEffectType.zone,
+        ruleTags: {
+          'guardian_is_large_and_occupies_chosen_unoccupied_space',
+          'chosen_space_must_be_seen_within_range',
+          'hostile_creature_triggers_when_moving_within_3_meters',
+          'triggers_only_first_time_per_turn',
+          'trigger_requires_dexterity_save',
+          'failed_save_deals_20_radiant_damage',
+          'successful_save_deals_10_radiant_damage',
+          'guardian_disappears_after_dealing_60_total_damage',
+          'lasts_up_to_8_hours',
+        },
+      ),
+    ],
+    classIds: {
+      'cleric',
+    },
+  ),
+  SpellIds.blight: SpellDefinition(
+    id: SpellIds.blight,
+    content: RuleContent(
+      id: SpellIds.blight,
+      name: 'Inaridire',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Prosciuga i fluidi e la vitalità di una creatura con energia necromantica.',
+        details: 'Una creatura visibile entro gittata deve effettuare un tiro '
+            'salvezza su Costituzione. Se lo fallisce subisce 8d8 danni '
+            'necrotici; se lo supera subisce metà danni. L’incantesimo non ha '
+            'effetto sui costrutti o sui non morti. Una creatura vegetale o '
+            'un vegetale magico effettua il tiro salvezza con svantaggio e '
+            'subisce automaticamente il massimo dei danni. Un vegetale non '
+            'magico che non sia una creatura non effettua alcun tiro salvezza: '
+            'avvizzisce e muore. Usando uno slot di 5° livello o superiore, '
+            'i danni aumentano di 1d8 per ogni livello di slot superiore al 4°.',
+      ),
+      ownerId: SpellIds.blight,
+    ),
+    level: 4,
+    school: SpellSchool.necromancy,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 9,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.instantaneous,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.creature,
+        SpellTargetType.object,
+      },
+      maximumTargets: 1,
+    ),
+    savingThrow: SpellSavingThrow(
+      ability: SpellSavingThrowAbility.constitution,
+      onSuccess: SpellSaveSuccess.halfDamage,
+    ),
+    damage: [
+      SpellDamage(
+        dice: '8d8',
+        type: SpellDamageType.necrotic,
+      ),
+    ],
+    scaling: SpellScaling(
+      type: SpellScalingType.slotLevel,
+      steps: [
+        SpellScalingStep(
+          threshold: 5,
+          additionalDice: '1d8',
+        ),
+      ],
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'blight_special_plant_interaction',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'no_effect_on_constructs_or_undead',
+          'plant_creature_or_magical_plant_has_save_disadvantage',
+          'plant_creature_or_magical_plant_takes_maximum_damage',
+          'nonmagical_noncreature_plant_gets_no_save',
+          'nonmagical_noncreature_plant_withers_and_dies',
+          'slot_level_above_4_adds_1d8_damage_per_level',
+        },
+      ),
+    ],
+    classIds: {
+      'druid',
+      'sorcerer',
+      'warlock',
+      'wizard',
+    },
+  ),
+  SpellIds.giantInsect: SpellDefinition(
+    id: SpellIds.giantInsect,
+    content: RuleContent(
+      id: SpellIds.giantInsect,
+      name: 'Insetto Gigante',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Trasforma alcuni insetti naturali in versioni giganti che obbediscono all’incantatore.',
+        details:
+            'L’incantatore trasforma entro gittata fino a dieci millepiedi, '
+            'tre ragni, cinque vespe oppure uno scorpione nelle rispettive '
+            'versioni giganti. Le creature obbediscono ai suoi comandi verbali '
+            'e in combattimento agiscono durante il suo turno. Il DM possiede '
+            'le loro statistiche e ne risolve azioni e movimenti. Una creatura '
+            'resta gigante fino al termine dell’incantesimo, finché scende a '
+            '0 punti ferita o finché l’incantatore usa un’azione per terminare '
+            'l’effetto su di essa. Il DM può consentire bersagli differenti, '
+            'assegnando loro le statistiche della forma gigante più adatta.',
+      ),
+      ownerId: SpellIds.giantInsect,
+    ),
+    level: 4,
+    school: SpellSchool.transmutation,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 9,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.minute,
+      amount: 10,
+      concentration: true,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.creatures,
+      },
+      maximumTargets: 10,
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'giant_insect_transformed_creatures',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'choice_up_to_10_centipedes_3_spiders_5_wasps_or_1_scorpion',
+          'centipede_becomes_giant_centipede',
+          'spider_becomes_giant_spider',
+          'wasp_becomes_giant_wasp',
+          'scorpion_becomes_giant_scorpion',
+          'transformed_creatures_obey_verbal_commands',
+          'transformed_creatures_act_on_casters_turn',
+          'dm_controls_statistics_actions_and_movement',
+          'form_ends_at_0_hp_spell_end_or_casters_action',
+          'dm_may_allow_other_insects_with_equivalent_statistics',
+          'requires_concentration',
+        },
+      ),
+    ],
+    classIds: {
+      'druid',
+    },
+  ),
+  SpellIds.deathWard: SpellDefinition(
+    id: SpellIds.deathWard,
+    content: RuleContent(
+      id: SpellIds.deathWard,
+      name: 'Interdizione alla Morte',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Protegge una creatura dalla prima caduta a 0 punti ferita o da un effetto di morte istantanea.',
+        details:
+            'L’incantatore tocca una creatura e la protegge dalla morte. La '
+            'prima volta in cui il bersaglio dovrebbe scendere a 0 punti '
+            'ferita a causa dei danni, scende invece a 1 punto ferita e '
+            'l’incantesimo termina. Se, mentre l’incantesimo è ancora attivo, '
+            'il bersaglio subisce un effetto che lo ucciderebbe '
+            'istantaneamente senza infliggere danni, quell’effetto viene '
+            'negato contro di lui e l’incantesimo termina.',
+      ),
+      ownerId: SpellIds.deathWard,
+    ),
+    level: 4,
+    school: SpellSchool.abjuration,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.touch,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.hour,
+      amount: 8,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.creature,
+      },
+      maximumTargets: 1,
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'death_ward_protection',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'first_damage_reduction_to_0_hp_becomes_1_hp',
+          'negates_one_instant_death_effect_without_damage',
+          'spell_ends_after_either_protection_triggers',
+          'lasts_up_to_8_hours_if_not_triggered',
+        },
+      ),
+    ],
+    classIds: {
+      'cleric',
+      'paladin',
     },
   ),
 };

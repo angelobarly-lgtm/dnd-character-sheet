@@ -14,10 +14,10 @@ Checklist di lavoro per espandere `lib/data/spell_data.dart` con gli incantesimi
 - [x] Evoca Creature Boschive
 - [x] Evoca Elementali Minori
 - [x] Fabbricare
-- [ ] Guardiano della Fede
-- [ ] Inaridire
-- [ ] Insetto Gigante
-- [ ] Interdizione alla Morte
+- [x] Guardiano della Fede
+- [x] Inaridire
+- [x] Insetto Gigante
+- [x] Interdizione alla Morte
 - [ ] Invisibilità Superiore
 - [ ] Libertà di Movimento
 - [ ] Localizza Creatura
