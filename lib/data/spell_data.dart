@@ -1104,6 +1104,10 @@ abstract final class SpellIds {
   static const lightningBolt = 'lightning_bolt';
   static const glyphOfWarding = 'glyph_of_warding';
   static const majorImage = 'major_image';
+  static const blink = 'blink';
+  static const callLightning = 'call_lightning';
+  static const sending = 'sending';
+  static const slow = 'slow';
 }
 
 const Map<String, SpellDefinition> spellDefinitions = {
@@ -13540,6 +13544,323 @@ const Map<String, SpellDefinition> spellDefinitions = {
       'bard',
       'sorcerer',
       'warlock',
+      'wizard',
+    },
+  ),
+  SpellIds.blink: SpellDefinition(
+    id: SpellIds.blink,
+    content: RuleContent(
+      id: SpellIds.blink,
+      name: 'Intermittenza',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Fa svanire a intermittenza l’incantatore sul Piano Etereo alla fine dei suoi turni.',
+        details:
+            'Alla fine di ogni proprio turno per la durata dell’incantesimo, '
+            'l’incantatore tira un d20. Con un risultato pari o superiore a 11, '
+            'svanisce dal piano di esistenza attuale e compare sul Piano Etereo. '
+            'Se si trovava già sul Piano Etereo quando lancia l’incantesimo, il '
+            'lancio non funziona e viene sprecato. All’inizio del suo turno '
+            'successivo, o quando l’incantesimo termina mentre si trova sul '
+            'Piano Etereo, torna in uno spazio libero a sua scelta entro 3 metri '
+            'dallo spazio da cui è svanito e che sia in grado di vedere. Se non '
+            'c’è uno spazio libero entro quella distanza, riappare nello spazio '
+            'libero più vicino, determinato casualmente se più spazi sono alla '
+            'stessa distanza. L’incantatore può terminare l’incantesimo con '
+            'un’azione. Non richiede concentrazione.',
+      ),
+      ownerId: SpellIds.blink,
+    ),
+    level: 3,
+    school: SpellSchool.transmutation,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.self,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.minute,
+      amount: 1,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.self,
+      },
+      maximumTargets: 1,
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'blink_ethereal_intermittenza',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'caster_rolls_d20_at_end_of_each_turn',
+          'roll_11_or_higher_caster_vanishes_to_ethereal_plane',
+          'spell_fails_if_cast_while_already_on_ethereal_plane',
+          'caster_returns_at_start_of_next_turn',
+          'caster_returns_when_spell_ends_if_on_ethereal_plane',
+          'returns_to_visible_unoccupied_space_within_3_meters_of_origin',
+          'if_no_valid_space_returns_to_nearest_unoccupied_space',
+          'ties_for_nearest_space_determined_randomly',
+          'caster_can_end_spell_with_action',
+          'does_not_require_concentration',
+        },
+      ),
+    ],
+    classIds: {
+      'sorcerer',
+      'wizard',
+    },
+  ),
+  SpellIds.callLightning: SpellDefinition(
+    id: SpellIds.callLightning,
+    content: RuleContent(
+      id: SpellIds.callLightning,
+      name: 'Invocare il Fulmine',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Crea o controlla una nube tempestosa per far cadere fulmini su punti visibili.',
+        details:
+            'Una nube tempestosa a forma di cilindro del raggio di 18 metri e '
+            'alta 3 metri compare in un punto che l’incantatore può vedere, '
+            'situato 30 metri direttamente sopra di lui. L’incantesimo fallisce '
+            'se l’incantatore non può vedere un punto dove la nube potrebbe '
+            'comparire, per esempio in una stanza che non la contenga. Quando '
+            'lancia l’incantesimo, l’incantatore sceglie un punto entro gittata '
+            'che può vedere: una scarica di fulmini si propaga dalla nube fino a '
+            'quel punto. Ogni creatura entro 1,5 metri dal punto effettua un '
+            'tiro salvezza su Destrezza; se fallisce subisce 3d10 danni da '
+            'fulmine, se supera subisce metà danni. A ogni turno successivo, '
+            'finché l’incantesimo non termina, l’incantatore può usare la sua '
+            'azione per invocare di nuovo il fulmine sullo stesso punto o su un '
+            'punto diverso. Se si trova all’esterno durante una tempesta quando '
+            'lancia l’incantesimo, controlla la tempesta esistente e i danni '
+            'aumentano di 1d10. Usando uno slot di 4° livello o superiore, i '
+            'danni aumentano di 1d10 per ogni livello di slot superiore al 3°. '
+            'Richiede concentrazione.',
+      ),
+      ownerId: SpellIds.callLightning,
+    ),
+    level: 3,
+    school: SpellSchool.conjuration,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 36,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.minute,
+      amount: 10,
+      concentration: true,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.point,
+        SpellTargetType.area,
+      },
+    ),
+    damage: [
+      SpellDamage(
+        dice: '3d10',
+        type: SpellDamageType.lightning,
+      ),
+    ],
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'call_lightning_storm_cloud_bolts',
+        type: SpellPersistentEffectType.createdObject,
+        ruleTags: {
+          'creates_storm_cloud_cylinder_18_meter_radius_3_meters_high',
+          'cloud_appears_30_meters_directly_above_caster',
+          'caster_must_see_point_where_cloud_can_appear',
+          'spell_fails_if_cloud_cannot_fit_or_be_seen',
+          'on_cast_caster_chooses_visible_point_within_36_meters',
+          'lightning_strikes_chosen_point_from_cloud',
+          'creatures_within_1_5_meters_of_point_make_dexterity_save',
+          'failed_save_deals_3d10_lightning_damage',
+          'successful_save_deals_half_damage',
+          'caster_can_action_call_lightning_again_each_turn',
+          'later_bolts_can_target_same_or_different_visible_point',
+          'outdoors_in_existing_storm_damage_increases_by_1d10',
+          'slot_level_above_3_increases_damage_by_1d10_per_slot_level',
+          'requires_concentration',
+        },
+      ),
+    ],
+    classIds: {
+      'druid',
+    },
+  ),
+  SpellIds.sending: SpellDefinition(
+    id: SpellIds.sending,
+    content: RuleContent(
+      id: SpellIds.sending,
+      name: 'Inviare',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Invia un messaggio mentale breve a una creatura familiare, anche a grandissima distanza.',
+        details:
+            'L’incantatore invia un breve messaggio di massimo venticinque '
+            'parole a una creatura che gli sia familiare. La creatura sente il '
+            'messaggio nella mente, riconosce l’incantatore come mittente e può '
+            'rispondere immediatamente nello stesso modo. L’incantesimo permette '
+            'alle creature con Intelligenza pari o superiore a 1 di capire il '
+            'significato del messaggio. Il messaggio può essere inviato a '
+            'qualsiasi distanza e perfino su altri piani di esistenza; se il '
+            'bersaglio è su un piano diverso da quello dell’incantatore, c’è una '
+            'probabilità del 5 per cento che il messaggio non arrivi.',
+      ),
+      ownerId: SpellIds.sending,
+    ),
+    level: 3,
+    school: SpellSchool.evocation,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.special,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+      materials: [
+        SpellMaterialComponent(
+          description: 'Un pezzo di cavo di rame.',
+        ),
+      ],
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.round,
+      amount: 1,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.creature,
+      },
+      maximumTargets: 1,
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'sending_short_mental_message',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'message_up_to_twenty_five_words',
+          'targets_familiar_creature',
+          'target_hears_message_in_mind',
+          'target_recognizes_caster_as_sender',
+          'target_can_immediately_reply_same_way',
+          'creatures_with_intelligence_1_or_higher_understand_meaning',
+          'message_can_be_sent_any_distance',
+          'message_can_cross_planes',
+          'different_plane_has_5_percent_chance_message_fails',
+          'duration_1_round',
+        },
+      ),
+    ],
+    classIds: {
+      'bard',
+      'cleric',
+      'wizard',
+    },
+  ),
+  SpellIds.slow: SpellDefinition(
+    id: SpellIds.slow,
+    content: RuleContent(
+      id: SpellIds.slow,
+      name: 'Lentezza',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Altera il tempo attorno a fino a sei creature, limitandone difese, movimento e azioni.',
+        details:
+            'L’incantatore altera il tempo attorno a un massimo di sei creature '
+            'a sua scelta all’interno di un cubo con spigolo di 12 metri entro '
+            'gittata. Ogni bersaglio deve superare un tiro salvezza su Saggezza '
+            'o essere influenzato per la durata. Un bersaglio influenzato '
+            'subisce -2 alla Classe Armatura e ai tiri salvezza su Destrezza, '
+            'non può usare reazioni e ha velocità dimezzata. Nel suo turno deve '
+            'scegliere se usare un’azione o un’azione bonus, ma non entrambe. A '
+            'prescindere da capacità e oggetti magici, non può effettuare più di '
+            'un attacco in mischia o a distanza durante il proprio turno. Se '
+            'tenta di lanciare un incantesimo con tempo di lancio di 1 azione, '
+            'tira un d20: con 11 o più, l’incantesimo non ha effetto prima del '
+            'suo turno successivo e deve usare l’azione di quel turno per '
+            'completarlo; se non può farlo, l’incantesimo è sprecato. Una '
+            'creatura influenzata ripete il tiro salvezza alla fine del proprio '
+            'turno e, se lo supera, l’effetto termina per lei. Richiede '
+            'concentrazione.',
+      ),
+      ownerId: SpellIds.slow,
+    ),
+    level: 3,
+    school: SpellSchool.transmutation,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 36,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+      materials: [
+        SpellMaterialComponent(
+          description: 'Una goccia di melassa.',
+        ),
+      ],
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.minute,
+      amount: 1,
+      concentration: true,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.creatures,
+        SpellTargetType.area,
+      },
+      maximumTargets: 6,
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'slow_time_distortion_debuff',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'targets_up_to_six_creatures_in_12_meter_cube_within_36_meters',
+          'each_target_makes_wisdom_save',
+          'failed_save_target_affected_for_duration',
+          'affected_target_minus_2_armor_class',
+          'affected_target_minus_2_dexterity_saving_throws',
+          'affected_target_cannot_use_reactions',
+          'affected_target_speed_halved',
+          'affected_target_chooses_action_or_bonus_action_not_both',
+          'affected_target_cannot_make_more_than_one_melee_or_ranged_attack_per_turn',
+          'one_action_spell_casting_requires_d20_roll',
+          'd20_11_or_higher_delays_spell_until_next_turn',
+          'target_must_use_next_turn_action_to_complete_delayed_spell',
+          'delayed_spell_wasted_if_target_cannot_complete_it',
+          'affected_target_repeats_save_at_end_of_turn',
+          'successful_repeat_save_ends_effect_for_target',
+          'requires_concentration',
+        },
+      ),
+    ],
+    classIds: {
+      'sorcerer',
       'wizard',
     },
   ),

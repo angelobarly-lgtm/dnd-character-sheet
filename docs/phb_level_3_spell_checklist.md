@@ -26,10 +26,10 @@ Checklist di lavoro per espandere `lib/data/spell_data.dart` con gli incantesimi
 - [x] Glifo di Interdizione
 - [x] Guardiani Spirituali
 - [x] Immagine Maggiore
-- [ ] Intermittenza
-- [ ] Invocare il Fulmine
-- [ ] Inviare
-- [ ] Lentezza
+- [x] Intermittenza
+- [x] Invocare il Fulmine
+- [x] Inviare
+- [x] Lentezza
 - [ ] Linguaggi
 - [ ] Luce Diurna
 - [ ] Manto del Crociato
