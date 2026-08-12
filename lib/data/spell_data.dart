@@ -1127,6 +1127,8 @@ abstract final class SpellIds {
   static const sleetStorm = 'sleet_storm';
   static const vampiricTouch = 'vampiric_touch';
   static const hypnoticPattern = 'hypnotic_pattern';
+  static const haste = 'haste';
+  static const fly = 'fly';
 }
 
 const Map<String, SpellDefinition> spellDefinitions = {
@@ -15238,6 +15240,146 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ],
     classIds: {
       'bard',
+      'sorcerer',
+      'warlock',
+      'wizard',
+    },
+  ),
+  SpellIds.haste: SpellDefinition(
+    id: SpellIds.haste,
+    content: RuleContent(
+      id: SpellIds.haste,
+      name: 'Velocità',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Accelera una creatura, migliorandone difesa, riflessi, movimento e capacità di agire.',
+        details:
+            'L’incantatore sceglie una creatura consenziente entro gittata che '
+            'sia in grado di vedere. Il bersaglio ottiene un bonus di +2 alla '
+            'CA, dispone di vantaggio ai tiri salvezza su Destrezza, raddoppia '
+            'la propria velocità e ottiene un’azione aggiuntiva a ogni turno. '
+            'Questa azione può essere usata soltanto per Attaccare, effettuando '
+            'un solo attacco con un’arma, Disimpegnarsi, Nascondersi, Scattare '
+            'o Usare un Oggetto. Quando l’incantesimo termina, il bersaglio '
+            'non può muoversi o effettuare azioni fino alla fine del suo turno '
+            'successivo, sopraffatto da un’ondata di spossatezza.',
+      ),
+      ownerId: SpellIds.haste,
+    ),
+    level: 3,
+    school: SpellSchool.transmutation,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 9,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+      materials: [
+        SpellMaterialComponent(
+          description: 'Una buccia di radice di liquirizia.',
+        ),
+      ],
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.minute,
+      amount: 1,
+      concentration: true,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.creature,
+      },
+      maximumTargets: 1,
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'haste_accelerated_willing_creature',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'targets_one_willing_creature_seen_within_range',
+          'target_gains_plus_2_armor_class',
+          'target_has_advantage_on_dexterity_saving_throws',
+          'target_speed_is_doubled',
+          'target_gains_one_additional_action_each_turn',
+          'additional_action_has_limited_allowed_uses',
+          'attack_with_additional_action_allows_one_weapon_attack',
+          'spell_end_prevents_movement_and_actions_until_end_of_next_turn',
+          'requires_concentration',
+        },
+      ),
+    ],
+    classIds: {
+      'sorcerer',
+      'wizard',
+    },
+  ),
+  SpellIds.fly: SpellDefinition(
+    id: SpellIds.fly,
+    content: RuleContent(
+      id: SpellIds.fly,
+      name: 'Volare',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Conferisce a una creatura consenziente una velocità di volare di 18 metri.',
+        details: 'L’incantatore tocca una creatura consenziente. Il bersaglio '
+            'ottiene una velocità di volare di 18 metri per la durata '
+            'dell’incantesimo. Quando l’incantesimo termina, il bersaglio cade '
+            'se è ancora sospeso in aria, a meno che non disponga di un modo '
+            'per impedire la caduta. Usando uno slot di 4° livello o superiore, '
+            'l’incantatore può bersagliare una creatura aggiuntiva per ogni '
+            'livello di slot superiore al 3°.',
+      ),
+      ownerId: SpellIds.fly,
+    ),
+    level: 3,
+    school: SpellSchool.transmutation,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.touch,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+      materials: [
+        SpellMaterialComponent(
+          description: 'La piuma dell’ala di un qualsiasi uccello.',
+        ),
+      ],
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.minute,
+      amount: 10,
+      concentration: true,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.creature,
+      },
+      maximumTargets: 1,
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'fly_granted_flying_speed',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'targets_willing_creature_touched_by_caster',
+          'target_gains_18_meter_flying_speed',
+          'target_falls_when_spell_ends_if_still_airborne',
+          'target_does_not_fall_if_it_can_prevent_the_fall',
+          'slot_level_above_3_adds_one_target_per_slot_level',
+          'requires_concentration',
+        },
+      ),
+    ],
+    classIds: {
       'sorcerer',
       'warlock',
       'wizard',

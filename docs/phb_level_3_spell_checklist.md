@@ -50,5 +50,5 @@ Checklist di lavoro per espandere `lib/data/spell_data.dart` con gli incantesimi
 - [x] Tempesta di Nevischio
 - [x] Tocco del Vampiro
 - [x] Trama Ipnotica
-- [ ] Velocità
-- [ ] Volare
+- [x] Velocità
+- [x] Volare
