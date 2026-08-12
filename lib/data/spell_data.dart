@@ -1093,6 +1093,10 @@ abstract final class SpellIds {
   static const createFoodAndWater = 'create_food_and_water';
   static const plantGrowth = 'plant_growth';
   static const phantomSteed = 'phantom_steed';
+  static const dispelMagic = 'dispel_magic';
+  static const conjureAnimals = 'conjure_animals';
+  static const conjureBarrage = 'conjure_barrage';
+  static const hungerOfHadar = 'hunger_of_hadar';
 }
 
 const Map<String, SpellDefinition> spellDefinitions = {
@@ -12646,6 +12650,310 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ],
     classIds: {
       'wizard',
+    },
+  ),
+  SpellIds.dispelMagic: SpellDefinition(
+    id: SpellIds.dispelMagic,
+    content: RuleContent(
+      id: SpellIds.dispelMagic,
+      name: 'Dissolvi Magie',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Termina incantesimi attivi su una creatura, un oggetto o un effetto magico entro gittata.',
+        details: 'L’incantatore sceglie una creatura, un oggetto o un effetto '
+            'magico entro gittata. Ogni incantesimo di 3° livello o inferiore '
+            'presente sul bersaglio termina. Per ogni incantesimo di 4° livello '
+            'o superiore presente sul bersaglio, l’incantatore effettua una '
+            'prova di caratteristica usando la propria caratteristica da '
+            'incantatore; la CD è pari a 10 + il livello dell’incantesimo. Se '
+            'supera la prova, quell’incantesimo termina. Usando uno slot di 4° '
+            'livello o superiore, termina automaticamente gli effetti di un '
+            'incantesimo sul bersaglio se il livello di quell’incantesimo è pari '
+            'o inferiore al livello dello slot usato.',
+      ),
+      ownerId: SpellIds.dispelMagic,
+    ),
+    level: 3,
+    school: SpellSchool.abjuration,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 36,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.instantaneous,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.creature,
+        SpellTargetType.object,
+        SpellTargetType.special,
+      },
+      maximumTargets: 1,
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'dispel_magic_end_active_spells',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'targets_creature_object_or_magical_effect_within_36_meters',
+          'ends_each_spell_level_3_or_lower_on_target',
+          'spell_level_4_or_higher_requires_spellcasting_ability_check',
+          'dispel_check_dc_10_plus_spell_level',
+          'successful_check_ends_spell',
+          'slot_level_above_3_automatically_ends_spell_of_slot_level_or_lower',
+          'instantaneous_abjuration',
+        },
+      ),
+    ],
+    classIds: {
+      'bard',
+      'cleric',
+      'druid',
+      'paladin',
+      'sorcerer',
+      'warlock',
+      'wizard',
+    },
+  ),
+  SpellIds.conjureAnimals: SpellDefinition(
+    id: SpellIds.conjureAnimals,
+    content: RuleContent(
+      id: SpellIds.conjureAnimals,
+      name: 'Evoca Animali',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Evoca spiriti fatati in forma di bestie amichevoli che obbediscono ai comandi verbali.',
+        details:
+            'L’incantatore evoca spiriti fatati che assumono forme bestiali e '
+            'compaiono in spazi liberi entro gittata che egli sia in grado di '
+            'vedere. Sceglie una delle opzioni: una bestia con grado di sfida 2 '
+            'o inferiore, due bestie con grado di sfida 1 o inferiore, quattro '
+            'bestie con grado di sfida 1/2 o inferiore, oppure otto bestie con '
+            'grado di sfida 1/4 o inferiore. Ogni bestia è considerata un '
+            'folletto e scompare quando scende a 0 punti ferita o quando '
+            'l’incantesimo termina. Le creature evocate sono amichevoli verso '
+            'l’incantatore e i suoi compagni, condividono un’unica iniziativa e '
+            'agiscono tutte assieme. Obbediscono ai comandi verbali senza '
+            'richiedere azioni; se non ricevono comandi si difendono da '
+            'creature ostili, ma altrimenti non agiscono. Il DM possiede le '
+            'statistiche delle creature. Con slot superiori, il numero di '
+            'creature raddoppia con uno slot di 5° livello, triplica con uno di '
+            '7° e quadruplica con uno di 9°.',
+      ),
+      ownerId: SpellIds.conjureAnimals,
+    ),
+    level: 3,
+    school: SpellSchool.conjuration,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 18,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.hour,
+      amount: 1,
+      concentration: true,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.special,
+      },
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'conjure_animals_fey_beast_spirits',
+        type: SpellPersistentEffectType.createdObject,
+        ruleTags: {
+          'summons_fey_spirits_in_beast_forms',
+          'summoned_creatures_appear_in_unoccupied_spaces_within_18_meters',
+          'caster_must_see_summoning_spaces',
+          'option_one_beast_cr_2_or_lower',
+          'option_two_beasts_cr_1_or_lower',
+          'option_four_beasts_cr_1_2_or_lower',
+          'option_eight_beasts_cr_1_4_or_lower',
+          'each_beast_counts_as_fey',
+          'summoned_beast_disappears_at_0_hit_points_or_when_spell_ends',
+          'summoned_creatures_are_friendly_to_caster_and_companions',
+          'summoned_group_rolls_one_initiative',
+          'summoned_creatures_act_together',
+          'summoned_creatures_obey_verbal_commands_no_action_required',
+          'without_commands_creatures_defend_against_hostiles_only',
+          'dm_has_creature_statistics',
+          'slot_5_doubles_number_of_creatures',
+          'slot_7_triples_number_of_creatures',
+          'slot_9_quadruples_number_of_creatures',
+          'requires_concentration',
+        },
+      ),
+    ],
+    classIds: {
+      'druid',
+      'ranger',
+    },
+  ),
+  SpellIds.conjureBarrage: SpellDefinition(
+    id: SpellIds.conjureBarrage,
+    content: RuleContent(
+      id: SpellIds.conjureBarrage,
+      name: 'Evoca Raffica',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Crea un cono di duplicati di una munizione o arma da lancio non magica.',
+        details:
+            'L’incantatore lancia in aria un’arma non magica o scaglia una '
+            'munizione non magica per creare un cono di armi identiche che '
+            'sfrecciano in avanti e poi scompaiono. Ogni creatura entro un '
+            'cono di 18 metri deve effettuare un tiro salvezza su Destrezza. Se '
+            'lo fallisce, subisce 3d8 danni; se lo supera, subisce soltanto la '
+            'metà dei danni. Il tipo di danno è lo stesso dell’arma o della '
+            'munizione usata come componente materiale.',
+      ),
+      ownerId: SpellIds.conjureBarrage,
+    ),
+    level: 3,
+    school: SpellSchool.conjuration,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.self,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+      materials: [
+        SpellMaterialComponent(
+          description: 'Una munizione o un’arma da lancio.',
+        ),
+      ],
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.instantaneous,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.area,
+      },
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'conjure_barrage_weapon_cone',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'creates_18_meter_cone_from_caster',
+          'uses_nonmagical_ammunition_or_thrown_weapon_component',
+          'creates_identical_weapons_or_ammunition_that_vanish',
+          'each_creature_in_cone_makes_dexterity_save',
+          'failed_save_deals_3d8_damage',
+          'successful_save_deals_half_damage',
+          'damage_type_matches_component_weapon_or_ammunition',
+          'instantaneous_conjuration',
+        },
+      ),
+    ],
+    classIds: {
+      'ranger',
+    },
+  ),
+  SpellIds.hungerOfHadar: SpellDefinition(
+    id: SpellIds.hungerOfHadar,
+    content: RuleContent(
+      id: SpellIds.hungerOfHadar,
+      name: 'Fame di Hadar',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Apre una sfera di oscurità aliena che acceca, ostacola e lacera le creature al suo interno.',
+        details: 'L’incantatore apre un portale verso l’oscurità celata tra le '
+            'stelle, creando una sfera del raggio di 6 metri fatta di oscurità '
+            'e freddo pungente, centrata su un punto entro gittata. Nel vuoto '
+            'risuonano sussurri e fauci biascicanti udibili fino a 9 metri. '
+            'Nessuna luce, magica o non magica, può illuminare l’area, e le '
+            'creature completamente al suo interno sono accecate. L’area è '
+            'terreno difficile. Ogni creatura che inizia il proprio turno '
+            'nell’area subisce 2d6 danni da freddo. Ogni creatura che termina '
+            'il proprio turno nell’area deve superare un tiro salvezza su '
+            'Destrezza, altrimenti subisce 2d6 danni da acido da tentacoli '
+            'ultraterreni. Richiede concentrazione.',
+      ),
+      ownerId: SpellIds.hungerOfHadar,
+    ),
+    level: 3,
+    school: SpellSchool.conjuration,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 45,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+      materials: [
+        SpellMaterialComponent(
+          description: 'Un tentacolo di piovra conservato sott’olio.',
+        ),
+      ],
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.minute,
+      amount: 1,
+      concentration: true,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.area,
+        SpellTargetType.point,
+      },
+    ),
+    damage: [
+      SpellDamage(
+        dice: '2d6',
+        type: SpellDamageType.cold,
+      ),
+      SpellDamage(
+        dice: '2d6',
+        type: SpellDamageType.acid,
+      ),
+    ],
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'hunger_of_hadar_dark_cold_void',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'creates_6_meter_radius_sphere_centered_on_point_within_45_meters',
+          'sphere_is_darkness_and_bitter_cold',
+          'whispers_and_slurping_maws_audible_within_9_meters',
+          'no_magical_or_nonmagical_light_can_illuminate_area',
+          'creatures_fully_inside_area_are_blinded',
+          'area_is_difficult_terrain',
+          'creature_starting_turn_in_area_takes_2d6_cold_damage',
+          'creature_ending_turn_in_area_makes_dexterity_save',
+          'failed_end_turn_save_deals_2d6_acid_damage',
+          'otherworldly_milky_tentacles_deal_acid_damage',
+          'requires_concentration',
+        },
+      ),
+    ],
+    classIds: {
+      'warlock',
     },
   ),
 };

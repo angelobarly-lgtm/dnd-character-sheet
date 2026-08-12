@@ -14,10 +14,10 @@ Checklist di lavoro per espandere `lib/data/spell_data.dart` con gli incantesimi
 - [x] Creare Cibo e Acqua
 - [x] Crescita Vegetale
 - [x] Destriero Fantomatico
-- [ ] Dissolvi Magie
-- [ ] Evoca Animali
-- [ ] Evoca Raffica
-- [ ] Fame di Hadar
+- [x] Dissolvi Magie
+- [x] Evoca Animali
+- [x] Evoca Raffica
+- [x] Fame di Hadar
 - [ ] Faro di Speranza
 - [ ] Fondersi nella Pietra
 - [ ] Forma Gassosa
