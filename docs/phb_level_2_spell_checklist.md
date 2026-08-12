@@ -58,6 +58,6 @@ Checklist di lavoro per espandere `lib/data/spell_data.dart` con gli incantesimi
 - [x] Suggestione
 - [x] Trova Cavalcatura
 - [x] Trucco della Corda
-- [ ] Vedere Invisibilità
-- [ ] Vincolo di Interdizione
-- [ ] Zona di Verità
+- [x] Vedere Invisibilità
+- [x] Vincolo di Interdizione
+- [x] Zona di Verità

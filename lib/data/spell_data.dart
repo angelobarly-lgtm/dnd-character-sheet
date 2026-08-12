@@ -1078,6 +1078,9 @@ abstract final class SpellIds {
   static const suggestion = 'suggestion';
   static const findSteed = 'find_steed';
   static const ropeTrick = 'rope_trick';
+  static const seeInvisibility = 'see_invisibility';
+  static const wardingBond = 'warding_bond';
+  static const zoneOfTruth = 'zone_of_truth';
 }
 
 const Map<String, SpellDefinition> spellDefinitions = {
@@ -11557,6 +11560,214 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ],
     classIds: {
       'wizard',
+    },
+  ),
+  SpellIds.seeInvisibility: SpellDefinition(
+    id: SpellIds.seeInvisibility,
+    content: RuleContent(
+      id: SpellIds.seeInvisibility,
+      name: 'Vedere Invisibilità',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Permette all’incantatore di vedere creature e oggetti invisibili e il Piano Etereo.',
+        details:
+            'Per la durata dell’incantesimo, l’incantatore vede le creature e '
+            'gli oggetti invisibili come se fossero visibili. Può inoltre vedere '
+            'sul Piano Etereo; le creature e gli oggetti eterei gli appaiono '
+            'spettrali e trasparenti. L’effetto dura 1 ora e non richiede '
+            'concentrazione.',
+      ),
+      ownerId: SpellIds.seeInvisibility,
+    ),
+    level: 2,
+    school: SpellSchool.divination,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.self,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+      materials: [
+        SpellMaterialComponent(
+          description:
+              'Un pizzico di talco e una manciata di polvere d’argento.',
+        ),
+      ],
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.hour,
+      amount: 1,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.self,
+      },
+      maximumTargets: 1,
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'see_invisibility_invisible_and_ethereal_sight',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'caster_sees_invisible_creatures_and_objects_as_visible',
+          'caster_can_see_into_ethereal_plane',
+          'ethereal_creatures_and_objects_appear_ghostly_and_transparent',
+          'duration_1_hour',
+          'does_not_require_concentration',
+        },
+      ),
+    ],
+    classIds: {
+      'bard',
+      'sorcerer',
+      'wizard',
+    },
+  ),
+  SpellIds.wardingBond: SpellDefinition(
+    id: SpellIds.wardingBond,
+    content: RuleContent(
+      id: SpellIds.wardingBond,
+      name: 'Vincolo di Interdizione',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Protegge una creatura consenziente legandola misticamente all’incantatore.',
+        details:
+            'L’incantatore tocca una creatura consenziente e crea tra sé e il '
+            'bersaglio un legame mistico che permane per la durata '
+            'dell’incantesimo. Finché il bersaglio si trova entro 18 metri '
+            'dall’incantatore, ottiene un bonus di +1 alla Classe Armatura e ai '
+            'tiri salvezza, e resistenza a tutti i danni. Ogni volta che il '
+            'bersaglio subisce danni, l’incantatore subisce lo stesso ammontare '
+            'di danni. L’incantesimo termina se l’incantatore scende a 0 punti '
+            'ferita, se le due creature si separano a più di 18 metri, se '
+            'l’incantesimo viene lanciato di nuovo su una delle due creature '
+            'collegate, oppure se l’incantatore lo interrompe con un’azione.',
+      ),
+      ownerId: SpellIds.wardingBond,
+    ),
+    level: 2,
+    school: SpellSchool.abjuration,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.touch,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+      materials: [
+        SpellMaterialComponent(
+          description:
+              'Un paio di anelli di platino del valore di almeno 50 mo, indossati dall’incantatore e dal bersaglio per la durata.',
+          minimumCostGp: 50,
+        ),
+      ],
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.hour,
+      amount: 1,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.willingCreature,
+      },
+      maximumTargets: 1,
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'warding_bond_shared_protection',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'touched_willing_creature',
+          'mystic_bond_between_caster_and_target',
+          'target_must_remain_within_18_meters_of_caster',
+          'target_gains_plus_1_armor_class',
+          'target_gains_plus_1_saving_throws',
+          'target_has_resistance_to_all_damage',
+          'caster_takes_same_amount_of_damage_when_target_takes_damage',
+          'spell_ends_if_caster_drops_to_0_hit_points',
+          'spell_ends_if_caster_and_target_more_than_18_meters_apart',
+          'spell_ends_if_cast_again_on_either_linked_creature',
+          'caster_can_dismiss_with_action',
+        },
+      ),
+    ],
+    classIds: {
+      'cleric',
+    },
+  ),
+  SpellIds.zoneOfTruth: SpellDefinition(
+    id: SpellIds.zoneOfTruth,
+    content: RuleContent(
+      id: SpellIds.zoneOfTruth,
+      name: 'Zona di Verità',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Crea una sfera magica in cui le creature non possono mentire deliberatamente se falliscono il tiro salvezza.',
+        details:
+            'L’incantatore crea una zona magica protetta dagli inganni entro '
+            'una sfera del raggio di 4,5 metri centrata su un punto entro '
+            'gittata. Finché l’incantesimo non termina, una creatura che entra '
+            'nell’area per la prima volta in un turno o vi inizia il proprio '
+            'turno deve effettuare un tiro salvezza su Carisma. Se lo fallisce, '
+            'non può mentire deliberatamente finché rimane nell’area. '
+            'L’incantatore sa se ogni creatura ha superato o fallito il tiro '
+            'salvezza. Una creatura influenzata è consapevole dell’incantesimo '
+            'e può evitare di rispondere o dare risposte sfuggenti, purché '
+            'rimanga entro i confini della verità.',
+      ),
+      ownerId: SpellIds.zoneOfTruth,
+    ),
+    level: 2,
+    school: SpellSchool.enchantment,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 18,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.minute,
+      amount: 10,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.area,
+      },
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'zone_of_truth_charisma_save_no_lies',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'creates_4_5_meter_radius_sphere_centered_on_point_within_18_meters',
+          'creature_entering_area_first_time_on_turn_makes_charisma_save',
+          'creature_starting_turn_in_area_makes_charisma_save',
+          'failed_save_creature_cannot_deliberately_lie_while_in_area',
+          'caster_knows_whether_each_creature_succeeded_or_failed_save',
+          'affected_creature_is_aware_of_spell',
+          'affected_creature_can_avoid_answering',
+          'affected_creature_can_give_evasive_answers_within_truth',
+          'does_not_require_concentration',
+        },
+      ),
+    ],
+    classIds: {
+      'bard',
+      'cleric',
+      'paladin',
     },
   ),
 };
