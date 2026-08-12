@@ -1164,6 +1164,10 @@ abstract final class SpellIds {
   static const iceStorm = 'ice_storm';
   static const evardsBlackTentacles = 'evards_black_tentacles';
   static const hallucinatoryTerrain = 'hallucinatory_terrain';
+  static const animateObjects = 'animate_objects';
+  static const holdMonster = 'hold_monster';
+  static const circleOfPower = 'circle_of_power';
+  static const teleportationCircle = 'teleportation_circle';
 }
 
 const Map<String, SpellDefinition> spellDefinitions = {
@@ -18121,6 +18125,320 @@ const Map<String, SpellDefinition> spellDefinitions = {
       'bard',
       'druid',
       'warlock',
+      'wizard',
+    },
+  ),
+  SpellIds.animateObjects: SpellDefinition(
+    id: SpellIds.animateObjects,
+    content: RuleContent(
+      id: SpellIds.animateObjects,
+      name: 'Animare Oggetti',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Anima fino a dieci oggetti non magici e li pone sotto il controllo dell’incantatore.',
+        details: 'L’incantatore sceglie fino a dieci oggetti non magici entro '
+            '36 metri che non siano indossati o trasportati. Un oggetto Medio '
+            'conta come due oggetti, uno Grande come quattro e uno Enorme come '
+            'otto; non è possibile animare oggetti più grandi. Ogni bersaglio '
+            'diventa un costrutto controllato finché l’incantesimo termina o '
+            'scende a 0 punti ferita. Con un’azione bonus, l’incantatore può '
+            'comandare mentalmente gli oggetti animati entro 150 metri, '
+            'impartendo lo stesso comando a tutti quelli scelti. Senza ordini '
+            'si limitano a difendersi. Gli oggetti hanno velocità di 9 metri, '
+            'o velocità di volare di 9 metri se privi di appendici, vista '
+            'cieca entro 9 metri e sono ciechi oltre tale distanza. Un oggetto '
+            'comandato ad attaccare effettua un attacco in mischia contro una '
+            'creatura entro 1,5 metri. Con uno slot di 6° livello o superiore '
+            'si possono animare due oggetti aggiuntivi per ogni livello dello '
+            'slot oltre il 5°.',
+      ),
+      ownerId: SpellIds.animateObjects,
+    ),
+    level: 5,
+    school: SpellSchool.transmutation,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 36,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.minute,
+      amount: 1,
+      concentration: true,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.object,
+      },
+      maximumTargets: 10,
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'animate_objects_controlled_constructs',
+        type: SpellPersistentEffectType.createdObject,
+        ruleTags: {
+          'targets_up_to_ten_nonmagical_objects_not_worn_or_carried',
+          'medium_object_counts_as_two_targets',
+          'large_object_counts_as_four_targets',
+          'huge_object_counts_as_eight_targets',
+          'cannot_animate_object_larger_than_huge',
+          'animated_object_becomes_controlled_construct',
+          'effect_ends_for_object_at_zero_hit_points',
+          'bonus_action_commands_animated_objects_within_150_meters',
+          'same_command_may_be_given_to_multiple_animated_objects',
+          'without_command_object_only_defends_itself',
+          'tiny_object_ac18_hp20_attack_plus8_damage_1d4_plus4',
+          'small_object_ac16_hp25_attack_plus6_damage_1d8_plus2',
+          'medium_object_ac13_hp40_attack_plus5_damage_2d6_plus1',
+          'large_object_ac10_hp50_attack_plus6_damage_2d10_plus2',
+          'huge_object_ac10_hp80_attack_plus8_damage_2d12_plus4',
+          'constitution_10_intelligence_3_wisdom_3_charisma_1',
+          'walking_speed_9_meters',
+          'object_without_locomotion_has_flying_speed_9_meters',
+          'object_fixed_to_surface_has_speed_zero',
+          'blindsight_9_meters_and_blind_beyond',
+          'melee_attack_targets_creature_within_1_5_meters',
+          'default_attack_deals_bludgeoning_damage',
+          'dm_may_change_damage_to_piercing_or_slashing_by_object_shape',
+          'slot_level_above_5_animates_two_additional_objects_per_level',
+          'requires_concentration',
+        },
+      ),
+    ],
+    classIds: {
+      'bard',
+      'sorcerer',
+      'wizard',
+    },
+  ),
+  SpellIds.holdMonster: SpellDefinition(
+    id: SpellIds.holdMonster,
+    content: RuleContent(
+      id: SpellIds.holdMonster,
+      name: 'Blocca Mostri',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Paralizza una creatura visibile, consentendole nuovi tiri salvezza alla fine dei suoi turni.',
+        details: 'L’incantatore sceglie una creatura entro 27 metri che sia in '
+            'grado di vedere. Il bersaglio deve superare un tiro salvezza su '
+            'Saggezza, altrimenti è paralizzato per la durata '
+            'dell’incantesimo. L’incantesimo non ha effetto sui non morti. '
+            'Alla fine di ogni suo turno, il bersaglio può ripetere il tiro '
+            'salvezza su Saggezza, terminando l’effetto in caso di successo. '
+            'Con uno slot di 6° livello o superiore è possibile bersagliare '
+            'una creatura aggiuntiva per ogni livello dello slot oltre il 5°; '
+            'i bersagli devono trovarsi entro 9 metri l’uno dall’altro.',
+      ),
+      ownerId: SpellIds.holdMonster,
+    ),
+    level: 5,
+    school: SpellSchool.enchantment,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 27,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+      materials: [
+        SpellMaterialComponent(
+          description: 'Una piccola sbarra di ferro.',
+        ),
+      ],
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.minute,
+      amount: 1,
+      concentration: true,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.creature,
+      },
+      maximumTargets: 1,
+    ),
+    savingThrow: SpellSavingThrow(
+      ability: SpellSavingThrowAbility.wisdom,
+      onSuccess: SpellSaveSuccess.negates,
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'hold_monster_paralysis',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'failed_wisdom_save_paralyzes_target',
+          'has_no_effect_on_undead',
+          'target_repeats_wisdom_save_at_end_of_each_turn',
+          'successful_repeat_save_ends_spell',
+          'slot_level_above_5_adds_one_target_per_level',
+          'multiple_targets_must_be_within_9_meters_of_each_other',
+          'requires_concentration',
+        },
+      ),
+    ],
+    classIds: {
+      'bard',
+      'sorcerer',
+      'warlock',
+      'wizard',
+    },
+  ),
+  SpellIds.circleOfPower: SpellDefinition(
+    id: SpellIds.circleOfPower,
+    content: RuleContent(
+      id: SpellIds.circleOfPower,
+      name: 'Cerchio di Potere',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Un’aura mobile protegge gli alleati dagli incantesimi e dagli effetti magici.',
+        details: 'Dall’incantatore si irradia una sfera di energia divina con '
+            'raggio di 9 metri, centrata su di lui e che si muove assieme a '
+            'lui. Ogni creatura amica nell’area, incluso l’incantatore, ha '
+            'vantaggio ai tiri salvezza contro incantesimi e altri effetti '
+            'magici. Quando una creatura influenzata supera un tiro salvezza '
+            'contro un incantesimo o effetto magico che normalmente '
+            'infliggerebbe metà danni in caso di successo, non subisce invece '
+            'alcun danno. L’effetto richiede concentrazione e dura fino a '
+            '10 minuti.',
+      ),
+      ownerId: SpellIds.circleOfPower,
+    ),
+    level: 5,
+    school: SpellSchool.abjuration,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.self,
+    ),
+    area: SpellArea(
+      shape: SpellAreaShape.radius,
+      origin: SpellAreaOrigin.caster,
+      radiusMeters: 9,
+    ),
+    components: SpellComponents(
+      verbal: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.minute,
+      amount: 10,
+      concentration: true,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.self,
+        SpellTargetType.area,
+      },
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'circle_of_power_protective_aura',
+        type: SpellPersistentEffectType.zone,
+        ruleTags: {
+          'aura_has_9_meter_radius_centered_on_caster',
+          'aura_moves_with_caster',
+          'affects_caster_and_friendly_creatures_in_area',
+          'grants_advantage_on_saves_against_spells_and_magical_effects',
+          'successful_half_damage_save_against_magic_deals_no_damage',
+          'requires_concentration',
+        },
+      ),
+    ],
+    classIds: {
+      'paladin',
+    },
+  ),
+  SpellIds.teleportationCircle: SpellDefinition(
+    id: SpellIds.teleportationCircle,
+    content: RuleContent(
+      id: SpellIds.teleportationCircle,
+      name: 'Cerchio di Teletrasporto',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Traccia un portale temporaneo diretto a un cerchio permanente conosciuto sullo stesso piano.',
+        details: 'In 1 minuto l’incantatore traccia entro 3 metri un cerchio '
+            'del diametro di 3 metri, collegandolo a un cerchio di '
+            'teletrasporto permanente conosciuto sullo stesso piano di '
+            'esistenza. Il portale rimane aperto fino alla fine del turno '
+            'successivo dell’incantatore. Ogni creatura che vi entra appare '
+            'entro 1,5 metri dal cerchio di destinazione, oppure nello spazio '
+            'libero più vicino. Quando apprende l’incantesimo, l’incantatore '
+            'conosce due sequenze di simboli determinate dal DM e può '
+            'memorizzarne altre studiandole per 1 minuto. Lanciando '
+            'l’incantesimo nello stesso luogo ogni giorno per un anno può '
+            'creare un cerchio permanente. I materiali da 50 mo sono consumati.',
+      ),
+      ownerId: SpellIds.teleportationCircle,
+    ),
+    level: 5,
+    school: SpellSchool.conjuration,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.minute,
+      amount: 1,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 3,
+    ),
+    area: SpellArea(
+      shape: SpellAreaShape.radius,
+      origin: SpellAreaOrigin.targetPoint,
+      radiusMeters: 1.5,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      materials: [
+        SpellMaterialComponent(
+          description:
+              'Gessetti e inchiostri rari infusi di gemme preziose del valore di 50 mo, consumati dall’incantesimo.',
+          minimumCostGp: 50,
+          consumed: true,
+        ),
+      ],
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.round,
+      amount: 1,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.point,
+        SpellTargetType.area,
+      },
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'teleportation_circle_planar_portal',
+        type: SpellPersistentEffectType.magicalLink,
+        ruleTags: {
+          'creates_3_meter_diameter_circle_within_3_meters',
+          'links_to_known_permanent_circle_on_same_plane',
+          'portal_remains_until_end_of_casters_next_turn',
+          'creature_entering_arrives_within_1_5_meters_of_destination_circle',
+          'uses_nearest_free_space_if_destination_space_is_occupied',
+          'caster_initially_learns_two_destination_sigils',
+          'new_sigil_sequence_requires_1_minute_of_study',
+          'daily_casting_in_same_place_for_one_year_creates_permanent_circle',
+          'consumes_materials_worth_50_gp',
+        },
+      ),
+    ],
+    classIds: {
+      'bard',
+      'sorcerer',
       'wizard',
     },
   ),

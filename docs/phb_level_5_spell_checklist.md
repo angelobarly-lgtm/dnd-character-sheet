@@ -1,0 +1,46 @@
+# PHB livello 5 - checklist incantesimi
+
+Checklist di lavoro per espandere `lib/data/spell_data.dart` con gli incantesimi di 5° livello del PHB.
+
+- [x] Animare Oggetti
+- [x] Blocca Mostri
+- [x] Cerchio di Potere
+- [x] Cerchio di Teletrasporto
+- [ ] Colpo Infuocato
+- [ ] Comunione
+- [ ] Comunione con la Natura
+- [ ] Cono di Freddo
+- [ ] Conoscenza delle Leggende
+- [ ] Contagio
+- [ ] Contattare Altri Piani
+- [ ] Costrizione
+- [ ] Creazione
+- [ ] Cura Ferite di Massa
+- [ ] Dissolvi il Bene e il Male
+- [ ] Dominare Persone
+- [ ] Evoca Elementale
+- [ ] Evoca Pioggia di Armi
+- [ ] Faretra Rapida
+- [ ] Fuorviare
+- [ ] Guscio Anti-Vita
+- [ ] Legame Planare
+- [ ] Legame Telepatico di Rary
+- [ ] Mano di Bigby
+- [ ] Modificare Memoria
+- [ ] Muro di Forza
+- [ ] Muro di Pietra
+- [ ] Nube Mortale
+- [ ] Onda Distruttiva
+- [ ] Passapareti
+- [ ] Piaga degli Insetti
+- [ ] Punizione Esiliante
+- [ ] Rianimare Morti
+- [ ] Reincarnazione
+- [ ] Ristorare Superiore
+- [ ] Risveglio
+- [ ] Santificare
+- [ ] Scrutare
+- [ ] Sembrare
+- [ ] Sogno
+- [ ] Telecinesi
+- [ ] Traslazione Arborea
