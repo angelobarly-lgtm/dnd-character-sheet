@@ -34,6 +34,6 @@ Checklist di lavoro per espandere `lib/data/spell_data.dart` con gli incantesimi
 - [x] Scudo di Fuoco
 - [x] Segugio Fedele di Mordenkainen
 - [x] Sfera Elastica di Otiluke
-- [ ] Tempesta di Ghiaccio
-- [ ] Tentacoli Neri di Evard
-- [ ] Terreno Illusorio
+- [x] Tempesta di Ghiaccio
+- [x] Tentacoli Neri di Evard
+- [x] Terreno Illusorio

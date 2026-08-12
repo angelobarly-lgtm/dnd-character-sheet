@@ -1161,6 +1161,9 @@ abstract final class SpellIds {
   static const fireShield = 'fire_shield';
   static const mordenkainensFaithfulHound = 'mordenkainens_faithful_hound';
   static const otilukesResilientSphere = 'otilukes_resilient_sphere';
+  static const iceStorm = 'ice_storm';
+  static const evardsBlackTentacles = 'evards_black_tentacles';
+  static const hallucinatoryTerrain = 'hallucinatory_terrain';
 }
 
 const Map<String, SpellDefinition> spellDefinitions = {
@@ -17838,6 +17841,286 @@ const Map<String, SpellDefinition> spellDefinitions = {
       ),
     ],
     classIds: {
+      'wizard',
+    },
+  ),
+  SpellIds.iceStorm: SpellDefinition(
+    id: SpellIds.iceStorm,
+    content: RuleContent(
+      id: SpellIds.iceStorm,
+      name: 'Tempesta di Ghiaccio',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Una grandinata gelida colpisce un cilindro e lascia il terreno difficile.',
+        details: 'Una grandine dura come roccia investe un cilindro di 6 metri '
+            'di raggio e 12 metri di altezza centrato su un punto entro '
+            'gittata. Ogni creatura nell’area effettua un tiro salvezza su '
+            'Destrezza: se lo fallisce subisce 2d8 danni contundenti e 4d6 '
+            'danni da freddo, mentre se lo supera subisce la metà dei danni. '
+            'La grandine trasforma l’area in terreno difficile fino alla fine '
+            'del turno successivo dell’incantatore. Usando uno slot di 5° '
+            'livello o superiore, i danni contundenti aumentano di 1d8 per '
+            'ogni livello dello slot oltre il 4°.',
+      ),
+      ownerId: SpellIds.iceStorm,
+    ),
+    level: 4,
+    school: SpellSchool.evocation,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 90,
+    ),
+    area: SpellArea(
+      shape: SpellAreaShape.cylinder,
+      origin: SpellAreaOrigin.targetPoint,
+      radiusMeters: 6,
+      heightMeters: 12,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+      materials: [
+        SpellMaterialComponent(
+          description: 'Un pizzico di polvere e alcune gocce d’acqua.',
+        ),
+      ],
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.instantaneous,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.point,
+        SpellTargetType.area,
+      },
+    ),
+    savingThrow: SpellSavingThrow(
+      ability: SpellSavingThrowAbility.dexterity,
+      onSuccess: SpellSaveSuccess.halfDamage,
+    ),
+    damage: [
+      SpellDamage(
+        dice: '2d8',
+        type: SpellDamageType.bludgeoning,
+      ),
+      SpellDamage(
+        dice: '4d6',
+        type: SpellDamageType.cold,
+      ),
+    ],
+    scaling: SpellScaling(
+      type: SpellScalingType.slotLevel,
+      steps: [
+        SpellScalingStep(
+          threshold: 5,
+          additionalDice: '1d8',
+        ),
+      ],
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'ice_storm_difficult_terrain',
+        type: SpellPersistentEffectType.zone,
+        ruleTags: {
+          'creates_6_meter_radius_12_meter_high_cylinder',
+          'each_creature_in_area_makes_dexterity_save',
+          'failed_save_deals_2d8_bludgeoning_and_4d6_cold_damage',
+          'successful_save_deals_half_damage',
+          'area_is_difficult_terrain_until_end_of_casters_next_turn',
+          'slot_level_above_4_adds_1d8_bludgeoning_damage_per_level',
+        },
+      ),
+    ],
+    classIds: {
+      'druid',
+      'sorcerer',
+      'wizard',
+    },
+  ),
+  SpellIds.evardsBlackTentacles: SpellDefinition(
+    id: SpellIds.evardsBlackTentacles,
+    content: RuleContent(
+      id: SpellIds.evardsBlackTentacles,
+      name: 'Tentacoli Neri di Evard',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Tentacoli oscuri rendono il terreno difficile, feriscono e trattengono le creature.',
+        details: 'Tentacoli neri riempiono un quadrato di terreno con lato di '
+            '6 metri, rendendolo terreno difficile. Quando una creatura entra '
+            'nell’area per la prima volta in un turno o vi inizia il proprio '
+            'turno, deve superare un tiro salvezza su Destrezza oppure subire '
+            '3d6 danni contundenti ed essere trattenuta fino al termine '
+            'dell’incantesimo. Una creatura già trattenuta che inizia il turno '
+            'nell’area subisce 3d6 danni contundenti senza un nuovo tiro '
+            'salvezza. Una creatura trattenuta può usare la sua azione per '
+            'effettuare una prova di Forza o Destrezza contro la CD del tiro '
+            'salvezza dell’incantesimo e liberarsi in caso di successo.',
+      ),
+      ownerId: SpellIds.evardsBlackTentacles,
+    ),
+    level: 4,
+    school: SpellSchool.conjuration,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 27,
+    ),
+    area: SpellArea(
+      shape: SpellAreaShape.special,
+      origin: SpellAreaOrigin.targetPoint,
+      sizeMeters: 6,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+      materials: [
+        SpellMaterialComponent(
+          description:
+              'Un frammento di tentacolo di una piovra o di una seppia gigante.',
+        ),
+      ],
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.minute,
+      amount: 1,
+      concentration: true,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.point,
+        SpellTargetType.area,
+      },
+    ),
+    savingThrow: SpellSavingThrow(
+      ability: SpellSavingThrowAbility.dexterity,
+      onSuccess: SpellSaveSuccess.negates,
+    ),
+    damage: [
+      SpellDamage(
+        dice: '3d6',
+        type: SpellDamageType.bludgeoning,
+      ),
+    ],
+    areaTriggeredEffects: [
+      SpellAreaTriggeredEffect(
+        triggers: {
+          SpellAreaTriggerEvent.entersAreaFirstTimeOnTurn,
+          SpellAreaTriggerEvent.startsTurnInArea,
+        },
+        savingThrow: SpellSavingThrow(
+          ability: SpellSavingThrowAbility.dexterity,
+          onSuccess: SpellSaveSuccess.negates,
+        ),
+        damage: SpellDamage(
+          dice: '3d6',
+          type: SpellDamageType.bludgeoning,
+        ),
+      ),
+    ],
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'evards_black_tentacles_restraining_zone',
+        type: SpellPersistentEffectType.zone,
+        ruleTags: {
+          'creates_6_meter_square_on_ground',
+          'area_is_difficult_terrain',
+          'entering_first_time_on_turn_or_starting_turn_requires_dexterity_save',
+          'failed_save_deals_3d6_bludgeoning_damage_and_restrains',
+          'restrained_creature_starting_turn_in_area_takes_3d6_bludgeoning_without_save',
+          'restrained_creature_may_use_action_for_strength_or_dexterity_check',
+          'escape_check_uses_spell_save_dc',
+          'successful_escape_check_ends_restrained_condition',
+          'requires_concentration',
+        },
+      ),
+    ],
+    classIds: {
+      'wizard',
+    },
+  ),
+  SpellIds.hallucinatoryTerrain: SpellDefinition(
+    id: SpellIds.hallucinatoryTerrain,
+    content: RuleContent(
+      id: SpellIds.hallucinatoryTerrain,
+      name: 'Terreno Illusorio',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Fa apparire, suonare e odorare un’ampia area naturale come un altro terreno.',
+        details: 'Il terreno naturale in un cubo con spigolo di 45 metri '
+            'appare, suona e odora come un altro tipo di terreno naturale. '
+            'Campi, strade o paludi possono sembrare colline, crepacci o '
+            'altri terreni, ma strutture artificiali, equipaggiamento e '
+            'creature non cambiano aspetto. Le caratteristiche tattili del '
+            'terreno restano reali. Una creatura che nota una discrepanza e '
+            'osserva attentamente l’illusione può effettuare una prova di '
+            'Intelligenza (Indagare) contro la CD del tiro salvezza '
+            'dell’incantesimo. Se supera la prova, riconosce l’illusione e '
+            'la vede come un’immagine indistinta sovrapposta al terreno vero.',
+      ),
+      ownerId: SpellIds.hallucinatoryTerrain,
+    ),
+    level: 4,
+    school: SpellSchool.illusion,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.minute,
+      amount: 10,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 90,
+    ),
+    area: SpellArea(
+      shape: SpellAreaShape.cube,
+      origin: SpellAreaOrigin.targetPoint,
+      sizeMeters: 45,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+      materials: [
+        SpellMaterialComponent(
+          description:
+              'Una pietra, un rametto e alcuni frammenti di vegetale fresco.',
+        ),
+      ],
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.hour,
+      amount: 24,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.area,
+      },
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'hallucinatory_terrain_natural_landscape_illusion',
+        type: SpellPersistentEffectType.zone,
+        ruleTags: {
+          'affects_natural_terrain_in_45_meter_cube',
+          'changes_visual_sound_and_smell_of_natural_terrain',
+          'does_not_change_artificial_structures_equipment_or_creatures',
+          'does_not_change_tactile_properties',
+          'careful_examination_allows_intelligence_investigation_check',
+          'investigation_check_uses_spell_save_dc',
+          'successful_check_reveals_illusion_as_faint_overlay',
+          'lasts_24_hours_without_concentration',
+        },
+      ),
+    ],
+    classIds: {
+      'bard',
+      'druid',
+      'warlock',
       'wizard',
     },
   ),
