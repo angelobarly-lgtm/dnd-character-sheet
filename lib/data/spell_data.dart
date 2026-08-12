@@ -929,6 +929,10 @@ class SpellDefinition {
 /// Verrà popolato progressivamente. Tenere un unico registry permette a
 /// razze, classi, talenti e altri sistemi di riferirsi allo stesso ID.
 abstract final class SpellIds {
+  static const trueSeeing = 'true_seeing';
+  static const guardsAndWards = 'guards_and_wards';
+  static const transportViaPlants = 'transport_via_plants';
+  static const massSuggestion = 'mass_suggestion';
   static const eyebite = 'eyebite';
   static const otilukesFreezingSphere = 'otilukes_freezing_sphere';
   static const findThePath = 'find_the_path';
@@ -24028,6 +24032,311 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ],
     classIds: {
       'bard',
+      'sorcerer',
+      'warlock',
+      'wizard',
+    },
+  ),
+  SpellIds.massSuggestion: SpellDefinition(
+    id: SpellIds.massSuggestion,
+    content: RuleContent(
+      id: SpellIds.massSuggestion,
+      name: 'Suggestione di Massa',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Influenza fino a dodici creature inducendole a seguire una linea d’azione formulata magicamente.',
+        details:
+            'L’incantatore suggerisce in una o due frasi una linea d’azione '
+            'a un massimo di dodici creature visibili entro gittata che '
+            'possano sentirlo e comprenderlo. La suggestione deve essere '
+            'formulata in modo che l’azione sembri ragionevole; una richiesta '
+            'palesemente autolesionista termina immediatamente l’effetto. '
+            'Ogni bersaglio deve effettuare un tiro salvezza su Saggezza. '
+            'Le creature immuni alla condizione affascinato superano '
+            'automaticamente il tiro. Un bersaglio che fallisce segue la '
+            'linea d’azione indicata per la durata o finché non la completa. '
+            'Se l’incantatore o uno dei suoi compagni danneggia un bersaglio, '
+            'l’effetto termina per quella creatura. Con uno slot di 7° livello '
+            'la durata diventa 10 giorni, con uno slot di 8° livello diventa '
+            '30 giorni e con uno slot di 9° livello diventa un anno e un giorno.',
+      ),
+      ownerId: SpellIds.massSuggestion,
+    ),
+    level: 6,
+    school: SpellSchool.enchantment,
+    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 18,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      materials: [
+        SpellMaterialComponent(
+          description:
+              'Una lingua di serpente e un frammento di favo oppure una goccia di olio dolce.',
+        ),
+      ],
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.day,
+      amount: 1,
+    ),
+    target: SpellTarget(
+      types: {SpellTargetType.creatures},
+      maximumTargets: 12,
+    ),
+    savingThrow: SpellSavingThrow(
+      ability: SpellSavingThrowAbility.wisdom,
+      onSuccess: SpellSaveSuccess.negates,
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'mass_suggestion_influenced_targets',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'targets_up_to_12_visible_creatures',
+          'targets_must_hear_and_understand_caster',
+          'suggestion_is_limited_to_one_or_two_sentences',
+          'suggested_course_must_sound_reasonable',
+          'obviously_self_harmful_suggestion_ends_effect',
+          'charm_immune_creatures_automatically_succeed',
+          'failed_save_compels_suggested_course',
+          'effect_ends_when_suggested_course_is_completed',
+          'damage_from_caster_or_casters_companions_ends_effect_for_target',
+          'slot_level_7_duration_is_10_days',
+          'slot_level_8_duration_is_30_days',
+          'slot_level_9_duration_is_1_year_and_1_day',
+        },
+      ),
+    ],
+    classIds: {
+      'bard',
+      'sorcerer',
+      'wizard',
+    },
+  ),
+  SpellIds.transportViaPlants: SpellDefinition(
+    id: SpellIds.transportViaPlants,
+    content: RuleContent(
+      id: SpellIds.transportViaPlants,
+      name: 'Trasporto Vegetale',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Collega temporaneamente due grandi vegetali consentendo il passaggio istantaneo tra essi.',
+        details:
+            'L’incantatore crea un legame magico tra un vegetale inanimato '
+            'di taglia Grande o superiore entro gittata e un altro vegetale '
+            'della stessa specie situato a qualsiasi distanza sullo stesso '
+            'piano di esistenza. L’incantatore deve avere visto o toccato '
+            'almeno una volta il vegetale di destinazione. Per la durata, '
+            'qualsiasi creatura può entrare nel vegetale di partenza spendendo '
+            '1,5 metri di movimento e uscire dal vegetale di destinazione, '
+            'comparendo in uno spazio libero entro 1,5 metri da esso. Il '
+            'passaggio può essere utilizzato in entrambe le direzioni.',
+      ),
+      ownerId: SpellIds.transportViaPlants,
+    ),
+    level: 6,
+    school: SpellSchool.conjuration,
+    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 3,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.round,
+      amount: 1,
+    ),
+    target: SpellTarget(
+      types: {SpellTargetType.object},
+      maximumTargets: 2,
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'transport_via_plants_linked_passage',
+        type: SpellPersistentEffectType.magicalLink,
+        ruleTags: {
+          'origin_must_be_inanimate_plant',
+          'origin_plant_must_be_large_or_larger',
+          'destination_must_be_inanimate_plant',
+          'destination_plant_must_be_large_or_larger',
+          'destination_must_be_same_species_as_origin',
+          'destination_can_be_any_distance_away',
+          'destination_must_be_on_same_plane',
+          'caster_must_have_seen_or_touched_destination',
+          'entering_plant_costs_1_5_meters_of_movement',
+          'traveler_exits_within_1_5_meters_of_destination',
+          'traveler_must_exit_in_unoccupied_space',
+          'passage_can_be_used_in_both_directions',
+          'any_creature_can_use_open_passage',
+        },
+      ),
+    ],
+    classIds: {
+      'druid',
+    },
+  ),
+  SpellIds.guardsAndWards: SpellDefinition(
+    id: SpellIds.guardsAndWards,
+    content: RuleContent(
+      id: SpellIds.guardsAndWards,
+      name: 'Vigilanza e Interdizione',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Protegge una struttura con nebbia, serrature, ragnatele e ulteriori effetti magici configurabili.',
+        details: 'L’incantatore protegge fino a circa 230 metri quadrati di '
+            'superficie del pavimento, fino a un’altezza di 6 metri. Può '
+            'proteggere più piani dividendo l’area disponibile, purché tutte '
+            'le zone siano contigue durante il lancio. I corridoi si riempiono '
+            'di nebbia che rende l’area pesantemente oscurata, tutte le porte '
+            'vengono protette come da Serratura Arcana e le scale si riempiono '
+            'di ragnatele. La nebbia e le ragnatele si riformano dopo '
+            '10 minuti se disperse, bruciate o distrutte. L’incantatore può '
+            'inoltre collocare Luci Danzanti in quattro corridoi, Bocca Magica '
+            'in due punti, Nube Maleodorante in due punti, Folata di Vento in '
+            'un corridoio o una stanza oppure Suggestione in un’area quadrata '
+            'con lato di 1,5 metri. Può indicare creature immuni agli effetti '
+            'e stabilire una parola d’ordine. Se l’incantesimo viene lanciato '
+            'nello stesso luogo ogni giorno per un anno, la protezione diventa '
+            'permanente finché non viene dissolta.',
+      ),
+      ownerId: SpellIds.guardsAndWards,
+    ),
+    level: 6,
+    school: SpellSchool.abjuration,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.minute,
+      amount: 10,
+    ),
+    range: SpellRange(type: SpellRangeType.touch),
+    area: SpellArea(
+      shape: SpellAreaShape.special,
+      origin: SpellAreaOrigin.targetPoint,
+      heightMeters: 6,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+      materials: [
+        SpellMaterialComponent(
+          description:
+              'Incenso acceso, una piccola quantità di zolfo e olio, una corda annodata e una piccola quantità di sangue di bestia distorcente.',
+        ),
+      ],
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.day,
+      amount: 1,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.point,
+        SpellTargetType.area,
+      },
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'guards_and_wards_structure_protection',
+        type: SpellPersistentEffectType.zone,
+        ruleTags: {
+          'protects_up_to_approximately_230_square_meters_of_floor',
+          'ward_height_up_to_6_meters',
+          'area_can_be_divided_between_contiguous_floors',
+          'corridors_are_filled_with_heavily_obscuring_fog',
+          'dispersed_corridor_fog_returns_after_10_minutes',
+          'doors_are_protected_by_arcane_lock',
+          'stairs_are_filled_with_webs',
+          'destroyed_stair_webs_return_after_10_minutes',
+          'can_place_dancing_lights_in_4_corridors',
+          'can_place_magic_mouth_in_2_locations',
+          'can_place_stinking_cloud_in_2_locations',
+          'can_place_gust_of_wind_in_1_corridor_or_room',
+          'can_place_suggestion_in_1_5_meter_square',
+          'caster_can_designate_creatures_immune_to_effects',
+          'caster_can_establish_password',
+          'daily_casting_for_1_year_makes_ward_permanent',
+        },
+      ),
+    ],
+    classIds: {
+      'bard',
+      'wizard',
+    },
+  ),
+  SpellIds.trueSeeing: SpellDefinition(
+    id: SpellIds.trueSeeing,
+    content: RuleContent(
+      id: SpellIds.trueSeeing,
+      name: 'Visione del Vero',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Conferisce vista pura, permettendo di percepire illusioni, trasformazioni e il Piano Etereo.',
+        details: 'L’incantatore conferisce a una creatura consenziente toccata '
+            'la capacità di vedere le cose per ciò che sono realmente. Per '
+            'la durata, il bersaglio possiede vista pura entro 36 metri, '
+            'nota le porte segrete nascoste dalla magia e può vedere nel '
+            'Piano Etereo fino alla stessa distanza. La vista pura consente '
+            'di vedere normalmente nell’oscurità normale e magica, vedere '
+            'creature e oggetti invisibili, individuare automaticamente le '
+            'illusioni visive e superare i relativi tiri salvezza, percepire '
+            'la forma originale delle creature trasformate dalla magia e '
+            'osservare direttamente nel Piano Etereo.',
+      ),
+      ownerId: SpellIds.trueSeeing,
+    ),
+    level: 6,
+    school: SpellSchool.divination,
+    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
+    range: SpellRange(type: SpellRangeType.touch),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+      materials: [
+        SpellMaterialComponent(
+          description:
+              'Un unguento per gli occhi composto da polvere di funghi, zafferano e grasso, del valore di almeno 25 mo.',
+          minimumCostGp: 25,
+          consumed: true,
+        ),
+      ],
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.hour,
+      amount: 1,
+    ),
+    target: SpellTarget(
+      types: {SpellTargetType.willingCreature},
+      maximumTargets: 1,
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'true_seeing_truesight',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'target_gains_truesight_36_meters',
+          'target_sees_normally_in_normal_darkness',
+          'target_sees_normally_in_magical_darkness',
+          'target_sees_invisible_creatures_and_objects',
+          'target_automatically_detects_visual_illusions',
+          'target_automatically_succeeds_on_visual_illusion_saves',
+          'target_perceives_original_form_of_magically_transformed_creatures',
+          'target_notices_magically_hidden_secret_doors',
+          'target_can_see_into_ethereal_plane_36_meters',
+        },
+      ),
+    ],
+    classIds: {
+      'bard',
+      'cleric',
       'sorcerer',
       'warlock',
       'wizard',

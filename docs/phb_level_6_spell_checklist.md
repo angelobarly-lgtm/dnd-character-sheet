@@ -30,7 +30,7 @@ Checklist di lavoro per espandere `lib/data/spell_data.dart` con gli incantesimi
 - [x] Scopri il Percorso
 - [x] Sfera Congelante di Otiluke
 - [x] Sguardo Penetrante
-- [ ] Suggestione di Massa
-- [ ] Trasporto Vegetale
-- [ ] Vigilanza e Interdizione
-- [ ] Visione del Vero
+- [x] Suggestione di Massa
+- [x] Trasporto Vegetale
+- [x] Vigilanza e Interdizione
+- [x] Visione del Vero
