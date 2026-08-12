@@ -1047,6 +1047,10 @@ abstract final class SpellIds {
   static const mirrorImage = 'mirror_image';
   static const detectThoughts = 'detect_thoughts';
   static const enlargeReduce = 'enlarge_reduce';
+  static const invisibility = 'invisibility';
+  static const flameBlade = 'flame_blade';
+  static const levitate = 'levitate';
+  static const locateAnimalsOrPlants = 'locate_animals_or_plants';
 }
 
 const Map<String, SpellDefinition> spellDefinitions = {
@@ -9332,6 +9336,299 @@ const Map<String, SpellDefinition> spellDefinitions = {
     classIds: {
       'sorcerer',
       'wizard',
+    },
+  ),
+  SpellIds.invisibility: SpellDefinition(
+    id: SpellIds.invisibility,
+    content: RuleContent(
+      id: SpellIds.invisibility,
+      name: 'Invisibilità',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Rende invisibile una creatura toccata finché non attacca o lancia un incantesimo.',
+        details:
+            'Una creatura toccata dall’incantatore diventa invisibile finché '
+            'l’incantesimo non termina. Anche tutto ciò che il bersaglio '
+            'indossa o trasporta diventa invisibile finché rimane sulla sua '
+            'persona. L’incantesimo richiede concentrazione e può durare fino a '
+            '1 ora. L’effetto termina per un bersaglio quando quel bersaglio '
+            'attacca o lancia un incantesimo. Usando uno slot di livello '
+            'superiore al 2°, l’incantatore può bersagliare una creatura '
+            'aggiuntiva per ogni livello di slot superiore.',
+      ),
+      ownerId: SpellIds.invisibility,
+    ),
+    level: 2,
+    school: SpellSchool.illusion,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.touch,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+      materials: [
+        SpellMaterialComponent(
+          description: 'Un ciglio in uno strato di resina.',
+        ),
+      ],
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.hour,
+      amount: 1,
+      concentration: true,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.creature,
+      },
+      maximumTargets: 1,
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'invisibility_touched_creature_hidden',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'touched_creature_becomes_invisible',
+          'carried_and_worn_equipment_becomes_invisible_with_target',
+          'effect_ends_for_target_when_target_attacks',
+          'effect_ends_for_target_when_target_casts_spell',
+          'one_additional_target_per_slot_level_above_2',
+          'requires_concentration',
+        },
+      ),
+    ],
+    classIds: {
+      'bard',
+      'sorcerer',
+      'warlock',
+      'wizard',
+    },
+  ),
+  SpellIds.flameBlade: SpellDefinition(
+    id: SpellIds.flameBlade,
+    content: RuleContent(
+      id: SpellIds.flameBlade,
+      name: 'Lama Infuocata',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Evoca nella mano libera dell’incantatore una lama di fuoco usata per attacchi in mischia.',
+        details:
+            'L’incantatore evoca una lama infuocata nella sua mano libera. La '
+            'lama ha forma e dimensioni simili a una scimitarra e permane per '
+            'la durata dell’incantesimo. Se l’incantatore la lascia andare, la '
+            'lama scompare, ma può essere evocata di nuovo usando un’azione '
+            'bonus. L’incantatore può usare la sua azione per effettuare un '
+            'attacco in mischia con questo incantesimo usando la lama; se '
+            'colpisce, il bersaglio subisce 3d6 danni da fuoco. La lama '
+            'proietta luce intensa entro 3 metri e luce fioca per altri 3 '
+            'metri. Richiede concentrazione e può durare fino a 10 minuti. '
+            'Usando uno slot di 4° livello o superiore, i danni aumentano di '
+            '1d6 per ogni due livelli di slot superiori al 2°.',
+      ),
+      ownerId: SpellIds.flameBlade,
+    ),
+    level: 2,
+    school: SpellSchool.evocation,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.bonusAction,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.self,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+      materials: [
+        SpellMaterialComponent(
+          description: 'Una foglia di sommacco.',
+        ),
+      ],
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.minute,
+      amount: 10,
+      concentration: true,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.self,
+      },
+      maximumTargets: 1,
+    ),
+    attackType: SpellAttackType.melee,
+    damage: [
+      SpellDamage(
+        dice: '3d6',
+        type: SpellDamageType.fire,
+      ),
+    ],
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'flame_blade_fiery_scimitar',
+        type: SpellPersistentEffectType.createdObject,
+        ruleTags: {
+          'bonus_action_spell',
+          'creates_fiery_blade_in_casters_free_hand',
+          'blade_shape_and_size_similar_to_scimitar',
+          'blade_disappears_if_released',
+          'caster_can_bonus_action_recreate_blade',
+          'caster_can_action_make_melee_spell_attack_with_blade',
+          'hit_deals_3d6_fire_damage',
+          'blade_sheds_bright_light_3_meters_and_dim_light_3_more_meters',
+          'damage_increases_by_1d6_for_every_two_slot_levels_above_2_starting_slot_4',
+          'requires_concentration',
+        },
+      ),
+    ],
+    classIds: {
+      'druid',
+    },
+  ),
+  SpellIds.levitate: SpellDefinition(
+    id: SpellIds.levitate,
+    content: RuleContent(
+      id: SpellIds.levitate,
+      name: 'Levitazione',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Solleva verticalmente una creatura o un oggetto e lo mantiene sospeso.',
+        details:
+            'L’incantatore sceglie una creatura o un oggetto entro gittata e che '
+            'sia in grado di vedere. Il bersaglio si solleva verticalmente fino '
+            'a 6 metri e rimane sospeso per la durata. L’incantesimo può far '
+            'levitare un bersaglio che pesa fino a 250 kg. Una creatura non '
+            'consenziente che supera un tiro salvezza su Costituzione non '
+            'subisce l’effetto. Il bersaglio può muoversi solo spingendosi o '
+            'aggrappandosi a un oggetto fisso o a una superficie entro portata, '
+            'come se stesse scalando. L’incantatore può variare l’altitudine '
+            'del bersaglio fino a 6 metri in ogni direzione nel proprio turno. '
+            'Richiede concentrazione e può durare fino a 10 minuti.',
+      ),
+      ownerId: SpellIds.levitate,
+    ),
+    level: 2,
+    school: SpellSchool.transmutation,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 18,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+      materials: [
+        SpellMaterialComponent(
+          description:
+              'Un piccolo cappio di cuoio o un sottile cavo dorato piegato a forma di coppa con un lungo manico a un’estremità.',
+        ),
+      ],
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.minute,
+      amount: 10,
+      concentration: true,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.creature,
+        SpellTargetType.object,
+      },
+      maximumTargets: 1,
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'levitate_vertical_suspension',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'targets_visible_creature_or_object_within_18_meters',
+          'target_levitates_vertically_up_to_6_meters',
+          'target_remains_suspended_for_duration',
+          'maximum_target_weight_250_kg',
+          'unwilling_creature_makes_constitution_saving_throw',
+          'successful_save_no_effect',
+          'target_moves_only_by_pushing_or_pulling_against_fixed_object_or_surface',
+          'movement_while_suspended_is_like_climbing_surface',
+          'caster_can_change_targets_altitude_up_to_6_meters_on_turn',
+          'requires_concentration',
+        },
+      ),
+    ],
+    classIds: {
+      'sorcerer',
+      'wizard',
+    },
+  ),
+  SpellIds.locateAnimalsOrPlants: SpellDefinition(
+    id: SpellIds.locateAnimalsOrPlants,
+    content: RuleContent(
+      id: SpellIds.locateAnimalsOrPlants,
+      name: 'Localizza Animali o Vegetali',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Rivela direzione e distanza della bestia o del vegetale più vicino del tipo nominato.',
+        details:
+            'L’incantatore descrive o nomina un tipo specifico di bestia o '
+            'vegetale. Concentrandosi sulla voce della natura che echeggia '
+            'attorno a lui, apprende la direzione e la distanza fino alla '
+            'creatura o al vegetale di quel tipo più vicino entro 7,5 km, se ne '
+            'è presente almeno uno. L’incantesimo ha gittata personale, durata '
+            'istantanea e può essere lanciato come rituale.',
+      ),
+      ownerId: SpellIds.locateAnimalsOrPlants,
+    ),
+    level: 2,
+    ritual: true,
+    school: SpellSchool.divination,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.self,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+      materials: [
+        SpellMaterialComponent(
+          description: 'Un ciuffo di pelo strappato a un segugio.',
+        ),
+      ],
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.instantaneous,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.self,
+      },
+      maximumTargets: 1,
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'locate_animals_or_plants_nearest_type',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'ritual_spell',
+          'caster_names_or_describes_specific_kind_of_beast_or_plant',
+          'reveals_direction_and_distance_to_nearest_matching_beast_or_plant',
+          'search_radius_7_5_km',
+          'instantaneous_divination',
+        },
+      ),
+    ],
+    classIds: {
+      'bard',
+      'druid',
+      'ranger',
     },
   ),
 };

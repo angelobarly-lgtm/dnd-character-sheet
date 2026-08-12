@@ -26,10 +26,10 @@ Checklist di lavoro per espandere `lib/data/spell_data.dart` con gli incantesimi
 - [x] Immagine Speculare
 - [x] Individuazione dei Pensieri
 - [x] Ingrandire/Ridurre
-- [ ] Invisibilità
-- [ ] Lama Infuocata
-- [ ] Levitazione
-- [ ] Localizza Animali o Vegetali
+- [x] Invisibilità
+- [x] Lama Infuocata
+- [x] Levitazione
+- [x] Localizza Animali o Vegetali
 - [ ] Localizza Oggetto
 - [ ] Movimenti del Ragno
 - [ ] Nube di Pugnali
