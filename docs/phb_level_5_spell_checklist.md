@@ -42,5 +42,5 @@ Checklist di lavoro per espandere `lib/data/spell_data.dart` con gli incantesimi
 - [x] Scrutare
 - [x] Sembrare
 - [x] Sogno
-- [ ] Telecinesi
-- [ ] Traslazione Arborea
+- [x] Telecinesi
+- [x] Traslazione Arborea
