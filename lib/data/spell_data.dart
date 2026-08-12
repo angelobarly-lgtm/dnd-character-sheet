@@ -1196,6 +1196,10 @@ abstract final class SpellIds {
   static const passwall = 'passwall';
   static const insectPlague = 'insect_plague';
   static const banishingSmite = 'banishing_smite';
+  static const raiseDead = 'raise_dead';
+  static const reincarnate = 'reincarnate';
+  static const greaterRestoration = 'greater_restoration';
+  static const awaken = 'awaken';
 }
 
 const Map<String, SpellDefinition> spellDefinitions = {
@@ -20773,6 +20777,317 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ],
     classIds: {
       'paladin',
+    },
+  ),
+  SpellIds.raiseDead: SpellDefinition(
+    id: SpellIds.raiseDead,
+    content: RuleContent(
+      id: SpellIds.raiseDead,
+      name: 'Rianimare Morti',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Riporta in vita una creatura morta da non più di dieci giorni.',
+        details:
+            'L’incantatore tocca una creatura morta da non più di 10 giorni. '
+            'Se l’anima è libera e consenziente, la creatura torna in vita '
+            'con 1 punto ferita. L’incantesimo neutralizza i veleni e cura '
+            'le malattie non magiche presenti al momento della morte, ma '
+            'non rimuove malattie magiche, maledizioni o afflizioni simili '
+            'e non può riportare in vita un non morto. Richiude le ferite '
+            'mortali, ma non ricrea parti del corpo mancanti; se mancano '
+            'parti o organi indispensabili, come la testa, il lancio '
+            'fallisce. Dopo il ritorno, il bersaglio subisce una penalità '
+            'di -4 ai tiri per colpire, ai tiri salvezza e alle prove di '
+            'caratteristica. La penalità diminuisce di 1 dopo ogni riposo '
+            'lungo completato, finché scompare.',
+      ),
+      ownerId: SpellIds.raiseDead,
+    ),
+    level: 5,
+    school: SpellSchool.necromancy,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.hour,
+      amount: 1,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.touch,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+      materials: [
+        SpellMaterialComponent(
+          description:
+              'Un diamante del valore di almeno 500 mo, consumato dall’incantesimo.',
+          minimumCostGp: 500,
+          consumed: true,
+        ),
+      ],
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.instantaneous,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.creature,
+      },
+      maximumTargets: 1,
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'raise_dead_restoration_and_recovery_penalty',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'target_must_have_died_no_more_than_10_days_ago',
+          'soul_must_be_free_and_willing_to_return',
+          'target_returns_with_1_hit_point',
+          'neutralizes_poison_present_at_death',
+          'cures_nonmagical_diseases_present_at_death',
+          'does_not_remove_magical_diseases_curses_or_similar_afflictions',
+          'cannot_return_undead_creature_to_life',
+          'closes_mortal_wounds_but_does_not_restore_missing_body_parts',
+          'fails_if_essential_body_parts_or_organs_are_missing',
+          'returned_target_has_minus_4_to_attacks_saves_and_ability_checks',
+          'penalty_decreases_by_1_after_each_completed_long_rest',
+        },
+      ),
+    ],
+    classIds: {
+      'bard',
+      'cleric',
+      'paladin',
+    },
+  ),
+  SpellIds.reincarnate: SpellDefinition(
+    id: SpellIds.reincarnate,
+    content: RuleContent(
+      id: SpellIds.reincarnate,
+      name: 'Reincarnazione',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Crea un nuovo corpo adulto per riportare in vita un umanoide morto.',
+        details: 'L’incantatore tocca un umanoide morto, o una parte del suo '
+            'corpo, purché la morte risalga a non più di 10 giorni. '
+            'L’incantesimo crea un nuovo corpo adulto e richiama al suo '
+            'interno l’anima del bersaglio; se l’anima non è libera o '
+            'consenziente, il lancio fallisce. Il nuovo corpo può appartenere '
+            'a una razza diversa, scelta dal DM oppure determinata con 1d100: '
+            '01-04 dragonide, 05-13 elfo alto, 14-21 elfo dei boschi, 22-25 '
+            'elfo oscuro, 26-29 gnomo delle foreste, 30-35 gnomo delle rocce, '
+            '36-43 halfling piedelesto, 44-51 halfling tozzo, 52-55 mezzelfo, '
+            '56-59 mezzorco, 60-68 nano delle colline, 69-76 nano delle '
+            'montagne, 77-80 tiefling e 81-100 umano. La creatura ricorda la '
+            'propria vita e conserva le capacità precedenti, ma la razza e '
+            'i relativi tratti razziali vengono sostituiti da quelli della '
+            'nuova forma.',
+      ),
+      ownerId: SpellIds.reincarnate,
+    ),
+    level: 5,
+    school: SpellSchool.transmutation,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.hour,
+      amount: 1,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.touch,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+      materials: [
+        SpellMaterialComponent(
+          description:
+              'Oli e unguenti rari del valore di almeno 1.000 mo, consumati dall’incantesimo.',
+          minimumCostGp: 1000,
+          consumed: true,
+        ),
+      ],
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.instantaneous,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.creature,
+      },
+      maximumTargets: 1,
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'reincarnate_new_adult_body',
+        type: SpellPersistentEffectType.createdCreature,
+        ruleTags: {
+          'targets_dead_humanoid_or_piece_of_dead_humanoid',
+          'target_must_have_died_no_more_than_10_days_ago',
+          'creates_new_adult_body',
+          'soul_must_be_free_and_willing_to_return',
+          'dm_rolls_d100_or_selects_new_race',
+          'new_body_can_change_target_race',
+          'target_retains_memories_and_past_experiences',
+          'target_retains_nonracial_capabilities',
+          'original_race_and_racial_traits_are_replaced',
+          'material_components_worth_1000_gp_are_consumed',
+        },
+      ),
+    ],
+    classIds: {
+      'druid',
+    },
+  ),
+  SpellIds.greaterRestoration: SpellDefinition(
+    id: SpellIds.greaterRestoration,
+    content: RuleContent(
+      id: SpellIds.greaterRestoration,
+      name: 'Ristorare Superiore',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Rimuove da una creatura un grave effetto debilitante o riduce il suo indebolimento.',
+        details: 'L’incantatore infonde energia positiva in una creatura '
+            'toccata. Può ridurre di uno il livello di indebolimento del '
+            'bersaglio oppure terminare uno degli effetti seguenti: un '
+            'effetto che lo ha affascinato o pietrificato; una maledizione, '
+            'compresa la sintonia con un oggetto magico maledetto; una '
+            'qualsiasi riduzione di un suo punteggio di caratteristica; '
+            'oppure un effetto che riduce il suo massimo dei punti ferita. '
+            'La polvere di diamante del valore di almeno 100 mo viene '
+            'consumata dal lancio.',
+      ),
+      ownerId: SpellIds.greaterRestoration,
+    ),
+    level: 5,
+    school: SpellSchool.abjuration,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.touch,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+      materials: [
+        SpellMaterialComponent(
+          description:
+              'Polvere di diamante del valore di almeno 100 mo, consumata dall’incantesimo.',
+          minimumCostGp: 100,
+          consumed: true,
+        ),
+      ],
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.instantaneous,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.creature,
+      },
+      maximumTargets: 1,
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'greater_restoration_remove_debilitating_effect',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'caster_selects_one_restorative_option',
+          'reduces_target_exhaustion_level_by_1',
+          'can_end_effect_charming_target',
+          'can_end_effect_petrifying_target',
+          'can_end_one_curse_on_target',
+          'can_end_attunement_to_cursed_magic_item',
+          'can_end_any_reduction_to_one_target_ability_score',
+          'can_end_effect_reducing_target_hit_point_maximum',
+          'material_component_worth_100_gp_is_consumed',
+          'instantaneous_restoration',
+        },
+      ),
+    ],
+    classIds: {
+      'bard',
+      'cleric',
+      'druid',
+    },
+  ),
+  SpellIds.awaken: SpellDefinition(
+    id: SpellIds.awaken,
+    content: RuleContent(
+      id: SpellIds.awaken,
+      name: 'Risveglio',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Dona intelligenza, linguaggio e coscienza a una bestia o a un vegetale.',
+        details: 'Dopo 8 ore trascorse a tracciare un percorso magico su '
+            'un’agata, l’incantatore tocca una bestia o un vegetale di '
+            'taglia Enorme o inferiore. Il bersaglio deve essere privo di '
+            'un punteggio di Intelligenza oppure possedere Intelligenza pari '
+            'o inferiore a 3. Ottiene Intelligenza 10 e impara a parlare un '
+            'linguaggio conosciuto dall’incantatore. Un vegetale risvegliato '
+            'acquisisce la capacità di muovere rami, radici, liane e altre '
+            'parti del proprio corpo, oltre a sensi simili a quelli umani; '
+            'il DM ne sceglie le statistiche appropriate. La creatura resta '
+            'affascinata dall’incantatore per 30 giorni, oppure finché '
+            'l’incantatore o uno dei suoi compagni non la danneggia. Quando '
+            'l’affascinamento termina, la creatura decide se rimanere '
+            'amichevole in base a come è stata trattata.',
+      ),
+      ownerId: SpellIds.awaken,
+    ),
+    level: 5,
+    school: SpellSchool.transmutation,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.hour,
+      amount: 8,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.touch,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+      materials: [
+        SpellMaterialComponent(
+          description:
+              'Un’agata del valore di almeno 1.000 mo, consumata dall’incantesimo.',
+          minimumCostGp: 1000,
+          consumed: true,
+        ),
+      ],
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.instantaneous,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.creature,
+      },
+      maximumTargets: 1,
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'awaken_granted_intelligence_and_speech',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'targets_beast_or_plant_huge_or_smaller',
+          'target_must_lack_intelligence_score_or_have_intelligence_3_or_lower',
+          'target_intelligence_becomes_10',
+          'target_learns_one_language_known_by_caster',
+          'awakened_plant_can_move_branches_roots_vines_and_similar_parts',
+          'awakened_plant_gains_humanlike_senses',
+          'dm_selects_appropriate_statistics_for_awakened_plant',
+          'target_is_charmed_by_caster_for_30_days',
+          'charm_ends_if_caster_or_caster_companions_damage_target',
+          'after_charm_target_decides_attitude_based_on_how_it_was_treated',
+          'material_component_worth_1000_gp_is_consumed',
+        },
+      ),
+    ],
+    classIds: {
+      'bard',
+      'druid',
     },
   ),
 };

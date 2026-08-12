@@ -34,10 +34,10 @@ Checklist di lavoro per espandere `lib/data/spell_data.dart` con gli incantesimi
 - [x] Passapareti
 - [x] Piaga degli Insetti
 - [x] Punizione Esiliante
-- [ ] Rianimare Morti
-- [ ] Reincarnazione
-- [ ] Ristorare Superiore
-- [ ] Risveglio
+- [x] Rianimare Morti
+- [x] Reincarnazione
+- [x] Ristorare Superiore
+- [x] Risveglio
 - [ ] Santificare
 - [ ] Scrutare
 - [ ] Sembrare
