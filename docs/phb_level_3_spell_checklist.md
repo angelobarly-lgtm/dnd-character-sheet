@@ -18,10 +18,10 @@ Checklist di lavoro per espandere `lib/data/spell_data.dart` con gli incantesimi
 - [x] Evoca Animali
 - [x] Evoca Raffica
 - [x] Fame di Hadar
-- [ ] Faro di Speranza
-- [ ] Fondersi nella Pietra
-- [ ] Forma Gassosa
-- [ ] Freccia Folgorante
+- [x] Faro di Speranza
+- [x] Fondersi nella Pietra
+- [x] Forma Gassosa
+- [x] Freccia Folgorante
 - [ ] Fulmine
 - [ ] Glifo di Interdizione
 - [ ] Guardiani Spirituali

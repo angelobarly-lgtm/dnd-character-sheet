@@ -1097,6 +1097,10 @@ abstract final class SpellIds {
   static const conjureAnimals = 'conjure_animals';
   static const conjureBarrage = 'conjure_barrage';
   static const hungerOfHadar = 'hunger_of_hadar';
+  static const beaconOfHope = 'beacon_of_hope';
+  static const meldIntoStone = 'meld_into_stone';
+  static const gaseousForm = 'gaseous_form';
+  static const lightningArrow = 'lightning_arrow';
 }
 
 const Map<String, SpellDefinition> spellDefinitions = {
@@ -12954,6 +12958,302 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ],
     classIds: {
       'warlock',
+    },
+  ),
+  SpellIds.beaconOfHope: SpellDefinition(
+    id: SpellIds.beaconOfHope,
+    content: RuleContent(
+      id: SpellIds.beaconOfHope,
+      name: 'Faro di Speranza',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Infonde speranza e vitalità, migliorando tiri salvezza e guarigione dei bersagli.',
+        details:
+            'L’incantatore infonde speranza e vitalità in un qualsiasi numero di '
+            'creature entro gittata. Per la durata dell’incantesimo, ogni '
+            'bersaglio dispone di vantaggio ai tiri salvezza su Saggezza e ai '
+            'tiri salvezza contro morte. Inoltre, ogni bersaglio recupera il '
+            'numero massimo possibile di punti ferita da qualsiasi guarigione. '
+            'L’incantesimo richiede concentrazione e può durare fino a 1 minuto.',
+      ),
+      ownerId: SpellIds.beaconOfHope,
+    ),
+    level: 3,
+    school: SpellSchool.abjuration,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 9,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.minute,
+      amount: 1,
+      concentration: true,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.creatures,
+      },
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'beacon_of_hope_saves_and_max_healing',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'targets_any_number_of_creatures_within_9_meters',
+          'targets_gain_advantage_on_wisdom_saving_throws',
+          'targets_gain_advantage_on_death_saving_throws',
+          'targets_regain_maximum_possible_hit_points_from_any_healing',
+          'requires_concentration',
+        },
+      ),
+    ],
+    classIds: {
+      'cleric',
+    },
+  ),
+  SpellIds.meldIntoStone: SpellDefinition(
+    id: SpellIds.meldIntoStone,
+    content: RuleContent(
+      id: SpellIds.meldIntoStone,
+      name: 'Fondersi nella Pietra',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Permette all’incantatore di entrare in pietra abbastanza grande da contenerlo.',
+        details:
+            'L’incantatore entra in un oggetto o in una superficie di pietra '
+            'abbastanza grande da contenere il suo intero corpo, fondendosi '
+            'nella pietra assieme a tutto l’equipaggiamento che trasporta. Usa '
+            'il proprio movimento per entrare nella pietra in un punto che può '
+            'toccare; nulla della sua presenza rimane visibile o individuabile '
+            'da sensi non magici. Finché è fuso nella pietra, non può vedere '
+            'fuori e subisce svantaggio alle prove di Saggezza (Percezione) per '
+            'udire suoni, ma rimane cosciente del tempo e può lanciare '
+            'incantesimi su sé stesso. Può usare il movimento per uscire dal '
+            'punto di ingresso, terminando l’incantesimo. Danni minori alla '
+            'pietra non lo feriscono, ma una distruzione parziale o alterazione '
+            'che non contenga più il corpo lo espelle e infligge 6d6 danni '
+            'contundenti. La distruzione completa o trasmutazione della pietra '
+            'lo espelle e infligge 50 danni contundenti, facendolo cadere prono '
+            'nello spazio libero più vicino. Può essere lanciato come rituale.',
+      ),
+      ownerId: SpellIds.meldIntoStone,
+    ),
+    level: 3,
+    ritual: true,
+    school: SpellSchool.transmutation,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.touch,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.hour,
+      amount: 8,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.self,
+        SpellTargetType.object,
+      },
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'meld_into_stone_hidden_in_stone',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'ritual_spell',
+          'caster_enters_stone_object_or_surface_large_enough_to_contain_body',
+          'caster_and_carried_equipment_merge_into_stone',
+          'caster_enters_stone_using_movement_at_touched_point',
+          'presence_not_visible_or_detectable_by_nonmagical_senses',
+          'caster_cannot_see_outside_while_merged',
+          'caster_has_disadvantage_on_wisdom_perception_checks_to_hear',
+          'caster_can_cast_spells_on_self_while_merged',
+          'caster_can_exit_at_entry_point_using_movement_and_end_spell',
+          'minor_stone_damage_does_not_harm_caster',
+          'partial_destruction_or_shape_change_expels_caster_and_deals_6d6_bludgeoning',
+          'complete_stone_destruction_or_transmutation_expels_caster_and_deals_50_bludgeoning',
+          'expelled_caster_falls_prone_in_nearest_unoccupied_space',
+        },
+      ),
+    ],
+    classIds: {
+      'cleric',
+      'druid',
+    },
+  ),
+  SpellIds.gaseousForm: SpellDefinition(
+    id: SpellIds.gaseousForm,
+    content: RuleContent(
+      id: SpellIds.gaseousForm,
+      name: 'Forma Gassosa',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Trasforma una creatura consenziente in una nube di foschia resistente e mobile.',
+        details:
+            'L’incantatore trasforma una creatura consenziente toccata, assieme '
+            'a ciò che indossa e trasporta, in una nube di foschia. '
+            'L’incantesimo termina se la creatura scende a 0 punti ferita e non '
+            'ha effetto su creature incorporee. In questa forma, l’unico metodo '
+            'di movimento del bersaglio è una velocità di volare di 3 metri. Il '
+            'bersaglio può entrare nello spazio di un’altra creatura e '
+            'occuparlo, ha resistenza ai danni non magici e vantaggio ai tiri '
+            'salvezza su Forza, Destrezza e Costituzione. Può passare attraverso '
+            'piccoli fori, aperture strette e crepe, ma considera i liquidi come '
+            'superfici solide. Non può cadere e continua a fluttuare anche se '
+            'stordito o incapacitato. Finché è in forma gassosa non può parlare, '
+            'manipolare oggetti, usare o lasciare cadere ciò che trasporta, '
+            'attaccare o lanciare incantesimi. Richiede concentrazione.',
+      ),
+      ownerId: SpellIds.gaseousForm,
+    ),
+    level: 3,
+    school: SpellSchool.transmutation,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.touch,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+      materials: [
+        SpellMaterialComponent(
+          description: 'Un frammento di garza e uno sbuffo di fumo.',
+        ),
+      ],
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.hour,
+      amount: 1,
+      concentration: true,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.willingCreature,
+      },
+      maximumTargets: 1,
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'gaseous_form_mist_transformation',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'touched_willing_creature_and_gear_become_mist',
+          'spell_ends_if_target_drops_to_0_hit_points',
+          'no_effect_on_incorporeal_creatures',
+          'target_only_movement_is_3_meter_fly_speed',
+          'target_can_enter_and_occupy_another_creatures_space',
+          'target_has_resistance_to_nonmagical_damage',
+          'target_has_advantage_on_strength_dexterity_and_constitution_saves',
+          'target_can_pass_through_small_holes_narrow_openings_and_cracks',
+          'target_treats_liquids_as_solid_surfaces',
+          'target_cannot_fall_and_floats_even_when_stunned_or_incapacitated',
+          'target_cannot_talk_or_manipulate_objects',
+          'target_carried_objects_cannot_be_used_dropped_or_manipulated',
+          'target_cannot_attack_or_cast_spells',
+          'requires_concentration',
+        },
+      ),
+    ],
+    classIds: {
+      'sorcerer',
+      'warlock',
+      'wizard',
+    },
+  ),
+  SpellIds.lightningArrow: SpellDefinition(
+    id: SpellIds.lightningArrow,
+    content: RuleContent(
+      id: SpellIds.lightningArrow,
+      name: 'Freccia Folgorante',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Trasforma la prossima munizione o arma da lancio in un fulmine che esplode sul bersaglio.',
+        details:
+            'La prossima volta che l’incantatore effettua un attacco con arma a '
+            'distanza entro la durata dell’incantesimo, la munizione dell’arma, '
+            'o l’arma stessa se è un’arma da lancio, si trasforma in un fulmine. '
+            'L’incantatore effettua il tiro per colpire normalmente. Se colpisce, '
+            'il bersaglio subisce 4d8 danni da fulmine; se manca, subisce metà '
+            'di quei danni invece dei danni normali dell’arma. Che colpisca o '
+            'manchi, ogni creatura entro 3 metri dal bersaglio deve effettuare '
+            'un tiro salvezza su Destrezza: se fallisce subisce 2d8 danni da '
+            'fulmine, se supera subisce metà danni. La munizione o l’arma torna '
+            'poi alla forma originaria. Richiede concentrazione. Usando uno slot '
+            'di 4° livello o superiore, i danni di entrambi gli effetti aumentano '
+            'di 1d8 per ogni livello di slot superiore al 3°.',
+      ),
+      ownerId: SpellIds.lightningArrow,
+    ),
+    level: 3,
+    school: SpellSchool.transmutation,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.bonusAction,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.self,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.minute,
+      amount: 1,
+      concentration: true,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.self,
+      },
+      maximumTargets: 1,
+    ),
+    damage: [
+      SpellDamage(
+        dice: '4d8',
+        type: SpellDamageType.lightning,
+      ),
+    ],
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'lightning_arrow_next_ranged_weapon_attack',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'bonus_action_spell',
+          'next_ranged_weapon_attack_before_spell_ends',
+          'ammunition_or_thrown_weapon_becomes_lightning',
+          'caster_makes_weapon_attack_roll_normally',
+          'hit_deals_4d8_lightning_damage_to_target',
+          'miss_deals_half_4d8_lightning_damage_instead_of_normal_weapon_damage',
+          'hit_or_miss_creatures_within_3_meters_of_target_make_dexterity_save',
+          'failed_area_save_deals_2d8_lightning_damage',
+          'successful_area_save_deals_half_damage',
+          'ammunition_or_weapon_returns_to_normal_form_after_attack',
+          'slot_level_above_3_increases_both_damage_effects_by_1d8_per_slot_level',
+          'requires_concentration',
+        },
+      ),
+    ],
+    classIds: {
+      'ranger',
     },
   ),
 };
