@@ -929,6 +929,10 @@ class SpellDefinition {
 /// Verrà popolato progressivamente. Tenere un unico registry permette a
 /// razze, classi, talenti e altri sistemi di riferirsi allo stesso ID.
 abstract final class SpellIds {
+  static const eyebite = 'eyebite';
+  static const otilukesFreezingSphere = 'otilukes_freezing_sphere';
+  static const findThePath = 'find_the_path';
+  static const forbiddance = 'forbiddance';
   static const arcaneGate = 'arcane_gate';
   static const wordOfRecall = 'word_of_recall';
   static const wallOfThorns = 'wall_of_thorns';
@@ -23662,6 +23666,368 @@ const Map<String, SpellDefinition> spellDefinitions = {
       ),
     ],
     classIds: {
+      'sorcerer',
+      'warlock',
+      'wizard',
+    },
+  ),
+  SpellIds.forbiddance: SpellDefinition(
+    id: SpellIds.forbiddance,
+    content: RuleContent(
+      id: SpellIds.forbiddance,
+      name: 'Proibizione',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Protegge una vasta area dai viaggi magici e danneggia determinati tipi di creature.',
+        details: 'L’incantatore crea un’interdizione che protegge fino a circa '
+            '3.700 metri quadrati di superficie del pavimento, fino a '
+            'un’altezza di 9 metri. Per la durata, le creature non possono '
+            'teletrasportarsi nell’area, usare portali per entrarvi o '
+            'accedervi tramite viaggio planare. L’incantatore sceglie uno '
+            'o più tipi tra celestiali, elementali, folletti, immondi e '
+            'non morti. Le creature dei tipi scelti subiscono 5d10 danni '
+            'radianti o necrotici, a scelta dell’incantatore, quando entrano '
+            'nell’area per la prima volta in un turno o vi iniziano il turno. '
+            'Durante il lancio può essere stabilita una parola d’ordine che '
+            'rende immuni a questi danni le creature che la pronunciano. '
+            'L’incantesimo non può sovrapporsi a un’altra Proibizione. Se '
+            'viene lanciato nello stesso luogo ogni giorno per 30 giorni, '
+            'dura finché non viene dissolto e consuma le componenti materiali '
+            'durante l’ultimo lancio.',
+      ),
+      ownerId: SpellIds.forbiddance,
+    ),
+    level: 6,
+    school: SpellSchool.abjuration,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.minute,
+      amount: 10,
+    ),
+    range: SpellRange(type: SpellRangeType.touch),
+    area: SpellArea(
+      shape: SpellAreaShape.special,
+      origin: SpellAreaOrigin.targetPoint,
+      heightMeters: 9,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+      materials: [
+        SpellMaterialComponent(
+          description:
+              'Acqua santa, incenso raro e polvere di rubino del valore complessivo di almeno 1.000 mo.',
+          minimumCostGp: 1000,
+        ),
+      ],
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.day,
+      amount: 1,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.point,
+        SpellTargetType.area,
+      },
+    ),
+    ritual: true,
+    areaTriggeredEffects: [
+      SpellAreaTriggeredEffect(
+        triggers: {
+          SpellAreaTriggerEvent.entersAreaFirstTimeOnTurn,
+          SpellAreaTriggerEvent.startsTurnInArea,
+        },
+        damage: SpellDamage(
+          dice: '5d10',
+          type: SpellDamageType.radiant,
+        ),
+      ),
+    ],
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'forbiddance_travel_and_creature_ward',
+        type: SpellPersistentEffectType.zone,
+        ruleTags: {
+          'protects_up_to_approximately_3700_square_meters',
+          'ward_extends_up_to_9_meters_above_floor',
+          'prevents_teleportation_into_area',
+          'prevents_portals_from_opening_into_area',
+          'prevents_planar_travel_into_area',
+          'caster_selects_one_or_more_eligible_creature_types',
+          'eligible_types_are_celestial_elemental_fey_fiend_and_undead',
+          'caster_chooses_radiant_or_necrotic_damage',
+          'selected_creatures_take_5d10_damage',
+          'damage_triggers_on_first_entry_per_turn',
+          'damage_triggers_when_starting_turn_in_area',
+          'password_can_grant_immunity_to_damage',
+          'cannot_overlap_another_forbiddance',
+          'daily_casting_for_30_days_makes_effect_last_until_dispelled',
+          'materials_consumed_on_final_cast_of_permanent_sequence',
+        },
+      ),
+    ],
+    classIds: {
+      'cleric',
+    },
+  ),
+  SpellIds.findThePath: SpellDefinition(
+    id: SpellIds.findThePath,
+    content: RuleContent(
+      id: SpellIds.findThePath,
+      name: 'Scopri il Percorso',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Indica il percorso fisico più breve e diretto verso un luogo fisso conosciuto.',
+        details:
+            'L’incantatore individua il percorso fisico più breve e diretto '
+            'verso uno specifico luogo fisso con cui ha familiarità, situato '
+            'sullo stesso piano di esistenza. Se la destinazione si trova '
+            'su un altro piano, è mobile oppure non è sufficientemente '
+            'specifica, l’incantesimo fallisce. Finché mantiene la '
+            'concentrazione, l’incantatore conosce la distanza e la direzione '
+            'verso la destinazione. Mentre si dirige verso di essa, quando '
+            'può scegliere tra più percorsi determina automaticamente quale '
+            'sia il più breve e diretto. L’incantesimo individua un percorso '
+            'fisico, ma non rimuove né permette di attraversare gli ostacoli '
+            'presenti lungo il tragitto.',
+      ),
+      ownerId: SpellIds.findThePath,
+    ),
+    level: 6,
+    school: SpellSchool.divination,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.minute,
+      amount: 1,
+    ),
+    range: SpellRange(type: SpellRangeType.self),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+      materials: [
+        SpellMaterialComponent(
+          description:
+              'Una serie di strumenti divinatori, come ossa, bastoncini d’avorio, carte, denti o rune incise, del valore di almeno 100 mo.',
+          minimumCostGp: 100,
+        ),
+        SpellMaterialComponent(
+          description:
+              'Un oggetto proveniente dal luogo che l’incantatore desidera raggiungere.',
+        ),
+      ],
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.day,
+      amount: 1,
+      concentration: true,
+    ),
+    target: SpellTarget(
+      types: {SpellTargetType.self},
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'find_the_path_route_guidance',
+        type: SpellPersistentEffectType.magicalLink,
+        ruleTags: {
+          'destination_must_be_specific_fixed_location',
+          'caster_must_be_familiar_with_destination',
+          'destination_must_be_on_same_plane',
+          'spell_fails_for_moving_destination',
+          'spell_fails_for_destination_on_another_plane',
+          'caster_knows_distance_to_destination',
+          'caster_knows_direction_to_destination',
+          'identifies_shortest_most_direct_physical_route',
+          'identifies_correct_choice_when_route_branches',
+          'does_not_remove_physical_obstacles',
+          'does_not_allow_passing_through_physical_obstacles',
+          'requires_concentration',
+        },
+      ),
+    ],
+    classIds: {
+      'bard',
+      'cleric',
+      'druid',
+    },
+  ),
+  SpellIds.otilukesFreezingSphere: SpellDefinition(
+    id: SpellIds.otilukesFreezingSphere,
+    content: RuleContent(
+      id: SpellIds.otilukesFreezingSphere,
+      name: 'Sfera Congelante di Otiluke',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Scaglia o conserva un globo gelido che esplode infliggendo ingenti danni da freddo.',
+        details:
+            'Un globo di energia gelida raggiunge un punto entro gittata ed '
+            'esplode in una sfera con raggio di 18 metri. Ogni creatura '
+            'nell’area deve effettuare un tiro salvezza su Costituzione, '
+            'subendo 10d6 danni da freddo se fallisce o la metà se lo supera. '
+            'Se il globo colpisce una massa d’acqua o un liquido composto '
+            'principalmente d’acqua, congela una superficie quadrata con lato '
+            'di 9 metri fino a una profondità di 15 centimetri per 1 minuto. '
+            'Le creature che nuotano in quell’area rimangono intrappolate '
+            'nel ghiaccio e possono usare un’azione per effettuare una prova '
+            'di Forza contro la CD del tiro salvezza dell’incantesimo, '
+            'liberandosi in caso di successo. In alternativa, dopo il lancio '
+            'l’incantatore può trattenere il globo per un massimo di 1 minuto. '
+            'Può lanciarlo fino a 12 metri o consegnarlo a un’altra creatura; '
+            'si frantuma ed esplode all’impatto. Se non viene lanciato entro '
+            '1 minuto, esplode comunque. I danni aumentano di 1d6 per ogni '
+            'livello dello slot oltre il 6°.',
+      ),
+      ownerId: SpellIds.otilukesFreezingSphere,
+    ),
+    level: 6,
+    school: SpellSchool.evocation,
+    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 90,
+    ),
+    area: SpellArea(
+      shape: SpellAreaShape.sphere,
+      origin: SpellAreaOrigin.targetPoint,
+      radiusMeters: 18,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+      materials: [
+        SpellMaterialComponent(
+          description: 'Una piccola sfera di cristallo.',
+        ),
+      ],
+    ),
+    duration: SpellDuration(type: SpellDurationType.instantaneous),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.point,
+        SpellTargetType.area,
+      },
+    ),
+    savingThrow: SpellSavingThrow(
+      ability: SpellSavingThrowAbility.constitution,
+      onSuccess: SpellSaveSuccess.halfDamage,
+    ),
+    damage: [
+      SpellDamage(
+        dice: '10d6',
+        type: SpellDamageType.cold,
+      ),
+    ],
+    scaling: SpellScaling(
+      type: SpellScalingType.slotLevel,
+      steps: [
+        SpellScalingStep(
+          threshold: 7,
+          additionalDice: '1d6',
+        ),
+      ],
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'otilukes_freezing_sphere_held_globe_and_frozen_water',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'explosion_radius_18_meters',
+          'water_freezes_in_9_meter_square',
+          'water_freezes_to_depth_0_15_meters',
+          'frozen_water_lasts_1_minute',
+          'swimming_creatures_are_trapped_in_ice',
+          'trapped_creature_can_use_action_for_strength_check',
+          'strength_check_uses_spell_save_dc',
+          'caster_can_hold_globe_for_up_to_1_minute',
+          'held_globe_can_be_thrown_up_to_12_meters',
+          'held_globe_can_be_given_to_another_creature',
+          'held_globe_explodes_on_impact',
+          'held_globe_explodes_after_1_minute_if_not_thrown',
+          'damage_gains_1d6_per_slot_level_above_6',
+        },
+      ),
+    ],
+    classIds: {
+      'wizard',
+    },
+  ),
+  SpellIds.eyebite: SpellDefinition(
+    id: SpellIds.eyebite,
+    content: RuleContent(
+      id: SpellIds.eyebite,
+      name: 'Sguardo Penetrante',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Consente di colpire ripetutamente le creature con uno sguardo soporifero, terrificante o debilitante.',
+        details: 'Per la durata, gli occhi dell’incantatore diventano pozzi di '
+            'oscurità pervasi da un potere terrificante. Al momento del lancio '
+            'e con un’azione in ogni suo turno successivo, può scegliere una '
+            'creatura visibile entro 18 metri. Il bersaglio deve superare un '
+            'tiro salvezza su Saggezza o subire uno degli effetti scelti '
+            'dall’incantatore. Con Sonno cade privo di sensi e si risveglia '
+            'se subisce danni o se un’altra creatura usa un’azione per '
+            'svegliarlo. Con Panico è spaventato dall’incantatore e deve usare '
+            'l’azione Scatto per allontanarsi lungo il percorso più sicuro; '
+            'l’effetto termina se conclude un turno ad almeno 18 metri e non '
+            'può vedere l’incantatore. Con Infermità subisce svantaggio ai '
+            'tiri per colpire e alle prove di caratteristica e può ripetere '
+            'il tiro salvezza alla fine di ogni turno. Una creatura che '
+            'supera il tiro salvezza iniziale diventa immune a questo lancio '
+            'dell’incantesimo.',
+      ),
+      ownerId: SpellIds.eyebite,
+    ),
+    level: 6,
+    school: SpellSchool.necromancy,
+    castingTime: SpellCastingTime(type: SpellCastingTimeType.action),
+    range: SpellRange(type: SpellRangeType.self),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.minute,
+      amount: 1,
+      concentration: true,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.self,
+        SpellTargetType.creature,
+      },
+      maximumTargets: 1,
+    ),
+    savingThrow: SpellSavingThrow(
+      ability: SpellSavingThrowAbility.wisdom,
+      onSuccess: SpellSaveSuccess.negates,
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'eyebite_repeatable_gaze',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'initial_target_selected_when_spell_is_cast',
+          'caster_can_target_one_visible_creature_within_18_meters',
+          'caster_can_use_action_each_turn_to_target_new_creature',
+          'caster_chooses_asleep_panicked_or_sickened_effect',
+          'asleep_target_is_unconscious',
+          'asleep_target_wakes_when_damaged',
+          'another_creature_can_use_action_to_wake_asleep_target',
+          'panicked_target_is_frightened_of_caster',
+          'panicked_target_must_dash_away_by_safest_route',
+          'panicked_effect_ends_at_least_18_meters_away_without_line_of_sight',
+          'sickened_target_has_disadvantage_on_attack_rolls',
+          'sickened_target_has_disadvantage_on_ability_checks',
+          'sickened_target_repeats_wisdom_save_at_end_of_each_turn',
+          'successful_initial_save_grants_immunity_to_this_casting',
+          'requires_concentration',
+        },
+      ),
+    ],
+    classIds: {
+      'bard',
       'sorcerer',
       'warlock',
       'wizard',

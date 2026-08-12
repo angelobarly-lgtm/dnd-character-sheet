@@ -26,10 +26,10 @@ Checklist di lavoro per espandere `lib/data/spell_data.dart` con gli incantesimi
 - [x] Muro di Spine
 - [x] Parola del Ritiro
 - [x] Portale Arcano
-- [ ] Proibizione
-- [ ] Scopri il Percorso
-- [ ] Sfera Congelante di Otiluke
-- [ ] Sguardo Penetrante
+- [x] Proibizione
+- [x] Scopri il Percorso
+- [x] Sfera Congelante di Otiluke
+- [x] Sguardo Penetrante
 - [ ] Suggestione di Massa
 - [ ] Trasporto Vegetale
 - [ ] Vigilanza e Interdizione
