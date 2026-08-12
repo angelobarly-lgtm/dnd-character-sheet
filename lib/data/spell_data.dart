@@ -1180,6 +1180,10 @@ abstract final class SpellIds {
   static const massCureWounds = 'mass_cure_wounds';
   static const dispelEvilAndGood = 'dispel_evil_and_good';
   static const dominatePerson = 'dominate_person';
+  static const conjureElemental = 'conjure_elemental';
+  static const conjureVolley = 'conjure_volley';
+  static const swiftQuiver = 'swift_quiver';
+  static const mislead = 'mislead';
 }
 
 const Map<String, SpellDefinition> spellDefinitions = {
@@ -19383,6 +19387,311 @@ const Map<String, SpellDefinition> spellDefinitions = {
     classIds: {
       'bard',
       'sorcerer',
+      'wizard',
+    },
+  ),
+  SpellIds.conjureElemental: SpellDefinition(
+    id: SpellIds.conjureElemental,
+    content: RuleContent(
+      id: SpellIds.conjureElemental,
+      name: 'Evoca Elementale',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Evoca un elementale legato a un’area di acqua, aria, fuoco o terra.',
+        details:
+            'L’incantatore sceglie entro 27 metri un cubo con spigolo di 3 '
+            'metri composto di acqua, aria, fuoco o terra. Un elementale '
+            'appropriato con grado di sfida pari o inferiore a 5 appare in '
+            'uno spazio libero entro 3 metri dall’area. Ha una propria '
+            'iniziativa, è amichevole e obbedisce ai comandi verbali senza '
+            'richiedere azioni; senza ordini si difende ma non agisce. '
+            'Scompare a 0 punti ferita o quando l’incantesimo termina. Se la '
+            'concentrazione viene interrotta, invece, l’incantatore ne perde '
+            'il controllo: l’elementale diventa ostile, non può essere '
+            'congedato e scompare 1 ora dopo l’evocazione. Con uno slot di 6° '
+            'livello o superiore, il grado di sfida massimo aumenta di 1 per '
+            'ogni livello dello slot superiore al 5°.',
+      ),
+      ownerId: SpellIds.conjureElemental,
+    ),
+    level: 5,
+    school: SpellSchool.conjuration,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.minute,
+      amount: 1,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 27,
+    ),
+    area: SpellArea(
+      shape: SpellAreaShape.cube,
+      origin: SpellAreaOrigin.targetPoint,
+      sizeMeters: 3,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+      materials: [
+        SpellMaterialComponent(
+          description:
+              'Acqua e sabbia per l’acqua, incenso bruciato per l’aria, zolfo e fosforo per il fuoco oppure argilla duttile per la terra.',
+        ),
+      ],
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.hour,
+      amount: 1,
+      concentration: true,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.point,
+        SpellTargetType.area,
+      },
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'conjure_elemental_servant',
+        type: SpellPersistentEffectType.summonedCreature,
+        creature: SpellCreatureEffect(
+          maximumActive: 1,
+          independentInitiative: true,
+          obeysCaster: true,
+          disappearsAtZeroHp: true,
+        ),
+        ruleTags: {
+          'summons_elemental_cr_5_or_lower_appropriate_to_selected_area',
+          'elemental_appears_within_3_meters_of_selected_area',
+          'verbal_commands_require_no_action',
+          'without_command_elemental_only_defends_itself',
+          'lost_concentration_makes_elemental_hostile_instead_of_dismissing_it',
+          'uncontrolled_elemental_cannot_be_dismissed_by_caster',
+          'uncontrolled_elemental_disappears_1_hour_after_summoning',
+          'slot_level_above_5_increases_maximum_cr_by_1_per_slot_level',
+        },
+      ),
+    ],
+    classIds: {
+      'druid',
+      'wizard',
+    },
+  ),
+  SpellIds.conjureVolley: SpellDefinition(
+    id: SpellIds.conjureVolley,
+    content: RuleContent(
+      id: SpellIds.conjureVolley,
+      name: 'Evoca Pioggia di Armi',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Fa ricadere centinaia di duplicati di una munizione o arma da lancio su una vasta area.',
+        details: 'L’incantatore scaglia in aria una munizione non magica o '
+            'un’arma da lancio non magica e sceglie un punto entro 45 metri. '
+            'Centinaia di duplicati ricadono e poi scompaiono. Ogni creatura '
+            'in un cilindro del raggio di 12 metri e alto 6 metri centrato '
+            'sul punto effettua un tiro salvezza su Destrezza. Se lo fallisce '
+            'subisce 8d8 danni, mentre se lo supera subisce metà danni. Il '
+            'tipo di danno è quello della munizione o dell’arma usata come '
+            'componente materiale.',
+      ),
+      ownerId: SpellIds.conjureVolley,
+    ),
+    level: 5,
+    school: SpellSchool.conjuration,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 45,
+    ),
+    area: SpellArea(
+      shape: SpellAreaShape.cylinder,
+      origin: SpellAreaOrigin.targetPoint,
+      radiusMeters: 12,
+      heightMeters: 6,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+      materials: [
+        SpellMaterialComponent(
+          description: 'Una munizione o un’arma da lancio non magica.',
+        ),
+      ],
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.instantaneous,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.area,
+      },
+    ),
+    savingThrow: SpellSavingThrow(
+      ability: SpellSavingThrowAbility.dexterity,
+      onSuccess: SpellSaveSuccess.halfDamage,
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'conjure_volley_weapon_rain',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'creates_hundreds_of_duplicates_of_nonmagical_ammunition_or_thrown_weapon',
+          'affects_12_meter_radius_6_meter_high_cylinder',
+          'failed_dexterity_save_deals_8d8_damage',
+          'successful_save_deals_half_damage',
+          'damage_type_matches_material_ammunition_or_weapon',
+          'duplicates_disappear_after_falling',
+        },
+      ),
+    ],
+    classIds: {
+      'ranger',
+    },
+  ),
+  SpellIds.swiftQuiver: SpellDefinition(
+    id: SpellIds.swiftQuiver,
+    content: RuleContent(
+      id: SpellIds.swiftQuiver,
+      name: 'Faretra Rapida',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Trasforma una faretra in una fonte inesauribile di munizioni e consente due attacchi aggiuntivi.',
+        details: 'L’incantatore tocca la propria faretra, che deve contenere '
+            'almeno una munizione, e la trasforma in una scorta infinita di '
+            'munizioni non magiche. Fino al termine dell’incantesimo può '
+            'usare un’azione bonus in ciascun proprio turno per effettuare '
+            'due attacchi con un’arma che utilizzi le munizioni fornite '
+            'dalla faretra. Dopo ogni attacco a distanza, la munizione usata '
+            'viene sostituita magicamente da una munizione non magica analoga. '
+            'Tutte le munizioni create si disintegrano quando l’incantesimo '
+            'termina. L’incantesimo termina anticipatamente se l’incantatore '
+            'perde il possesso della faretra.',
+      ),
+      ownerId: SpellIds.swiftQuiver,
+    ),
+    level: 5,
+    school: SpellSchool.transmutation,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.bonusAction,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.touch,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+      materials: [
+        SpellMaterialComponent(
+          description: 'Una faretra che contenga almeno una munizione.',
+        ),
+      ],
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.minute,
+      amount: 1,
+      concentration: true,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.object,
+      },
+      maximumTargets: 1,
+    ),
+    repeatableEffects: [
+      SpellRepeatableEffect(
+        actionType: SpellRepeatActionType.bonusAction,
+      ),
+    ],
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'swift_quiver_endless_ammunition',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'enchanted_quiver_must_initially_contain_at_least_one_ammunition',
+          'quiver_provides_unlimited_nonmagical_ammunition',
+          'bonus_action_each_turn_makes_2_attacks_with_weapon_using_quiver_ammunition',
+          'each_used_ammunition_is_replaced_with_similar_nonmagical_ammunition',
+          'created_ammunition_disintegrates_when_spell_ends',
+          'spell_ends_if_caster_loses_possession_of_quiver',
+          'requires_concentration',
+        },
+      ),
+    ],
+    classIds: {
+      'ranger',
+    },
+  ),
+  SpellIds.mislead: SpellDefinition(
+    id: SpellIds.mislead,
+    content: RuleContent(
+      id: SpellIds.mislead,
+      name: 'Fuorviare',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Rende invisibile l’incantatore e crea un sosia illusorio mobile attraverso cui percepire.',
+        details:
+            'L’incantatore diventa invisibile mentre un suo sosia illusorio '
+            'appare nel punto in cui si trova. Il sosia permane per la '
+            'durata, ma l’invisibilità termina se l’incantatore attacca o '
+            'lancia un incantesimo. Con la propria azione, l’incantatore può '
+            'muovere il sosia fino al doppio della propria velocità e farlo '
+            'gesticolare, parlare e comportarsi come desidera. Può vedere e '
+            'sentire attraverso il sosia come se fosse nel suo spazio. Come '
+            'azione bonus in ciascun turno può passare dai propri sensi a '
+            'quelli del sosia o viceversa; mentre usa i sensi del sosia, è '
+            'cieco e assordato rispetto all’ambiente che lo circonda.',
+      ),
+      ownerId: SpellIds.mislead,
+    ),
+    level: 5,
+    school: SpellSchool.illusion,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.self,
+    ),
+    components: SpellComponents(
+      somatic: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.hour,
+      amount: 1,
+      concentration: true,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.self,
+      },
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'mislead_invisibility_and_illusory_double',
+        type: SpellPersistentEffectType.magicalLink,
+        link: SpellLinkEffect(
+          shareSenses: true,
+        ),
+        ruleTags: {
+          'caster_becomes_invisible_and_double_appears_at_caster_position',
+          'invisibility_ends_if_caster_attacks_or_casts_spell',
+          'illusory_double_remains_for_spell_duration',
+          'caster_action_moves_double_up_to_twice_caster_speed',
+          'caster_controls_double_gestures_speech_and_behavior',
+          'caster_can_see_and_hear_from_double_position',
+          'caster_bonus_action_switches_between_own_and_double_senses',
+          'caster_is_blinded_and_deafened_to_own_surroundings_while_using_double_senses',
+          'requires_concentration',
+        },
+      ),
+    ],
+    classIds: {
+      'bard',
       'wizard',
     },
   ),

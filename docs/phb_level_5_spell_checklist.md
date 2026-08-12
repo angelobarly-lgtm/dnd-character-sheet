@@ -18,10 +18,10 @@ Checklist di lavoro per espandere `lib/data/spell_data.dart` con gli incantesimi
 - [x] Cura Ferite di Massa
 - [x] Dissolvi il Bene e il Male
 - [x] Dominare Persone
-- [ ] Evoca Elementale
-- [ ] Evoca Pioggia di Armi
-- [ ] Faretra Rapida
-- [ ] Fuorviare
+- [x] Evoca Elementale
+- [x] Evoca Pioggia di Armi
+- [x] Faretra Rapida
+- [x] Fuorviare
 - [ ] Guscio Anti-Vita
 - [ ] Legame Planare
 - [ ] Legame Telepatico di Rary
