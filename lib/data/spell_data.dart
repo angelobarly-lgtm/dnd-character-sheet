@@ -1074,6 +1074,10 @@ abstract final class SpellIds {
   static const arcaneLock = 'arcane_lock';
   static const flamingSphere = 'flaming_sphere';
   static const blur = 'blur';
+  static const silence = 'silence';
+  static const suggestion = 'suggestion';
+  static const findSteed = 'find_steed';
+  static const ropeTrick = 'rope_trick';
 }
 
 const Map<String, SpellDefinition> spellDefinitions = {
@@ -11251,6 +11255,307 @@ const Map<String, SpellDefinition> spellDefinitions = {
     ],
     classIds: {
       'sorcerer',
+      'wizard',
+    },
+  ),
+  SpellIds.silence: SpellDefinition(
+    id: SpellIds.silence,
+    content: RuleContent(
+      id: SpellIds.silence,
+      name: 'Silenzio',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Crea una sfera in cui nessun suono può essere creato o attraversare l’area.',
+        details:
+            'L’incantatore genera una sfera del raggio di 6 metri centrata su '
+            'un punto a sua scelta entro gittata. Per la durata, nessun suono '
+            'può essere creato all’interno della sfera o attraversarla. Ogni '
+            'creatura o oggetto interamente all’interno della sfera è immune ai '
+            'danni da tuono, e ogni creatura interamente all’interno della sfera '
+            'è assordata. Nell’area è impossibile lanciare incantesimi che '
+            'includano una componente verbale. Richiede concentrazione, può '
+            'durare fino a 10 minuti e può essere lanciato come rituale.',
+      ),
+      ownerId: SpellIds.silence,
+    ),
+    level: 2,
+    ritual: true,
+    school: SpellSchool.illusion,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 36,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.minute,
+      amount: 10,
+      concentration: true,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.area,
+      },
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'silence_no_sound_sphere',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'ritual_spell',
+          'creates_6_meter_radius_sphere_centered_on_point_within_36_meters',
+          'no_sound_can_be_created_inside_area',
+          'no_sound_can_pass_through_area',
+          'creatures_and_objects_entirely_inside_are_immune_to_thunder_damage',
+          'creatures_entirely_inside_are_deafened',
+          'verbal_component_spells_cannot_be_cast_inside_area',
+          'requires_concentration',
+        },
+      ),
+    ],
+    classIds: {
+      'bard',
+      'cleric',
+      'ranger',
+    },
+  ),
+  SpellIds.suggestion: SpellDefinition(
+    id: SpellIds.suggestion,
+    content: RuleContent(
+      id: SpellIds.suggestion,
+      name: 'Suggestione',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Influenza una creatura con un corso d’azione ragionevole formulato in una o due frasi.',
+        details: 'L’incantatore suggerisce un corso d’azione da intraprendere, '
+            'limitandosi a una o due frasi, e influenza magicamente una '
+            'creatura entro gittata e che sia in grado di vedere. La creatura '
+            'deve essere in grado di sentire e capire l’incantatore; le creature '
+            'che non possono essere affascinate sono immuni. La suggestione deve '
+            'essere formulata in modo che il corso d’azione appaia ragionevole. '
+            'Richieste palesemente autolesionistiche pongono termine '
+            'all’incantesimo. Il bersaglio effettua un tiro salvezza su '
+            'Saggezza; se lo fallisce, deve perseguire il corso d’azione al '
+            'meglio delle sue capacità. Il corso d’azione può proseguire per '
+            'l’intera durata, ma l’incantesimo termina quando il bersaglio '
+            'completa un’attività più breve. L’incantatore può anche specificare '
+            'condizioni che innescano un’attività speciale durante la durata. Se '
+            'l’incantatore o uno dei suoi compagni infligge danni al bersaglio, '
+            'l’incantesimo termina. Richiede concentrazione e può durare fino a '
+            '8 ore.',
+      ),
+      ownerId: SpellIds.suggestion,
+    ),
+    level: 2,
+    school: SpellSchool.enchantment,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 9,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      materials: [
+        SpellMaterialComponent(
+          description:
+              'Una lingua di serpente e un frammento di un alveare o una goccia di olio dolce.',
+        ),
+      ],
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.hour,
+      amount: 8,
+      concentration: true,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.creature,
+      },
+      maximumTargets: 1,
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'suggestion_reasonable_course_of_action',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'targets_visible_creature_within_9_meters',
+          'target_must_hear_and_understand_caster',
+          'creatures_that_cannot_be_charmed_are_immune',
+          'suggestion_must_sound_reasonable',
+          'obviously_self_harmful_suggestion_ends_spell',
+          'target_makes_wisdom_saving_throw',
+          'failed_save_target_pursues_suggested_course_of_action',
+          'activity_can_continue_for_full_duration',
+          'spell_ends_when_shorter_suggested_activity_is_completed',
+          'caster_can_define_trigger_condition_for_special_activity',
+          'spell_ends_if_caster_or_allies_damage_target',
+          'requires_concentration',
+        },
+      ),
+    ],
+    classIds: {
+      'bard',
+      'sorcerer',
+      'warlock',
+      'wizard',
+    },
+  ),
+  SpellIds.findSteed: SpellDefinition(
+    id: SpellIds.findSteed,
+    content: RuleContent(
+      id: SpellIds.findSteed,
+      name: 'Trova Cavalcatura',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Evoca uno spirito cavalcatura forte, intelligente e fedele legato all’incantatore.',
+        details: 'L’incantatore evoca uno spirito che assume la forma di una '
+            'cavalcatura insolitamente forte, intelligente e fedele, creando un '
+            'legame duraturo. La cavalcatura appare in uno spazio libero entro '
+            'gittata e assume una forma scelta tra cavallo da guerra, pony, '
+            'cammello, alce o mastino, salvo altre forme permesse dal DM. Usa le '
+            'statistiche della forma scelta, ma il suo tipo è celestiale, '
+            'folletto o immondo a scelta dell’incantatore. Se la sua '
+            'Intelligenza è 5 o inferiore, diventa 6 e capisce un linguaggio '
+            'scelto dall’incantatore. La cavalcatura serve l’incantatore in '
+            'combattimento e fuori, e quando l’incantatore è in sella può fare '
+            'in modo che un incantesimo che bersaglia solo sé stesso bersagli '
+            'anche la cavalcatura. Se la cavalcatura scende a 0 punti ferita o '
+            'viene congedata con un’azione, scompare senza lasciare corpo; un '
+            'nuovo lancio richiama la stessa cavalcatura al massimo dei punti '
+            'ferita. Entro 1,5 km, l’incantatore comunica con lei '
+            'telepaticamente. Non può essere legato a più di una cavalcatura per '
+            'volta.',
+      ),
+      ownerId: SpellIds.findSteed,
+    ),
+    level: 2,
+    school: SpellSchool.conjuration,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.minute,
+      amount: 10,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 9,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.instantaneous,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.special,
+      },
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'find_steed_loyal_spirit_mount',
+        type: SpellPersistentEffectType.createdObject,
+        ruleTags: {
+          'summons_spirit_mount_in_unoccupied_space_within_9_meters',
+          'mount_form_warhorse_pony_camel_elk_or_mastiff',
+          'dm_can_allow_other_mount_forms',
+          'mount_type_is_celestial_fey_or_fiend',
+          'mount_intelligence_becomes_6_if_lower',
+          'mount_understands_one_language_chosen_by_caster',
+          'mount_serves_caster_in_combat_and_outside_combat',
+          'while_mounted_self_only_spells_can_also_target_mount',
+          'mount_disappears_at_0_hit_points_or_when_dismissed',
+          'recasting_summons_same_mount_at_full_hit_points',
+          'telepathic_communication_within_1_5_km',
+          'caster_can_have_only_one_bound_mount',
+        },
+      ),
+    ],
+    classIds: {
+      'paladin',
+    },
+  ),
+  SpellIds.ropeTrick: SpellDefinition(
+    id: SpellIds.ropeTrick,
+    content: RuleContent(
+      id: SpellIds.ropeTrick,
+      name: 'Trucco della Corda',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Trasforma una corda in accesso a uno spazio extradimensionale nascosto.',
+        details:
+            'L’incantatore tocca un pezzo di corda lungo al massimo 18 metri. '
+            'Un’estremità della corda sale in aria finché la corda pende '
+            'perpendicolarmente al terreno. All’estremità superiore si apre '
+            'un’entrata invisibile verso uno spazio extradimensionale che '
+            'permane fino al termine dell’incantesimo. Lo spazio può essere '
+            'raggiunto arrampicandosi fino in cima alla corda e può contenere '
+            'fino a otto creature di taglia Media o inferiore. La corda può '
+            'essere ritratta all’interno dello spazio, sparendo alla vista di '
+            'chi è all’esterno. Attacchi e incantesimi non possono attraversare '
+            'lo spazio extradimensionale in entrata o in uscita, ma chi si '
+            'trova all’interno può vedere all’esterno come da una finestra '
+            'centrata sulla corda. Quando l’incantesimo termina, tutto ciò che '
+            'si trova nello spazio cade all’esterno.',
+      ),
+      ownerId: SpellIds.ropeTrick,
+    ),
+    level: 2,
+    school: SpellSchool.transmutation,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.touch,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+      materials: [
+        SpellMaterialComponent(
+          description:
+              'Estratto di mais in polvere e un pezzo di pergamena annodato.',
+        ),
+      ],
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.hour,
+      amount: 1,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.object,
+      },
+      maximumTargets: 1,
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'rope_trick_extradimensional_space',
+        type: SpellPersistentEffectType.createdObject,
+        ruleTags: {
+          'touches_rope_up_to_18_meters_long',
+          'one_rope_end_rises_and_hangs_perpendicular_to_ground',
+          'invisible_entrance_opens_at_top_of_rope',
+          'creates_extradimensional_space_until_spell_ends',
+          'space_holds_up_to_eight_medium_or_smaller_creatures',
+          'rope_can_be_pulled_inside_and_hidden_from_outside',
+          'attacks_and_spells_cannot_cross_space_boundary',
+          'creatures_inside_can_see_outside_through_window_centered_on_rope',
+          'contents_fall_out_when_spell_ends',
+        },
+      ),
+    ],
+    classIds: {
       'wizard',
     },
   ),

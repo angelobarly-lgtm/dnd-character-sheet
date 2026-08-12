@@ -54,10 +54,10 @@ Checklist di lavoro per espandere `lib/data/spell_data.dart` con gli incantesimi
 - [x] Serratura Arcana
 - [x] Sfera Infuocata
 - [x] Sfocatura
-- [ ] Silenzio
-- [ ] Suggestione
-- [ ] Trova Cavalcatura
-- [ ] Trucco della Corda
+- [x] Silenzio
+- [x] Suggestione
+- [x] Trova Cavalcatura
+- [x] Trucco della Corda
 - [ ] Vedere Invisibilità
 - [ ] Vincolo di Interdizione
 - [ ] Zona di Verità
