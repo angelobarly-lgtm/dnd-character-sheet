@@ -1123,6 +1123,10 @@ abstract final class SpellIds {
   static const waterBreathing = 'water_breathing';
   static const removeCurse = 'remove_curse';
   static const revivify = 'revivify';
+  static const bestowCurse = 'bestow_curse';
+  static const sleetStorm = 'sleet_storm';
+  static const vampiricTouch = 'vampiric_touch';
+  static const hypnoticPattern = 'hypnotic_pattern';
 }
 
 const Map<String, SpellDefinition> spellDefinitions = {
@@ -14941,6 +14945,302 @@ const Map<String, SpellDefinition> spellDefinitions = {
     classIds: {
       'cleric',
       'paladin',
+    },
+  ),
+  SpellIds.bestowCurse: SpellDefinition(
+    id: SpellIds.bestowCurse,
+    content: RuleContent(
+      id: SpellIds.bestowCurse,
+      name: 'Scagliare Maledizione',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Maledice una creatura, applicando uno tra vari effetti debilitanti scelti dall’incantatore.',
+        details:
+            'Una creatura toccata deve superare un tiro salvezza su Saggezza o '
+            'resta maledetta. L’incantatore sceglie uno degli effetti: '
+            'svantaggio alle prove e ai tiri salvezza basati su una '
+            'caratteristica scelta; svantaggio ai tiri per colpire contro '
+            'l’incantatore; tiro salvezza su Saggezza all’inizio di ogni turno '
+            'per non sprecare l’azione senza fare nulla; oppure 1d8 danni '
+            'necrotici extra quando gli attacchi o gli incantesimi '
+            'dell’incantatore colpiscono il bersaglio. Il DM può consentire un '
+            'effetto alternativo di potenza analoga. Rimuovi Maledizione pone '
+            'fine all’effetto. Con uno slot di 4° livello la concentrazione può '
+            'durare 10 minuti; con uno slot di 5° o 6° livello dura 8 ore; con '
+            'uno slot di 7° o 8° livello dura 24 ore; con uno slot di 9° '
+            'livello dura finché non viene dissolto. Dal 5° livello in su non '
+            'richiede concentrazione.',
+      ),
+      ownerId: SpellIds.bestowCurse,
+    ),
+    level: 3,
+    school: SpellSchool.necromancy,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.touch,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.minute,
+      amount: 1,
+      concentration: true,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.creature,
+      },
+      maximumTargets: 1,
+    ),
+    damage: [
+      SpellDamage(
+        dice: '1d8',
+        type: SpellDamageType.necrotic,
+      ),
+    ],
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'bestow_curse_chosen_debilitating_effect',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'target_makes_wisdom_save_on_touch',
+          'failed_save_curses_target_for_duration',
+          'caster_chooses_one_curse_effect',
+          'chosen_ability_checks_and_saves_have_disadvantage',
+          'target_attack_rolls_against_caster_can_have_disadvantage',
+          'target_can_waste_action_after_failed_start_of_turn_wisdom_save',
+          'caster_attacks_and_spells_can_deal_1d8_extra_necrotic_damage',
+          'dm_can_allow_alternative_curse_of_similar_power',
+          'remove_curse_ends_effect',
+          'higher_slots_extend_duration',
+          'slot_level_5_or_higher_removes_concentration_requirement',
+        },
+      ),
+    ],
+    classIds: {
+      'bard',
+      'cleric',
+      'wizard',
+    },
+  ),
+  SpellIds.sleetStorm: SpellDefinition(
+    id: SpellIds.sleetStorm,
+    content: RuleContent(
+      id: SpellIds.sleetStorm,
+      name: 'Tempesta di Nevischio',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Crea una tempesta gelida che oscura l’area, spegne le fiamme e rende il terreno scivoloso.',
+        details:
+            'Una gelida pioggia di nevischio cade in un cilindro del raggio di '
+            '12 metri e alto 6 metri, centrato su un punto entro gittata. '
+            'L’area è pesantemente oscurata e le fiamme scoperte vengono '
+            'estinte. Il terreno diventa difficile e coperto di ghiaccio. '
+            'Quando una creatura entra nell’area per la prima volta in un turno '
+            'o vi inizia il proprio turno, deve superare un tiro salvezza su '
+            'Destrezza o cade prona. Una creatura che tenta di mantenere la '
+            'concentrazione nell’area deve superare un tiro salvezza su '
+            'Costituzione contro la CD dell’incantesimo o perde la '
+            'concentrazione.',
+      ),
+      ownerId: SpellIds.sleetStorm,
+    ),
+    level: 3,
+    school: SpellSchool.conjuration,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 45,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+      materials: [
+        SpellMaterialComponent(
+          description: 'Un pizzico di polvere e alcune gocce d’acqua.',
+        ),
+      ],
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.minute,
+      amount: 1,
+      concentration: true,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.point,
+        SpellTargetType.area,
+      },
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'sleet_storm_obscured_icy_cylinder',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'creates_12_meter_radius_6_meter_high_cylinder',
+          'area_is_heavily_obscured',
+          'extinguishes_exposed_flames',
+          'area_is_difficult_terrain',
+          'creature_entering_or_starting_turn_makes_dexterity_save',
+          'failed_dexterity_save_knocks_creature_prone',
+          'concentrating_creature_in_area_makes_constitution_save',
+          'failed_constitution_save_breaks_concentration',
+          'requires_concentration',
+        },
+      ),
+    ],
+    classIds: {
+      'druid',
+      'sorcerer',
+      'wizard',
+    },
+  ),
+  SpellIds.vampiricTouch: SpellDefinition(
+    id: SpellIds.vampiricTouch,
+    content: RuleContent(
+      id: SpellIds.vampiricTouch,
+      name: 'Tocco del Vampiro',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Un tocco d’ombra infligge danni necrotici e cura l’incantatore di metà dei danni inflitti.',
+        details: 'L’incantatore effettua un attacco in mischia con questo '
+            'incantesimo contro una creatura entro portata. Se colpisce, il '
+            'bersaglio subisce 3d6 danni necrotici e l’incantatore recupera '
+            'punti ferita pari alla metà dei danni necrotici inflitti. Finché '
+            'l’incantesimo non termina, l’incantatore può ripetere l’attacco '
+            'usando un’azione in ogni suo turno. Con uno slot di 4° livello o '
+            'superiore, i danni aumentano di 1d6 per ogni livello di slot '
+            'superiore al 3°.',
+      ),
+      ownerId: SpellIds.vampiricTouch,
+    ),
+    level: 3,
+    school: SpellSchool.necromancy,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.self,
+    ),
+    components: SpellComponents(
+      verbal: true,
+      somatic: true,
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.minute,
+      amount: 1,
+      concentration: true,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.self,
+        SpellTargetType.creature,
+      },
+      maximumTargets: 1,
+    ),
+    damage: [
+      SpellDamage(
+        dice: '3d6',
+        type: SpellDamageType.necrotic,
+      ),
+    ],
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'vampiric_touch_life_draining_attack',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'caster_makes_melee_spell_attack_against_creature_in_reach',
+          'hit_deals_3d6_necrotic_damage',
+          'caster_recovers_hit_points_equal_to_half_necrotic_damage_dealt',
+          'caster_can_repeat_attack_as_action_on_each_turn',
+          'slot_level_above_3_increases_damage_by_1d6_per_slot_level',
+          'requires_concentration',
+        },
+      ),
+    ],
+    classIds: {
+      'warlock',
+      'wizard',
+    },
+  ),
+  SpellIds.hypnoticPattern: SpellDefinition(
+    id: SpellIds.hypnoticPattern,
+    content: RuleContent(
+      id: SpellIds.hypnoticPattern,
+      name: 'Trama Ipnotica',
+      type: RuleContentType.spell,
+      description: RuleDescription(
+        summary:
+            'Crea una trama di colori che affascina, incapacita e immobilizza chi la osserva.',
+        details: 'Un intreccio di colori appare per un istante in un cubo con '
+            'spigolo di 9 metri entro gittata. Ogni creatura nell’area che vede '
+            'la trama deve effettuare un tiro salvezza su Saggezza. Se lo '
+            'fallisce, è affascinata per la durata dell’incantesimo. Finché è '
+            'affascinata in questo modo, la creatura è incapacitata e la sua '
+            'velocità è pari a 0. L’effetto termina per una creatura se subisce '
+            'danni o se qualcun altro usa un’azione per scuoterla e destarla.',
+      ),
+      ownerId: SpellIds.hypnoticPattern,
+    ),
+    level: 3,
+    school: SpellSchool.illusion,
+    castingTime: SpellCastingTime(
+      type: SpellCastingTimeType.action,
+    ),
+    range: SpellRange(
+      type: SpellRangeType.distance,
+      distanceMeters: 36,
+    ),
+    components: SpellComponents(
+      somatic: true,
+      materials: [
+        SpellMaterialComponent(
+          description:
+              'Un bastoncino d’incenso acceso o una fiala di cristallo riempita di materiale fosforescente.',
+        ),
+      ],
+    ),
+    duration: SpellDuration(
+      type: SpellDurationType.minute,
+      amount: 1,
+      concentration: true,
+    ),
+    target: SpellTarget(
+      types: {
+        SpellTargetType.area,
+        SpellTargetType.creatures,
+      },
+    ),
+    persistentEffects: [
+      SpellPersistentEffect(
+        id: 'hypnotic_pattern_charmed_incapacitated_creatures',
+        type: SpellPersistentEffectType.special,
+        ruleTags: {
+          'creates_instantaneous_pattern_inside_9_meter_cube',
+          'each_creature_in_area_that_sees_pattern_makes_wisdom_save',
+          'failed_save_charms_creature_for_duration',
+          'charmed_creature_is_incapacitated',
+          'charmed_creature_speed_becomes_0',
+          'effect_ends_for_creature_when_it_takes_damage',
+          'another_creature_can_use_action_to_shake_target_awake',
+          'requires_concentration',
+        },
+      ),
+    ],
+    classIds: {
+      'bard',
+      'sorcerer',
+      'warlock',
+      'wizard',
     },
   ),
 };

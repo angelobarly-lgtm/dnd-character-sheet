@@ -46,9 +46,9 @@ Checklist di lavoro per espandere `lib/data/spell_data.dart` con gli incantesimi
 - [x] Respirare sott'Acqua
 - [x] Rimuovi Maledizione
 - [x] Rinascita
-- [ ] Scagliare Maledizione
-- [ ] Tempesta di Nevischio
-- [ ] Tocco del Vampiro
-- [ ] Trama Ipnotica
+- [x] Scagliare Maledizione
+- [x] Tempesta di Nevischio
+- [x] Tocco del Vampiro
+- [x] Trama Ipnotica
 - [ ] Velocità
 - [ ] Volare
