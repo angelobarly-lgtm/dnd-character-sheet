@@ -23,9 +23,9 @@ Ogni background dovrà includere:
 - [x] Artigiano di Gilda
   - [x] Variante: Mercante di Gilda
 - [x] Ciarlatano
-- [ ] Criminale
-  - [ ] Variante: Spia
-- [ ] Eremita
+- [x] Criminale
+  - [x] Variante: Spia
+- [x] Eremita
 - [ ] Eroe Popolare
 - [ ] Forestiero
 - [ ] Intrattenitore

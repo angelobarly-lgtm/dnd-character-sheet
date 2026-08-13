@@ -625,6 +625,543 @@ const _falseIdentityFeature = BackgroundFeatureDefinition(
   },
 );
 
+const _criminalSpecializations = BackgroundTableDefinition(
+  id: 'criminal_specializations',
+  name: 'Specializzazioni Criminali',
+  dieSides: 8,
+  entries: [
+    BackgroundTableEntry(
+      minimumRoll: 1,
+      maximumRoll: 1,
+      label: 'Assassino.',
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 2,
+      maximumRoll: 2,
+      label: 'Borseggiatore.',
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 3,
+      maximumRoll: 3,
+      label: 'Brigante.',
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 4,
+      maximumRoll: 4,
+      label: 'Contrabbandiere.',
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 5,
+      maximumRoll: 5,
+      label: 'Picchiatore.',
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 6,
+      maximumRoll: 6,
+      label: 'Ricattatore.',
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 7,
+      maximumRoll: 7,
+      label: 'Ricettatore.',
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 8,
+      maximumRoll: 8,
+      label: 'Scassinatore.',
+    ),
+  ],
+);
+const _criminalPersonalityTraits = BackgroundTableDefinition(
+  id: 'criminal_personality_traits',
+  name: 'Tratti Caratteriali',
+  dieSides: 8,
+  entries: [
+    BackgroundTableEntry(
+      minimumRoll: 1,
+      maximumRoll: 1,
+      label:
+          'Ha sempre un piano di riserva quando la situazione si mette male.',
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 2,
+      maximumRoll: 2,
+      label:
+          'Mantiene la calma in ogni situazione e non lascia che le emozioni prevalgano sulla ragione.',
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 3,
+      maximumRoll: 3,
+      label:
+          'Quando arriva in un luogo nuovo individua subito dove potrebbero essere custoditi o nascosti gli oggetti di valore.',
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 4,
+      maximumRoll: 4,
+      label:
+          'Preferisce conquistare un nuovo amico anziché crearsi un nuovo nemico.',
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 5,
+      maximumRoll: 5,
+      label:
+          'Impiega molto tempo a fidarsi degli altri e sospetta soprattutto di chi sembra troppo onesto.',
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 6,
+      maximumRoll: 6,
+      label: 'Affronta i rischi senza preoccuparsi delle probabilità.',
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 7,
+      maximumRoll: 7,
+      label:
+          'Il modo più efficace per spingerlo ad agire è dirgli che non può farlo.',
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 8,
+      maximumRoll: 8,
+      label: 'Reagisce con collera anche alla minima provocazione.',
+    ),
+  ],
+);
+const _criminalIdeals = BackgroundTableDefinition(
+  id: 'criminal_ideals',
+  name: 'Ideali',
+  dieSides: 6,
+  entries: [
+    BackgroundTableEntry(
+      minimumRoll: 1,
+      maximumRoll: 1,
+      label: 'Onore. Non deruba gli altri criminali.',
+      alignment: 'Legale',
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 2,
+      maximumRoll: 2,
+      label:
+          'Libertà. Ogni catena deve essere spezzata, compresa quella imposta agli altri.',
+      alignment: 'Caotico',
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 3,
+      maximumRoll: 3,
+      label:
+          'Carità. Sottrae ricchezze a chi ne possiede troppe per aiutare chi è nel bisogno.',
+      alignment: 'Buono',
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 4,
+      maximumRoll: 4,
+      label: 'Avidità. È disposto a tutto pur di accumulare ricchezza.',
+      alignment: 'Malvagio',
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 5,
+      maximumRoll: 5,
+      label: 'Persone. È leale verso i suoi amici, non verso ideali astratti.',
+      alignment: 'Neutrale',
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 6,
+      maximumRoll: 6,
+      label:
+          'Redenzione. Crede che in ogni individuo esista ancora una scintilla di bontà.',
+      alignment: 'Buono',
+    ),
+  ],
+);
+const _criminalBonds = BackgroundTableDefinition(
+  id: 'criminal_bonds',
+  name: 'Legami',
+  dieSides: 6,
+  entries: [
+    BackgroundTableEntry(
+      minimumRoll: 1,
+      maximumRoll: 1,
+      label:
+          'Vuole ripagare un vecchio debito contratto con un benefattore generoso.',
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 2,
+      maximumRoll: 2,
+      label:
+          'Usa i guadagni delle sue attività illecite per mantenere la propria famiglia.',
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 3,
+      maximumRoll: 3,
+      label:
+          'Qualcuno gli ha sottratto qualcosa di importante ed è determinato a recuperarlo.',
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 4,
+      maximumRoll: 4,
+      label: 'Aspira a diventare il più grande ladro di tutti i tempi.',
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 5,
+      maximumRoll: 5,
+      label:
+          'Ha commesso un crimine terribile e spera di riuscire a redimersi.',
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 6,
+      maximumRoll: 6,
+      label:
+          'Una persona amata è morta per colpa sua e farà di tutto affinché non accada di nuovo.',
+    ),
+  ],
+);
+const _criminalFlaws = BackgroundTableDefinition(
+  id: 'criminal_flaws',
+  name: 'Difetti',
+  dieSides: 6,
+  entries: [
+    BackgroundTableEntry(
+      minimumRoll: 1,
+      maximumRoll: 1,
+      label:
+          'Quando vede qualcosa di prezioso riesce soltanto a pensare a come impadronirsene.',
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 2,
+      maximumRoll: 2,
+      label:
+          'Quando deve scegliere tra gli amici e il denaro, di solito sceglie il denaro.',
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 3,
+      maximumRoll: 3,
+      label:
+          'Dimentica i piani stabiliti oppure decide deliberatamente di ignorarli.',
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 4,
+      maximumRoll: 4,
+      label: 'Quando mente manifesta sempre un segnale che può tradirlo.',
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 5,
+      maximumRoll: 5,
+      label: 'Quando la situazione si mette male fugge senza esitazione.',
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 6,
+      maximumRoll: 6,
+      label:
+          'Un innocente è stato incarcerato per un suo crimine e lui convive tranquillamente con questa colpa.',
+    ),
+  ],
+);
+const _criminalCharacteristics = BackgroundSuggestedCharacteristics(
+  personalityTraits: _criminalPersonalityTraits,
+  ideals: _criminalIdeals,
+  bonds: _criminalBonds,
+  flaws: _criminalFlaws,
+);
+
+const _criminalContactFeature = BackgroundFeatureDefinition(
+  id: 'criminal_contact',
+  content: RuleContent(
+    id: 'criminal_contact',
+    name: 'Contatto Criminale',
+    type: RuleContentType.background,
+    description: RuleDescription(
+      summary:
+          'Mantiene un contatto affidabile all’interno di una rete criminale.',
+      details:
+          'Il personaggio conosce un intermediario fidato collegato a una rete di criminali. Sa come inviare e ricevere messaggi anche su grandi distanze, servendosi di messaggeri locali, carovanieri corrotti e marinai poco raccomandabili.',
+    ),
+    source: RuleSource(
+      name: 'Manuale del Giocatore 2014',
+      reference: 'Pagine 130-131',
+    ),
+    ownerId: BackgroundIds.criminal,
+  ),
+  ruleTags: {
+    'has_reliable_criminal_contact',
+    'can_exchange_messages_with_criminal_network',
+    'can_communicate_over_long_distances',
+    'knows_local_criminal_messengers',
+    'knows_corrupt_caravan_masters',
+    'knows_disreputable_sailors',
+  },
+);
+
+const _hermitSolitaryLives = BackgroundTableDefinition(
+  id: 'hermit_solitary_lives',
+  name: 'Vita Solitaria',
+  dieSides: 8,
+  entries: [
+    BackgroundTableEntry(
+      minimumRoll: 1,
+      maximumRoll: 1,
+      label:
+          'Si è allontanato dalla civiltà per vivere in armonia con la natura.',
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 2,
+      maximumRoll: 2,
+      label: 'Ha custodito un antico edificio in rovina o una reliquia.',
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 3,
+      maximumRoll: 3,
+      label: 'È stato esiliato per un crimine che non aveva commesso.',
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 4,
+      maximumRoll: 4,
+      label:
+          'Ha intrapreso un pellegrinaggio alla ricerca di una persona, un luogo o una reliquia di grande valore spirituale.',
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 5,
+      maximumRoll: 5,
+      label: 'Ha cercato l’illuminazione spirituale.',
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 6,
+      maximumRoll: 6,
+      label: 'Si è ritirato dalla società dopo un evento sconvolgente.',
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 7,
+      maximumRoll: 7,
+      label:
+          'Ha cercato un luogo tranquillo in cui lavorare a un’opera artistica, letteraria o musicale.',
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 8,
+      maximumRoll: 8,
+      label:
+          'Ha vissuto in una comunità seguendo i precetti di un ordine religioso.',
+    ),
+  ],
+);
+const _hermitPersonalityTraits = BackgroundTableDefinition(
+  id: 'hermit_personality_traits',
+  name: 'Tratti Caratteriali',
+  dieSides: 8,
+  entries: [
+    BackgroundTableEntry(
+      minimumRoll: 1,
+      maximumRoll: 1,
+      label:
+          'Ha trascorso così tanto tempo da solo che parla raramente e preferisce comunicare con gesti e suoni.',
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 2,
+      maximumRoll: 2,
+      label: 'Rimane profondamente sereno anche davanti a un disastro.',
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 3,
+      maximumRoll: 3,
+      label:
+          'Conosce una massima di saggezza per ogni argomento ed è impaziente di condividerla.',
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 4,
+      maximumRoll: 4,
+      label: 'Prova una forte empatia verso tutti coloro che soffrono.',
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 5,
+      maximumRoll: 5,
+      label:
+          'È completamente indifferente all’etichetta e alle convenzioni sociali.',
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 6,
+      maximumRoll: 6,
+      label: 'Collega ogni evento a un grandioso disegno cosmico.',
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 7,
+      maximumRoll: 7,
+      label:
+          'Si immerge tanto profondamente nei propri pensieri da dimenticare il mondo circostante.',
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 8,
+      maximumRoll: 8,
+      label:
+          'Sta elaborando un vasto sistema filosofico e ama esporre le proprie idee.',
+    ),
+  ],
+);
+const _hermitIdeals = BackgroundTableDefinition(
+  id: 'hermit_ideals',
+  name: 'Ideali',
+  dieSides: 6,
+  entries: [
+    BackgroundTableEntry(
+      minimumRoll: 1,
+      maximumRoll: 1,
+      label:
+          'Bene superiore. I suoi doni devono essere condivisi e usati a beneficio degli altri.',
+      alignment: 'Buono',
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 2,
+      maximumRoll: 2,
+      label:
+          'Logica. Le emozioni non devono oscurare ciò che è vero e giusto né limitare il ragionamento.',
+      alignment: 'Legale',
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 3,
+      maximumRoll: 3,
+      label:
+          'Libero pensiero. La ricerca e la curiosità sono fondamentali per il progresso.',
+      alignment: 'Caotico',
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 4,
+      maximumRoll: 4,
+      label:
+          'Potere. La solitudine e la contemplazione conducono al potere mistico o magico.',
+      alignment: 'Malvagio',
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 5,
+      maximumRoll: 5,
+      label:
+          'Vivi e lascia vivere. Intromettersi negli affari altrui genera soltanto problemi.',
+      alignment: 'Neutrale',
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 6,
+      maximumRoll: 6,
+      label:
+          'Autocoscienza. Chi conosce veramente se stesso non ha bisogno di conoscere altro.',
+      alignment: 'Qualsiasi',
+    ),
+  ],
+);
+const _hermitBonds = BackgroundTableDefinition(
+  id: 'hermit_bonds',
+  name: 'Legami',
+  dieSides: 6,
+  entries: [
+    BackgroundTableEntry(
+      minimumRoll: 1,
+      maximumRoll: 1,
+      label:
+          'Gli altri membri della sua comunità, del suo ordine o del suo gruppo di clausura vengono prima di ogni altra cosa.',
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 2,
+      maximumRoll: 2,
+      label:
+          'Aveva scelto l’isolamento per sfuggire a qualcuno che potrebbe essere ancora sulle sue tracce.',
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 3,
+      maximumRoll: 3,
+      label:
+          'Continua a cercare l’illuminazione che sperava di ottenere durante l’eremitaggio.',
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 4,
+      maximumRoll: 4,
+      label:
+          'Aveva scelto l’isolamento perché amava una persona che non avrebbe mai potuto avere.',
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 5,
+      maximumRoll: 5,
+      label:
+          'Se la sua scoperta diventasse di dominio pubblico, potrebbe causare la rovina del mondo.',
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 6,
+      maximumRoll: 6,
+      label:
+          'L’isolamento gli ha rivelato un grande male che soltanto lui potrebbe riuscire a sconfiggere.',
+    ),
+  ],
+);
+const _hermitFlaws = BackgroundTableDefinition(
+  id: 'hermit_flaws',
+  name: 'Difetti',
+  dieSides: 6,
+  entries: [
+    BackgroundTableEntry(
+      minimumRoll: 1,
+      maximumRoll: 1,
+      label:
+          'Dopo il ritorno nel mondo esterno indulge spesso nei piaceri della vita mondana.',
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 2,
+      maximumRoll: 2,
+      label:
+          'È tormentato da pensieri oscuri e violenti che la meditazione non è riuscita a domare.',
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 3,
+      maximumRoll: 3,
+      label:
+          'È estremamente dogmatico riguardo alle proprie convinzioni e alla propria filosofia.',
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 4,
+      maximumRoll: 4,
+      label:
+          'Il bisogno di avere sempre l’ultima parola rovina le sue amicizie e l’armonia della sua vita.',
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 5,
+      maximumRoll: 5,
+      label:
+          'Corre rischi eccessivi pur di riportare alla luce anche il più piccolo frammento di conoscenza.',
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 6,
+      maximumRoll: 6,
+      label: 'Ama custodire segreti che non intende condividere con nessuno.',
+    ),
+  ],
+);
+const _hermitCharacteristics = BackgroundSuggestedCharacteristics(
+  personalityTraits: _hermitPersonalityTraits,
+  ideals: _hermitIdeals,
+  bonds: _hermitBonds,
+  flaws: _hermitFlaws,
+);
+
+const _discoveryFeature = BackgroundFeatureDefinition(
+  id: 'discovery',
+  content: RuleContent(
+    id: 'discovery',
+    name: 'Scoperta',
+    type: RuleContentType.background,
+    description: RuleDescription(
+      summary:
+          'Durante il suo isolamento l’eremita ha compiuto una scoperta unica e importante.',
+      details:
+          'La scoperta può riguardare una verità sul cosmo, sulle divinità, sui piani esterni o sulle forze della natura; un luogo sconosciuto, una conoscenza dimenticata, una reliquia capace di cambiare la storia oppure informazioni pericolose. I dettagli e l’impatto della scoperta vengono concordati con il DM.',
+    ),
+    source: RuleSource(
+      name: 'Manuale del Giocatore 2014',
+      reference: 'Pagine 131-132',
+    ),
+    ownerId: BackgroundIds.hermit,
+  ),
+  ruleTags: {
+    'has_unique_important_discovery',
+    'discovery_details_are_defined_with_dm',
+    'discovery_may_reveal_cosmic_truth',
+    'discovery_may_reveal_unknown_location',
+    'discovery_may_reveal_forgotten_knowledge',
+    'discovery_may_involve_historic_relic',
+    'discovery_may_affect_campaign',
+  },
+);
+
 /// Registro canonico dei background.
 ///
 /// Verrà popolato progressivamente seguendo la checklist PHB.
@@ -1487,6 +2024,268 @@ const Map<String, BackgroundDefinition> backgroundDefinitions = {
       ),
       BackgroundEquipmentGrant(
         itemId: EquipmentIds.pouch,
+      ),
+    ],
+  ),
+  BackgroundIds.criminal: BackgroundDefinition(
+    id: BackgroundIds.criminal,
+    name: 'Criminale',
+    content: RuleContent(
+      id: BackgroundIds.criminal,
+      name: 'Criminale',
+      type: RuleContentType.background,
+      description: RuleDescription(
+        summary:
+            'Un malfattore esperto, legato al mondo clandestino e alle sue reti.',
+        details:
+            'Ha violato ripetutamente la legge, ha trascorso molto tempo tra altri criminali e conserva ancora contatti con quel mondo di furti, violenza e traffici illeciti.',
+      ),
+      source: RuleSource(
+        name: 'Manuale del Giocatore 2014',
+        reference: 'Pagine 130-131',
+      ),
+      visual: RuleVisualIdentity(
+        family: RuleVisualFamily.background,
+        iconId: 'criminal',
+      ),
+      ownerId: BackgroundIds.criminal,
+    ),
+    effects: CharacterEffects(
+      skillProficiencies: {
+        'Furtività',
+        'Inganno',
+      },
+      toolProficiencies: {
+        ToolIds.thievesTools,
+      },
+      choices: [
+        CharacterChoiceDefinition(
+          id: 'criminal_gaming_set',
+          label: 'Scegli un tipo di gioco',
+          type: CharacterChoiceType.other,
+          options: [
+            CharacterChoiceOptionDefinition(
+              id: ToolIds.diceSet,
+              label: 'Set di Dadi',
+              effects: CharacterEffects(
+                toolProficiencies: {
+                  ToolIds.diceSet,
+                },
+              ),
+            ),
+            CharacterChoiceOptionDefinition(
+              id: ToolIds.dragonchessSet,
+              label: 'Set di Dragonchess',
+              effects: CharacterEffects(
+                toolProficiencies: {
+                  ToolIds.dragonchessSet,
+                },
+              ),
+            ),
+            CharacterChoiceOptionDefinition(
+              id: ToolIds.playingCardSet,
+              label: 'Mazzo di Carte',
+              effects: CharacterEffects(
+                toolProficiencies: {
+                  ToolIds.playingCardSet,
+                },
+              ),
+            ),
+            CharacterChoiceOptionDefinition(
+              id: ToolIds.threeDragonAnteSet,
+              label: 'Three-Dragon Ante',
+              effects: CharacterEffects(
+                toolProficiencies: {
+                  ToolIds.threeDragonAnteSet,
+                },
+              ),
+            ),
+          ],
+          requireNewAcquisition: true,
+        ),
+      ],
+    ),
+    feature: _criminalContactFeature,
+    tables: [
+      _criminalSpecializations,
+    ],
+    suggestedCharacteristics: _criminalCharacteristics,
+    startingCoins: {
+      'MO': 15,
+    },
+    startingEquipment: [
+      BackgroundEquipmentGrant(
+        itemId: EquipmentIds.crowbar,
+      ),
+      BackgroundEquipmentGrant(
+        itemId: EquipmentIds.commonClothes,
+      ),
+      BackgroundEquipmentGrant(
+        itemId: EquipmentIds.pouch,
+      ),
+    ],
+  ),
+  BackgroundIds.spy: BackgroundDefinition(
+    id: BackgroundIds.spy,
+    name: 'Spia',
+    content: RuleContent(
+      id: BackgroundIds.spy,
+      name: 'Spia',
+      type: RuleContentType.background,
+      description: RuleDescription(
+        summary:
+            'Un agente addestrato a raccogliere e trasmettere informazioni segrete.',
+        details:
+            'Possiede capacità simili a quelle di uno scassinatore o di un contrabbandiere, ma le usa per lo spionaggio. Può operare per una corona, un’organizzazione oppure vendere i segreti scoperti al miglior offerente.',
+      ),
+      source: RuleSource(
+        name: 'Manuale del Giocatore 2014',
+        reference: 'Pagina 131',
+      ),
+      visual: RuleVisualIdentity(
+        family: RuleVisualFamily.background,
+        iconId: 'spy',
+      ),
+      ownerId: BackgroundIds.spy,
+    ),
+    parentBackgroundId: BackgroundIds.criminal,
+    effects: CharacterEffects(
+      skillProficiencies: {
+        'Furtività',
+        'Inganno',
+      },
+      toolProficiencies: {
+        ToolIds.thievesTools,
+      },
+      choices: [
+        CharacterChoiceDefinition(
+          id: 'spy_gaming_set',
+          label: 'Scegli un tipo di gioco',
+          type: CharacterChoiceType.other,
+          options: [
+            CharacterChoiceOptionDefinition(
+              id: ToolIds.diceSet,
+              label: 'Set di Dadi',
+              effects: CharacterEffects(
+                toolProficiencies: {
+                  ToolIds.diceSet,
+                },
+              ),
+            ),
+            CharacterChoiceOptionDefinition(
+              id: ToolIds.dragonchessSet,
+              label: 'Set di Dragonchess',
+              effects: CharacterEffects(
+                toolProficiencies: {
+                  ToolIds.dragonchessSet,
+                },
+              ),
+            ),
+            CharacterChoiceOptionDefinition(
+              id: ToolIds.playingCardSet,
+              label: 'Mazzo di Carte',
+              effects: CharacterEffects(
+                toolProficiencies: {
+                  ToolIds.playingCardSet,
+                },
+              ),
+            ),
+            CharacterChoiceOptionDefinition(
+              id: ToolIds.threeDragonAnteSet,
+              label: 'Three-Dragon Ante',
+              effects: CharacterEffects(
+                toolProficiencies: {
+                  ToolIds.threeDragonAnteSet,
+                },
+              ),
+            ),
+          ],
+          requireNewAcquisition: true,
+        ),
+      ],
+    ),
+    feature: _criminalContactFeature,
+    tables: [
+      _criminalSpecializations,
+    ],
+    suggestedCharacteristics: _criminalCharacteristics,
+    startingCoins: {
+      'MO': 15,
+    },
+    startingEquipment: [
+      BackgroundEquipmentGrant(
+        itemId: EquipmentIds.crowbar,
+      ),
+      BackgroundEquipmentGrant(
+        itemId: EquipmentIds.commonClothes,
+      ),
+      BackgroundEquipmentGrant(
+        itemId: EquipmentIds.pouch,
+      ),
+    ],
+  ),
+  BackgroundIds.hermit: BackgroundDefinition(
+    id: BackgroundIds.hermit,
+    name: 'Eremita',
+    content: RuleContent(
+      id: BackgroundIds.hermit,
+      name: 'Eremita',
+      type: RuleContentType.background,
+      description: RuleDescription(
+        summary:
+            'Ha trascorso gli anni formativi della propria vita lontano dalla società.',
+        details:
+            'Ha vissuto in un luogo isolato, presso una comunità separata oppure completamente da solo. Lontano dalla confusione della società ha trovato tranquillità, solitudine e forse alcune delle risposte che cercava.',
+      ),
+      source: RuleSource(
+        name: 'Manuale del Giocatore 2014',
+        reference: 'Pagine 131-132',
+      ),
+      visual: RuleVisualIdentity(
+        family: RuleVisualFamily.background,
+        iconId: 'hermit',
+      ),
+      ownerId: BackgroundIds.hermit,
+    ),
+    effects: CharacterEffects(
+      skillProficiencies: {
+        'Medicina',
+        'Religione',
+      },
+      toolProficiencies: {
+        ToolIds.herbalismKit,
+      },
+      choices: [
+        CharacterChoiceDefinition(
+          id: 'hermit_language',
+          label: 'Scegli un linguaggio',
+          type: CharacterChoiceType.language,
+          optionIds: characterLanguageIds,
+          requireNewAcquisition: true,
+        ),
+      ],
+    ),
+    feature: _discoveryFeature,
+    tables: [
+      _hermitSolitaryLives,
+    ],
+    suggestedCharacteristics: _hermitCharacteristics,
+    startingCoins: {
+      'MO': 5,
+    },
+    startingEquipment: [
+      BackgroundEquipmentGrant(
+        itemId: EquipmentIds.scrollCase,
+      ),
+      BackgroundEquipmentGrant(
+        itemId: EquipmentIds.blanket,
+      ),
+      BackgroundEquipmentGrant(
+        itemId: EquipmentIds.commonClothes,
+      ),
+      BackgroundEquipmentGrant(
+        itemId: ToolIds.herbalismKit,
+        catalogId: 'tool',
       ),
     ],
   ),

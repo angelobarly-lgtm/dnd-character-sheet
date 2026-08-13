@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:dnd_character_sheet/data/background_data.dart';
 import 'package:dnd_character_sheet/data/character_data.dart';
 import 'package:dnd_character_sheet/data/equipment_data.dart';
+import 'package:dnd_character_sheet/data/tool_data.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
@@ -177,7 +178,7 @@ void main() {
     );
   });
 
-  test('first PHB background block is structurally valid', () {
+  test('completed PHB background blocks are structurally valid', () {
     expect(
       backgroundDefinitions.keys.toSet(),
       {
@@ -185,10 +186,13 @@ void main() {
         BackgroundIds.guildArtisan,
         BackgroundIds.guildMerchant,
         BackgroundIds.charlatan,
+        BackgroundIds.criminal,
+        BackgroundIds.spy,
+        BackgroundIds.hermit,
       },
     );
 
-    expect(mainBackgroundDefinitions.length, 3);
+    expect(mainBackgroundDefinitions.length, 5);
 
     final merchant = backgroundDefinitions[BackgroundIds.guildMerchant];
     expect(merchant, isNotNull);
@@ -266,5 +270,96 @@ void main() {
       },
     );
     expect(charlatan.tables.single.dieSides, 6);
+  });
+  test('criminal spy and hermit backgrounds are structurally valid', () {
+    final criminal = backgroundDefinitions[BackgroundIds.criminal];
+    final spy = backgroundDefinitions[BackgroundIds.spy];
+    final hermit = backgroundDefinitions[BackgroundIds.hermit];
+
+    expect(criminal, isNotNull);
+    expect(spy, isNotNull);
+    expect(hermit, isNotNull);
+
+    expect(criminal!.isVariant, isFalse);
+    expect(criminal.parentBackgroundId, isNull);
+    expect(
+      criminal.effects.skillProficiencies,
+      {
+        'Furtività',
+        'Inganno',
+      },
+    );
+    expect(
+      criminal.effects.toolProficiencies,
+      {
+        ToolIds.thievesTools,
+      },
+    );
+    expect(criminal.feature!.id, 'criminal_contact');
+    expect(criminal.tables.single.dieSides, 8);
+    expect(criminal.tables.single.entries.length, 8);
+
+    final criminalGamingChoice = criminal.effects.choices.single;
+    expect(criminalGamingChoice.id, 'criminal_gaming_set');
+    expect(
+      criminalGamingChoice.options.map((option) => option.id).toSet(),
+      {
+        ToolIds.diceSet,
+        ToolIds.dragonchessSet,
+        ToolIds.playingCardSet,
+        ToolIds.threeDragonAnteSet,
+      },
+    );
+
+    expect(spy!.isVariant, isTrue);
+    expect(spy.parentBackgroundId, BackgroundIds.criminal);
+    expect(spy.feature!.id, 'criminal_contact');
+    expect(
+      backgroundVariantsFor(BackgroundIds.criminal)
+          .map((background) => background.id)
+          .toSet(),
+      {
+        BackgroundIds.spy,
+      },
+    );
+
+    expect(hermit!.isVariant, isFalse);
+    expect(
+      hermit.effects.skillProficiencies,
+      {
+        'Medicina',
+        'Religione',
+      },
+    );
+    expect(
+      hermit.effects.toolProficiencies,
+      {
+        ToolIds.herbalismKit,
+      },
+    );
+    expect(hermit.effects.choices.single.type, CharacterChoiceType.language);
+    expect(hermit.feature!.id, 'discovery');
+    expect(hermit.tables.single.dieSides, 8);
+    expect(hermit.tables.single.entries.length, 8);
+    expect(hermit.startingCoins, {'MO': 5});
+
+    final hermitEquipment = {
+      for (final item in hermit.startingEquipment) item.itemId: item.catalogId,
+    };
+
+    expect(
+      hermitEquipment,
+      {
+        EquipmentIds.scrollCase: 'equipment',
+        EquipmentIds.blanket: 'equipment',
+        EquipmentIds.commonClothes: 'equipment',
+        ToolIds.herbalismKit: 'tool',
+      },
+    );
+
+    expect(
+      equipmentDefinitions.containsKey(EquipmentIds.scrollCase),
+      isTrue,
+    );
   });
 }

@@ -135,9 +135,19 @@ class EquipmentIds {
   static const loadedDice = "loaded_dice";
   static const markedCards = "marked_cards";
   static const falseDucalSignetRing = "false_ducal_signet_ring";
+  static const scrollCase = "scroll_case";
 }
 
 final equipmentDefinitions = <String, EquipmentDefinition>{
+  EquipmentIds.scrollCase: const EquipmentDefinition(
+    id: EquipmentIds.scrollCase,
+    name: "Custodia per Mappe o Pergamene",
+    category: EquipmentCategory.container,
+    weight: 1,
+    cost: 1,
+    isContainer: true,
+    canContainItems: true,
+  ),
   EquipmentIds.guildLetter: const EquipmentDefinition(
     id: EquipmentIds.guildLetter,
     name: "Lettera di Presentazione della Gilda",
