@@ -272,6 +272,12 @@ class SubclassOptionDefinition {
   /// Rimane null per opzioni senza costo.
   final String? resource;
 
+  /// ID dell'incantesimo collegato all'opzione, quando presente.
+  ///
+  /// Permette all'interfaccia e al motore delle regole di risolvere
+  /// direttamente l'incantesimo senza dipendere dal testo descrittivo.
+  final String? spellId;
+
   /// Manuale o altra fonte editoriale dell'opzione.
   final String source;
 
@@ -292,6 +298,7 @@ class SubclassOptionDefinition {
     this.maximumCost,
     this.allowsAdditionalResource = false,
     this.resource,
+    this.spellId,
     this.source = '',
     this.sourceRef = '',
     this.grantedAutomatically = false,

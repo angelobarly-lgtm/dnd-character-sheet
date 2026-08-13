@@ -159,4 +159,101 @@ void main() {
     expect(definition.phbSubclasses.length, 1);
     expect(definition.supplementalSubclasses.length, 1);
   });
+  test('generic proficiency choices support skills and tools', () {
+    const proficiencies = ClassProficiencyDefinition(
+      choices: [
+        ClassProficiencyChoiceDefinition(
+          id: 'skill_choice',
+          label: 'Scegli due abilità',
+          type: ClassProficiencyChoiceType.skill,
+          optionIds: {'acrobatics', 'athletics', 'stealth'},
+          selections: 2,
+        ),
+        ClassProficiencyChoiceDefinition(
+          id: 'tool_choice',
+          label: 'Scegli uno strumento',
+          type: ClassProficiencyChoiceType.tool,
+          optionIds: {'flute', 'smiths_tools'},
+          selections: 1,
+        ),
+      ],
+    );
+
+    expect(proficiencies.choices.length, 2);
+    expect(proficiencies.choices.first.selections, 2);
+    expect(
+      proficiencies.choices.last.type,
+      ClassProficiencyChoiceType.tool,
+    );
+  });
+
+  test('progression values support dice and metric bonuses', () {
+    const martialArts = ClassProgressionValueDefinition(
+      id: 'martial_arts_die',
+      name: 'Dado delle Arti Marziali',
+      valuesByLevel: {
+        1: 'd4',
+        5: 'd6',
+        11: 'd8',
+        17: 'd10',
+      },
+    );
+
+    const movement = ClassProgressionValueDefinition(
+      id: 'unarmored_movement_bonus',
+      name: 'Movimento Senza Armatura',
+      valuesByLevel: {
+        2: '3 m',
+        6: '4.5 m',
+        10: '6 m',
+        14: '7.5 m',
+        18: '9 m',
+      },
+    );
+
+    expect(martialArts.valueAtLevel(4), 'd4');
+    expect(martialArts.valueAtLevel(17), 'd10');
+    expect(movement.valueAtLevel(1), isNull);
+    expect(movement.valueAtLevel(15), '7.5 m');
+  });
+
+  test('subclasses support internal selectable options', () {
+    final subclass = CharacterSubclassDefinition(
+      id: 'four_elements',
+      name: 'Via dei Quattro Elementi',
+      classId: ClassIds.monk,
+      content: testContent(
+        'four_elements',
+        'Via dei Quattro Elementi',
+      ),
+      featuresByLevel: const {},
+      featureDefinitions: const {},
+      options: const [
+        SubclassOptionDefinition(
+          id: 'elemental_attunement',
+          name: 'Sintonia Elementale',
+          category: 'elemental_discipline',
+          description: RuleDescription(
+            summary: 'Disciplina elementale.',
+          ),
+          minimumLevel: 3,
+          source: 'Manuale del Giocatore',
+          sourceRef: 'PHB',
+        ),
+      ],
+      optionProgression: const SubclassOptionProgression(
+        selectionsByLevel: {
+          3: 1,
+          6: 2,
+          11: 3,
+          17: 4,
+        },
+        replacementLevels: {6, 11, 17},
+      ),
+    );
+
+    expect(subclass.options.length, 1);
+    expect(subclass.optionProgression!.selectionsAtLevel(11), 3);
+    expect(subclass.optionProgression!.canReplaceAtLevel(17), isTrue);
+  });
 }

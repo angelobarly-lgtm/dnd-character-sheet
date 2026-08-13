@@ -39,10 +39,10 @@ verificate dal livello 1 al livello 20.
   - [ ] Scuola di Invocazione
   - [ ] Scuola di Necromanzia
   - [ ] Scuola di Trasmutazione
-- [ ] Monaco
-  - [ ] Via della Mano Aperta
-  - [ ] Via dell’Ombra
-  - [ ] Via dei Quattro Elementi
+- [x] Monaco
+  - [x] Via della Mano Aperta
+  - [x] Via dell’Ombra
+  - [x] Via dei Quattro Elementi
 - [ ] Paladino
   - [ ] Giuramento degli Antichi
   - [ ] Giuramento di Devozione

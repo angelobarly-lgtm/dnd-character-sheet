@@ -3,7 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'data/class_data.dart';
-import 'data/class_catalog_data.dart';
+import 'data/class_registry_data.dart';
 import 'data/glossary_data.dart';
 import 'data/character_data.dart';
 import 'data/feat_data.dart';

@@ -45,6 +45,32 @@ enum ClassResourceRecovery {
   special,
 }
 
+enum ClassProficiencyChoiceType {
+  skill,
+  tool,
+  weapon,
+  armor,
+  language,
+}
+
+class ClassProficiencyChoiceDefinition {
+  final String id;
+  final String label;
+  final ClassProficiencyChoiceType type;
+  final Set<String> optionIds;
+  final int selections;
+  final bool requireNewAcquisition;
+
+  const ClassProficiencyChoiceDefinition({
+    required this.id,
+    required this.label,
+    required this.type,
+    required this.optionIds,
+    required this.selections,
+    this.requireNewAcquisition = true,
+  }) : assert(selections > 0);
+}
+
 class ClassProficiencyDefinition {
   final Set<String> armor;
   final Set<String> weapons;
@@ -53,6 +79,12 @@ class ClassProficiencyDefinition {
   final Set<String> skillOptions;
   final int skillChoices;
 
+  /// Scelte di competenza strutturate.
+  ///
+  /// `skillOptions` e `skillChoices` restano disponibili durante la
+  /// migrazione delle vecchie schermate.
+  final List<ClassProficiencyChoiceDefinition> choices;
+
   const ClassProficiencyDefinition({
     this.armor = const {},
     this.weapons = const {},
@@ -60,6 +92,7 @@ class ClassProficiencyDefinition {
     this.savingThrows = const {},
     this.skillOptions = const {},
     this.skillChoices = 0,
+    this.choices = const [],
   }) : assert(skillChoices >= 0);
 }
 
@@ -222,9 +255,41 @@ class CharacterSubclassDefinition {
     required this.content,
     required this.featuresByLevel,
     required this.featureDefinitions,
+    this.options = const [],
+    this.optionProgression,
     this.homebrew = false,
     this.supplemental = false,
   });
+
+  final List<SubclassOptionDefinition> options;
+  final SubclassOptionProgression? optionProgression;
+}
+
+class ClassProgressionValueDefinition {
+  final String id;
+  final String name;
+
+  /// Valori ai livelli in cui cambiano.
+  ///
+  /// Il tipo String permette di rappresentare numeri, dadi e misure
+  /// senza perdere la notazione regolamentare.
+  final Map<int, String> valuesByLevel;
+
+  const ClassProgressionValueDefinition({
+    required this.id,
+    required this.name,
+    required this.valuesByLevel,
+  });
+
+  String? valueAtLevel(int level) {
+    String? result;
+
+    for (final entry in valuesByLevel.entries) {
+      if (entry.key <= level) result = entry.value;
+    }
+
+    return result;
+  }
 }
 
 class CharacterClassDefinition {
@@ -238,6 +303,7 @@ class CharacterClassDefinition {
   final Map<int, List<String>> featuresByLevel;
   final Map<String, CharacterClassFeatureDefinition> featureDefinitions;
   final List<ClassResourceDefinition> resources;
+  final List<ClassProgressionValueDefinition> progressionValues;
   final ClassSpellcastingDefinition? spellcasting;
   final int subclassSelectionLevel;
   final Map<String, CharacterSubclassDefinition> subclasses;
@@ -255,6 +321,7 @@ class CharacterClassDefinition {
     this.startingEquipmentChoices = const [],
     this.fixedStartingEquipment = const [],
     this.resources = const [],
+    this.progressionValues = const [],
     this.spellcasting,
     this.subclasses = const {},
     this.homebrew = false,
@@ -264,6 +331,16 @@ class CharacterClassDefinition {
   List<String> featuresAtLevel(int level) =>
       List<String>.unmodifiable(featuresByLevel[level] ?? const []);
 
+  String? progressionValue(String id, int level) {
+    for (final definition in progressionValues) {
+      if (definition.id == id) {
+        return definition.valueAtLevel(level);
+      }
+    }
+
+    return null;
+  }
+
   Iterable<CharacterSubclassDefinition> get phbSubclasses =>
       subclasses.values.where(
         (subclass) => !subclass.homebrew && !subclass.supplemental,
@@ -272,10 +349,3 @@ class CharacterClassDefinition {
   Iterable<CharacterSubclassDefinition> get supplementalSubclasses =>
       subclasses.values.where((subclass) => subclass.supplemental);
 }
-
-/// Verrà popolato una classe alla volta dopo la verifica delle relative
-/// tabelle del Manuale del Giocatore.
-final Map<String, CharacterClassDefinition> phbClassDefinitions = {};
-
-CharacterClassDefinition? phbClassDefinitionFor(String id) =>
-    phbClassDefinitions[id];
