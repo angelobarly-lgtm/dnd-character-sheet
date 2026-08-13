@@ -136,9 +136,15 @@ class EquipmentIds {
   static const markedCards = "marked_cards";
   static const falseDucalSignetRing = "false_ducal_signet_ring";
   static const scrollCase = "scroll_case";
+  static const animalTrophy = "animal_trophy";
 }
 
 final equipmentDefinitions = <String, EquipmentDefinition>{
+  EquipmentIds.animalTrophy: const EquipmentDefinition(
+    id: EquipmentIds.animalTrophy,
+    name: "Trofeo di un Animale Ucciso",
+    category: EquipmentCategory.miscellaneous,
+  ),
   EquipmentIds.scrollCase: const EquipmentDefinition(
     id: EquipmentIds.scrollCase,
     name: "Custodia per Mappe o Pergamene",

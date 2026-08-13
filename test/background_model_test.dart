@@ -4,6 +4,7 @@ import 'package:dnd_character_sheet/data/background_data.dart';
 import 'package:dnd_character_sheet/data/character_data.dart';
 import 'package:dnd_character_sheet/data/equipment_data.dart';
 import 'package:dnd_character_sheet/data/tool_data.dart';
+import 'package:dnd_character_sheet/data/weapon_data.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
@@ -189,10 +190,12 @@ void main() {
         BackgroundIds.criminal,
         BackgroundIds.spy,
         BackgroundIds.hermit,
+        BackgroundIds.folkHero,
+        BackgroundIds.outlander,
       },
     );
 
-    expect(mainBackgroundDefinitions.length, 5);
+    expect(mainBackgroundDefinitions.length, 7);
 
     final merchant = backgroundDefinitions[BackgroundIds.guildMerchant];
     expect(merchant, isNotNull);
@@ -359,6 +362,116 @@ void main() {
 
     expect(
       equipmentDefinitions.containsKey(EquipmentIds.scrollCase),
+      isTrue,
+    );
+  });
+  test('folk hero and outlander backgrounds are structurally valid', () {
+    final folkHero = backgroundDefinitions[BackgroundIds.folkHero];
+    final outlander = backgroundDefinitions[BackgroundIds.outlander];
+
+    expect(folkHero, isNotNull);
+    expect(outlander, isNotNull);
+
+    expect(
+      folkHero!.effects.skillProficiencies,
+      {
+        'Addestrare Animali',
+        'Sopravvivenza',
+      },
+    );
+    expect(
+      folkHero.effects.toolProficiencies,
+      {
+        ToolIds.landVehicles,
+      },
+    );
+    expect(folkHero.feature!.id, 'rustic_hospitality');
+    expect(folkHero.tables.single.dieSides, 10);
+    expect(folkHero.tables.single.entries.length, 10);
+    expect(folkHero.startingCoins, {'MO': 10});
+
+    final artisanChoice = folkHero.effects.choices.single;
+    expect(artisanChoice.id, 'folk_hero_artisan_tools');
+    expect(artisanChoice.options.length, 17);
+
+    for (final option in artisanChoice.options) {
+      expect(
+        option.effects.toolProficiencies,
+        contains(option.id),
+      );
+      expect(
+        option.effects.grantedEquipmentIds,
+        contains(option.id),
+      );
+    }
+
+    expect(
+      {
+        for (final item in folkHero.startingEquipment)
+          item.itemId: item.catalogId,
+      },
+      {
+        EquipmentIds.shovel: 'equipment',
+        EquipmentIds.ironPot: 'equipment',
+        EquipmentIds.commonClothes: 'equipment',
+        EquipmentIds.pouch: 'equipment',
+      },
+    );
+
+    expect(
+      outlander!.effects.skillProficiencies,
+      {
+        'Atletica',
+        'Sopravvivenza',
+      },
+    );
+    expect(outlander.feature!.id, 'wanderer');
+    expect(outlander.tables.single.dieSides, 10);
+    expect(outlander.tables.single.entries.length, 10);
+    expect(outlander.startingCoins, {'MO': 10});
+
+    final outlanderChoices = {
+      for (final choice in outlander.effects.choices) choice.id: choice,
+    };
+
+    final instrumentChoice = outlanderChoices['outlander_musical_instrument'];
+    final languageChoice = outlanderChoices['outlander_language'];
+
+    expect(instrumentChoice, isNotNull);
+    expect(instrumentChoice!.options.length, 10);
+
+    for (final option in instrumentChoice.options) {
+      expect(
+        option.effects.toolProficiencies,
+        contains(option.id),
+      );
+      expect(
+        option.effects.grantedEquipmentIds,
+        contains(option.id),
+      );
+    }
+
+    expect(languageChoice, isNotNull);
+    expect(languageChoice!.type, CharacterChoiceType.language);
+    expect(languageChoice.optionIds, characterLanguageIds);
+
+    expect(
+      {
+        for (final item in outlander.startingEquipment)
+          item.itemId: item.catalogId,
+      },
+      {
+        'quarterstaff': 'weapon',
+        EquipmentIds.huntingTrap: 'equipment',
+        EquipmentIds.animalTrophy: 'equipment',
+        EquipmentIds.travelersClothes: 'equipment',
+        EquipmentIds.pouch: 'equipment',
+      },
+    );
+
+    expect(weaponDefinitions.containsKey('quarterstaff'), isTrue);
+    expect(
+      equipmentDefinitions.containsKey(EquipmentIds.animalTrophy),
       isTrue,
     );
   });

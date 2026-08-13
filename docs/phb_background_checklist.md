@@ -26,8 +26,8 @@ Ogni background dovrà includere:
 - [x] Criminale
   - [x] Variante: Spia
 - [x] Eremita
-- [ ] Eroe Popolare
-- [ ] Forestiero
+- [x] Eroe Popolare
+- [x] Forestiero
 - [ ] Intrattenitore
   - [ ] Variante: Gladiatore
 - [ ] Marinaio

@@ -1162,6 +1162,563 @@ const _discoveryFeature = BackgroundFeatureDefinition(
   },
 );
 
+const _folkHeroDefiningEvents = BackgroundTableDefinition(
+  id: 'folk_hero_defining_events',
+  name: 'Eventi Segnanti',
+  dieSides: 10,
+  entries: [
+    BackgroundTableEntry(
+      minimumRoll: 1,
+      maximumRoll: 1,
+      label: 'Si è opposto agli agenti di un tiranno.',
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 2,
+      maximumRoll: 2,
+      label: 'Ha salvato molte persone durante una catastrofe naturale.',
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 3,
+      maximumRoll: 3,
+      label: 'Ha affrontato da solo un mostro terribile.',
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 4,
+      maximumRoll: 4,
+      label: 'Ha derubato un mercante corrotto per aiutare i poveri.',
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 5,
+      maximumRoll: 5,
+      label: 'Ha guidato un gruppo contro un esercito invasore.',
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 6,
+      maximumRoll: 6,
+      label: 'Ha sottratto le armi di un tiranno per consegnarle al popolo.',
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 7,
+      maximumRoll: 7,
+      label:
+          'Ha insegnato ai contadini a usare gli attrezzi agricoli come armi contro i soldati del tiranno.',
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 8,
+      maximumRoll: 8,
+      label:
+          'Una sua protesta simbolica ha convinto un nobile ad annullare un decreto impopolare.',
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 9,
+      maximumRoll: 9,
+      label:
+          'Un celestiale, un folletto o una creatura simile lo ha benedetto o gli ha rivelato le sue vere origini.',
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 10,
+      maximumRoll: 10,
+      label:
+          'Arruolato nell’esercito di un signore, è diventato comandante ed è stato ricompensato per il suo eroismo.',
+    ),
+  ],
+);
+const _folkHeroPersonalityTraits = BackgroundTableDefinition(
+  id: 'folk_hero_personality_traits',
+  name: 'Tratti Caratteriali',
+  dieSides: 8,
+  entries: [
+    BackgroundTableEntry(
+      minimumRoll: 1,
+      maximumRoll: 1,
+      label: 'Giudica gli altri dalle loro azioni, non dalle loro parole.',
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 2,
+      maximumRoll: 2,
+      label: 'È sempre pronto ad aiutare qualcuno che si trova nei guai.',
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 3,
+      maximumRoll: 3,
+      label:
+          'Quando si pone un obiettivo lo persegue nonostante ogni difficoltà.',
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 4,
+      maximumRoll: 4,
+      label:
+          'Attribuisce grande valore alla correttezza e cerca la soluzione più equa in ogni conflitto.',
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 5,
+      maximumRoll: 5,
+      label:
+          'Ha grande fiducia nelle proprie capacità e cerca di trasmetterla agli altri.',
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 6,
+      maximumRoll: 6,
+      label: 'Preferisce agire anziché perdersi in lunghe riflessioni.',
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 7,
+      maximumRoll: 7,
+      label:
+          'Usa parole altisonanti per sembrare più intelligente di quanto sia realmente.',
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 8,
+      maximumRoll: 8,
+      label:
+          'Si annoia facilmente e teme che il proprio destino si stia compiendo altrove.',
+    ),
+  ],
+);
+const _folkHeroIdeals = BackgroundTableDefinition(
+  id: 'folk_hero_ideals',
+  name: 'Ideali',
+  dieSides: 6,
+  entries: [
+    BackgroundTableEntry(
+      minimumRoll: 1,
+      maximumRoll: 1,
+      label: 'Rispetto. Ogni persona merita di essere trattata con dignità.',
+      alignment: 'Buono',
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 2,
+      maximumRoll: 2,
+      label:
+          'Giustizia. Nessuno deve ricevere trattamenti di favore e nessuno è al di sopra della legge.',
+      alignment: 'Legale',
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 3,
+      maximumRoll: 3,
+      label:
+          'Libertà. Ai tiranni non deve essere consentito di opprimere il popolo.',
+      alignment: 'Caotico',
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 4,
+      maximumRoll: 4,
+      label:
+          'Potenza. Chi è forte può prendersi ciò che desidera e che ritiene di meritare.',
+      alignment: 'Malvagio',
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 5,
+      maximumRoll: 5,
+      label:
+          'Sincerità. Non esiste nulla di buono nel fingere di essere ciò che non si è.',
+      alignment: 'Neutrale',
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 6,
+      maximumRoll: 6,
+      label:
+          'Destino. Nulla può allontanarlo dalla missione che gli è stata assegnata.',
+      alignment: 'Qualsiasi',
+    ),
+  ],
+);
+const _folkHeroBonds = BackgroundTableDefinition(
+  id: 'folk_hero_bonds',
+  name: 'Legami',
+  dieSides: 6,
+  entries: [
+    BackgroundTableEntry(
+      minimumRoll: 1,
+      maximumRoll: 1,
+      label:
+          'Ha perso le tracce della propria famiglia e spera un giorno di ritrovarla.',
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 2,
+      maximumRoll: 2,
+      label:
+          'Ama la regione in cui ha lavorato ed è determinato a proteggerla.',
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 3,
+      maximumRoll: 3,
+      label:
+          'Un nobile prepotente lo fece picchiare e ora si oppone a ogni bullo che incontra.',
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 4,
+      maximumRoll: 4,
+      label:
+          'Porta sempre con sé gli strumenti del proprio vecchio mestiere per non dimenticare le sue radici.',
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 5,
+      maximumRoll: 5,
+      label: 'Protegge chi non è in grado di difendersi da solo.',
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 6,
+      maximumRoll: 6,
+      label:
+          'Vorrebbe che la persona amata in gioventù fosse al suo fianco per condividere il suo destino.',
+    ),
+  ],
+);
+const _folkHeroFlaws = BackgroundTableDefinition(
+  id: 'folk_hero_flaws',
+  name: 'Difetti',
+  dieSides: 6,
+  entries: [
+    BackgroundTableEntry(
+      minimumRoll: 1,
+      maximumRoll: 1,
+      label:
+          'Il tiranno della sua regione natale farà tutto il possibile per vederlo morto.',
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 2,
+      maximumRoll: 2,
+      label:
+          'È tanto convinto di essere destinato a grandi imprese da ignorare i propri limiti e il rischio di fallire.',
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 3,
+      maximumRoll: 3,
+      label:
+          'Qualcuno che lo conobbe da giovane sa un segreto tanto imbarazzante da impedirgli di tornare a casa.',
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 4,
+      maximumRoll: 4,
+      label:
+          'Non sa resistere ai vizi della vita cittadina, soprattutto alle bevande alcoliche.',
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 5,
+      maximumRoll: 5,
+      label:
+          'In segreto crede che tutto funzionerebbe meglio se fosse lui il sovrano assoluto.',
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 6,
+      maximumRoll: 6,
+      label: 'Ha grandi difficoltà a fidarsi dei propri alleati.',
+    ),
+  ],
+);
+const _outlanderOrigins = BackgroundTableDefinition(
+  id: 'outlander_origins',
+  name: 'Origini',
+  dieSides: 10,
+  entries: [
+    BackgroundTableEntry(
+      minimumRoll: 1,
+      maximumRoll: 1,
+      label: 'Cacciatore con trappole.',
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 2,
+      maximumRoll: 2,
+      label: 'Cacciatore di taglie.',
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 3,
+      maximumRoll: 3,
+      label: 'Cacciatore-raccoglitore.',
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 4,
+      maximumRoll: 4,
+      label: 'Colono.',
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 5,
+      maximumRoll: 5,
+      label: 'Esule o reietto.',
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 6,
+      maximumRoll: 6,
+      label: 'Forestale.',
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 7,
+      maximumRoll: 7,
+      label: 'Guida.',
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 8,
+      maximumRoll: 8,
+      label: 'Nomade tribale.',
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 9,
+      maximumRoll: 9,
+      label: 'Pellegrino.',
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 10,
+      maximumRoll: 10,
+      label: 'Predone tribale.',
+    ),
+  ],
+);
+const _outlanderPersonalityTraits = BackgroundTableDefinition(
+  id: 'outlander_personality_traits',
+  name: 'Tratti Caratteriali',
+  dieSides: 8,
+  entries: [
+    BackgroundTableEntry(
+      minimumRoll: 1,
+      maximumRoll: 1,
+      label:
+          'È animato da un desiderio insaziabile di viaggiare che lo ha condotto lontano da casa.',
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 2,
+      maximumRoll: 2,
+      label: 'Veglia sui propri amici come se fossero cuccioli indifesi.',
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 3,
+      maximumRoll: 3,
+      label:
+          'Una volta ha corso per quaranta chilometri per avvertire il clan dell’arrivo di un’orda e sarebbe pronto a rifarlo.',
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 4,
+      maximumRoll: 4,
+      label:
+          'Trae una lezione da ogni situazione osservata nel mondo naturale.',
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 5,
+      maximumRoll: 5,
+      label:
+          'Non si lascia impressionare dalla ricchezza o dai modi raffinati.',
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 6,
+      maximumRoll: 6,
+      label:
+          'Afferra e manipola continuamente gli oggetti, talvolta rompendoli senza volerlo.',
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 7,
+      maximumRoll: 7,
+      label:
+          'Si sente molto più a proprio agio con gli animali che con le persone.',
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 8,
+      maximumRoll: 8,
+      label: 'È stato allevato dai lupi.',
+    ),
+  ],
+);
+const _outlanderIdeals = BackgroundTableDefinition(
+  id: 'outlander_ideals',
+  name: 'Ideali',
+  dieSides: 6,
+  entries: [
+    BackgroundTableEntry(
+      minimumRoll: 1,
+      maximumRoll: 1,
+      label:
+          'Cambiamento. La vita muta come le stagioni e ogni individuo deve cambiare con essa.',
+      alignment: 'Caotico',
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 2,
+      maximumRoll: 2,
+      label:
+          'Bene superiore. Ognuno deve contribuire alla prosperità e alla felicità della tribù.',
+      alignment: 'Buono',
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 3,
+      maximumRoll: 3,
+      label:
+          'Onore. Disonorare se stessi significa disonorare tutto il proprio clan.',
+      alignment: 'Legale',
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 4,
+      maximumRoll: 4,
+      label: 'Potere. Il più forte possiede il diritto di governare.',
+      alignment: 'Malvagio',
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 5,
+      maximumRoll: 5,
+      label:
+          'Natura. Il mondo naturale è più importante di ogni artificio della civiltà.',
+      alignment: 'Neutrale',
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 6,
+      maximumRoll: 6,
+      label:
+          'Gloria. È doveroso conquistare gloria in battaglia per se stessi e per il proprio clan.',
+      alignment: 'Qualsiasi',
+    ),
+  ],
+);
+const _outlanderBonds = BackgroundTableDefinition(
+  id: 'outlander_bonds',
+  name: 'Legami',
+  dieSides: 6,
+  entries: [
+    BackgroundTableEntry(
+      minimumRoll: 1,
+      maximumRoll: 1,
+      label:
+          'La sua famiglia, il suo clan o la sua tribù sono la cosa più importante della sua vita.',
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 2,
+      maximumRoll: 2,
+      label:
+          'Una ferita inflitta alla natura incontaminata della sua terra è una ferita inflitta a lui.',
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 3,
+      maximumRoll: 3,
+      label:
+          'Ha giurato vendetta contro coloro che hanno distrutto la sua terra.',
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 4,
+      maximumRoll: 4,
+      label:
+          'È l’ultimo membro della propria tribù e deve consegnarne il nome alla leggenda.',
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 5,
+      maximumRoll: 5,
+      label:
+          'Ha avuto la visione di un disastro imminente e farà tutto il possibile per impedirlo.',
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 6,
+      maximumRoll: 6,
+      label:
+          'Sente il dovere di garantire la sopravvivenza e la continuità della propria tribù.',
+    ),
+  ],
+);
+const _outlanderFlaws = BackgroundTableDefinition(
+  id: 'outlander_flaws',
+  name: 'Difetti',
+  dieSides: 6,
+  entries: [
+    BackgroundTableEntry(
+      minimumRoll: 1,
+      maximumRoll: 1,
+      label: 'Ama troppo la birra, il vino e le altre bevande alcoliche.',
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 2,
+      maximumRoll: 2,
+      label: 'Vive senza compromessi e non adotta mai alcuna cautela.',
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 3,
+      maximumRoll: 3,
+      label:
+          'Ricorda ogni insulto e cova un profondo rancore verso chi lo ha offeso.',
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 4,
+      maximumRoll: 4,
+      label:
+          'Ha difficoltà a fidarsi dei membri di altre razze, tribù o società.',
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 5,
+      maximumRoll: 5,
+      label: 'Risponde con la violenza a quasi ogni sfida.',
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 6,
+      maximumRoll: 6,
+      label:
+          'Non intende salvare chi non è capace di salvarsi da solo: per lui il forte sopravvive e il debole perisce.',
+    ),
+  ],
+);
+const _folkHeroCharacteristics = BackgroundSuggestedCharacteristics(
+  personalityTraits: _folkHeroPersonalityTraits,
+  ideals: _folkHeroIdeals,
+  bonds: _folkHeroBonds,
+  flaws: _folkHeroFlaws,
+);
+
+const _outlanderCharacteristics = BackgroundSuggestedCharacteristics(
+  personalityTraits: _outlanderPersonalityTraits,
+  ideals: _outlanderIdeals,
+  bonds: _outlanderBonds,
+  flaws: _outlanderFlaws,
+);
+
+const _rusticHospitalityFeature = BackgroundFeatureDefinition(
+  id: 'rustic_hospitality',
+  content: RuleContent(
+    id: 'rustic_hospitality',
+    name: 'Ospitalità Rurale',
+    type: RuleContentType.background,
+    description: RuleDescription(
+      summary:
+          'La gente comune offre all’eroe popolare rifugio, riposo e protezione.',
+      details:
+          'L’eroe popolare può trovare presso gli altri popolani un luogo in cui nascondersi, riposare o recuperare le forze, purché la sua presenza non costituisca un pericolo noto. I popolani lo nascondono alla legge e a chi lo cerca, ma non mettono a rischio la propria vita per lui.',
+    ),
+    source: RuleSource(
+      name: 'Manuale del Giocatore 2014',
+      reference: 'Pagine 132-133',
+    ),
+    ownerId: BackgroundIds.folkHero,
+  ),
+  ruleTags: {
+    'commoners_can_provide_hiding_place',
+    'commoners_can_provide_rest',
+    'commoners_can_provide_recovery',
+    'aid_requires_no_known_danger_to_commoners',
+    'commoners_hide_character_from_law',
+    'commoners_hide_character_from_pursuers',
+    'commoners_will_not_risk_their_lives',
+  },
+);
+
+const _wandererFeature = BackgroundFeatureDefinition(
+  id: 'wanderer',
+  content: RuleContent(
+    id: 'wanderer',
+    name: 'Viandante',
+    type: RuleContentType.background,
+    description: RuleDescription(
+      summary:
+          'Possiede un’eccellente memoria geografica e sa procurare sostentamento nelle terre selvagge.',
+      details:
+          'Il forestiero ricorda sempre la disposizione generale del territorio, degli insediamenti e dei punti di riferimento circostanti. Può inoltre trovare ogni giorno cibo e acqua fresca per sé e per altre cinque persone, purché il territorio offra risorse adeguate.',
+    ),
+    source: RuleSource(
+      name: 'Manuale del Giocatore 2014',
+      reference: 'Pagine 133-134',
+    ),
+    ownerId: BackgroundIds.outlander,
+  ),
+  ruleTags: {
+    'remembers_general_terrain_layout',
+    'remembers_settlements',
+    'remembers_landmarks',
+    'can_find_daily_food_and_water',
+    'supports_self_and_five_others',
+    'foraging_requires_available_resources',
+  },
+);
+
 /// Registro canonico dei background.
 ///
 /// Verrà popolato progressivamente seguendo la checklist PHB.
@@ -2286,6 +2843,468 @@ const Map<String, BackgroundDefinition> backgroundDefinitions = {
       BackgroundEquipmentGrant(
         itemId: ToolIds.herbalismKit,
         catalogId: 'tool',
+      ),
+    ],
+  ),
+  BackgroundIds.folkHero: BackgroundDefinition(
+    id: BackgroundIds.folkHero,
+    name: 'Eroe Popolare',
+    content: RuleContent(
+      id: BackgroundIds.folkHero,
+      name: 'Eroe Popolare',
+      type: RuleContentType.background,
+      description: RuleDescription(
+        summary:
+            'Una persona di umili origini riconosciuta come campione dalla gente comune.',
+        details:
+            'Proviene dai ceti sociali più bassi, ma è destinato a qualcosa di grandioso. La comunità natale lo considera già il proprio campione contro tiranni, mostri e altre minacce.',
+      ),
+      source: RuleSource(
+        name: 'Manuale del Giocatore 2014',
+        reference: 'Pagine 132-133',
+      ),
+      visual: RuleVisualIdentity(
+        family: RuleVisualFamily.background,
+        iconId: 'folk_hero',
+      ),
+      ownerId: BackgroundIds.folkHero,
+    ),
+    effects: CharacterEffects(
+      skillProficiencies: {
+        'Addestrare Animali',
+        'Sopravvivenza',
+      },
+      toolProficiencies: {
+        ToolIds.landVehicles,
+      },
+      choices: [
+        CharacterChoiceDefinition(
+          id: 'folk_hero_artisan_tools',
+          label: 'Scegli gli strumenti da artigiano conosciuti e ricevuti',
+          type: CharacterChoiceType.other,
+          options: [
+            CharacterChoiceOptionDefinition(
+              id: ToolIds.alchemistsSupplies,
+              label: 'Strumenti da Alchimista',
+              effects: CharacterEffects(
+                toolProficiencies: {
+                  ToolIds.alchemistsSupplies,
+                },
+                grantedEquipmentIds: [
+                  ToolIds.alchemistsSupplies,
+                ],
+              ),
+            ),
+            CharacterChoiceOptionDefinition(
+              id: ToolIds.brewersSupplies,
+              label: 'Strumenti da Birraio',
+              effects: CharacterEffects(
+                toolProficiencies: {
+                  ToolIds.brewersSupplies,
+                },
+                grantedEquipmentIds: [
+                  ToolIds.brewersSupplies,
+                ],
+              ),
+            ),
+            CharacterChoiceOptionDefinition(
+              id: ToolIds.calligraphersSupplies,
+              label: 'Strumenti da Calligrafo',
+              effects: CharacterEffects(
+                toolProficiencies: {
+                  ToolIds.calligraphersSupplies,
+                },
+                grantedEquipmentIds: [
+                  ToolIds.calligraphersSupplies,
+                ],
+              ),
+            ),
+            CharacterChoiceOptionDefinition(
+              id: ToolIds.carpentersTools,
+              label: 'Strumenti da Carpentiere',
+              effects: CharacterEffects(
+                toolProficiencies: {
+                  ToolIds.carpentersTools,
+                },
+                grantedEquipmentIds: [
+                  ToolIds.carpentersTools,
+                ],
+              ),
+            ),
+            CharacterChoiceOptionDefinition(
+              id: ToolIds.cartographersTools,
+              label: 'Strumenti da Cartografo',
+              effects: CharacterEffects(
+                toolProficiencies: {
+                  ToolIds.cartographersTools,
+                },
+                grantedEquipmentIds: [
+                  ToolIds.cartographersTools,
+                ],
+              ),
+            ),
+            CharacterChoiceOptionDefinition(
+              id: ToolIds.cobblersTools,
+              label: 'Strumenti da Ciabattino',
+              effects: CharacterEffects(
+                toolProficiencies: {
+                  ToolIds.cobblersTools,
+                },
+                grantedEquipmentIds: [
+                  ToolIds.cobblersTools,
+                ],
+              ),
+            ),
+            CharacterChoiceOptionDefinition(
+              id: ToolIds.cooksUtensils,
+              label: 'Utensili da Cuoco',
+              effects: CharacterEffects(
+                toolProficiencies: {
+                  ToolIds.cooksUtensils,
+                },
+                grantedEquipmentIds: [
+                  ToolIds.cooksUtensils,
+                ],
+              ),
+            ),
+            CharacterChoiceOptionDefinition(
+              id: ToolIds.glassblowersTools,
+              label: 'Strumenti da Soffiatore di Vetro',
+              effects: CharacterEffects(
+                toolProficiencies: {
+                  ToolIds.glassblowersTools,
+                },
+                grantedEquipmentIds: [
+                  ToolIds.glassblowersTools,
+                ],
+              ),
+            ),
+            CharacterChoiceOptionDefinition(
+              id: ToolIds.jewelersTools,
+              label: 'Strumenti da Gioielliere',
+              effects: CharacterEffects(
+                toolProficiencies: {
+                  ToolIds.jewelersTools,
+                },
+                grantedEquipmentIds: [
+                  ToolIds.jewelersTools,
+                ],
+              ),
+            ),
+            CharacterChoiceOptionDefinition(
+              id: ToolIds.leatherworkersTools,
+              label: 'Strumenti da Conciatore',
+              effects: CharacterEffects(
+                toolProficiencies: {
+                  ToolIds.leatherworkersTools,
+                },
+                grantedEquipmentIds: [
+                  ToolIds.leatherworkersTools,
+                ],
+              ),
+            ),
+            CharacterChoiceOptionDefinition(
+              id: ToolIds.masonsTools,
+              label: 'Strumenti da Muratore',
+              effects: CharacterEffects(
+                toolProficiencies: {
+                  ToolIds.masonsTools,
+                },
+                grantedEquipmentIds: [
+                  ToolIds.masonsTools,
+                ],
+              ),
+            ),
+            CharacterChoiceOptionDefinition(
+              id: ToolIds.paintersSupplies,
+              label: 'Strumenti da Pittore',
+              effects: CharacterEffects(
+                toolProficiencies: {
+                  ToolIds.paintersSupplies,
+                },
+                grantedEquipmentIds: [
+                  ToolIds.paintersSupplies,
+                ],
+              ),
+            ),
+            CharacterChoiceOptionDefinition(
+              id: ToolIds.pottersTools,
+              label: 'Strumenti da Vasaio',
+              effects: CharacterEffects(
+                toolProficiencies: {
+                  ToolIds.pottersTools,
+                },
+                grantedEquipmentIds: [
+                  ToolIds.pottersTools,
+                ],
+              ),
+            ),
+            CharacterChoiceOptionDefinition(
+              id: ToolIds.smithsTools,
+              label: 'Strumenti da Fabbro',
+              effects: CharacterEffects(
+                toolProficiencies: {
+                  ToolIds.smithsTools,
+                },
+                grantedEquipmentIds: [
+                  ToolIds.smithsTools,
+                ],
+              ),
+            ),
+            CharacterChoiceOptionDefinition(
+              id: ToolIds.tinkersTools,
+              label: 'Strumenti da Inventore',
+              effects: CharacterEffects(
+                toolProficiencies: {
+                  ToolIds.tinkersTools,
+                },
+                grantedEquipmentIds: [
+                  ToolIds.tinkersTools,
+                ],
+              ),
+            ),
+            CharacterChoiceOptionDefinition(
+              id: ToolIds.weaversTools,
+              label: 'Strumenti da Tessitore',
+              effects: CharacterEffects(
+                toolProficiencies: {
+                  ToolIds.weaversTools,
+                },
+                grantedEquipmentIds: [
+                  ToolIds.weaversTools,
+                ],
+              ),
+            ),
+            CharacterChoiceOptionDefinition(
+              id: ToolIds.woodcarversTools,
+              label: 'Strumenti da Intagliatore del Legno',
+              effects: CharacterEffects(
+                toolProficiencies: {
+                  ToolIds.woodcarversTools,
+                },
+                grantedEquipmentIds: [
+                  ToolIds.woodcarversTools,
+                ],
+              ),
+            ),
+          ],
+          requireNewAcquisition: true,
+        ),
+      ],
+    ),
+    feature: _rusticHospitalityFeature,
+    tables: [
+      _folkHeroDefiningEvents,
+    ],
+    suggestedCharacteristics: _folkHeroCharacteristics,
+    startingCoins: {
+      'MO': 10,
+    },
+    startingEquipment: [
+      BackgroundEquipmentGrant(
+        itemId: EquipmentIds.shovel,
+      ),
+      BackgroundEquipmentGrant(
+        itemId: EquipmentIds.ironPot,
+      ),
+      BackgroundEquipmentGrant(
+        itemId: EquipmentIds.commonClothes,
+      ),
+      BackgroundEquipmentGrant(
+        itemId: EquipmentIds.pouch,
+      ),
+    ],
+  ),
+  BackgroundIds.outlander: BackgroundDefinition(
+    id: BackgroundIds.outlander,
+    name: 'Forestiero',
+    content: RuleContent(
+      id: BackgroundIds.outlander,
+      name: 'Forestiero',
+      type: RuleContentType.background,
+      description: RuleDescription(
+        summary:
+            'È cresciuto nelle terre selvagge, lontano dalle comodità della civiltà.',
+        details:
+            'È sopravvissuto a migrazioni, intemperie e lunghi periodi di solitudine. Che sia nomade, esploratore, cacciatore, raccoglitore o predone, rimane un maestro della vita nelle terre selvagge.',
+      ),
+      source: RuleSource(
+        name: 'Manuale del Giocatore 2014',
+        reference: 'Pagine 133-134',
+      ),
+      visual: RuleVisualIdentity(
+        family: RuleVisualFamily.background,
+        iconId: 'outlander',
+      ),
+      ownerId: BackgroundIds.outlander,
+    ),
+    effects: CharacterEffects(
+      skillProficiencies: {
+        'Atletica',
+        'Sopravvivenza',
+      },
+      choices: [
+        CharacterChoiceDefinition(
+          id: 'outlander_musical_instrument',
+          label: 'Scegli uno strumento musicale conosciuto e ricevuto',
+          type: CharacterChoiceType.other,
+          options: [
+            CharacterChoiceOptionDefinition(
+              id: ToolIds.bagpipes,
+              label: 'Cornamusa',
+              effects: CharacterEffects(
+                toolProficiencies: {
+                  ToolIds.bagpipes,
+                },
+                grantedEquipmentIds: [
+                  ToolIds.bagpipes,
+                ],
+              ),
+            ),
+            CharacterChoiceOptionDefinition(
+              id: ToolIds.drum,
+              label: 'Tamburo',
+              effects: CharacterEffects(
+                toolProficiencies: {
+                  ToolIds.drum,
+                },
+                grantedEquipmentIds: [
+                  ToolIds.drum,
+                ],
+              ),
+            ),
+            CharacterChoiceOptionDefinition(
+              id: ToolIds.dulcimer,
+              label: 'Salterio',
+              effects: CharacterEffects(
+                toolProficiencies: {
+                  ToolIds.dulcimer,
+                },
+                grantedEquipmentIds: [
+                  ToolIds.dulcimer,
+                ],
+              ),
+            ),
+            CharacterChoiceOptionDefinition(
+              id: ToolIds.flute,
+              label: 'Flauto',
+              effects: CharacterEffects(
+                toolProficiencies: {
+                  ToolIds.flute,
+                },
+                grantedEquipmentIds: [
+                  ToolIds.flute,
+                ],
+              ),
+            ),
+            CharacterChoiceOptionDefinition(
+              id: ToolIds.lute,
+              label: 'Liuto',
+              effects: CharacterEffects(
+                toolProficiencies: {
+                  ToolIds.lute,
+                },
+                grantedEquipmentIds: [
+                  ToolIds.lute,
+                ],
+              ),
+            ),
+            CharacterChoiceOptionDefinition(
+              id: ToolIds.lyre,
+              label: 'Lira',
+              effects: CharacterEffects(
+                toolProficiencies: {
+                  ToolIds.lyre,
+                },
+                grantedEquipmentIds: [
+                  ToolIds.lyre,
+                ],
+              ),
+            ),
+            CharacterChoiceOptionDefinition(
+              id: ToolIds.horn,
+              label: 'Corno',
+              effects: CharacterEffects(
+                toolProficiencies: {
+                  ToolIds.horn,
+                },
+                grantedEquipmentIds: [
+                  ToolIds.horn,
+                ],
+              ),
+            ),
+            CharacterChoiceOptionDefinition(
+              id: ToolIds.panFlute,
+              label: 'Flauto di Pan',
+              effects: CharacterEffects(
+                toolProficiencies: {
+                  ToolIds.panFlute,
+                },
+                grantedEquipmentIds: [
+                  ToolIds.panFlute,
+                ],
+              ),
+            ),
+            CharacterChoiceOptionDefinition(
+              id: ToolIds.shawm,
+              label: 'Ciaramella',
+              effects: CharacterEffects(
+                toolProficiencies: {
+                  ToolIds.shawm,
+                },
+                grantedEquipmentIds: [
+                  ToolIds.shawm,
+                ],
+              ),
+            ),
+            CharacterChoiceOptionDefinition(
+              id: ToolIds.viol,
+              label: 'Viola',
+              effects: CharacterEffects(
+                toolProficiencies: {
+                  ToolIds.viol,
+                },
+                grantedEquipmentIds: [
+                  ToolIds.viol,
+                ],
+              ),
+            ),
+          ],
+          requireNewAcquisition: true,
+        ),
+        CharacterChoiceDefinition(
+          id: 'outlander_language',
+          label: 'Scegli un linguaggio',
+          type: CharacterChoiceType.language,
+          optionIds: characterLanguageIds,
+          requireNewAcquisition: true,
+        ),
+      ],
+    ),
+    feature: _wandererFeature,
+    tables: [
+      _outlanderOrigins,
+    ],
+    suggestedCharacteristics: _outlanderCharacteristics,
+    startingCoins: {
+      'MO': 10,
+    },
+    startingEquipment: [
+      BackgroundEquipmentGrant(
+        itemId: 'quarterstaff',
+        catalogId: 'weapon',
+      ),
+      BackgroundEquipmentGrant(
+        itemId: EquipmentIds.huntingTrap,
+      ),
+      BackgroundEquipmentGrant(
+        itemId: EquipmentIds.animalTrophy,
+      ),
+      BackgroundEquipmentGrant(
+        itemId: EquipmentIds.travelersClothes,
+      ),
+      BackgroundEquipmentGrant(
+        itemId: EquipmentIds.pouch,
       ),
     ],
   ),
