@@ -137,7 +137,7 @@ void main() {
 
       expect(equipment.id, entry.key);
       expect(equipment.name.trim(), isNotEmpty);
-      expect(equipment.weight, greaterThanOrEqualTo(0));
+      expect(equipment.weightKg, greaterThanOrEqualTo(0));
       expect(equipment.cost, greaterThanOrEqualTo(0));
       expect(
         {'cp', 'sp', 'ep', 'gp', 'pp'},
@@ -204,7 +204,7 @@ void main() {
     final acidUse = acid.uses.single;
 
     expect(acid.cost, 25);
-    expect(acid.weight, 1);
+    expect(acid.weightKg, 0.5);
     expect(acidUse.normalRangeMeters, 6);
     expect(acidUse.damageDice, '2d6');
     expect(acidUse.damageType, 'acid');
@@ -215,7 +215,7 @@ void main() {
     final fireUse = alchemistsFire.uses.single;
 
     expect(alchemistsFire.cost, 50);
-    expect(alchemistsFire.weight, 1);
+    expect(alchemistsFire.weightKg, 0.5);
     expect(fireUse.normalRangeMeters, 6);
     expect(fireUse.damageDice, '1d4');
     expect(fireUse.damageType, 'fire');
@@ -277,7 +277,7 @@ void main() {
     final potionUse = potion.uses.single;
 
     expect(potion.cost, 50);
-    expect(potion.weight, 0.5);
+    expect(potion.weightKg, 0.25);
     expect(potionUse.healingDice, '2d4');
     expect(potionUse.healingBonus, 2);
     expect(potionUse.consumesItem, isTrue);

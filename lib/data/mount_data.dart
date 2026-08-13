@@ -3,16 +3,16 @@ class MountDefinition {
   final String name;
   final int cost;
   final String currency;
-  final int speed;
-  final int carryingCapacity;
+  final int speedMeters;
+  final int carryingCapacityKg;
 
   const MountDefinition({
     required this.id,
     required this.name,
     required this.cost,
     required this.currency,
-    required this.speed,
-    required this.carryingCapacity,
+    required this.speedMeters,
+    required this.carryingCapacityKg,
   });
 }
 
@@ -34,7 +34,7 @@ const mountDefinitions = <String, MountDefinition>{
     name: 'Mulo',
     cost: 8,
     currency: 'gp',
-    speed: 12,
-    carryingCapacity: 420,
+    speedMeters: 12,
+    carryingCapacityKg: 210,
   ),
 };

@@ -11,7 +11,7 @@ class ToolDefinition {
   final String id;
   final String name;
   final ToolCategory category;
-  final double weight;
+  final double weightKg;
   final int cost;
   final String currency;
 
@@ -19,7 +19,7 @@ class ToolDefinition {
     required this.id,
     required this.name,
     required this.category,
-    this.weight = 0,
+    this.weightKg = 0,
     this.cost = 0,
     this.currency = 'gp',
   });

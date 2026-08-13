@@ -19,7 +19,7 @@ abstract class ItemDefinition {
 
   final ItemCategory category;
 
-  final double weight;
+  final double weightKg;
 
   final int cost;
   final String currency;
@@ -28,7 +28,7 @@ abstract class ItemDefinition {
     required this.id,
     required this.name,
     required this.category,
-    required this.weight,
+    required this.weightKg,
     required this.cost,
     this.currency = 'gp',
   });

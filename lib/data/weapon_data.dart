@@ -23,10 +23,10 @@ class WeaponDefinition {
 
   final String damageType;
 
-  final int? normalRange;
-  final int? longRange;
+  final double? normalRangeMeters;
+  final double? longRangeMeters;
 
-  final double weight;
+  final double weightKg;
 
   final int cost;
   final String currency;
@@ -41,9 +41,9 @@ class WeaponDefinition {
     required this.damageDice,
     this.versatileDamage,
     required this.damageType,
-    this.normalRange,
-    this.longRange,
-    required this.weight,
+    this.normalRangeMeters,
+    this.longRangeMeters,
+    required this.weightKg,
     required this.cost,
     required this.currency,
     this.properties = const [],
@@ -60,7 +60,7 @@ const Map<String, WeaponDefinition> weaponDefinitions = {
     kind: WeaponKind.melee,
     damageDice: '1d4',
     damageType: DamageTypeIds.bludgeoning,
-    weight: 2,
+    weightKg: 1,
     cost: 1,
     currency: 'sp',
     properties: [
@@ -74,9 +74,9 @@ const Map<String, WeaponDefinition> weaponDefinitions = {
     kind: WeaponKind.melee,
     damageDice: '1d4',
     damageType: DamageTypeIds.piercing,
-    normalRange: 20,
-    longRange: 60,
-    weight: 1,
+    normalRangeMeters: 6,
+    longRangeMeters: 18,
+    weightKg: 0.5,
     cost: 2,
     currency: 'gp',
     properties: [
@@ -92,7 +92,7 @@ const Map<String, WeaponDefinition> weaponDefinitions = {
     kind: WeaponKind.melee,
     damageDice: '1d8',
     damageType: DamageTypeIds.bludgeoning,
-    weight: 10,
+    weightKg: 5,
     cost: 2,
     currency: 'sp',
     properties: [
@@ -106,9 +106,9 @@ const Map<String, WeaponDefinition> weaponDefinitions = {
     kind: WeaponKind.melee,
     damageDice: '1d6',
     damageType: DamageTypeIds.slashing,
-    normalRange: 20,
-    longRange: 60,
-    weight: 2,
+    normalRangeMeters: 6,
+    longRangeMeters: 18,
+    weightKg: 1,
     cost: 5,
     currency: 'gp',
     properties: [
@@ -123,9 +123,9 @@ const Map<String, WeaponDefinition> weaponDefinitions = {
     kind: WeaponKind.melee,
     damageDice: '1d6',
     damageType: DamageTypeIds.piercing,
-    normalRange: 30,
-    longRange: 120,
-    weight: 2,
+    normalRangeMeters: 9,
+    longRangeMeters: 36,
+    weightKg: 1,
     cost: 5,
     currency: 'sp',
     properties: [
@@ -139,9 +139,9 @@ const Map<String, WeaponDefinition> weaponDefinitions = {
     kind: WeaponKind.melee,
     damageDice: '1d4',
     damageType: DamageTypeIds.bludgeoning,
-    normalRange: 20,
-    longRange: 60,
-    weight: 2,
+    normalRangeMeters: 6,
+    longRangeMeters: 18,
+    weightKg: 1,
     cost: 2,
     currency: 'gp',
     properties: [
@@ -156,7 +156,7 @@ const Map<String, WeaponDefinition> weaponDefinitions = {
     kind: WeaponKind.melee,
     damageDice: '1d6',
     damageType: DamageTypeIds.bludgeoning,
-    weight: 4,
+    weightKg: 2,
     cost: 5,
     currency: 'gp',
     properties: [],
@@ -169,7 +169,7 @@ const Map<String, WeaponDefinition> weaponDefinitions = {
     damageDice: '1d6',
     versatileDamage: '1d8',
     damageType: DamageTypeIds.bludgeoning,
-    weight: 4,
+    weightKg: 2,
     cost: 2,
     currency: 'sp',
     properties: [
@@ -183,7 +183,7 @@ const Map<String, WeaponDefinition> weaponDefinitions = {
     kind: WeaponKind.melee,
     damageDice: '1d4',
     damageType: DamageTypeIds.slashing,
-    weight: 2,
+    weightKg: 1,
     cost: 1,
     currency: 'gp',
     properties: [
@@ -198,9 +198,9 @@ const Map<String, WeaponDefinition> weaponDefinitions = {
     damageDice: '1d6',
     versatileDamage: '1d8',
     damageType: DamageTypeIds.piercing,
-    normalRange: 20,
-    longRange: 60,
-    weight: 3,
+    normalRangeMeters: 6,
+    longRangeMeters: 18,
+    weightKg: 1.5,
     cost: 1,
     currency: 'gp',
     properties: [
@@ -215,9 +215,9 @@ const Map<String, WeaponDefinition> weaponDefinitions = {
     kind: WeaponKind.ranged,
     damageDice: '1d8',
     damageType: DamageTypeIds.piercing,
-    normalRange: 80,
-    longRange: 320,
-    weight: 5,
+    normalRangeMeters: 24,
+    longRangeMeters: 96,
+    weightKg: 2.5,
     cost: 25,
     currency: 'gp',
     properties: [
@@ -233,9 +233,9 @@ const Map<String, WeaponDefinition> weaponDefinitions = {
     kind: WeaponKind.ranged,
     damageDice: '1d4',
     damageType: DamageTypeIds.piercing,
-    normalRange: 20,
-    longRange: 60,
-    weight: 0.25,
+    normalRangeMeters: 6,
+    longRangeMeters: 18,
+    weightKg: 0.125,
     cost: 5,
     currency: 'cp',
     properties: [
@@ -250,9 +250,9 @@ const Map<String, WeaponDefinition> weaponDefinitions = {
     kind: WeaponKind.ranged,
     damageDice: '1d6',
     damageType: DamageTypeIds.piercing,
-    normalRange: 80,
-    longRange: 320,
-    weight: 2,
+    normalRangeMeters: 24,
+    longRangeMeters: 96,
+    weightKg: 1,
     cost: 25,
     currency: 'gp',
     properties: [
@@ -267,9 +267,9 @@ const Map<String, WeaponDefinition> weaponDefinitions = {
     kind: WeaponKind.ranged,
     damageDice: '1d4',
     damageType: DamageTypeIds.bludgeoning,
-    normalRange: 30,
-    longRange: 120,
-    weight: 0,
+    normalRangeMeters: 9,
+    longRangeMeters: 36,
+    weightKg: 0,
     cost: 1,
     currency: 'sp',
     properties: [
@@ -284,7 +284,7 @@ const Map<String, WeaponDefinition> weaponDefinitions = {
     damageDice: '1d8',
     versatileDamage: '1d10',
     damageType: DamageTypeIds.slashing,
-    weight: 4,
+    weightKg: 2,
     cost: 10,
     currency: 'gp',
     properties: [
@@ -298,7 +298,7 @@ const Map<String, WeaponDefinition> weaponDefinitions = {
     kind: WeaponKind.melee,
     damageDice: '1d8',
     damageType: DamageTypeIds.bludgeoning,
-    weight: 2,
+    weightKg: 1,
     cost: 10,
     currency: 'gp',
   ),
@@ -309,7 +309,7 @@ const Map<String, WeaponDefinition> weaponDefinitions = {
     kind: WeaponKind.melee,
     damageDice: '1d10',
     damageType: DamageTypeIds.slashing,
-    weight: 6,
+    weightKg: 3,
     cost: 20,
     currency: 'gp',
     properties: [
@@ -325,7 +325,7 @@ const Map<String, WeaponDefinition> weaponDefinitions = {
     kind: WeaponKind.melee,
     damageDice: '1d12',
     damageType: DamageTypeIds.slashing,
-    weight: 7,
+    weightKg: 3.5,
     cost: 30,
     currency: 'gp',
     properties: [
@@ -340,7 +340,7 @@ const Map<String, WeaponDefinition> weaponDefinitions = {
     kind: WeaponKind.melee,
     damageDice: '2d6',
     damageType: DamageTypeIds.slashing,
-    weight: 6,
+    weightKg: 3,
     cost: 50,
     currency: 'gp',
     properties: [
@@ -355,7 +355,7 @@ const Map<String, WeaponDefinition> weaponDefinitions = {
     kind: WeaponKind.melee,
     damageDice: '1d10',
     damageType: DamageTypeIds.slashing,
-    weight: 6,
+    weightKg: 3,
     cost: 20,
     currency: 'gp',
     properties: [
@@ -371,7 +371,7 @@ const Map<String, WeaponDefinition> weaponDefinitions = {
     kind: WeaponKind.melee,
     damageDice: '1d12',
     damageType: DamageTypeIds.piercing,
-    weight: 6,
+    weightKg: 3,
     cost: 10,
     currency: 'gp',
     properties: [
@@ -387,7 +387,7 @@ const Map<String, WeaponDefinition> weaponDefinitions = {
     damageDice: '1d8',
     versatileDamage: '1d10',
     damageType: DamageTypeIds.slashing,
-    weight: 3,
+    weightKg: 1.5,
     cost: 15,
     currency: 'gp',
     properties: [
@@ -401,7 +401,7 @@ const Map<String, WeaponDefinition> weaponDefinitions = {
     kind: WeaponKind.melee,
     damageDice: '2d6',
     damageType: DamageTypeIds.bludgeoning,
-    weight: 10,
+    weightKg: 5,
     cost: 10,
     currency: 'gp',
     properties: [
@@ -416,7 +416,7 @@ const Map<String, WeaponDefinition> weaponDefinitions = {
     kind: WeaponKind.melee,
     damageDice: '1d8',
     damageType: DamageTypeIds.piercing,
-    weight: 4,
+    weightKg: 2,
     cost: 15,
     currency: 'gp',
   ),
@@ -427,7 +427,7 @@ const Map<String, WeaponDefinition> weaponDefinitions = {
     kind: WeaponKind.melee,
     damageDice: '1d10',
     damageType: DamageTypeIds.piercing,
-    weight: 18,
+    weightKg: 9,
     cost: 5,
     currency: 'gp',
     properties: [
@@ -443,7 +443,7 @@ const Map<String, WeaponDefinition> weaponDefinitions = {
     kind: WeaponKind.melee,
     damageDice: '1d8',
     damageType: DamageTypeIds.piercing,
-    weight: 2,
+    weightKg: 1,
     cost: 25,
     currency: 'gp',
     properties: [
@@ -457,7 +457,7 @@ const Map<String, WeaponDefinition> weaponDefinitions = {
     kind: WeaponKind.melee,
     damageDice: '1d6',
     damageType: DamageTypeIds.slashing,
-    weight: 3,
+    weightKg: 1.5,
     cost: 25,
     currency: 'gp',
     properties: [
@@ -472,7 +472,7 @@ const Map<String, WeaponDefinition> weaponDefinitions = {
     kind: WeaponKind.melee,
     damageDice: '1d6',
     damageType: DamageTypeIds.piercing,
-    weight: 2,
+    weightKg: 1,
     cost: 10,
     currency: 'gp',
     properties: [
@@ -488,15 +488,15 @@ const Map<String, WeaponDefinition> weaponDefinitions = {
     damageDice: '1d6',
     versatileDamage: '1d8',
     damageType: DamageTypeIds.piercing,
-    weight: 4,
+    weightKg: 2,
     cost: 5,
     currency: 'gp',
     properties: [
       WeaponPropertyIds.thrown,
       WeaponPropertyIds.versatile,
     ],
-    normalRange: 20,
-    longRange: 60,
+    normalRangeMeters: 6,
+    longRangeMeters: 18,
   ),
   'war_pick': WeaponDefinition(
     id: 'war_pick',
@@ -505,7 +505,7 @@ const Map<String, WeaponDefinition> weaponDefinitions = {
     kind: WeaponKind.melee,
     damageDice: '1d8',
     damageType: DamageTypeIds.piercing,
-    weight: 2,
+    weightKg: 1,
     cost: 5,
     currency: 'gp',
   ),
@@ -517,7 +517,7 @@ const Map<String, WeaponDefinition> weaponDefinitions = {
     damageDice: '1d8',
     versatileDamage: '1d10',
     damageType: DamageTypeIds.bludgeoning,
-    weight: 2,
+    weightKg: 1,
     cost: 15,
     currency: 'gp',
     properties: [
@@ -531,7 +531,7 @@ const Map<String, WeaponDefinition> weaponDefinitions = {
     kind: WeaponKind.melee,
     damageDice: '1d4',
     damageType: DamageTypeIds.slashing,
-    weight: 3,
+    weightKg: 1.5,
     cost: 2,
     currency: 'gp',
     properties: [
@@ -546,9 +546,9 @@ const Map<String, WeaponDefinition> weaponDefinitions = {
     kind: WeaponKind.ranged,
     damageDice: '1',
     damageType: DamageTypeIds.piercing,
-    normalRange: 25,
-    longRange: 100,
-    weight: 1,
+    normalRangeMeters: 7.5,
+    longRangeMeters: 30,
+    weightKg: 0.5,
     cost: 10,
     currency: 'gp',
     properties: [
@@ -563,9 +563,9 @@ const Map<String, WeaponDefinition> weaponDefinitions = {
     kind: WeaponKind.ranged,
     damageDice: '1d6',
     damageType: DamageTypeIds.piercing,
-    normalRange: 30,
-    longRange: 120,
-    weight: 3,
+    normalRangeMeters: 9,
+    longRangeMeters: 36,
+    weightKg: 1.5,
     cost: 75,
     currency: 'gp',
     properties: [
@@ -581,9 +581,9 @@ const Map<String, WeaponDefinition> weaponDefinitions = {
     kind: WeaponKind.ranged,
     damageDice: '1d10',
     damageType: DamageTypeIds.piercing,
-    normalRange: 100,
-    longRange: 400,
-    weight: 18,
+    normalRangeMeters: 30,
+    longRangeMeters: 120,
+    weightKg: 9,
     cost: 50,
     currency: 'gp',
     properties: [
@@ -600,9 +600,9 @@ const Map<String, WeaponDefinition> weaponDefinitions = {
     kind: WeaponKind.ranged,
     damageDice: '1d8',
     damageType: DamageTypeIds.piercing,
-    normalRange: 150,
-    longRange: 600,
-    weight: 2,
+    normalRangeMeters: 45,
+    longRangeMeters: 180,
+    weightKg: 1,
     cost: 50,
     currency: 'gp',
     properties: [
@@ -618,9 +618,9 @@ const Map<String, WeaponDefinition> weaponDefinitions = {
     kind: WeaponKind.ranged,
     damageDice: '0',
     damageType: DamageTypeIds.bludgeoning,
-    normalRange: 5,
-    longRange: 15,
-    weight: 3,
+    normalRangeMeters: 1.5,
+    longRangeMeters: 4.5,
+    weightKg: 1.5,
     cost: 1,
     currency: 'gp',
     properties: [

@@ -12,7 +12,7 @@ class AmmunitionDefinition {
   final int bundleSize;
   final int cost;
   final String currency;
-  final double weight;
+  final double weightKg;
 
   const AmmunitionDefinition({
     required this.id,
@@ -21,7 +21,7 @@ class AmmunitionDefinition {
     required this.bundleSize,
     required this.cost,
     required this.currency,
-    required this.weight,
+    required this.weightKg,
   });
 }
 
@@ -40,7 +40,7 @@ final ammunitionDefinitions = <String, AmmunitionDefinition>{
     bundleSize: 20,
     cost: 1,
     currency: "gp",
-    weight: 1,
+    weightKg: 0.5,
   ),
   AmmunitionIds.crossbowBolts: const AmmunitionDefinition(
     id: AmmunitionIds.crossbowBolts,
@@ -49,7 +49,7 @@ final ammunitionDefinitions = <String, AmmunitionDefinition>{
     bundleSize: 20,
     cost: 1,
     currency: "gp",
-    weight: 1.5,
+    weightKg: 0.75,
   ),
   AmmunitionIds.slingBullets: const AmmunitionDefinition(
     id: AmmunitionIds.slingBullets,
@@ -58,7 +58,7 @@ final ammunitionDefinitions = <String, AmmunitionDefinition>{
     bundleSize: 20,
     cost: 4,
     currency: "cp",
-    weight: 1.5,
+    weightKg: 0.75,
   ),
   AmmunitionIds.blowgunNeedles: const AmmunitionDefinition(
     id: AmmunitionIds.blowgunNeedles,
@@ -67,6 +67,6 @@ final ammunitionDefinitions = <String, AmmunitionDefinition>{
     bundleSize: 50,
     cost: 1,
     currency: "gp",
-    weight: 1,
+    weightKg: 0.5,
   ),
 };
