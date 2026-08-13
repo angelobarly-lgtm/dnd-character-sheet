@@ -1,0 +1,65 @@
+# PHB 2014 - checklist classi
+
+Le classi verranno ricostruite usando il nuovo modello universale e
+verificate dal livello 1 al livello 20.
+
+## Classi e sottoclassi PHB
+
+- [ ] Barbaro
+  - [ ] Cammino del Berserker
+  - [ ] Cammino del Guerriero Totemico
+- [ ] Bardo
+  - [ ] Collegio del Sapere
+  - [ ] Collegio del Valore
+- [ ] Chierico
+  - [ ] Dominio della Conoscenza
+  - [ ] Dominio della Guerra
+  - [ ] Dominio dell’Inganno
+  - [ ] Dominio della Luce
+  - [ ] Dominio della Natura
+  - [ ] Dominio della Tempesta
+  - [ ] Dominio della Vita
+- [ ] Druido
+  - [ ] Circolo della Luna
+  - [ ] Circolo della Terra
+- [ ] Guerriero
+  - [ ] Campione
+  - [ ] Maestro di Battaglia
+  - [ ] Cavaliere Mistico
+- [ ] Ladro
+  - [ ] Furfante
+  - [ ] Assassino
+  - [ ] Mistificatore Arcano
+- [ ] Mago
+  - [ ] Scuola di Abiurazione
+  - [ ] Scuola di Ammaliamento
+  - [ ] Scuola di Divinazione
+  - [ ] Scuola di Evocazione
+  - [ ] Scuola di Illusione
+  - [ ] Scuola di Invocazione
+  - [ ] Scuola di Necromanzia
+  - [ ] Scuola di Trasmutazione
+- [ ] Monaco
+  - [ ] Via della Mano Aperta
+  - [ ] Via dell’Ombra
+  - [ ] Via dei Quattro Elementi
+- [ ] Paladino
+  - [ ] Giuramento degli Antichi
+  - [ ] Giuramento di Devozione
+  - [ ] Giuramento di Vendetta
+- [ ] Ranger
+  - [ ] Cacciatore
+  - [ ] Signore delle Bestie
+- [ ] Stregone
+  - [ ] Discendenza Draconica
+  - [ ] Magia Selvaggia
+- [ ] Warlock
+  - [ ] Il Signore Fatato
+  - [ ] L’Immondo
+  - [ ] Il Grande Antico
+
+## Totali attesi
+
+- Classi principali: 12
+- Sottoclassi PHB: 40
+- Livelli verificati per classe: 20

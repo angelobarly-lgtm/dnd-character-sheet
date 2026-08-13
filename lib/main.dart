@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'data/class_data.dart';
+import 'data/class_catalog_data.dart';
 import 'data/glossary_data.dart';
 import 'data/character_data.dart';
 import 'data/feat_data.dart';
@@ -277,6 +278,8 @@ class HeroData {
     this.currentHp = -1,
     this.tempHp = 0,
     this.ki = 0,
+    this.classId = ClassIds.monk,
+    this.classResources = const {},
     this.hitDiceUsed = 0,
     this.subclass,
     this.subclassOptionIds = const [],
@@ -327,6 +330,18 @@ class HeroData {
   Map<String, int> baseScores;
   int level, currentHp, tempHp, ki, hitDiceUsed, deathSuccess, deathFail;
   List<int> hpRolls;
+
+  /// ID canonico della classe scelta.
+  ///
+  /// Un salvataggio precedente alla migrazione viene interpretato
+  /// automaticamente come Monaco.
+  String classId;
+
+  /// Risorse correnti della classe, indicizzate tramite ID stabile.
+  ///
+  /// Durante la migrazione il Ki rimane anche nel campo legacy.
+  Map<String, int> classResources;
+
   String? subclass, feat;
 
   /// ID stabili delle opzioni di sottoclasse scelte dal personaggio.
@@ -570,10 +585,45 @@ class HeroData {
 
   String get raceLabel => subrace != null ? '$race · $subrace' : race;
 
+  /// Definizione legacy usata finché il Monaco non viene migrato.
   ClassDefinition get classDefinition =>
       classDefinitionFor('Monaco') ?? monkClass;
 
-  int get hitDie => classDefinition.hitDie;
+  CharacterClassDefinition? get catalogClassDefinition =>
+      phbClassDefinitionFor(classId);
+
+  String get resolvedClassName =>
+      catalogClassDefinition?.name ??
+      (classId == ClassIds.monk ? 'Monaco' : classId);
+
+  int classResourceValue(String resourceId) {
+    if (resourceId == 'ki' && classId == ClassIds.monk) {
+      return ki;
+    }
+
+    return classResources[resourceId] ?? 0;
+  }
+
+  void setClassResourceValue(String resourceId, int value) {
+    if (value < 0) {
+      throw ArgumentError.value(
+        value,
+        'value',
+        'La risorsa non può essere negativa.',
+      );
+    }
+
+    classResources = {
+      ...classResources,
+      resourceId: value,
+    };
+
+    if (resourceId == 'ki' && classId == ClassIds.monk) {
+      ki = value;
+    }
+  }
+
+  int get hitDie => catalogClassDefinition?.hitDie ?? classDefinition.hitDie;
   int get averageHitDie => (hitDie ~/ 2) + 1;
 
   int get prof => V06Rules.proficiencyBonus(level);
@@ -676,6 +726,11 @@ class HeroData {
         'currentHp': currentHp,
         'tempHp': tempHp,
         'ki': ki,
+        'classId': classId,
+        'classResources': {
+          ...classResources,
+          if (classId == ClassIds.monk) 'ki': ki,
+        },
         'hitDiceUsed': hitDiceUsed,
         'subclass': subclass,
         'subclassOptionIds': subclassOptionIds,
@@ -708,7 +763,13 @@ class HeroData {
         hpRolls: List<int>.from(j['hpRolls'] ?? []),
         currentHp: j['currentHp'] ?? -1,
         tempHp: j['tempHp'] ?? 0,
-        ki: j['ki'] ?? 0,
+        ki: j['ki'] ??
+            ((j['classResources'] as Map?)?['ki'] as num?)?.toInt() ??
+            0,
+        classId: j['classId'] as String? ?? ClassIds.monk,
+        classResources: Map<String, int>.from(
+          j['classResources'] as Map? ?? const {},
+        ),
         hitDiceUsed: j['hitDiceUsed'] ?? 0,
         subclass: j['subclass'],
         subclassOptionIds:
