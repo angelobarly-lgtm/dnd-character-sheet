@@ -44,7 +44,7 @@
 - [x] Vehicles
 
 ## Trade Goods
-- [ ] Trade Goods
+- [x] Trade Goods
 
 ## Services
-- [ ] Services
+- [x] Services
