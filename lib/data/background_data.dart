@@ -2246,6 +2246,458 @@ const _badReputationFeature = BackgroundFeatureDefinition(
 /// Registro canonico dei background.
 ///
 /// Verrà popolato progressivamente seguendo la checklist PHB.
+const _urchinPersonalityTraits = BackgroundTableDefinition(
+  id: "urchin_personality_traits",
+  name: "Tratti Caratteriali",
+  dieSides: 8,
+  entries: [
+    BackgroundTableEntry(
+      minimumRoll: 1,
+      maximumRoll: 1,
+      label: "Nasconde cibo e oggetti insoliti nelle tasche.",
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 2,
+      maximumRoll: 2,
+      label: "Fa continuamente domande.",
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 3,
+      maximumRoll: 3,
+      label: "Ama nascondersi negli spazi più angusti.",
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 4,
+      maximumRoll: 4,
+      label:
+          "Dorme con la schiena contro un muro o un albero, stringendo tra le braccia tutto ciò che possiede.",
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 5,
+      maximumRoll: 5,
+      label: "Mangia come un animale e non conosce le buone maniere.",
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 6,
+      maximumRoll: 6,
+      label:
+          "È convinto che chi si mostra gentile nasconda cattive intenzioni.",
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 7,
+      maximumRoll: 7,
+      label: "Non ama lavarsi.",
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 8,
+      maximumRoll: 8,
+      label:
+          "Dice senza mezzi termini ciò che gli altri si limitano a suggerire o tentano di nascondere.",
+    ),
+  ],
+);
+const _urchinIdeals = BackgroundTableDefinition(
+  id: "urchin_ideals",
+  name: "Ideali",
+  dieSides: 6,
+  entries: [
+    BackgroundTableEntry(
+      minimumRoll: 1,
+      maximumRoll: 1,
+      label: "Rispetto. Tutti, ricchi o poveri, meritano rispetto.",
+      alignment: "Buono",
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 2,
+      maximumRoll: 2,
+      label:
+          "Comunità. Bisogna prendersi cura gli uni degli altri, perché nessun altro lo farà.",
+      alignment: "Legale",
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 3,
+      maximumRoll: 3,
+      label:
+          "Cambiamento. I potenti devono essere abbattuti affinché tutti possano vivere meglio.",
+      alignment: "Caotico",
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 4,
+      maximumRoll: 4,
+      label: "Castigo. I ricchi devono vedere com’è la vita nei bassifondi.",
+      alignment: "Malvagio",
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 5,
+      maximumRoll: 5,
+      label:
+          "Persone. Aiuta chi aiuta lui: è questo che permette di sopravvivere.",
+      alignment: "Neutrale",
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 6,
+      maximumRoll: 6,
+      label: "Aspirazioni. Dimostrerà di meritare una vita migliore.",
+      alignment: "Qualsiasi",
+    ),
+  ],
+);
+const _urchinBonds = BackgroundTableDefinition(
+  id: "urchin_bonds",
+  name: "Legami",
+  dieSides: 6,
+  entries: [
+    BackgroundTableEntry(
+      minimumRoll: 1,
+      maximumRoll: 1,
+      label:
+          "La sua città o il suo paese sono la sua casa e combatterà per difenderli.",
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 2,
+      maximumRoll: 2,
+      label:
+          "Sostiene un orfanotrofio affinché altri non debbano sopportare ciò che ha vissuto.",
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 3,
+      maximumRoll: 3,
+      label:
+          "È sopravvissuto grazie a un altro monello che gli ha insegnato a vivere per strada.",
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 4,
+      maximumRoll: 4,
+      label:
+          "Ha un debito che non potrà mai ripagare verso chi ebbe pietà di lui.",
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 5,
+      maximumRoll: 5,
+      label:
+          "È sfuggito alla miseria derubando una persona importante che continua a dargli la caccia.",
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 6,
+      maximumRoll: 6,
+      label:
+          "Nessun altro dovrebbe patire le sofferenze che lui ha affrontato.",
+    ),
+  ],
+);
+const _urchinFlaws = BackgroundTableDefinition(
+  id: "urchin_flaws",
+  name: "Difetti",
+  dieSides: 6,
+  entries: [
+    BackgroundTableEntry(
+      minimumRoll: 1,
+      maximumRoll: 1,
+      label: "Se è in inferiorità numerica, fugge dal combattimento.",
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 2,
+      maximumRoll: 2,
+      label:
+          "L’oro è una tentazione irresistibile e farà quasi qualsiasi cosa per ottenerlo.",
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 3,
+      maximumRoll: 3,
+      label: "Non si fida completamente di nessuno, tranne che di sé stesso.",
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 4,
+      maximumRoll: 4,
+      label:
+          "Preferisce uccidere un nemico nel sonno piuttosto che affrontarlo lealmente.",
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 5,
+      maximumRoll: 5,
+      label: "Rubare a chi ha molto più del necessario non è davvero rubare.",
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 6,
+      maximumRoll: 6,
+      label: "Chi non sa badare a sé stesso merita la brutta fine che farà.",
+    ),
+  ],
+);
+const _noblePersonalityTraits = BackgroundTableDefinition(
+  id: "noble_personality_traits",
+  name: "Tratti Caratteriali",
+  dieSides: 8,
+  entries: [
+    BackgroundTableEntry(
+      minimumRoll: 1,
+      maximumRoll: 1,
+      label:
+          "La sua eloquente adulazione fa sentire importante ogni interlocutore.",
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 2,
+      maximumRoll: 2,
+      label: "La gente comune lo ama per la sua gentilezza e generosità.",
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 3,
+      maximumRoll: 3,
+      label:
+          "Il suo portamento regale dimostra che appartiene a una classe superiore.",
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 4,
+      maximumRoll: 4,
+      label:
+          "Sopporta qualsiasi disagio pur di apparire sempre alla moda e impeccabile.",
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 5,
+      maximumRoll: 5,
+      label:
+          "Non ama sporcarsi le mani e non vuole mai essere visto in condizioni indecorose.",
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 6,
+      maximumRoll: 6,
+      label:
+          "Nonostante i nobili natali, ritiene che tutte le persone abbiano lo stesso valore.",
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 7,
+      maximumRoll: 7,
+      label: "Chi perde il suo favore non riesce quasi mai a riconquistarlo.",
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 8,
+      maximumRoll: 8,
+      label:
+          "Se qualcuno gli reca danno, distruggerà il suo nome, la sua reputazione e i suoi possedimenti.",
+    ),
+  ],
+);
+const _nobleIdeals = BackgroundTableDefinition(
+  id: "noble_ideals",
+  name: "Ideali",
+  dieSides: 6,
+  entries: [
+    BackgroundTableEntry(
+      minimumRoll: 1,
+      maximumRoll: 1,
+      label:
+          "Rispetto. Il rispetto gli è dovuto per la sua posizione, ma ogni persona merita dignità.",
+      alignment: "Buono",
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 2,
+      maximumRoll: 2,
+      label:
+          "Responsabilità. È suo dovere rispettare l’autorità di chi gli è superiore e guidare chi gli è inferiore.",
+      alignment: "Legale",
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 3,
+      maximumRoll: 3,
+      label:
+          "Indipendenza. Deve dimostrare di sapersela cavare senza l’aiuto della famiglia.",
+      alignment: "Caotico",
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 4,
+      maximumRoll: 4,
+      label:
+          "Potere. Se riuscirà ad accumulare più potere, nessuno potrà dirgli cosa fare.",
+      alignment: "Malvagio",
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 5,
+      maximumRoll: 5,
+      label: "Famiglia. Il sangue è più denso dell’acqua.",
+      alignment: "Qualsiasi",
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 6,
+      maximumRoll: 6,
+      label:
+          "Nobiltà. È suo dovere proteggere e assistere chi si trova sotto la sua autorità.",
+      alignment: "Buono",
+    ),
+  ],
+);
+const _nobleBonds = BackgroundTableDefinition(
+  id: "noble_bonds",
+  name: "Legami",
+  dieSides: 6,
+  entries: [
+    BackgroundTableEntry(
+      minimumRoll: 1,
+      maximumRoll: 1,
+      label:
+          "Affronterà qualsiasi sfida pur di ottenere l’approvazione della famiglia.",
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 2,
+      maximumRoll: 2,
+      label:
+          "L’alleanza della sua casata con un’altra famiglia deve essere preservata a ogni costo.",
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 3,
+      maximumRoll: 3,
+      label: "Nulla è più importante degli altri membri della sua famiglia.",
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 4,
+      maximumRoll: 4,
+      label:
+          "È innamorato dell’erede di una famiglia disprezzata dalla sua casata.",
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 5,
+      maximumRoll: 5,
+      label: "La sua lealtà verso il sovrano è incrollabile.",
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 6,
+      maximumRoll: 6,
+      label: "Vuole che la gente comune lo consideri un eroe del popolo.",
+    ),
+  ],
+);
+const _nobleFlaws = BackgroundTableDefinition(
+  id: "noble_flaws",
+  name: "Difetti",
+  dieSides: 6,
+  entries: [
+    BackgroundTableEntry(
+      minimumRoll: 1,
+      maximumRoll: 1,
+      label: "Crede segretamente che tutti siano inferiori a lui.",
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 2,
+      maximumRoll: 2,
+      label:
+          "Nasconde uno scandalo che potrebbe rovinare per sempre il buon nome della famiglia.",
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 3,
+      maximumRoll: 3,
+      label:
+          "Interpreta ogni parola come un insulto velato e si offende facilmente.",
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 4,
+      maximumRoll: 4,
+      label: "Ha un desiderio insaziabile di piaceri carnali.",
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 5,
+      maximumRoll: 5,
+      label: "È convinto che il mondo ruoti attorno a lui.",
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 6,
+      maximumRoll: 6,
+      label: "Con le sue parole e azioni porta spesso vergogna alla famiglia.",
+    ),
+  ],
+);
+
+const _urchinCharacteristics = BackgroundSuggestedCharacteristics(
+  personalityTraits: _urchinPersonalityTraits,
+  ideals: _urchinIdeals,
+  bonds: _urchinBonds,
+  flaws: _urchinFlaws,
+);
+
+const _nobleCharacteristics = BackgroundSuggestedCharacteristics(
+  personalityTraits: _noblePersonalityTraits,
+  ideals: _nobleIdeals,
+  bonds: _nobleBonds,
+  flaws: _nobleFlaws,
+);
+
+const _citySecretsFeature = BackgroundFeatureDefinition(
+  id: 'city_secrets',
+  content: RuleContent(
+    id: 'city_secrets',
+    name: 'Segreti Cittadini',
+    type: RuleContentType.background,
+    description: RuleDescription(
+      summary:
+          'Conosce i passaggi nascosti e i ritmi segreti degli ambienti urbani.',
+      details:
+          'Quando non è in combattimento, il monello e i compagni da lui guidati possono spostarsi tra due luoghi della stessa città al doppio della normale velocità di viaggio.',
+    ),
+    source: RuleSource(
+      name: 'Manuale del Giocatore 2014',
+      reference: 'Pagine 137-138',
+    ),
+    ownerId: BackgroundIds.urchin,
+  ),
+  ruleTags: {
+    'knows_secret_urban_routes',
+    'urban_travel_outside_combat',
+    'guided_group_moves_at_double_travel_speed',
+    'applies_between_locations_in_same_city',
+  },
+);
+
+const _privilegedPositionFeature = BackgroundFeatureDefinition(
+  id: 'position_of_privilege',
+  content: RuleContent(
+    id: 'position_of_privilege',
+    name: 'Posizione Privilegiata',
+    type: RuleContentType.background,
+    description: RuleDescription(
+      summary:
+          'Il nobile è accolto nell’alta società e trattato secondo il suo rango.',
+      details:
+          'La gente comune cerca di compiacerlo ed evita di provocarlo, mentre gli altri nobili lo trattano come un loro pari. Può ottenere facilmente udienza presso un nobile locale.',
+    ),
+    source: RuleSource(
+      name: 'Manuale del Giocatore 2014',
+      reference: 'Pagine 138-139',
+    ),
+    ownerId: BackgroundIds.noble,
+  ),
+  ruleTags: {
+    'welcomed_in_high_society',
+    'commoners_try_to_please_noble',
+    'nobles_treat_character_as_peer',
+    'can_secure_local_noble_audience',
+  },
+);
+
+const _retainersFeature = BackgroundFeatureDefinition(
+  id: 'retainers',
+  content: RuleContent(
+    id: 'retainers',
+    name: 'Servitù',
+    type: RuleContentType.background,
+    description: RuleDescription(
+      summary: 'Tre servitori leali alla famiglia accompagnano il cavaliere.',
+      details:
+          'Uno dei tre servitori è uno scudiero nobile che aspira a diventare cavaliere; gli altri possono essere uno stalliere e un attendente. Svolgono mansioni comuni, ma non combattono, non entrano in aree palesemente pericolose e possono abbandonare il personaggio se vengono maltrattati o messi ripetutamente in pericolo.',
+    ),
+    source: RuleSource(
+      name: 'Manuale del Giocatore 2014',
+      reference: 'Pagina 139',
+    ),
+    ownerId: BackgroundIds.knight,
+  ),
+  ruleTags: {
+    'has_three_loyal_retainers',
+    'one_retainer_is_noble_squire',
+    'retainers_perform_mundane_tasks',
+    'retainers_do_not_fight',
+    'retainers_avoid_obvious_danger',
+    'retainers_may_leave_if_abused_or_endangered',
+  },
+);
+
 const Map<String, BackgroundDefinition> backgroundDefinitions = {
   BackgroundIds.acolyte: BackgroundDefinition(
     id: BackgroundIds.acolyte,
@@ -4427,6 +4879,270 @@ const Map<String, BackgroundDefinition> backgroundDefinitions = {
       ),
       BackgroundEquipmentGrant(
         itemId: EquipmentIds.commonClothes,
+      ),
+      BackgroundEquipmentGrant(
+        itemId: EquipmentIds.pouch,
+      ),
+    ],
+  ),
+  BackgroundIds.urchin: BackgroundDefinition(
+    id: BackgroundIds.urchin,
+    name: 'Monello',
+    content: RuleContent(
+      id: BackgroundIds.urchin,
+      name: 'Monello',
+      type: RuleContentType.background,
+      description: RuleDescription(
+        summary:
+            'È cresciuto da solo nelle strade, povero e privo di una famiglia.',
+        details:
+            'Ha imparato a procurarsi cibo, a evitare i pericoli e a sopravvivere nei vicoli cittadini. Conosce i ritmi della città e i suoi percorsi nascosti meglio della maggior parte degli abitanti.',
+      ),
+      source: RuleSource(
+        name: 'Manuale del Giocatore 2014',
+        reference: 'Pagine 137-138',
+      ),
+      visual: RuleVisualIdentity(
+        family: RuleVisualFamily.background,
+        iconId: 'urchin',
+      ),
+      ownerId: BackgroundIds.urchin,
+    ),
+    effects: CharacterEffects(
+      skillProficiencies: {
+        'Furtività',
+        'Rapidità di Mano',
+      },
+      toolProficiencies: {
+        ToolIds.disguiseKit,
+        ToolIds.thievesTools,
+      },
+    ),
+    feature: _citySecretsFeature,
+    suggestedCharacteristics: _urchinCharacteristics,
+    startingCoins: {
+      'MO': 10,
+    },
+    startingEquipment: [
+      BackgroundEquipmentGrant(
+        itemId: EquipmentIds.urchinSmallKnife,
+      ),
+      BackgroundEquipmentGrant(
+        itemId: EquipmentIds.homeCityMap,
+      ),
+      BackgroundEquipmentGrant(
+        itemId: EquipmentIds.petMouse,
+      ),
+      BackgroundEquipmentGrant(
+        itemId: EquipmentIds.parentsMemento,
+      ),
+      BackgroundEquipmentGrant(
+        itemId: EquipmentIds.commonClothes,
+      ),
+      BackgroundEquipmentGrant(
+        itemId: EquipmentIds.pouch,
+      ),
+    ],
+  ),
+  BackgroundIds.noble: BackgroundDefinition(
+    id: BackgroundIds.noble,
+    name: 'Nobile',
+    content: RuleContent(
+      id: BackgroundIds.noble,
+      name: 'Nobile',
+      type: RuleContentType.background,
+      description: RuleDescription(
+        summary:
+            'Possiede ricchezza, potere e privilegi concessi dalla nascita.',
+        details:
+            'La sua famiglia detiene terre, titoli e influenza. Il personaggio deve definire con il Dungeon Master il proprio titolo, la posizione della casata e il rapporto con gli altri membri della famiglia.',
+      ),
+      source: RuleSource(
+        name: 'Manuale del Giocatore 2014',
+        reference: 'Pagine 138-139',
+      ),
+      visual: RuleVisualIdentity(
+        family: RuleVisualFamily.background,
+        iconId: 'noble',
+      ),
+      ownerId: BackgroundIds.noble,
+    ),
+    effects: CharacterEffects(
+      skillProficiencies: {
+        'Persuasione',
+        'Storia',
+      },
+      choices: [
+        CharacterChoiceDefinition(
+          id: 'noble_gaming_set',
+          label: 'Scegli un tipo di gioco',
+          type: CharacterChoiceType.tool,
+          options: [
+            CharacterChoiceOptionDefinition(
+              id: ToolIds.diceSet,
+              label: 'Set di Dadi',
+              effects: CharacterEffects(
+                toolProficiencies: {
+                  ToolIds.diceSet,
+                },
+              ),
+            ),
+            CharacterChoiceOptionDefinition(
+              id: ToolIds.dragonchessSet,
+              label: 'Set di Dragonchess',
+              effects: CharacterEffects(
+                toolProficiencies: {
+                  ToolIds.dragonchessSet,
+                },
+              ),
+            ),
+            CharacterChoiceOptionDefinition(
+              id: ToolIds.playingCardSet,
+              label: 'Mazzo di Carte',
+              effects: CharacterEffects(
+                toolProficiencies: {
+                  ToolIds.playingCardSet,
+                },
+              ),
+            ),
+            CharacterChoiceOptionDefinition(
+              id: ToolIds.threeDragonAnteSet,
+              label: 'Three-Dragon Ante',
+              effects: CharacterEffects(
+                toolProficiencies: {
+                  ToolIds.threeDragonAnteSet,
+                },
+              ),
+            ),
+          ],
+          requireNewAcquisition: true,
+        ),
+        CharacterChoiceDefinition(
+          id: 'noble_language',
+          label: 'Scegli un linguaggio',
+          type: CharacterChoiceType.language,
+          optionIds: characterLanguageIds,
+          requireNewAcquisition: true,
+        ),
+      ],
+    ),
+    feature: _privilegedPositionFeature,
+    suggestedCharacteristics: _nobleCharacteristics,
+    startingCoins: {
+      'MO': 25,
+    },
+    startingEquipment: [
+      BackgroundEquipmentGrant(
+        itemId: EquipmentIds.fineClothes,
+      ),
+      BackgroundEquipmentGrant(
+        itemId: EquipmentIds.signetRing,
+      ),
+      BackgroundEquipmentGrant(
+        itemId: EquipmentIds.pedigreeScroll,
+      ),
+      BackgroundEquipmentGrant(
+        itemId: EquipmentIds.pouch,
+      ),
+    ],
+  ),
+  BackgroundIds.knight: BackgroundDefinition(
+    id: BackgroundIds.knight,
+    name: 'Cavaliere',
+    content: RuleContent(
+      id: BackgroundIds.knight,
+      name: 'Cavaliere',
+      type: RuleContentType.background,
+      description: RuleDescription(
+        summary:
+            'Un nobile di rango cavalleresco accompagnato da uno scudiero e dai suoi servitori.',
+        details:
+            'Questa variante del Nobile sostituisce Posizione Privilegiata con Servitù. Uno dei seguaci è uno scudiero nobile che si addestra per diventare cavaliere.',
+      ),
+      source: RuleSource(
+        name: 'Manuale del Giocatore 2014',
+        reference: 'Pagina 139',
+      ),
+      visual: RuleVisualIdentity(
+        family: RuleVisualFamily.background,
+        iconId: 'knight',
+      ),
+      ownerId: BackgroundIds.knight,
+    ),
+    parentBackgroundId: BackgroundIds.noble,
+    effects: CharacterEffects(
+      skillProficiencies: {
+        'Persuasione',
+        'Storia',
+      },
+      choices: [
+        CharacterChoiceDefinition(
+          id: 'knight_gaming_set',
+          label: 'Scegli un tipo di gioco',
+          type: CharacterChoiceType.tool,
+          options: [
+            CharacterChoiceOptionDefinition(
+              id: ToolIds.diceSet,
+              label: 'Set di Dadi',
+              effects: CharacterEffects(
+                toolProficiencies: {
+                  ToolIds.diceSet,
+                },
+              ),
+            ),
+            CharacterChoiceOptionDefinition(
+              id: ToolIds.dragonchessSet,
+              label: 'Set di Dragonchess',
+              effects: CharacterEffects(
+                toolProficiencies: {
+                  ToolIds.dragonchessSet,
+                },
+              ),
+            ),
+            CharacterChoiceOptionDefinition(
+              id: ToolIds.playingCardSet,
+              label: 'Mazzo di Carte',
+              effects: CharacterEffects(
+                toolProficiencies: {
+                  ToolIds.playingCardSet,
+                },
+              ),
+            ),
+            CharacterChoiceOptionDefinition(
+              id: ToolIds.threeDragonAnteSet,
+              label: 'Three-Dragon Ante',
+              effects: CharacterEffects(
+                toolProficiencies: {
+                  ToolIds.threeDragonAnteSet,
+                },
+              ),
+            ),
+          ],
+          requireNewAcquisition: true,
+        ),
+        CharacterChoiceDefinition(
+          id: 'knight_language',
+          label: 'Scegli un linguaggio',
+          type: CharacterChoiceType.language,
+          optionIds: characterLanguageIds,
+          requireNewAcquisition: true,
+        ),
+      ],
+    ),
+    feature: _retainersFeature,
+    suggestedCharacteristics: _nobleCharacteristics,
+    startingCoins: {
+      'MO': 25,
+    },
+    startingEquipment: [
+      BackgroundEquipmentGrant(
+        itemId: EquipmentIds.fineClothes,
+      ),
+      BackgroundEquipmentGrant(
+        itemId: EquipmentIds.signetRing,
+      ),
+      BackgroundEquipmentGrant(
+        itemId: EquipmentIds.pedigreeScroll,
       ),
       BackgroundEquipmentGrant(
         itemId: EquipmentIds.pouch,

@@ -196,10 +196,13 @@ void main() {
         BackgroundIds.gladiator,
         BackgroundIds.sailor,
         BackgroundIds.pirate,
+        BackgroundIds.urchin,
+        BackgroundIds.noble,
+        BackgroundIds.knight,
       },
     );
 
-    expect(mainBackgroundDefinitions.length, 9);
+    expect(mainBackgroundDefinitions.length, 11);
 
     final merchant = backgroundDefinitions[BackgroundIds.guildMerchant];
     expect(merchant, isNotNull);
@@ -730,5 +733,135 @@ void main() {
       ),
       isTrue,
     );
+  });
+
+  test('urchin noble and knight backgrounds are structurally valid', () {
+    final urchin = backgroundDefinitions[BackgroundIds.urchin];
+    final noble = backgroundDefinitions[BackgroundIds.noble];
+    final knight = backgroundDefinitions[BackgroundIds.knight];
+
+    expect(urchin, isNotNull);
+    expect(noble, isNotNull);
+    expect(knight, isNotNull);
+
+    expect(
+      urchin!.effects.skillProficiencies,
+      {
+        'Furtività',
+        'Rapidità di Mano',
+      },
+    );
+    expect(
+      urchin.effects.toolProficiencies,
+      {
+        ToolIds.disguiseKit,
+        ToolIds.thievesTools,
+      },
+    );
+    expect(urchin.feature!.id, 'city_secrets');
+    expect(urchin.startingCoins, {'MO': 10});
+    expect(urchin.suggestedCharacteristics.isComplete, isTrue);
+
+    expect(
+      {
+        for (final item in urchin.startingEquipment)
+          item.itemId: item.catalogId,
+      },
+      {
+        EquipmentIds.urchinSmallKnife: 'equipment',
+        EquipmentIds.homeCityMap: 'equipment',
+        EquipmentIds.petMouse: 'equipment',
+        EquipmentIds.parentsMemento: 'equipment',
+        EquipmentIds.commonClothes: 'equipment',
+        EquipmentIds.pouch: 'equipment',
+      },
+    );
+
+    expect(noble!.isVariant, isFalse);
+    expect(
+      noble.effects.skillProficiencies,
+      {
+        'Persuasione',
+        'Storia',
+      },
+    );
+    expect(noble.feature!.id, 'position_of_privilege');
+    expect(noble.startingCoins, {'MO': 25});
+    expect(noble.suggestedCharacteristics.isComplete, isTrue);
+
+    final nobleChoices = {
+      for (final choice in noble.effects.choices) choice.id: choice,
+    };
+
+    final gamingSet = nobleChoices['noble_gaming_set'];
+    final language = nobleChoices['noble_language'];
+
+    expect(gamingSet, isNotNull);
+    expect(
+      gamingSet!.options.map((option) => option.id).toSet(),
+      {
+        ToolIds.diceSet,
+        ToolIds.dragonchessSet,
+        ToolIds.playingCardSet,
+        ToolIds.threeDragonAnteSet,
+      },
+    );
+
+    for (final option in gamingSet.options) {
+      expect(
+        option.effects.toolProficiencies,
+        contains(option.id),
+      );
+    }
+
+    expect(language, isNotNull);
+    expect(language!.type, CharacterChoiceType.language);
+    expect(language.optionIds, characterLanguageIds);
+    expect(language.requireNewAcquisition, isTrue);
+
+    expect(
+      {
+        for (final item in noble.startingEquipment) item.itemId: item.catalogId,
+      },
+      {
+        EquipmentIds.fineClothes: 'equipment',
+        EquipmentIds.signetRing: 'equipment',
+        EquipmentIds.pedigreeScroll: 'equipment',
+        EquipmentIds.pouch: 'equipment',
+      },
+    );
+
+    expect(knight!.isVariant, isTrue);
+    expect(knight.parentBackgroundId, BackgroundIds.noble);
+    expect(knight.feature!.id, 'retainers');
+    expect(
+      knight.effects.skillProficiencies,
+      noble.effects.skillProficiencies,
+    );
+    expect(knight.startingCoins, noble.startingCoins);
+    expect(knight.startingEquipment.length, noble.startingEquipment.length);
+
+    expect(
+      backgroundVariantsFor(BackgroundIds.noble)
+          .map((background) => background.id)
+          .toSet(),
+      {
+        BackgroundIds.knight,
+      },
+    );
+
+    for (final id in [
+      EquipmentIds.urchinSmallKnife,
+      EquipmentIds.homeCityMap,
+      EquipmentIds.petMouse,
+      EquipmentIds.parentsMemento,
+      EquipmentIds.pedigreeScroll,
+    ]) {
+      expect(
+        equipmentDefinitions.containsKey(id),
+        isTrue,
+        reason: 'Definizione di equipaggiamento mancante: $id',
+      );
+    }
   });
 }

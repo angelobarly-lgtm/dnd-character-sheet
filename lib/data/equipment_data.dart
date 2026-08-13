@@ -143,9 +143,39 @@ class EquipmentIds {
   static const sailorsRabbitFoot = "sailors_rabbit_foot";
   static const sailorsHoleyStone = "sailors_holey_stone";
   static const randomTrinket = "random_trinket";
+  static const urchinSmallKnife = "urchin_small_knife";
+  static const homeCityMap = "home_city_map";
+  static const petMouse = "pet_mouse";
+  static const parentsMemento = "parents_memento";
+  static const pedigreeScroll = "pedigree_scroll";
 }
 
 final equipmentDefinitions = <String, EquipmentDefinition>{
+  EquipmentIds.urchinSmallKnife: const EquipmentDefinition(
+    id: EquipmentIds.urchinSmallKnife,
+    name: "Coltellino",
+    category: EquipmentCategory.miscellaneous,
+  ),
+  EquipmentIds.homeCityMap: const EquipmentDefinition(
+    id: EquipmentIds.homeCityMap,
+    name: "Mappa della Città di Appartenenza",
+    category: EquipmentCategory.miscellaneous,
+  ),
+  EquipmentIds.petMouse: const EquipmentDefinition(
+    id: EquipmentIds.petMouse,
+    name: "Topolino Addomesticato",
+    category: EquipmentCategory.miscellaneous,
+  ),
+  EquipmentIds.parentsMemento: const EquipmentDefinition(
+    id: EquipmentIds.parentsMemento,
+    name: "Ciondolo in Ricordo dei Genitori",
+    category: EquipmentCategory.miscellaneous,
+  ),
+  EquipmentIds.pedigreeScroll: const EquipmentDefinition(
+    id: EquipmentIds.pedigreeScroll,
+    name: "Pergamena con Albero Genealogico",
+    category: EquipmentCategory.miscellaneous,
+  ),
   EquipmentIds.sailorsRabbitFoot: const EquipmentDefinition(
     id: EquipmentIds.sailorsRabbitFoot,
     name: "Zampa di Coniglio Portafortuna",
