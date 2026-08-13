@@ -160,6 +160,17 @@ class CharacterChoiceDefinition {
   /// come nuova acquisizione.
   final bool requireNewAcquisition;
 
+  /// Richiede che l’elemento sia già posseduto dal personaggio.
+  ///
+  /// Serve, per esempio, a Maestria, che può essere applicata soltanto
+  /// a competenze già acquisite.
+  final bool requireExistingAcquisition;
+
+  /// Livello massimo degli incantesimi selezionabili.
+  ///
+  /// Null indica che la scelta non applica questo limite.
+  final int? maximumSpellLevel;
+
   const CharacterChoiceDefinition({
     required this.id,
     required this.label,
@@ -172,7 +183,15 @@ class CharacterChoiceDefinition {
     this.constraints = const [],
     this.unique = true,
     this.requireNewAcquisition = false,
-  });
+    this.requireExistingAcquisition = false,
+    this.maximumSpellLevel,
+  })  : assert(
+          !requireNewAcquisition || !requireExistingAcquisition,
+        ),
+        assert(
+          maximumSpellLevel == null ||
+              (maximumSpellLevel >= 0 && maximumSpellLevel <= 9),
+        );
 }
 
 /// Effetti strutturati condivisi da razze, background, talenti e altre fonti.

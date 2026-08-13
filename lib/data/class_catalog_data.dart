@@ -1,3 +1,4 @@
+import 'character_data.dart';
 import 'class_data.dart';
 
 class ClassIds {
@@ -156,6 +157,17 @@ class ClassResourceDefinition {
   /// mentre [isUnlimitedAtLevel] identifica lo stato illimitato.
   final int? unlimitedFromLevel;
 
+  /// Caratteristica che determina il massimo della risorsa.
+  ///
+  /// Esempio: l’Ispirazione Bardica usa il modificatore di Carisma.
+  final String? maximumAbility;
+
+  /// Minimo applicato alle risorse basate su una caratteristica.
+  final int minimumMaximum;
+
+  /// Cambiamenti del tipo di recupero durante la progressione.
+  final Map<int, ClassResourceRecovery> recoveryByLevel;
+
   const ClassResourceDefinition({
     required this.id,
     required this.name,
@@ -163,14 +175,37 @@ class ClassResourceDefinition {
     required this.recovery,
     required this.maximumByLevel,
     this.unlimitedFromLevel,
+    this.maximumAbility,
+    this.minimumMaximum = 0,
+    this.recoveryByLevel = const {},
   })  : assert(minimumLevel > 0),
-        assert(unlimitedFromLevel == null || unlimitedFromLevel > 0);
+        assert(unlimitedFromLevel == null || unlimitedFromLevel > 0),
+        assert(minimumMaximum >= 0);
 
   bool isUnlimitedAtLevel(int level) =>
       unlimitedFromLevel != null && level >= unlimitedFromLevel!;
 
-  int maximumAtLevel(int level) {
+  ClassResourceRecovery recoveryAtLevel(int level) {
+    var result = recovery;
+
+    for (final entry in recoveryByLevel.entries) {
+      if (entry.key <= level) result = entry.value;
+    }
+
+    return result;
+  }
+
+  int maximumAtLevel(
+    int level, {
+    Map<String, int> abilityModifiers = const {},
+  }) {
     if (level < minimumLevel) return 0;
+
+    if (maximumAbility != null) {
+      final abilityMaximum = abilityModifiers[maximumAbility] ?? minimumMaximum;
+
+      return abilityMaximum < minimumMaximum ? minimumMaximum : abilityMaximum;
+    }
 
     var maximum = 0;
 
@@ -197,6 +232,9 @@ class ClassSpellcastingDefinition {
   final Map<int, int> cantripsKnownByLevel;
   final Map<int, int> spellsKnownByLevel;
 
+  /// Incantesimi appartenenti alla lista della classe.
+  final Set<String> spellIds;
+
   /// Livello degli slot del Patto Magico per ogni livello di classe.
   final Map<int, int> pactSlotLevelByClassLevel;
 
@@ -209,6 +247,7 @@ class ClassSpellcastingDefinition {
     this.slotsByClassLevel = const {},
     this.cantripsKnownByLevel = const {},
     this.spellsKnownByLevel = const {},
+    this.spellIds = const {},
     this.pactSlotLevelByClassLevel = const {},
   }) : assert(minimumLevel > 0);
 
@@ -246,12 +285,25 @@ class CharacterClassFeatureDefinition {
   /// Gli ID fanno riferimento al catalogo universale degli incantesimi.
   final Set<String> spellIds;
 
+  /// Scelte richieste direttamente dal privilegio.
+  ///
+  /// Esempi: Maestria, Segreti Magici e competenze bonus.
+  final List<CharacterChoiceDefinition> choices;
+
+  /// Effetti permanenti applicati direttamente dal privilegio.
+  ///
+  /// Consente, per esempio, di concedere competenze in armature,
+  /// armi, strumenti o abilità senza hardcoding nel runtime.
+  final CharacterEffects effects;
+
   const CharacterClassFeatureDefinition({
     required this.id,
     required this.content,
     this.ruleTags = const {},
     this.resourceId,
     this.spellIds = const {},
+    this.choices = const [],
+    this.effects = const CharacterEffects(),
   });
 }
 

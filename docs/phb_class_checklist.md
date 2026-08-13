@@ -8,9 +8,10 @@ verificate dal livello 1 al livello 20.
 - [x] Barbaro
   - [x] Cammino del Berserker
   - [x] Cammino del Guerriero Totemico
-- [ ] Bardo
+- [x] Bardo
   - [ ] Collegio del Sapere
-  - [ ] Collegio del Valore
+  - [x] Collegio della Sapienza
+  - [x] Collegio del Valore
 - [ ] Chierico
   - [ ] Dominio della Conoscenza
   - [ ] Dominio della Guerra

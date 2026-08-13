@@ -1,3 +1,4 @@
+import 'package:dnd_character_sheet/data/character_data.dart';
 import 'package:dnd_character_sheet/data/class_catalog_data.dart';
 import 'package:dnd_character_sheet/data/class_data.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -274,5 +275,112 @@ void main() {
     expect(resource.maximumAtLevel(20), 6);
     expect(resource.isUnlimitedAtLevel(19), isFalse);
     expect(resource.isUnlimitedAtLevel(20), isTrue);
+  });
+
+  test('resources can depend on an ability and change recovery', () {
+    const resource = ClassResourceDefinition(
+      id: 'bardic_inspiration',
+      name: 'Ispirazione Bardica',
+      minimumLevel: 1,
+      recovery: ClassResourceRecovery.longRest,
+      maximumByLevel: {},
+      maximumAbility: 'CAR',
+      minimumMaximum: 1,
+      recoveryByLevel: {
+        5: ClassResourceRecovery.shortRest,
+      },
+    );
+
+    expect(resource.maximumAtLevel(0), 0);
+    expect(resource.maximumAtLevel(1), 1);
+    expect(
+      resource.maximumAtLevel(
+        1,
+        abilityModifiers: {'CAR': 4},
+      ),
+      4,
+    );
+    expect(
+      resource.maximumAtLevel(
+        1,
+        abilityModifiers: {'CAR': 0},
+      ),
+      1,
+    );
+    expect(
+      resource.recoveryAtLevel(4),
+      ClassResourceRecovery.longRest,
+    );
+    expect(
+      resource.recoveryAtLevel(5),
+      ClassResourceRecovery.shortRest,
+    );
+  });
+
+  test('class features support structured choices', () {
+    const feature = CharacterClassFeatureDefinition(
+      id: 'expertise',
+      content: RuleContent(
+        id: 'expertise',
+        name: 'Maestria',
+        type: RuleContentType.classFeature,
+        description: RuleDescription(
+          summary: 'Sceglie competenze possedute.',
+        ),
+      ),
+      choices: [
+        CharacterChoiceDefinition(
+          id: 'expertise_skills',
+          label: 'Scegli due competenze',
+          type: CharacterChoiceType.skill,
+          minimumSelections: 2,
+          maximumSelections: 2,
+          requireExistingAcquisition: true,
+        ),
+      ],
+    );
+
+    expect(feature.choices, hasLength(1));
+    expect(
+      feature.choices.single.requireExistingAcquisition,
+      isTrue,
+    );
+  });
+
+  test('class features support permanent structured effects', () {
+    const feature = CharacterClassFeatureDefinition(
+      id: 'bonus_proficiencies',
+      content: RuleContent(
+        id: 'bonus_proficiencies',
+        name: 'Competenze Bonus',
+        type: RuleContentType.subclassFeature,
+        description: RuleDescription(
+          summary: 'Concede competenze permanenti.',
+        ),
+      ),
+      effects: CharacterEffects(
+        armorProficiencies: {
+          'medium_armor',
+          'shield',
+        },
+        weaponProficiencies: {
+          'martial_weapons',
+        },
+      ),
+    );
+
+    expect(
+      feature.effects.armorProficiencies,
+      {
+        'medium_armor',
+        'shield',
+      },
+    );
+    expect(
+      feature.effects.weaponProficiencies,
+      {
+        'martial_weapons',
+      },
+    );
   });
 }

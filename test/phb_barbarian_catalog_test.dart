@@ -252,13 +252,13 @@ void main() {
     );
   });
 
-  test('universal class registry now contains Monk and Barbarian', () {
+  test('universal class registry contains Monk and Barbarian', () {
     expect(
       phbClassDefinitions.keys.toSet(),
-      {
+      containsAll({
         ClassIds.barbarian,
         ClassIds.monk,
-      },
+      }),
     );
   });
 }
