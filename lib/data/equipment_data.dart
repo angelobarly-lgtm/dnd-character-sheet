@@ -763,7 +763,7 @@ final equipmentDefinitions = <String, EquipmentDefinition>{
     category: EquipmentCategory.container,
     weightKg: 0.25,
     cost: 1,
-    currency: "sp",
+    currency: 'cp',
     isContainer: true,
     canContainItems: true,
     containerCapacity: 30,
@@ -868,6 +868,7 @@ final equipmentDefinitions = <String, EquipmentDefinition>{
     category: EquipmentCategory.light,
     weightKg: 0.5,
     cost: 5,
+    currency: 'sp',
   ),
   EquipmentIds.bullseyeLantern: const EquipmentDefinition(
     id: EquipmentIds.bullseyeLantern,

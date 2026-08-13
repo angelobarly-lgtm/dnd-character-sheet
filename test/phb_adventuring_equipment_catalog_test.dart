@@ -87,6 +87,419 @@ const phbEquipmentIds = <String>{
   EquipmentIds.whetstone,
 };
 
+const phbEquipmentValues =
+    <String, ({int cost, String currency, double weightKg})>{
+  EquipmentIds.abacus: (
+    cost: 2,
+    currency: 'gp',
+    weightKg: 1.0,
+  ),
+  EquipmentIds.acidVial: (
+    cost: 25,
+    currency: 'gp',
+    weightKg: 0.5,
+  ),
+  EquipmentIds.alchemistsFireFlask: (
+    cost: 50,
+    currency: 'gp',
+    weightKg: 0.5,
+  ),
+  EquipmentIds.antitoxinVial: (
+    cost: 50,
+    currency: 'gp',
+    weightKg: 0.0,
+  ),
+  EquipmentIds.backpack: (
+    cost: 2,
+    currency: 'gp',
+    weightKg: 2.5,
+  ),
+  EquipmentIds.ballBearings: (
+    cost: 1,
+    currency: 'gp',
+    weightKg: 1.0,
+  ),
+  EquipmentIds.barrel: (
+    cost: 2,
+    currency: 'gp',
+    weightKg: 35.0,
+  ),
+  EquipmentIds.basket: (
+    cost: 4,
+    currency: 'sp',
+    weightKg: 1.0,
+  ),
+  EquipmentIds.bedroll: (
+    cost: 1,
+    currency: 'gp',
+    weightKg: 3.5,
+  ),
+  EquipmentIds.bell: (
+    cost: 1,
+    currency: 'gp',
+    weightKg: 0.0,
+  ),
+  EquipmentIds.blanket: (
+    cost: 5,
+    currency: 'sp',
+    weightKg: 1.5,
+  ),
+  EquipmentIds.blockAndTackle: (
+    cost: 1,
+    currency: 'gp',
+    weightKg: 2.5,
+  ),
+  EquipmentIds.book: (
+    cost: 25,
+    currency: 'gp',
+    weightKg: 2.5,
+  ),
+  EquipmentIds.bottle: (
+    cost: 2,
+    currency: 'gp',
+    weightKg: 1.0,
+  ),
+  EquipmentIds.bucket: (
+    cost: 5,
+    currency: 'cp',
+    weightKg: 1.0,
+  ),
+  EquipmentIds.caltrops: (
+    cost: 1,
+    currency: 'gp',
+    weightKg: 1.0,
+  ),
+  EquipmentIds.candle: (
+    cost: 1,
+    currency: 'cp',
+    weightKg: 0.0,
+  ),
+  EquipmentIds.crossbowBoltCase: (
+    cost: 1,
+    currency: 'gp',
+    weightKg: 0.5,
+  ),
+  EquipmentIds.scrollCase: (
+    cost: 1,
+    currency: 'gp',
+    weightKg: 0.5,
+  ),
+  EquipmentIds.chain: (
+    cost: 5,
+    currency: 'gp',
+    weightKg: 5.0,
+  ),
+  EquipmentIds.chalk: (
+    cost: 1,
+    currency: 'cp',
+    weightKg: 0.0,
+  ),
+  EquipmentIds.chest: (
+    cost: 5,
+    currency: 'gp',
+    weightKg: 12.5,
+  ),
+  EquipmentIds.climbersKit: (
+    cost: 25,
+    currency: 'gp',
+    weightKg: 6.0,
+  ),
+  EquipmentIds.commonClothes: (
+    cost: 5,
+    currency: 'sp',
+    weightKg: 1.5,
+  ),
+  EquipmentIds.costume: (
+    cost: 5,
+    currency: 'gp',
+    weightKg: 2.0,
+  ),
+  EquipmentIds.fineClothes: (
+    cost: 15,
+    currency: 'gp',
+    weightKg: 3.0,
+  ),
+  EquipmentIds.travelersClothes: (
+    cost: 2,
+    currency: 'gp',
+    weightKg: 2.0,
+  ),
+  EquipmentIds.crowbar: (
+    cost: 2,
+    currency: 'gp',
+    weightKg: 2.5,
+  ),
+  EquipmentIds.fishingTackle: (
+    cost: 1,
+    currency: 'gp',
+    weightKg: 2.0,
+  ),
+  EquipmentIds.flask: (
+    cost: 2,
+    currency: 'cp',
+    weightKg: 0.5,
+  ),
+  EquipmentIds.grapplingHook: (
+    cost: 2,
+    currency: 'gp',
+    weightKg: 2.0,
+  ),
+  EquipmentIds.hammer: (
+    cost: 1,
+    currency: 'gp',
+    weightKg: 1.5,
+  ),
+  EquipmentIds.sledgehammer: (
+    cost: 2,
+    currency: 'gp',
+    weightKg: 5.0,
+  ),
+  EquipmentIds.healersKit: (
+    cost: 5,
+    currency: 'gp',
+    weightKg: 1.5,
+  ),
+  EquipmentIds.holyWaterFlask: (
+    cost: 25,
+    currency: 'gp',
+    weightKg: 0.5,
+  ),
+  EquipmentIds.hourglass: (
+    cost: 25,
+    currency: 'gp',
+    weightKg: 0.5,
+  ),
+  EquipmentIds.huntingTrap: (
+    cost: 5,
+    currency: 'gp',
+    weightKg: 12.5,
+  ),
+  EquipmentIds.ink: (
+    cost: 10,
+    currency: 'gp',
+    weightKg: 0.0,
+  ),
+  EquipmentIds.inkPen: (
+    cost: 2,
+    currency: 'cp',
+    weightKg: 0.0,
+  ),
+  EquipmentIds.jug: (
+    cost: 2,
+    currency: 'cp',
+    weightKg: 2.0,
+  ),
+  EquipmentIds.ladder: (
+    cost: 1,
+    currency: 'sp',
+    weightKg: 12.5,
+  ),
+  EquipmentIds.lamp: (
+    cost: 5,
+    currency: 'sp',
+    weightKg: 0.5,
+  ),
+  EquipmentIds.bullseyeLantern: (
+    cost: 10,
+    currency: 'gp',
+    weightKg: 1.0,
+  ),
+  EquipmentIds.hoodedLantern: (
+    cost: 5,
+    currency: 'gp',
+    weightKg: 1.0,
+  ),
+  EquipmentIds.lock: (
+    cost: 10,
+    currency: 'gp',
+    weightKg: 0.5,
+  ),
+  EquipmentIds.magnifyingGlass: (
+    cost: 100,
+    currency: 'gp',
+    weightKg: 0.0,
+  ),
+  EquipmentIds.manacles: (
+    cost: 2,
+    currency: 'gp',
+    weightKg: 3.0,
+  ),
+  EquipmentIds.messKit: (
+    cost: 2,
+    currency: 'sp',
+    weightKg: 0.5,
+  ),
+  EquipmentIds.mirrorSteel: (
+    cost: 5,
+    currency: 'gp',
+    weightKg: 0.25,
+  ),
+  EquipmentIds.flaskOfOil: (
+    cost: 1,
+    currency: 'sp',
+    weightKg: 0.5,
+  ),
+  EquipmentIds.paper: (
+    cost: 2,
+    currency: 'sp',
+    weightKg: 0.0,
+  ),
+  EquipmentIds.parchment: (
+    cost: 1,
+    currency: 'sp',
+    weightKg: 0.0,
+  ),
+  EquipmentIds.perfume: (
+    cost: 5,
+    currency: 'gp',
+    weightKg: 0.0,
+  ),
+  EquipmentIds.pick: (
+    cost: 2,
+    currency: 'gp',
+    weightKg: 5.0,
+  ),
+  EquipmentIds.piton: (
+    cost: 5,
+    currency: 'cp',
+    weightKg: 0.125,
+  ),
+  EquipmentIds.basicPoison: (
+    cost: 100,
+    currency: 'gp',
+    weightKg: 0.0,
+  ),
+  EquipmentIds.pole: (
+    cost: 5,
+    currency: 'cp',
+    weightKg: 3.5,
+  ),
+  EquipmentIds.ironPot: (
+    cost: 2,
+    currency: 'gp',
+    weightKg: 5.0,
+  ),
+  EquipmentIds.potionOfHealing: (
+    cost: 50,
+    currency: 'gp',
+    weightKg: 0.25,
+  ),
+  EquipmentIds.pouch: (
+    cost: 5,
+    currency: 'sp',
+    weightKg: 0.5,
+  ),
+  EquipmentIds.quiver: (
+    cost: 1,
+    currency: 'gp',
+    weightKg: 0.5,
+  ),
+  EquipmentIds.portableRam: (
+    cost: 4,
+    currency: 'gp',
+    weightKg: 17.5,
+  ),
+  EquipmentIds.rations: (
+    cost: 5,
+    currency: 'sp',
+    weightKg: 1.0,
+  ),
+  EquipmentIds.robes: (
+    cost: 1,
+    currency: 'gp',
+    weightKg: 2.0,
+  ),
+  EquipmentIds.hempenRope: (
+    cost: 1,
+    currency: 'gp',
+    weightKg: 5.0,
+  ),
+  EquipmentIds.silkRope: (
+    cost: 10,
+    currency: 'gp',
+    weightKg: 2.5,
+  ),
+  EquipmentIds.sack: (
+    cost: 1,
+    currency: 'cp',
+    weightKg: 0.25,
+  ),
+  EquipmentIds.scaleMerchant: (
+    cost: 5,
+    currency: 'gp',
+    weightKg: 1.5,
+  ),
+  EquipmentIds.sealingWax: (
+    cost: 5,
+    currency: 'sp',
+    weightKg: 0.0,
+  ),
+  EquipmentIds.shovel: (
+    cost: 2,
+    currency: 'gp',
+    weightKg: 2.5,
+  ),
+  EquipmentIds.signalWhistle: (
+    cost: 5,
+    currency: 'cp',
+    weightKg: 0.0,
+  ),
+  EquipmentIds.signetRing: (
+    cost: 5,
+    currency: 'gp',
+    weightKg: 0.0,
+  ),
+  EquipmentIds.soap: (
+    cost: 2,
+    currency: 'cp',
+    weightKg: 0.0,
+  ),
+  EquipmentIds.spellbook: (
+    cost: 50,
+    currency: 'gp',
+    weightKg: 1.5,
+  ),
+  EquipmentIds.ironSpikes: (
+    cost: 1,
+    currency: 'gp',
+    weightKg: 2.5,
+  ),
+  EquipmentIds.spyglass: (
+    cost: 1000,
+    currency: 'gp',
+    weightKg: 0.5,
+  ),
+  EquipmentIds.tentTwoPerson: (
+    cost: 2,
+    currency: 'gp',
+    weightKg: 10.0,
+  ),
+  EquipmentIds.tinderbox: (
+    cost: 5,
+    currency: 'sp',
+    weightKg: 0.5,
+  ),
+  EquipmentIds.torch: (
+    cost: 1,
+    currency: 'cp',
+    weightKg: 0.5,
+  ),
+  EquipmentIds.vial: (
+    cost: 1,
+    currency: 'gp',
+    weightKg: 0.0,
+  ),
+  EquipmentIds.waterskin: (
+    cost: 2,
+    currency: 'sp',
+    weightKg: 2.5,
+  ),
+  EquipmentIds.whetstone: (
+    cost: 1,
+    currency: 'cp',
+    weightKg: 0.5,
+  ),
+};
 const newPhbEquipmentIds = <String>{
   EquipmentIds.abacus,
   EquipmentIds.acidVial,
@@ -129,6 +542,54 @@ void main() {
     };
 
     expect(coveredRows.length, 83);
+  });
+
+  test('PHB costs and metric weights match all 83 table rows', () {
+    expect(phbEquipmentValues.length, 82);
+
+    final errors = <String>[];
+
+    for (final entry in phbEquipmentValues.entries) {
+      final equipment = equipmentDefinitions[entry.key];
+
+      if (equipment == null) {
+        errors.add('Definizione mancante: ${entry.key}');
+        continue;
+      }
+
+      if (equipment.cost != entry.value.cost) {
+        errors.add(
+          '${entry.key}: costo=${equipment.cost}, '
+          'atteso=${entry.value.cost}',
+        );
+      }
+
+      if (equipment.currency != entry.value.currency) {
+        errors.add(
+          '${entry.key}: valuta=${equipment.currency}, '
+          'attesa=${entry.value.currency}',
+        );
+      }
+
+      if (equipment.weightKg != entry.value.weightKg) {
+        errors.add(
+          '${entry.key}: peso=${equipment.weightKg} kg, '
+          'atteso=${entry.value.weightKg} kg',
+        );
+      }
+    }
+
+    expect(
+      errors,
+      isEmpty,
+      reason: errors.join('\n'),
+    );
+
+    final componentPouch = focusDefinitions[FocusIds.componentPouch]!;
+
+    expect(componentPouch.cost, 25);
+    expect(componentPouch.currency, 'gp');
+    expect(componentPouch.weightKg, 1);
   });
 
   test('equipment registry is internally coherent', () {
