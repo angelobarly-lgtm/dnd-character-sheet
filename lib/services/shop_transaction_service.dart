@@ -38,6 +38,41 @@ class ShopTransactionService {
     'pp': 'MP',
   };
 
+  /// Imposta manualmente una denominazione senza convertire le altre.
+  ///
+  /// È usato per bottini, ricompense, furti e correzioni decise dal DM.
+  Map<String, int> setCoinAmount({
+    required Map<String, int> coins,
+    required String coin,
+    required int amount,
+  }) {
+    if (!coinValuesInCopper.containsKey(coin)) {
+      throw ArgumentError.value(coin, 'coin', 'Denominazione sconosciuta.');
+    }
+    if (amount < 0) {
+      throw ArgumentError.value(amount, 'amount', 'Non può essere negativo.');
+    }
+
+    return Map<String, int>.from(coins)..[coin] = amount;
+  }
+
+  /// Aggiunge o sottrae manualmente monete da una sola denominazione.
+  ///
+  /// L’operazione non effettua cambi automatici e non può produrre
+  /// una quantità negativa.
+  Map<String, int> adjustCoinAmount({
+    required Map<String, int> coins,
+    required String coin,
+    required int delta,
+  }) {
+    final current = coins[coin] ?? 0;
+    return setCoinAmount(
+      coins: coins,
+      coin: coin,
+      amount: current + delta,
+    );
+  }
+
   int totalCopper(Map<String, int> coins) {
     var total = 0;
 
@@ -115,8 +150,21 @@ class ShopTransactionService {
     required int unitCost,
     required String currency,
     int quantity = 1,
+    int? inventoryQuantity,
     bool addToInventory = true,
   }) {
+    final grantedQuantity = inventoryQuantity ?? quantity;
+
+    if (grantedQuantity <= 0) {
+      return ShopPurchaseResult(
+        success: false,
+        error: 'La quantità da aggiungere deve essere maggiore di zero.',
+        coins: Map<String, int>.from(coins),
+        inventory:
+            inventory.map((entry) => Map<String, dynamic>.from(entry)).toList(),
+      );
+    }
+
     final inventoryCopy =
         inventory.map((entry) => Map<String, dynamic>.from(entry)).toList();
 
@@ -157,7 +205,7 @@ class ShopTransactionService {
       if (index >= 0) {
         final currentQuantity =
             (inventoryCopy[index]['quantity'] as num?)?.toInt() ?? 1;
-        inventoryCopy[index]['quantity'] = currentQuantity + quantity;
+        inventoryCopy[index]['quantity'] = currentQuantity + grantedQuantity;
         inventoryCopy[index]['name'] = itemName;
         inventoryCopy[index]['catalogId'] = catalogId;
       } else {
@@ -165,7 +213,7 @@ class ShopTransactionService {
           'catalogId': catalogId,
           'id': itemId,
           'name': itemName,
-          'quantity': quantity,
+          'quantity': grantedQuantity,
           'equipped': false,
         });
       }

@@ -240,4 +240,89 @@ void main() {
     expect(result.inventory.single['catalogId'], 'equipment');
     expect(result.inventory.single['name'], 'Torcia');
   });
+  test('manual coin editing preserves every other denomination', () {
+    final updated = service.setCoinAmount(
+      coins: const {
+        'MR': 1,
+        'MA': 2,
+        'ME': 3,
+        'MO': 4,
+        'MP': 5,
+      },
+      coin: 'MO',
+      amount: 12,
+    );
+
+    expect(updated, {
+      'MR': 1,
+      'MA': 2,
+      'ME': 3,
+      'MO': 12,
+      'MP': 5,
+    });
+  });
+
+  test('manual rewards and expenses do not normalize denominations', () {
+    final rewarded = service.adjustCoinAmount(
+      coins: const {
+        'MR': 0,
+        'MA': 0,
+        'ME': 0,
+        'MO': 3,
+        'MP': 0,
+      },
+      coin: 'MO',
+      delta: 7,
+    );
+
+    final spent = service.adjustCoinAmount(
+      coins: rewarded,
+      coin: 'MO',
+      delta: -4,
+    );
+
+    expect(rewarded['MO'], 10);
+    expect(spent['MO'], 6);
+    expect(spent['MA'], 0);
+  });
+
+  test('manual coin editing rejects negative balances', () {
+    expect(
+      () => service.adjustCoinAmount(
+        coins: const {
+          'MR': 0,
+          'MA': 0,
+          'ME': 0,
+          'MO': 1,
+          'MP': 0,
+        },
+        coin: 'MO',
+        delta: -2,
+      ),
+      throwsArgumentError,
+    );
+  });
+  test('bundle price and granted inventory quantity are independent', () {
+    final result = service.purchase(
+      coins: const {
+        'MR': 0,
+        'MA': 0,
+        'ME': 0,
+        'MO': 5,
+        'MP': 0,
+      },
+      inventory: const [],
+      catalogId: 'ammunition',
+      itemId: 'arrows',
+      itemName: 'Frecce',
+      unitCost: 1,
+      currency: 'gp',
+      quantity: 2,
+      inventoryQuantity: 40,
+    );
+
+    expect(result.success, isTrue);
+    expect(result.spentCopper, 200);
+    expect(result.inventory.single['quantity'], 40);
+  });
 }

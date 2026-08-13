@@ -8,6 +8,7 @@ import 'data/character_data.dart';
 import 'data/feat_data.dart';
 import 'data/race_data.dart';
 import 'services/character_builder.dart';
+import 'widgets/shop_page.dart';
 
 import 'data/rule_icon_data.dart';
 
@@ -2405,6 +2406,37 @@ class _SheetPageState extends State<SheetPage> {
     if (mounted) setState(() {});
   }
 
+  String get coinSummary => const ['MR', 'MA', 'ME', 'MO', 'MP']
+      .map((coin) => '$coin ${h.coins[coin] ?? 0}')
+      .join(' · ');
+
+  Future<void> openShop() async {
+    await Navigator.push<void>(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ShopPage(
+          coins: h.coins,
+          inventory: h.inventory,
+          onChanged: (coins, inventory) async {
+            h.coins = Map<String, int>.from(coins);
+            h.inventory = inventory
+                .map((entry) => Map<String, dynamic>.from(entry))
+                .toList();
+            await Store.save(h);
+
+            if (mounted) {
+              setState(() {});
+            }
+          },
+        ),
+      ),
+    );
+
+    if (mounted) {
+      setState(() {});
+    }
+  }
+
   @override
   void initState() {
     super.initState();
@@ -4284,6 +4316,43 @@ class _SheetPageState extends State<SheetPage> {
           const Text(
               'Il Monaco calcola qui il danno delle armi compatibili con le Arti Marziali. Armature e scudi non vengono equipaggiati perché disattivano parti fondamentali della classe.'),
           const SizedBox(height: 12),
+          Card(
+            child: ListTile(
+              leading: const Icon(Icons.storefront),
+              title: const Text('Negozio'),
+              subtitle: Text(
+                'Compra equipaggiamento e servizi usando il portamonete.\n'
+                '$coinSummary',
+              ),
+              trailing: const Icon(Icons.chevron_right),
+              onTap: openShop,
+            ),
+          ),
+          FantasySection(
+            title: 'Inventario',
+            subtitle: 'Oggetti acquistati e dotazione del personaggio.',
+            child: h.inventory.isEmpty
+                ? const ListTile(
+                    leading: Icon(Icons.inventory_2_outlined),
+                    title: Text('Inventario vuoto'),
+                  )
+                : Column(
+                    children: h.inventory.map((item) {
+                      final quantity = (item['quantity'] as num?)?.toInt() ?? 1;
+                      final name =
+                          item['name']?.toString() ?? item['id'].toString();
+
+                      return ListTile(
+                        leading: const Icon(Icons.inventory_2_outlined),
+                        title: Text(name),
+                        subtitle: Text(
+                          item['catalogId']?.toString() ?? 'equipment',
+                        ),
+                        trailing: Text('×$quantity'),
+                      );
+                    }).toList(),
+                  ),
+          ),
           FantasySection(
             title: 'Equipaggiato',
             child: ListTile(
