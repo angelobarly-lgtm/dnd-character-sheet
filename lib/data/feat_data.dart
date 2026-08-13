@@ -58,11 +58,11 @@ abstract final class FeatIds {
   static const weaponMaster = 'weapon_master';
 }
 
-/// Primo nucleo migrato dal creator legacy.
+/// Catalogo strutturato dei talenti.
 ///
-/// Questo non rappresenta ancora il catalogo completo PHB/Xanathar/Tasha.
-/// Serve a collegare immediatamente CharacterChoiceType.feat al runtime
-/// universale senza mantenere la selezione speciale dell'Umano Variante.
+/// Include i 42 talenti del Manuale del Giocatore 2014 e mantiene separati
+/// gli eventuali contenuti provenienti da manuali supplementari.
+/// Ogni talento usa il modello universale di requisiti, scelte ed effetti.
 const Map<String, FeatDefinition> featDefinitions = {
   FeatIds.alert: FeatDefinition(
     id: FeatIds.alert,
@@ -77,6 +77,14 @@ const Map<String, FeatDefinition> featDefinitions = {
         details: 'Conferisce +5 all’iniziativa, impedisce di essere sorpresi '
             'finché si è coscienti e neutralizza il vantaggio ottenuto '
             'da creature non viste dal personaggio.',
+      ),
+      source: RuleSource(
+        name: 'Manuale del Giocatore 2014',
+        reference: 'Pagine 165-170',
+      ),
+      visual: RuleVisualIdentity(
+        family: RuleVisualFamily.feat,
+        iconId: FeatIds.alert,
       ),
       ownerId: FeatIds.alert,
     ),
@@ -110,6 +118,14 @@ const Map<String, FeatDefinition> featDefinitions = {
         details:
             'Migliora una caratteristica fisica e rende più efficienti alcune forme di movimento.',
       ),
+      source: RuleSource(
+        name: 'Manuale del Giocatore 2014',
+        reference: 'Pagine 165-170',
+      ),
+      visual: RuleVisualIdentity(
+        family: RuleVisualFamily.feat,
+        iconId: FeatIds.athlete,
+      ),
       ownerId: FeatIds.athlete,
     ),
     effects: CharacterEffects(
@@ -140,6 +156,14 @@ const Map<String, FeatDefinition> featDefinitions = {
         summary: 'Migliora Carisma e capacità di impersonare altre persone.',
         details: 'Conferisce un aumento di Carisma e capacità speciali legate '
             'all’interpretazione, all’imitazione e al camuffamento.',
+      ),
+      source: RuleSource(
+        name: 'Manuale del Giocatore 2014',
+        reference: 'Pagine 165-170',
+      ),
+      visual: RuleVisualIdentity(
+        family: RuleVisualFamily.feat,
+        iconId: FeatIds.actor,
       ),
       ownerId: FeatIds.actor,
     ),
@@ -182,6 +206,14 @@ const Map<String, FeatDefinition> featDefinitions = {
             'linea retta immediatamente prima, un attacco riuscito può '
             'ottenere +5 ai danni oppure una spinta riuscita può allontanare '
             'il bersaglio fino a 3 metri.',
+      ),
+      source: RuleSource(
+        name: 'Manuale del Giocatore 2014',
+        reference: 'Pagine 165-170',
+      ),
+      visual: RuleVisualIdentity(
+        family: RuleVisualFamily.feat,
+        iconId: FeatIds.charger,
       ),
       ownerId: FeatIds.charger,
     ),
@@ -255,6 +287,14 @@ const Map<String, FeatDefinition> featDefinitions = {
             'usato l’azione di Attacco con un’arma a una mano, può usare '
             'un’azione bonus per attaccare con una balestra a mano impugnata.',
       ),
+      source: RuleSource(
+        name: 'Manuale del Giocatore 2014',
+        reference: 'Pagine 165-170',
+      ),
+      visual: RuleVisualIdentity(
+        family: RuleVisualFamily.feat,
+        iconId: FeatIds.crossbowExpert,
+      ),
       ownerId: FeatIds.crossbowExpert,
     ),
     effects: CharacterEffects(
@@ -294,6 +334,14 @@ const Map<String, FeatDefinition> featDefinitions = {
             'colpito da un attacco in mischia, può usare la sua reazione '
             'per aggiungere il bonus di competenza alla CA contro '
             'quell’attacco, potenzialmente trasformandolo in un mancato.',
+      ),
+      source: RuleSource(
+        name: 'Manuale del Giocatore 2014',
+        reference: 'Pagine 165-170',
+      ),
+      visual: RuleVisualIdentity(
+        family: RuleVisualFamily.feat,
+        iconId: FeatIds.defensiveDuelist,
       ),
       ownerId: FeatIds.defensiveDuelist,
     ),
@@ -341,6 +389,14 @@ const Map<String, FeatDefinition> featDefinitions = {
             'e può estrarre o riporre due armi a una mano quando normalmente '
             'potrebbe estrarne o riporne una sola.',
       ),
+      source: RuleSource(
+        name: 'Manuale del Giocatore 2014',
+        reference: 'Pagine 165-170',
+      ),
+      visual: RuleVisualIdentity(
+        family: RuleVisualFamily.feat,
+        iconId: FeatIds.dualWielder,
+      ),
       ownerId: FeatIds.dualWielder,
     ),
     effects: CharacterEffects(
@@ -381,6 +437,14 @@ const Map<String, FeatDefinition> featDefinitions = {
             'porte segrete, vantaggio ai tiri salvezza contro le trappole '
             'e resistenza ai danni da esse inflitti. Permette inoltre di '
             'cercare trappole muovendosi a passo normale.',
+      ),
+      source: RuleSource(
+        name: 'Manuale del Giocatore 2014',
+        reference: 'Pagine 165-170',
+      ),
+      visual: RuleVisualIdentity(
+        family: RuleVisualFamily.feat,
+        iconId: FeatIds.dungeonDelver,
       ),
       ownerId: FeatIds.dungeonDelver,
     ),
@@ -431,6 +495,14 @@ const Map<String, FeatDefinition> featDefinitions = {
         details: 'Conferisce un aumento di Costituzione e rende più affidabile '
             'il recupero dei punti ferita tramite i Dadi Vita.',
       ),
+      source: RuleSource(
+        name: 'Manuale del Giocatore 2014',
+        reference: 'Pagine 165-170',
+      ),
+      visual: RuleVisualIdentity(
+        family: RuleVisualFamily.feat,
+        iconId: FeatIds.durable,
+      ),
       ownerId: FeatIds.durable,
     ),
     effects: CharacterEffects(
@@ -466,6 +538,14 @@ const Map<String, FeatDefinition> featDefinitions = {
             'sono considerati 2 e gli incantesimi ignorano la resistenza a quel '
             'tipo di danno.',
       ),
+      source: RuleSource(
+        name: 'Manuale del Giocatore 2014',
+        reference: 'Pagine 165-170',
+      ),
+      visual: RuleVisualIdentity(
+        family: RuleVisualFamily.feat,
+        iconId: FeatIds.elementalAdept,
+      ),
       ownerId: FeatIds.elementalAdept,
     ),
     effects: CharacterEffects(
@@ -498,6 +578,14 @@ const Map<String, FeatDefinition> featDefinitions = {
         details: 'Concede vantaggio agli attacchi contro una creatura '
             'afferrata dal personaggio e permette di tentare di '
             'immobilizzarla tramite un’ulteriore prova di lotta.',
+      ),
+      source: RuleSource(
+        name: 'Manuale del Giocatore 2014',
+        reference: 'Pagine 165-170',
+      ),
+      visual: RuleVisualIdentity(
+        family: RuleVisualFamily.feat,
+        iconId: FeatIds.grappler,
       ),
       ownerId: FeatIds.grappler,
     ),
@@ -542,6 +630,14 @@ const Map<String, FeatDefinition> featDefinitions = {
             'di subire una penalità di -5 al tiro per colpire; se l\'attacco '
             'colpisce infligge +10 danni.',
       ),
+      source: RuleSource(
+        name: 'Manuale del Giocatore 2014',
+        reference: 'Pagine 165-170',
+      ),
+      visual: RuleVisualIdentity(
+        family: RuleVisualFamily.feat,
+        iconId: FeatIds.greatWeaponMaster,
+      ),
       ownerId: FeatIds.greatWeaponMaster,
     ),
     effects: CharacterEffects(
@@ -579,6 +675,14 @@ const Map<String, FeatDefinition> featDefinitions = {
             'massimo dei suoi Dadi Vita. Una creatura non può beneficiare di '
             'questa cura finché non completa un riposo breve o lungo.',
       ),
+      source: RuleSource(
+        name: 'Manuale del Giocatore 2014',
+        reference: 'Pagine 165-170',
+      ),
+      visual: RuleVisualIdentity(
+        family: RuleVisualFamily.feat,
+        iconId: FeatIds.healer,
+      ),
       ownerId: FeatIds.healer,
     ),
     effects: CharacterEffects(
@@ -609,6 +713,14 @@ const Map<String, FeatDefinition> featDefinitions = {
         summary: 'Aumenta Forza e concede competenza nelle armature pesanti.',
         details: 'Richiede addestramento nelle armature medie; aumenta Forza '
             'e concede competenza nelle armature pesanti.',
+      ),
+      source: RuleSource(
+        name: 'Manuale del Giocatore 2014',
+        reference: 'Pagine 165-170',
+      ),
+      visual: RuleVisualIdentity(
+        family: RuleVisualFamily.feat,
+        iconId: FeatIds.heavilyArmored,
       ),
       ownerId: FeatIds.heavilyArmored,
     ),
@@ -644,6 +756,14 @@ const Map<String, FeatDefinition> featDefinitions = {
             'Quando indossi un\'armatura pesante, i danni contundenti, '
             'perforanti e taglienti inflitti da armi non magiche sono '
             'ridotti di 3.',
+      ),
+      source: RuleSource(
+        name: 'Manuale del Giocatore 2014',
+        reference: 'Pagine 165-170',
+      ),
+      visual: RuleVisualIdentity(
+        family: RuleVisualFamily.feat,
+        iconId: FeatIds.heavyArmorMaster,
       ),
       ownerId: FeatIds.heavyArmorMaster,
     ),
@@ -681,6 +801,14 @@ const Map<String, FeatDefinition> featDefinitions = {
             'comprenderlo. Il beneficio dipende dal livello e dal '
             'modificatore di Carisma.',
       ),
+      source: RuleSource(
+        name: 'Manuale del Giocatore 2014',
+        reference: 'Pagine 165-170',
+      ),
+      visual: RuleVisualIdentity(
+        family: RuleVisualFamily.feat,
+        iconId: FeatIds.inspiringLeader,
+      ),
       ownerId: FeatIds.inspiringLeader,
     ),
     prerequisites: [
@@ -713,6 +841,14 @@ const Map<String, FeatDefinition> featDefinitions = {
             'Aumenta Intelligenza e conferisce un eccezionale orientamento.',
         details: 'Conferisce un aumento di Intelligenza e capacità speciali '
             'legate a orientamento, tempo e memoria.',
+      ),
+      source: RuleSource(
+        name: 'Manuale del Giocatore 2014',
+        reference: 'Pagine 165-170',
+      ),
+      visual: RuleVisualIdentity(
+        family: RuleVisualFamily.feat,
+        iconId: FeatIds.keenMind,
       ),
       ownerId: FeatIds.keenMind,
     ),
@@ -755,6 +891,14 @@ const Map<String, FeatDefinition> featDefinitions = {
         details: 'Conferisce un aumento di Forza o Destrezza e competenza '
             'nelle armature leggere.',
       ),
+      source: RuleSource(
+        name: 'Manuale del Giocatore 2014',
+        reference: 'Pagine 165-170',
+      ),
+      visual: RuleVisualIdentity(
+        family: RuleVisualFamily.feat,
+        iconId: FeatIds.lightArmorMaster,
+      ),
       ownerId: FeatIds.lightArmorMaster,
     ),
     effects: CharacterEffects(
@@ -790,6 +934,14 @@ const Map<String, FeatDefinition> featDefinitions = {
         summary: 'Aumenta Intelligenza e permette di apprendere nuove lingue.',
         details: 'Conferisce un aumento di Intelligenza, tre lingue a scelta '
             'e la capacità di creare messaggi cifrati.',
+      ),
+      source: RuleSource(
+        name: 'Manuale del Giocatore 2014',
+        reference: 'Pagine 165-170',
+      ),
+      visual: RuleVisualIdentity(
+        family: RuleVisualFamily.feat,
+        iconId: FeatIds.linguist,
       ),
       ownerId: FeatIds.linguist,
     ),
@@ -829,6 +981,14 @@ const Map<String, FeatDefinition> featDefinitions = {
         summary: 'Conferisce una riserva di fortuna.',
         details:
             'Conferisce una riserva limitata utilizzabile per influenzare alcuni tiri.',
+      ),
+      source: RuleSource(
+        name: 'Manuale del Giocatore 2014',
+        reference: 'Pagine 165-170',
+      ),
+      visual: RuleVisualIdentity(
+        family: RuleVisualFamily.feat,
+        iconId: FeatIds.lucky,
       ),
       ownerId: FeatIds.lucky,
     ),
@@ -874,6 +1034,14 @@ const Map<String, FeatDefinition> featDefinitions = {
             'vantaggio ai tiri salvezza contro gli incantesimi lanciati dalle '
             'creature entro 1,5 metri da te.',
       ),
+      source: RuleSource(
+        name: 'Manuale del Giocatore 2014',
+        reference: 'Pagine 165-170',
+      ),
+      visual: RuleVisualIdentity(
+        family: RuleVisualFamily.feat,
+        iconId: FeatIds.mageSlayer,
+      ),
       ownerId: FeatIds.mageSlayer,
     ),
     effects: CharacterEffects(
@@ -912,6 +1080,14 @@ const Map<String, FeatDefinition> featDefinitions = {
             'L’incantesimo di 1° livello può essere lanciato una volta per '
             'riposo lungo senza spendere slot e può essere lanciato '
             'normalmente se possiedi gli slot appropriati.',
+      ),
+      source: RuleSource(
+        name: 'Manuale del Giocatore 2014',
+        reference: 'Pagine 165-170',
+      ),
+      visual: RuleVisualIdentity(
+        family: RuleVisualFamily.feat,
+        iconId: FeatIds.magicInitiate,
       ),
       ownerId: FeatIds.magicInitiate,
     ),
@@ -999,6 +1175,14 @@ const Map<String, FeatDefinition> featDefinitions = {
             'Ottieni un dado di superiorità (d6), che si ricarica dopo un '
             'riposo breve o lungo.',
       ),
+      source: RuleSource(
+        name: 'Manuale del Giocatore 2014',
+        reference: 'Pagine 165-170',
+      ),
+      visual: RuleVisualIdentity(
+        family: RuleVisualFamily.feat,
+        iconId: FeatIds.martialAdept,
+      ),
       ownerId: FeatIds.martialAdept,
     ),
     effects: CharacterEffects(
@@ -1032,6 +1216,14 @@ const Map<String, FeatDefinition> featDefinitions = {
             'bonus di Destrezza fino a +3 invece del normale +2 alla Classe '
             'Armatura.',
       ),
+      source: RuleSource(
+        name: 'Manuale del Giocatore 2014',
+        reference: 'Pagine 165-170',
+      ),
+      visual: RuleVisualIdentity(
+        family: RuleVisualFamily.feat,
+        iconId: FeatIds.mediumArmorMaster,
+      ),
       ownerId: FeatIds.mediumArmorMaster,
     ),
     effects: CharacterEffects(
@@ -1062,6 +1254,14 @@ const Map<String, FeatDefinition> featDefinitions = {
         summary: 'Favorisce movimento e combattimento dinamico.',
         details:
             'Migliora la mobilità del personaggio e alcune interazioni con il movimento in combattimento.',
+      ),
+      source: RuleSource(
+        name: 'Manuale del Giocatore 2014',
+        reference: 'Pagine 165-170',
+      ),
+      visual: RuleVisualIdentity(
+        family: RuleVisualFamily.feat,
+        iconId: FeatIds.mobile,
       ),
       ownerId: FeatIds.mobile,
     ),
@@ -1102,6 +1302,14 @@ const Map<String, FeatDefinition> featDefinitions = {
         details: 'Richiede competenza nelle armature leggere. Conferisce un '
             'aumento di Forza o Destrezza e competenza nelle armature '
             'medie e negli scudi.',
+      ),
+      source: RuleSource(
+        name: 'Manuale del Giocatore 2014',
+        reference: 'Pagine 165-170',
+      ),
+      visual: RuleVisualIdentity(
+        family: RuleVisualFamily.feat,
+        iconId: FeatIds.moderatelyArmored,
       ),
       ownerId: FeatIds.moderatelyArmored,
     ),
@@ -1151,6 +1359,14 @@ const Map<String, FeatDefinition> featDefinitions = {
             'per subire metà danni, se lo supera non subisce alcun danno e '
             'se lo fallisce subisce solo metà danni.',
       ),
+      source: RuleSource(
+        name: 'Manuale del Giocatore 2014',
+        reference: 'Pagine 165-170',
+      ),
+      visual: RuleVisualIdentity(
+        family: RuleVisualFamily.feat,
+        iconId: FeatIds.mountedCombatant,
+      ),
       ownerId: FeatIds.mountedCombatant,
     ),
     effects: CharacterEffects(
@@ -1186,6 +1402,14 @@ const Map<String, FeatDefinition> featDefinitions = {
         summary: 'Migliora attenzione e capacità di osservazione.',
         details:
             'Migliora una caratteristica mentale e alcune capacità legate all’osservazione.',
+      ),
+      source: RuleSource(
+        name: 'Manuale del Giocatore 2014',
+        reference: 'Pagine 165-170',
+      ),
+      visual: RuleVisualIdentity(
+        family: RuleVisualFamily.feat,
+        iconId: FeatIds.observant,
       ),
       ownerId: FeatIds.observant,
     ),
@@ -1230,6 +1454,14 @@ const Map<String, FeatDefinition> featDefinitions = {
             'le creature provocano un attacco di opportunità quando entrano '
             'nella tua portata.',
       ),
+      source: RuleSource(
+        name: 'Manuale del Giocatore 2014',
+        reference: 'Pagine 165-170',
+      ),
+      visual: RuleVisualIdentity(
+        family: RuleVisualFamily.feat,
+        iconId: FeatIds.polearmMaster,
+      ),
       ownerId: FeatIds.polearmMaster,
     ),
     effects: CharacterEffects(
@@ -1258,6 +1490,14 @@ const Map<String, FeatDefinition> featDefinitions = {
         summary: 'Migliora una caratteristica e il relativo tiro salvezza.',
         details:
             'Aumenta una caratteristica scelta e conferisce competenza nel relativo tiro salvezza.',
+      ),
+      source: RuleSource(
+        name: 'Manuale del Giocatore 2014',
+        reference: 'Pagine 165-170',
+      ),
+      visual: RuleVisualIdentity(
+        family: RuleVisualFamily.feat,
+        iconId: FeatIds.resilient,
       ),
       ownerId: FeatIds.resilient,
     ),
@@ -1349,6 +1589,14 @@ const Map<String, FeatDefinition> featDefinitions = {
             'classe. Puoi aggiungere altri incantesimi rituali trovati durante '
             'le avventure seguendo le regole del talento.',
       ),
+      source: RuleSource(
+        name: 'Manuale del Giocatore 2014',
+        reference: 'Pagine 165-170',
+      ),
+      visual: RuleVisualIdentity(
+        family: RuleVisualFamily.feat,
+        iconId: FeatIds.ritualCaster,
+      ),
       ownerId: FeatIds.ritualCaster,
     ),
     effects: CharacterEffects(
@@ -1380,6 +1628,14 @@ const Map<String, FeatDefinition> featDefinitions = {
             'con un’arma da mischia, il personaggio può ripetere il '
             'tiro per i danni dell’arma e scegliere quale risultato usare.',
       ),
+      source: RuleSource(
+        name: 'Manuale del Giocatore 2014',
+        reference: 'Pagine 165-170',
+      ),
+      visual: RuleVisualIdentity(
+        family: RuleVisualFamily.feat,
+        iconId: FeatIds.savageAttacker,
+      ),
       ownerId: FeatIds.savageAttacker,
     ),
     effects: CharacterEffects(
@@ -1409,6 +1665,14 @@ const Map<String, FeatDefinition> featDefinitions = {
             'Quando una creatura entro 1,5 metri da te attacca un bersaglio '
             'diverso da te, puoi usare la tua reazione per effettuare un '
             'attacco in mischia contro quella creatura.',
+      ),
+      source: RuleSource(
+        name: 'Manuale del Giocatore 2014',
+        reference: 'Pagine 165-170',
+      ),
+      visual: RuleVisualIdentity(
+        family: RuleVisualFamily.feat,
+        iconId: FeatIds.sentinel,
       ),
       ownerId: FeatIds.sentinel,
     ),
@@ -1450,6 +1714,14 @@ const Map<String, FeatDefinition> featDefinitions = {
             'prima di effettuare un attacco con un’arma a distanza con cui sei '
             'competente puoi scegliere di subire una penalità di −5 al tiro '
             'per colpire; se colpisci infliggi +10 danni.',
+      ),
+      source: RuleSource(
+        name: 'Manuale del Giocatore 2014',
+        reference: 'Pagine 165-170',
+      ),
+      visual: RuleVisualIdentity(
+        family: RuleVisualFamily.feat,
+        iconId: FeatIds.sharpshooter,
       ),
       ownerId: FeatIds.sharpshooter,
     ),
@@ -1495,6 +1767,14 @@ const Map<String, FeatDefinition> featDefinitions = {
             'puoi usare la tua reazione per non subire danni in caso di '
             'successo.',
       ),
+      source: RuleSource(
+        name: 'Manuale del Giocatore 2014',
+        reference: 'Pagine 165-170',
+      ),
+      visual: RuleVisualIdentity(
+        family: RuleVisualFamily.feat,
+        iconId: FeatIds.shieldMaster,
+      ),
       ownerId: FeatIds.shieldMaster,
     ),
     effects: CharacterEffects(
@@ -1532,6 +1812,14 @@ const Map<String, FeatDefinition> featDefinitions = {
         details: 'Permette di acquisire tre competenze scegliendo tra abilità '
             'e strumenti.',
       ),
+      source: RuleSource(
+        name: 'Manuale del Giocatore 2014',
+        reference: 'Pagine 165-170',
+      ),
+      visual: RuleVisualIdentity(
+        family: RuleVisualFamily.feat,
+        iconId: FeatIds.skilled,
+      ),
       ownerId: FeatIds.skilled,
     ),
     effects: CharacterEffects(
@@ -1563,6 +1851,14 @@ const Map<String, FeatDefinition> featDefinitions = {
             'nascosti non rivela la propria posizione. La luce fioca '
             'non impone svantaggio alle prove di Saggezza (Percezione) '
             'basate sulla vista.',
+      ),
+      source: RuleSource(
+        name: 'Manuale del Giocatore 2014',
+        reference: 'Pagine 165-170',
+      ),
+      visual: RuleVisualIdentity(
+        family: RuleVisualFamily.feat,
+        iconId: FeatIds.skulker,
       ),
       ownerId: FeatIds.skulker,
     ),
@@ -1611,6 +1907,14 @@ const Map<String, FeatDefinition> featDefinitions = {
             'raddoppia. I tuoi attacchi con incantesimo ignorano mezza copertura '
             'e tre quarti di copertura. Inoltre apprendi un trucchetto che '
             'richiede un tiro per colpire dalla lista di una classe.',
+      ),
+      source: RuleSource(
+        name: 'Manuale del Giocatore 2014',
+        reference: 'Pagine 165-170',
+      ),
+      visual: RuleVisualIdentity(
+        family: RuleVisualFamily.feat,
+        iconId: FeatIds.spellSniper,
       ),
       ownerId: FeatIds.spellSniper,
     ),
@@ -1664,6 +1968,14 @@ const Map<String, FeatDefinition> featDefinitions = {
         details: 'Conferisce un aumento di Forza o Costituzione e capacità '
             'speciali con armi improvvisate, colpi senz’armi e lotta.',
       ),
+      source: RuleSource(
+        name: 'Manuale del Giocatore 2014',
+        reference: 'Pagine 165-170',
+      ),
+      visual: RuleVisualIdentity(
+        family: RuleVisualFamily.feat,
+        iconId: FeatIds.tavernBrawler,
+      ),
       ownerId: FeatIds.tavernBrawler,
     ),
     effects: CharacterEffects(
@@ -1709,6 +2021,14 @@ const Map<String, FeatDefinition> featDefinitions = {
         details:
             'Aumenta i punti ferita massimi in funzione del livello del personaggio.',
       ),
+      source: RuleSource(
+        name: 'Manuale del Giocatore 2014',
+        reference: 'Pagine 165-170',
+      ),
+      visual: RuleVisualIdentity(
+        family: RuleVisualFamily.feat,
+        iconId: FeatIds.tough,
+      ),
       ownerId: FeatIds.tough,
     ),
     effects: CharacterEffects(
@@ -1733,6 +2053,14 @@ const Map<String, FeatDefinition> featDefinitions = {
             'opportunità da parte tua, puoi usare la tua reazione per lanciare '
             'un incantesimo che bersaglia solo quella creatura invece di '
             'effettuare un attacco di opportunità.',
+      ),
+      source: RuleSource(
+        name: 'Manuale del Giocatore 2014',
+        reference: 'Pagine 165-170',
+      ),
+      visual: RuleVisualIdentity(
+        family: RuleVisualFamily.feat,
+        iconId: FeatIds.warCaster,
       ),
       ownerId: FeatIds.warCaster,
     ),
@@ -1769,6 +2097,14 @@ const Map<String, FeatDefinition> featDefinitions = {
         details: 'Scegli uno stile di combattimento disponibile. '
             'Non puoi scegliere uno stile che possiedi già.',
       ),
+      source: RuleSource(
+        name: 'Il Calderone Omnicomprensivo di Tasha',
+        reference: 'Pagina 80',
+      ),
+      visual: RuleVisualIdentity(
+        family: RuleVisualFamily.feat,
+        iconId: FeatIds.fightingInitiate,
+      ),
       ownerId: FeatIds.fightingInitiate,
     ),
     effects: CharacterEffects(
@@ -1794,6 +2130,14 @@ const Map<String, FeatDefinition> featDefinitions = {
             'Migliora Forza o Destrezza e concede addestramento con nuove armi.',
         details: 'Conferisce un aumento di Forza o Destrezza e competenza '
             'con quattro armi a scelta.',
+      ),
+      source: RuleSource(
+        name: 'Manuale del Giocatore 2014',
+        reference: 'Pagine 165-170',
+      ),
+      visual: RuleVisualIdentity(
+        family: RuleVisualFamily.feat,
+        iconId: FeatIds.weaponMaster,
       ),
       ownerId: FeatIds.weaponMaster,
     ),
