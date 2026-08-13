@@ -148,9 +148,39 @@ class EquipmentIds {
   static const petMouse = "pet_mouse";
   static const parentsMemento = "parents_memento";
   static const pedigreeScroll = "pedigree_scroll";
+  static const sageDeadColleagueLetter = "sage_dead_colleague_letter";
+  static const soldierRankInsignia = "soldier_rank_insignia";
+  static const soldierEnemyDaggerTrophy = "soldier_enemy_dagger_trophy";
+  static const soldierBrokenBladeTrophy = "soldier_broken_blade_trophy";
+  static const soldierTornBannerTrophy = "soldier_torn_banner_trophy";
 }
 
 final equipmentDefinitions = <String, EquipmentDefinition>{
+  EquipmentIds.sageDeadColleagueLetter: const EquipmentDefinition(
+    id: EquipmentIds.sageDeadColleagueLetter,
+    name: "Lettera di un Collega Defunto",
+    category: EquipmentCategory.miscellaneous,
+  ),
+  EquipmentIds.soldierRankInsignia: const EquipmentDefinition(
+    id: EquipmentIds.soldierRankInsignia,
+    name: "Fregio del Grado Militare",
+    category: EquipmentCategory.miscellaneous,
+  ),
+  EquipmentIds.soldierEnemyDaggerTrophy: const EquipmentDefinition(
+    id: EquipmentIds.soldierEnemyDaggerTrophy,
+    name: "Pugnale Sottratto a un Nemico Caduto",
+    category: EquipmentCategory.miscellaneous,
+  ),
+  EquipmentIds.soldierBrokenBladeTrophy: const EquipmentDefinition(
+    id: EquipmentIds.soldierBrokenBladeTrophy,
+    name: "Lama Spezzata Sottratta a un Nemico Caduto",
+    category: EquipmentCategory.miscellaneous,
+  ),
+  EquipmentIds.soldierTornBannerTrophy: const EquipmentDefinition(
+    id: EquipmentIds.soldierTornBannerTrophy,
+    name: "Brandello di Stendardo Nemico",
+    category: EquipmentCategory.miscellaneous,
+  ),
   EquipmentIds.urchinSmallKnife: const EquipmentDefinition(
     id: EquipmentIds.urchinSmallKnife,
     name: "Coltellino",

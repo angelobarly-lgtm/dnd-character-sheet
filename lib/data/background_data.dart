@@ -2698,6 +2698,530 @@ const _retainersFeature = BackgroundFeatureDefinition(
   },
 );
 
+const _sageSpecialties = BackgroundTableDefinition(
+  id: "sage_specialties",
+  name: "Specializzazioni del Sapiente",
+  dieSides: 8,
+  entries: [
+    BackgroundTableEntry(
+      minimumRoll: 1,
+      maximumRoll: 1,
+      label: "Alchimista.",
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 2,
+      maximumRoll: 2,
+      label: "Astronomo.",
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 3,
+      maximumRoll: 3,
+      label: "Accademico screditato.",
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 4,
+      maximumRoll: 4,
+      label: "Bibliotecario.",
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 5,
+      maximumRoll: 5,
+      label: "Professore.",
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 6,
+      maximumRoll: 6,
+      label: "Ricercatore.",
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 7,
+      maximumRoll: 7,
+      label: "Apprendista mago.",
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 8,
+      maximumRoll: 8,
+      label: "Scriba.",
+    ),
+  ],
+);
+const _sagePersonalityTraits = BackgroundTableDefinition(
+  id: "sage_personality_traits",
+  name: "Tratti Caratteriali",
+  dieSides: 8,
+  entries: [
+    BackgroundTableEntry(
+      minimumRoll: 1,
+      maximumRoll: 1,
+      label: "Usa parole molto ricercate per dimostrare la propria erudizione.",
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 2,
+      maximumRoll: 2,
+      label:
+          "Ha letto tutti i libri delle più grandi biblioteche, o almeno sostiene di averlo fatto.",
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 3,
+      maximumRoll: 3,
+      label:
+          "È abituato ad aiutare chi è meno intelligente e spiega tutto con grande pazienza.",
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 4,
+      maximumRoll: 4,
+      label: "Nulla lo appassiona più di un buon mistero.",
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 5,
+      maximumRoll: 5,
+      label: "Ascolta ogni punto di vista prima di formulare un giudizio.",
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 6,
+      maximumRoll: 6,
+      label:
+          "Parla lentamente quando si rivolge agli altri, che considera quasi sempre meno intelligenti.",
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 7,
+      maximumRoll: 7,
+      label:
+          "Si sente molto più a suo agio tra i libri che nelle situazioni sociali.",
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 8,
+      maximumRoll: 8,
+      label:
+          "È convinto che gli altri tentino continuamente di sottrargli i suoi segreti.",
+    ),
+  ],
+);
+const _sageIdeals = BackgroundTableDefinition(
+  id: "sage_ideals",
+  name: "Ideali",
+  dieSides: 6,
+  entries: [
+    BackgroundTableEntry(
+      minimumRoll: 1,
+      maximumRoll: 1,
+      label:
+          "Conoscenza. La strada verso il potere e il miglioramento passa attraverso il sapere.",
+      alignment: "Neutrale",
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 2,
+      maximumRoll: 2,
+      label:
+          "Bellezza. Ciò che è bello indica una verità più grande di quella visibile.",
+      alignment: "Buono",
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 3,
+      maximumRoll: 3,
+      label: "Logica. Le emozioni non devono offuscare il pensiero razionale.",
+      alignment: "Legale",
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 4,
+      maximumRoll: 4,
+      label:
+          "Nessun Limite. Nulla dovrebbe frenare le infinite possibilità dell’esistenza.",
+      alignment: "Caotico",
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 5,
+      maximumRoll: 5,
+      label: "Potere. La conoscenza conduce al potere e al dominio.",
+      alignment: "Malvagio",
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 6,
+      maximumRoll: 6,
+      label:
+          "Miglioramento Personale. Lo scopo dello studio è diventare una persona migliore.",
+      alignment: "Qualsiasi",
+    ),
+  ],
+);
+const _sageBonds = BackgroundTableDefinition(
+  id: "sage_bonds",
+  name: "Legami",
+  dieSides: 6,
+  entries: [
+    BackgroundTableEntry(
+      minimumRoll: 1,
+      maximumRoll: 1,
+      label: "È suo dovere proteggere i propri allievi.",
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 2,
+      maximumRoll: 2,
+      label:
+          "Un antico testo custodisce un terribile segreto che non deve cadere nelle mani sbagliate.",
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 3,
+      maximumRoll: 3,
+      label:
+          "Lavora per preservare una biblioteca, un’università, uno scriptorium o un monastero.",
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 4,
+      maximumRoll: 4,
+      label:
+          "La sua opera più importante è un trattato dedicato a uno specifico campo del sapere.",
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 5,
+      maximumRoll: 5,
+      label:
+          "Ha dedicato la propria vita alla ricerca della risposta a una domanda precisa.",
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 6,
+      maximumRoll: 6,
+      label:
+          "Ha sacrificato troppo per ottenere il sapere e spera di riscattarsi attraverso grandi imprese.",
+    ),
+  ],
+);
+const _sageFlaws = BackgroundTableDefinition(
+  id: "sage_flaws",
+  name: "Difetti",
+  dieSides: 6,
+  entries: [
+    BackgroundTableEntry(
+      minimumRoll: 1,
+      maximumRoll: 1,
+      label: "La promessa di nuove informazioni lo distrae facilmente.",
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 2,
+      maximumRoll: 2,
+      label:
+          "Di fronte a una creatura terribile tende a osservarla e prendere appunti invece di fuggire.",
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 3,
+      maximumRoll: 3,
+      label:
+          "Svelare un antico mistero gli sembra più importante delle conseguenze per la civiltà.",
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 4,
+      maximumRoll: 4,
+      label: "Cerca soluzioni complicate e spesso ignora quelle più evidenti.",
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 5,
+      maximumRoll: 5,
+      label:
+          "Parla prima di pensare e finisce frequentemente per offendere gli altri.",
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 6,
+      maximumRoll: 6,
+      label: "Non riesce a mantenere un segreto.",
+    ),
+  ],
+);
+const _soldierSpecialties = BackgroundTableDefinition(
+  id: "soldier_specialties",
+  name: "Specializzazioni del Soldato",
+  dieSides: 8,
+  entries: [
+    BackgroundTableEntry(
+      minimumRoll: 1,
+      maximumRoll: 1,
+      label: "Ufficiale.",
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 2,
+      maximumRoll: 2,
+      label: "Esploratore.",
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 3,
+      maximumRoll: 3,
+      label: "Fanteria.",
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 4,
+      maximumRoll: 4,
+      label: "Cavalleria.",
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 5,
+      maximumRoll: 5,
+      label: "Guaritore.",
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 6,
+      maximumRoll: 6,
+      label: "Quartiermastro.",
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 7,
+      maximumRoll: 7,
+      label: "Alfiere.",
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 8,
+      maximumRoll: 8,
+      label: "Personale di supporto, come cuoco o fabbro.",
+    ),
+  ],
+);
+const _soldierPersonalityTraits = BackgroundTableDefinition(
+  id: "soldier_personality_traits",
+  name: "Tratti Caratteriali",
+  dieSides: 8,
+  entries: [
+    BackgroundTableEntry(
+      minimumRoll: 1,
+      maximumRoll: 1,
+      label: "È sempre educato e rispettoso.",
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 2,
+      maximumRoll: 2,
+      label:
+          "I ricordi della guerra lo perseguitano e non riesce a dimenticare la violenza vissuta.",
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 3,
+      maximumRoll: 3,
+      label: "Ha perso troppi amici e ora fatica a stringere nuovi legami.",
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 4,
+      maximumRoll: 4,
+      label: "Possiede una storia militare adatta a ogni occasione.",
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 5,
+      maximumRoll: 5,
+      label:
+          "Può affrontare con lo sguardo una belva infernale senza battere ciglio.",
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 6,
+      maximumRoll: 6,
+      label: "Ama essere forte e rompere gli oggetti.",
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 7,
+      maximumRoll: 7,
+      label: "Possiede un senso dell’umorismo rozzo.",
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 8,
+      maximumRoll: 8,
+      label:
+          "Affronta i problemi direttamente: la soluzione più semplice è spesso la migliore.",
+    ),
+  ],
+);
+const _soldierIdeals = BackgroundTableDefinition(
+  id: "soldier_ideals",
+  name: "Ideali",
+  dieSides: 6,
+  entries: [
+    BackgroundTableEntry(
+      minimumRoll: 1,
+      maximumRoll: 1,
+      label:
+          "Bene Superiore. Il suo destino è sacrificarsi per difendere gli altri.",
+      alignment: "Buono",
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 2,
+      maximumRoll: 2,
+      label:
+          "Responsabilità. Fa ciò che deve e obbedisce alle autorità giuste.",
+      alignment: "Legale",
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 3,
+      maximumRoll: 3,
+      label:
+          "Indipendenza. Obbedire ciecamente agli ordini significa accettare la tirannia.",
+      alignment: "Caotico",
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 4,
+      maximumRoll: 4,
+      label: "Forza. I più forti sono destinati a governare.",
+      alignment: "Malvagio",
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 5,
+      maximumRoll: 5,
+      label:
+          "Vivi e Lascia Vivere. Nessun ideale merita una guerra o un massacro.",
+      alignment: "Neutrale",
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 6,
+      maximumRoll: 6,
+      label:
+          "Patria. La sua città, nazione o il suo popolo sono ciò che conta davvero.",
+      alignment: "Qualsiasi",
+    ),
+  ],
+);
+const _soldierBonds = BackgroundTableDefinition(
+  id: "soldier_bonds",
+  name: "Legami",
+  dieSides: 6,
+  entries: [
+    BackgroundTableEntry(
+      minimumRoll: 1,
+      maximumRoll: 1,
+      label: "Darebbe ancora la vita per le persone con cui ha servito.",
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 2,
+      maximumRoll: 2,
+      label:
+          "Qualcuno gli salvò la vita sul campo di battaglia e non abbandonerà mai un compagno.",
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 3,
+      maximumRoll: 3,
+      label: "Il suo onore è la sua vita.",
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 4,
+      maximumRoll: 4,
+      label:
+          "Non dimenticherà mai la devastante sconfitta subita né i nemici che la causarono.",
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 5,
+      maximumRoll: 5,
+      label: "Chi combatte al suo fianco merita che lui rischi la vita.",
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 6,
+      maximumRoll: 6,
+      label: "Combatte per coloro che non sono in grado di difendersi.",
+    ),
+  ],
+);
+const _soldierFlaws = BackgroundTableDefinition(
+  id: "soldier_flaws",
+  name: "Difetti",
+  dieSides: 6,
+  entries: [
+    BackgroundTableEntry(
+      minimumRoll: 1,
+      maximumRoll: 1,
+      label:
+          "Un nemico mostruoso incontrato in battaglia lo fa ancora tremare.",
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 2,
+      maximumRoll: 2,
+      label:
+          "Ha poco rispetto per chi non ha mai dimostrato il proprio valore in combattimento.",
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 3,
+      maximumRoll: 3,
+      label:
+          "Un suo errore disastroso costò molte vite e farà qualsiasi cosa per mantenerlo segreto.",
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 4,
+      maximumRoll: 4,
+      label: "Prova un odio cieco e irrazionale verso i suoi vecchi nemici.",
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 5,
+      maximumRoll: 5,
+      label: "Obbedisce alla legge anche quando essa provoca sofferenza.",
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 6,
+      maximumRoll: 6,
+      label:
+          "Preferirebbe affrontare qualsiasi umiliazione piuttosto che ammettere di avere torto.",
+    ),
+  ],
+);
+
+const _sageCharacteristics = BackgroundSuggestedCharacteristics(
+  personalityTraits: _sagePersonalityTraits,
+  ideals: _sageIdeals,
+  bonds: _sageBonds,
+  flaws: _sageFlaws,
+);
+
+const _soldierCharacteristics = BackgroundSuggestedCharacteristics(
+  personalityTraits: _soldierPersonalityTraits,
+  ideals: _soldierIdeals,
+  bonds: _soldierBonds,
+  flaws: _soldierFlaws,
+);
+
+const _researcherFeature = BackgroundFeatureDefinition(
+  id: 'researcher',
+  content: RuleContent(
+    id: 'researcher',
+    name: 'Ricercatore',
+    type: RuleContentType.background,
+    description: RuleDescription(
+      summary:
+          'Quando non conosce un’informazione, il sapiente sa dove o da chi potrebbe ottenerla.',
+      details:
+          'Se non ricorda direttamente un’informazione, solitamente conosce una biblioteca, uno scriptorium, un’università, un altro sapiente o una persona competente a cui rivolgersi. Alcuni segreti possono essere irraggiungibili o richiedere un’avventura per essere scoperti.',
+    ),
+    source: RuleSource(
+      name: 'Manuale del Giocatore 2014',
+      reference: 'Pagina 140',
+    ),
+    ownerId: BackgroundIds.sage,
+  ),
+  ruleTags: {
+    'knows_where_to_find_unknown_lore',
+    'may_identify_library_or_scriptorium',
+    'may_identify_university_or_learned_person',
+    'some_secrets_may_require_an_adventure',
+    'some_secrets_may_be_unobtainable',
+  },
+);
+
+const _militaryRankFeature = BackgroundFeatureDefinition(
+  id: 'military_rank',
+  content: RuleContent(
+    id: 'military_rank',
+    name: 'Grado Militare',
+    type: RuleContentType.background,
+    description: RuleDescription(
+      summary:
+          'Il grado militare conferisce autorità presso i membri dell’organizzazione in cui il soldato ha servito.',
+      details:
+          'I soldati leali alla sua precedente organizzazione riconoscono la sua autorità e quelli di grado inferiore gli obbediscono. Può esercitare influenza, ottenere temporaneamente equipaggiamento semplice o cavalli e accedere ad accampamenti e fortezze militari amichevoli.',
+    ),
+    source: RuleSource(
+      name: 'Manuale del Giocatore 2014',
+      reference: 'Pagine 140-141',
+    ),
+    ownerId: BackgroundIds.soldier,
+  ),
+  ruleTags: {
+    'former_organization_recognizes_rank',
+    'lower_ranked_soldiers_defer_to_character',
+    'can_exert_influence_through_rank',
+    'can_requisition_simple_equipment_temporarily',
+    'can_requisition_horses_temporarily',
+    'can_access_friendly_military_encampments',
+    'can_access_friendly_military_fortresses',
+  },
+);
+
 const Map<String, BackgroundDefinition> backgroundDefinitions = {
   BackgroundIds.acolyte: BackgroundDefinition(
     id: BackgroundIds.acolyte,
@@ -5143,6 +5667,193 @@ const Map<String, BackgroundDefinition> backgroundDefinitions = {
       ),
       BackgroundEquipmentGrant(
         itemId: EquipmentIds.pedigreeScroll,
+      ),
+      BackgroundEquipmentGrant(
+        itemId: EquipmentIds.pouch,
+      ),
+    ],
+  ),
+  BackgroundIds.sage: BackgroundDefinition(
+    id: BackgroundIds.sage,
+    name: 'Sapiente',
+    content: RuleContent(
+      id: BackgroundIds.sage,
+      name: 'Sapiente',
+      type: RuleContentType.background,
+      description: RuleDescription(
+        summary: 'Ha trascorso anni nello studio dei segreti del multiverso.',
+        details:
+            'Ha consultato manoscritti, studiato pergamene e ascoltato i maggiori esperti dei temi che lo interessano. I suoi sforzi lo hanno reso un’autorità nel proprio campo di studio.',
+      ),
+      source: RuleSource(
+        name: 'Manuale del Giocatore 2014',
+        reference: 'Pagina 140',
+      ),
+      visual: RuleVisualIdentity(
+        family: RuleVisualFamily.background,
+        iconId: 'sage',
+      ),
+      ownerId: BackgroundIds.sage,
+    ),
+    effects: CharacterEffects(
+      skillProficiencies: {
+        'Arcano',
+        'Storia',
+      },
+      choices: [
+        CharacterChoiceDefinition(
+          id: 'sage_languages',
+          label: 'Scegli due linguaggi',
+          type: CharacterChoiceType.language,
+          minimumSelections: 2,
+          maximumSelections: 2,
+          optionIds: characterLanguageIds,
+          requireNewAcquisition: true,
+        ),
+      ],
+    ),
+    feature: _researcherFeature,
+    tables: [
+      _sageSpecialties,
+    ],
+    suggestedCharacteristics: _sageCharacteristics,
+    startingCoins: {
+      'MO': 10,
+    },
+    startingEquipment: [
+      BackgroundEquipmentGrant(
+        itemId: EquipmentIds.ink,
+      ),
+      BackgroundEquipmentGrant(
+        itemId: EquipmentIds.inkPen,
+      ),
+      BackgroundEquipmentGrant(
+        itemId: EquipmentIds.urchinSmallKnife,
+      ),
+      BackgroundEquipmentGrant(
+        itemId: EquipmentIds.sageDeadColleagueLetter,
+      ),
+      BackgroundEquipmentGrant(
+        itemId: EquipmentIds.commonClothes,
+      ),
+      BackgroundEquipmentGrant(
+        itemId: EquipmentIds.pouch,
+      ),
+    ],
+  ),
+  BackgroundIds.soldier: BackgroundDefinition(
+    id: BackgroundIds.soldier,
+    name: 'Soldato',
+    content: RuleContent(
+      id: BackgroundIds.soldier,
+      name: 'Soldato',
+      type: RuleContentType.background,
+      description: RuleDescription(
+        summary:
+            'La guerra è stata la sua vita per tutto il tempo che riesce a ricordare.',
+        details:
+            'Si è addestrato come combattente, ha studiato l’uso delle armi e delle armature e ha imparato tecniche essenziali di sopravvivenza. Il suo passato militare può appartenere a un esercito, una compagnia mercenaria o una milizia locale.',
+      ),
+      source: RuleSource(
+        name: 'Manuale del Giocatore 2014',
+        reference: 'Pagine 140-141',
+      ),
+      visual: RuleVisualIdentity(
+        family: RuleVisualFamily.background,
+        iconId: 'soldier',
+      ),
+      ownerId: BackgroundIds.soldier,
+    ),
+    effects: CharacterEffects(
+      skillProficiencies: {
+        'Atletica',
+        'Intimidire',
+      },
+      toolProficiencies: {
+        ToolIds.landVehicles,
+      },
+      choices: [
+        CharacterChoiceDefinition(
+          id: 'soldier_gaming_set_proficiency',
+          label: 'Scegli un tipo di gioco in cui sei competente',
+          type: CharacterChoiceType.tool,
+          options: [
+            CharacterChoiceOptionDefinition(
+              id: ToolIds.diceSet,
+              label: 'Set di Dadi',
+              effects: CharacterEffects(
+                toolProficiencies: {
+                  ToolIds.diceSet,
+                },
+              ),
+            ),
+            CharacterChoiceOptionDefinition(
+              id: ToolIds.dragonchessSet,
+              label: 'Set di Dragonchess',
+              effects: CharacterEffects(
+                toolProficiencies: {
+                  ToolIds.dragonchessSet,
+                },
+              ),
+            ),
+            CharacterChoiceOptionDefinition(
+              id: ToolIds.playingCardSet,
+              label: 'Mazzo di Carte',
+              effects: CharacterEffects(
+                toolProficiencies: {
+                  ToolIds.playingCardSet,
+                },
+              ),
+            ),
+            CharacterChoiceOptionDefinition(
+              id: ToolIds.threeDragonAnteSet,
+              label: 'Three-Dragon Ante',
+              effects: CharacterEffects(
+                toolProficiencies: {
+                  ToolIds.threeDragonAnteSet,
+                },
+              ),
+            ),
+          ],
+          requireNewAcquisition: true,
+        ),
+        CharacterChoiceDefinition(
+          id: 'soldier_gaming_equipment',
+          label: 'Scegli un set di dadi in osso o un mazzo di carte',
+          type: CharacterChoiceType.equipment,
+          catalogId: 'tool',
+          optionIds: [
+            ToolIds.diceSet,
+            ToolIds.playingCardSet,
+          ],
+        ),
+        CharacterChoiceDefinition(
+          id: 'soldier_enemy_trophy',
+          label: 'Scegli un trofeo sottratto a un nemico caduto',
+          type: CharacterChoiceType.equipment,
+          catalogId: 'equipment',
+          optionIds: [
+            EquipmentIds.soldierEnemyDaggerTrophy,
+            EquipmentIds.soldierBrokenBladeTrophy,
+            EquipmentIds.soldierTornBannerTrophy,
+          ],
+        ),
+      ],
+    ),
+    feature: _militaryRankFeature,
+    tables: [
+      _soldierSpecialties,
+    ],
+    suggestedCharacteristics: _soldierCharacteristics,
+    startingCoins: {
+      'MO': 10,
+    },
+    startingEquipment: [
+      BackgroundEquipmentGrant(
+        itemId: EquipmentIds.soldierRankInsignia,
+      ),
+      BackgroundEquipmentGrant(
+        itemId: EquipmentIds.commonClothes,
       ),
       BackgroundEquipmentGrant(
         itemId: EquipmentIds.pouch,

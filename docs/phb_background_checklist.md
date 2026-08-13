@@ -35,8 +35,8 @@ Ogni background dovrà includere:
 - [x] Monello
 - [x] Nobile
   - [x] Variante: Cavaliere
-- [ ] Sapiente
-- [ ] Soldato
+- [x] Sapiente
+- [x] Soldato
 
 ## Totali PHB
 

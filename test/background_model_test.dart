@@ -199,10 +199,12 @@ void main() {
         BackgroundIds.urchin,
         BackgroundIds.noble,
         BackgroundIds.knight,
+        BackgroundIds.sage,
+        BackgroundIds.soldier,
       },
     );
 
-    expect(mainBackgroundDefinitions.length, 11);
+    expect(mainBackgroundDefinitions.length, 13);
 
     final merchant = backgroundDefinitions[BackgroundIds.guildMerchant];
     expect(merchant, isNotNull);
@@ -856,6 +858,139 @@ void main() {
       EquipmentIds.petMouse,
       EquipmentIds.parentsMemento,
       EquipmentIds.pedigreeScroll,
+    ]) {
+      expect(
+        equipmentDefinitions.containsKey(id),
+        isTrue,
+        reason: 'Definizione di equipaggiamento mancante: $id',
+      );
+    }
+  });
+
+  test('sage and soldier backgrounds are structurally valid', () {
+    final sage = backgroundDefinitions[BackgroundIds.sage];
+    final soldier = backgroundDefinitions[BackgroundIds.soldier];
+
+    expect(sage, isNotNull);
+    expect(soldier, isNotNull);
+
+    expect(
+      sage!.effects.skillProficiencies,
+      {
+        'Arcano',
+        'Storia',
+      },
+    );
+    expect(sage.feature!.id, 'researcher');
+    expect(sage.tables.single.dieSides, 8);
+    expect(sage.tables.single.entries.length, 8);
+    expect(sage.startingCoins, {'MO': 10});
+
+    final sageLanguage = sage.effects.choices.single;
+    expect(sageLanguage.id, 'sage_languages');
+    expect(sageLanguage.type, CharacterChoiceType.language);
+    expect(sageLanguage.minimumSelections, 2);
+    expect(sageLanguage.maximumSelections, 2);
+    expect(sageLanguage.optionIds, characterLanguageIds);
+    expect(sageLanguage.requireNewAcquisition, isTrue);
+
+    expect(
+      {
+        for (final item in sage.startingEquipment) item.itemId: item.catalogId,
+      },
+      {
+        EquipmentIds.ink: 'equipment',
+        EquipmentIds.inkPen: 'equipment',
+        EquipmentIds.urchinSmallKnife: 'equipment',
+        EquipmentIds.sageDeadColleagueLetter: 'equipment',
+        EquipmentIds.commonClothes: 'equipment',
+        EquipmentIds.pouch: 'equipment',
+      },
+    );
+
+    expect(
+      soldier!.effects.skillProficiencies,
+      {
+        'Atletica',
+        'Intimidire',
+      },
+    );
+    expect(
+      soldier.effects.toolProficiencies,
+      {
+        ToolIds.landVehicles,
+      },
+    );
+    expect(soldier.feature!.id, 'military_rank');
+    expect(soldier.tables.single.dieSides, 8);
+    expect(soldier.tables.single.entries.length, 8);
+    expect(soldier.startingCoins, {'MO': 10});
+
+    final soldierChoices = {
+      for (final choice in soldier.effects.choices) choice.id: choice,
+    };
+
+    final proficiency = soldierChoices['soldier_gaming_set_proficiency'];
+    final gamingEquipment = soldierChoices['soldier_gaming_equipment'];
+    final enemyTrophy = soldierChoices['soldier_enemy_trophy'];
+
+    expect(proficiency, isNotNull);
+    expect(
+      proficiency!.options.map((option) => option.id).toSet(),
+      {
+        ToolIds.diceSet,
+        ToolIds.dragonchessSet,
+        ToolIds.playingCardSet,
+        ToolIds.threeDragonAnteSet,
+      },
+    );
+
+    for (final option in proficiency.options) {
+      expect(
+        option.effects.toolProficiencies,
+        contains(option.id),
+      );
+    }
+
+    expect(gamingEquipment, isNotNull);
+    expect(gamingEquipment!.catalogId, 'tool');
+    expect(
+      gamingEquipment.optionIds.toSet(),
+      {
+        ToolIds.diceSet,
+        ToolIds.playingCardSet,
+      },
+    );
+
+    expect(enemyTrophy, isNotNull);
+    expect(enemyTrophy!.catalogId, 'equipment');
+    expect(
+      enemyTrophy.optionIds.toSet(),
+      {
+        EquipmentIds.soldierEnemyDaggerTrophy,
+        EquipmentIds.soldierBrokenBladeTrophy,
+        EquipmentIds.soldierTornBannerTrophy,
+      },
+    );
+
+    expect(
+      {
+        for (final item in soldier.startingEquipment)
+          item.itemId: item.catalogId,
+      },
+      {
+        EquipmentIds.soldierRankInsignia: 'equipment',
+        EquipmentIds.commonClothes: 'equipment',
+        EquipmentIds.pouch: 'equipment',
+      },
+    );
+
+    for (final id in [
+      EquipmentIds.sageDeadColleagueLetter,
+      EquipmentIds.soldierRankInsignia,
+      EquipmentIds.soldierEnemyDaggerTrophy,
+      EquipmentIds.soldierBrokenBladeTrophy,
+      EquipmentIds.soldierTornBannerTrophy,
     ]) {
       expect(
         equipmentDefinitions.containsKey(id),
