@@ -62,16 +62,24 @@ class RacialFeatureIds {
   static const keenSenses = 'keen_senses';
   static const feyAncestry = 'fey_ancestry';
   static const trance = 'trance';
+  static const maskOfTheWild = 'mask_of_the_wild';
+  static const sunlightSensitivity = 'sunlight_sensitivity';
+  static const drowMagic = 'drow_magic';
 
   static const lucky = 'halfling_lucky';
   static const brave = 'halfling_brave';
   static const halflingNimbleness = 'halfling_nimbleness';
+  static const naturallyStealthy = 'naturally_stealthy';
+  static const stoutResilience = 'stout_resilience';
 
   static const draconicAncestry = 'draconic_ancestry';
   static const breathWeapon = 'breath_weapon';
 
   static const gnomeCunning = 'gnome_cunning';
   static const naturalIllusionist = 'natural_illusionist';
+  static const speakWithSmallBeasts = 'speak_with_small_beasts';
+  static const artificersLore = 'artificers_lore';
+  static const tinker = 'tinker';
 
   static const skillVersatility = 'skill_versatility';
 
@@ -245,6 +253,44 @@ final Map<String, RacialFeatureDefinition> racialFeatureDefinitions = {
     ),
   ),
 
+  RacialFeatureIds.maskOfTheWild: RacialFeatureDefinition(
+    id: RacialFeatureIds.maskOfTheWild,
+    content: _racialFeatureContent(
+      RacialFeatureIds.maskOfTheWild,
+      'Maschera della Selva',
+      SubraceIds.woodElf,
+      'Permette di tentare di nascondersi anche quando si è oscurati '
+          'solo leggermente da fenomeni naturali.',
+    ),
+  ),
+
+  RacialFeatureIds.sunlightSensitivity: RacialFeatureDefinition(
+    id: RacialFeatureIds.sunlightSensitivity,
+    content: _racialFeatureContent(
+      RacialFeatureIds.sunlightSensitivity,
+      'Sensibilità alla Luce Solare',
+      SubraceIds.drow,
+      'Impone svantaggio agli attacchi e alle prove di Percezione '
+          'basate sulla vista quando il Drow o il bersaglio si trovano '
+          'alla luce solare diretta.',
+    ),
+  ),
+
+  RacialFeatureIds.drowMagic: RacialFeatureDefinition(
+    id: RacialFeatureIds.drowMagic,
+    content: _racialFeatureContent(
+      RacialFeatureIds.drowMagic,
+      'Magia Drow',
+      SubraceIds.drow,
+      'Concede Luci Danzanti e, raggiungendo i livelli previsti, '
+          'Luminescenza e Oscurità usando Carisma.',
+      glossaryRefs: const [
+        GlossaryRef('racial_spellcasting', 'Magia Razziale'),
+        GlossaryRef('racial_progression', 'Progressione Razziale'),
+      ],
+    ),
+  ),
+
   // ----------------------------------------------------------
   // HALFLING
   // ----------------------------------------------------------
@@ -280,6 +326,35 @@ final Map<String, RacialFeatureDefinition> racialFeatureDefinitions = {
       RaceIds.halfling,
       'Permette un movimento particolare attraverso lo spazio '
           'occupato da creature più grandi.',
+    ),
+  ),
+
+  RacialFeatureIds.naturallyStealthy: RacialFeatureDefinition(
+    id: RacialFeatureIds.naturallyStealthy,
+    content: _racialFeatureContent(
+      RacialFeatureIds.naturallyStealthy,
+      'Furtività Innata',
+      SubraceIds.lightfootHalfling,
+      'Permette di tentare di nascondersi anche quando si è oscurati '
+          'soltanto da una creatura più grande.',
+    ),
+  ),
+
+  RacialFeatureIds.stoutResilience: RacialFeatureDefinition(
+    id: RacialFeatureIds.stoutResilience,
+    content: _racialFeatureContent(
+      RacialFeatureIds.stoutResilience,
+      'Resilienza dei Tozzi',
+      SubraceIds.stoutHalfling,
+      'Concede vantaggio ai tiri salvezza contro il veleno e '
+          'resistenza ai danni da veleno.',
+      glossaryRefs: const [
+        GlossaryRef('damage_resistance', 'Resistenza ai Danni'),
+      ],
+    ),
+    effects: const CharacterEffects(
+      damageResistances: {'poison'},
+      savingThrowAdvantageAgainst: {'poison'},
     ),
   ),
 
@@ -339,6 +414,45 @@ final Map<String, RacialFeatureDefinition> racialFeatureDefinitions = {
     ),
     effects: const CharacterEffects(
       grantedCantripIds: ['minor_illusion'],
+    ),
+  ),
+
+  RacialFeatureIds.speakWithSmallBeasts: RacialFeatureDefinition(
+    id: RacialFeatureIds.speakWithSmallBeasts,
+    content: _racialFeatureContent(
+      RacialFeatureIds.speakWithSmallBeasts,
+      'Parlare con le Bestie Piccole',
+      SubraceIds.forestGnome,
+      'Permette di comunicare idee semplici alle bestie di taglia '
+          'Piccola o inferiore tramite suoni e gesti.',
+    ),
+  ),
+
+  RacialFeatureIds.artificersLore: RacialFeatureDefinition(
+    id: RacialFeatureIds.artificersLore,
+    content: _racialFeatureContent(
+      RacialFeatureIds.artificersLore,
+      'Sapienza dell’Artefice',
+      SubraceIds.rockGnome,
+      'Raddoppia il bonus di competenza alle prove di Storia relative '
+          'a oggetti magici, alchemici o tecnologici.',
+    ),
+  ),
+
+  RacialFeatureIds.tinker: RacialFeatureDefinition(
+    id: RacialFeatureIds.tinker,
+    content: _racialFeatureContent(
+      RacialFeatureIds.tinker,
+      'Inventore',
+      SubraceIds.rockGnome,
+      'Concede competenza negli strumenti da inventore e permette di '
+          'costruire i congegni a orologeria descritti dal tratto.',
+      glossaryRefs: const [
+        GlossaryRef('racial_proficiency', 'Competenza Razziale'),
+      ],
+    ),
+    effects: const CharacterEffects(
+      toolProficiencies: {'tinkers_tools'},
     ),
   ),
 
