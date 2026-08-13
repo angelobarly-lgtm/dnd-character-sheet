@@ -5,9 +5,9 @@ verificate dal livello 1 al livello 20.
 
 ## Classi e sottoclassi PHB
 
-- [ ] Barbaro
-  - [ ] Cammino del Berserker
-  - [ ] Cammino del Guerriero Totemico
+- [x] Barbaro
+  - [x] Cammino del Berserker
+  - [x] Cammino del Guerriero Totemico
 - [ ] Bardo
   - [ ] Collegio del Sapere
   - [ ] Collegio del Valore

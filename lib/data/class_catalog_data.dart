@@ -150,13 +150,24 @@ class ClassResourceDefinition {
   /// successivo livello presente nella tabella.
   final Map<int, int> maximumByLevel;
 
+  /// Livello dal quale la risorsa non possiede più un limite massimo.
+  ///
+  /// Il valore numerico progressivo rimane disponibile come riferimento,
+  /// mentre [isUnlimitedAtLevel] identifica lo stato illimitato.
+  final int? unlimitedFromLevel;
+
   const ClassResourceDefinition({
     required this.id,
     required this.name,
     required this.minimumLevel,
     required this.recovery,
     required this.maximumByLevel,
-  }) : assert(minimumLevel > 0);
+    this.unlimitedFromLevel,
+  })  : assert(minimumLevel > 0),
+        assert(unlimitedFromLevel == null || unlimitedFromLevel > 0);
+
+  bool isUnlimitedAtLevel(int level) =>
+      unlimitedFromLevel != null && level >= unlimitedFromLevel!;
 
   int maximumAtLevel(int level) {
     if (level < minimumLevel) return 0;
@@ -230,11 +241,17 @@ class CharacterClassFeatureDefinition {
   final Set<String> ruleTags;
   final String? resourceId;
 
+  /// Incantesimi concessi o lanciabili direttamente dal privilegio.
+  ///
+  /// Gli ID fanno riferimento al catalogo universale degli incantesimi.
+  final Set<String> spellIds;
+
   const CharacterClassFeatureDefinition({
     required this.id,
     required this.content,
     this.ruleTags = const {},
     this.resourceId,
+    this.spellIds = const {},
   });
 }
 

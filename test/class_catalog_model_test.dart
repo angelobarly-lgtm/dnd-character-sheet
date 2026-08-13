@@ -256,4 +256,23 @@ void main() {
     expect(subclass.optionProgression!.selectionsAtLevel(11), 3);
     expect(subclass.optionProgression!.canReplaceAtLevel(17), isTrue);
   });
+
+  test('class resources can become unlimited at a verified level', () {
+    const resource = ClassResourceDefinition(
+      id: 'rage',
+      name: 'Ira',
+      minimumLevel: 1,
+      recovery: ClassResourceRecovery.longRest,
+      maximumByLevel: {
+        1: 2,
+        17: 6,
+      },
+      unlimitedFromLevel: 20,
+    );
+
+    expect(resource.maximumAtLevel(19), 6);
+    expect(resource.maximumAtLevel(20), 6);
+    expect(resource.isUnlimitedAtLevel(19), isFalse);
+    expect(resource.isUnlimitedAtLevel(20), isTrue);
+  });
 }

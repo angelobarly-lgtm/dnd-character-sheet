@@ -237,6 +237,7 @@ CharacterClassFeatureDefinition _monkSubclassFeature({
   required String summary,
   required String details,
   String? resourceId,
+  Set<String> spellIds = const {},
   Set<String> ruleTags = const {},
 }) =>
     CharacterClassFeatureDefinition(
@@ -253,6 +254,7 @@ CharacterClassFeatureDefinition _monkSubclassFeature({
         ownerId: subclassId,
       ),
       resourceId: resourceId,
+      spellIds: spellIds,
       ruleTags: {
         'subclass_feature',
         'monk',
@@ -331,6 +333,13 @@ final monkShadowFeatureDefinitions = <String, CharacterClassFeatureDefinition>{
     details:
         'Dal 3° livello conosce il trucchetto Illusione Minore. Può spendere 2 Ki per lanciare Oscurità, Scurovisione, Passare Senza Tracce o Silenzio senza componenti materiali.',
     resourceId: 'ki',
+    spellIds: {
+      'minor_illusion',
+      'darkness',
+      'darkvision',
+      'pass_without_trace',
+      'silence',
+    },
     ruleTags: {
       'spellcasting',
       'minor_illusion',
