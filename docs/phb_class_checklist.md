@@ -12,14 +12,14 @@ verificate dal livello 1 al livello 20.
   - [ ] Collegio del Sapere
   - [x] Collegio della Sapienza
   - [x] Collegio del Valore
-- [ ] Chierico
-  - [ ] Dominio della Conoscenza
-  - [ ] Dominio della Guerra
-  - [ ] Dominio dell’Inganno
-  - [ ] Dominio della Luce
-  - [ ] Dominio della Natura
-  - [ ] Dominio della Tempesta
-  - [ ] Dominio della Vita
+- [x] Chierico
+  - [x] Dominio della Conoscenza
+  - [x] Dominio della Guerra
+  - [x] Dominio dell’Inganno
+  - [x] Dominio della Luce
+  - [x] Dominio della Natura
+  - [x] Dominio della Tempesta
+  - [x] Dominio della Vita
 - [ ] Druido
   - [ ] Circolo della Luna
   - [ ] Circolo della Terra

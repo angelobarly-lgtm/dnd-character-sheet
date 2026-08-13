@@ -383,4 +383,58 @@ void main() {
       },
     );
   });
+
+  test('equipment alternatives support proficiency requirements', () {
+    const alternative = ClassEquipmentAlternative(
+      id: 'warhammer',
+      label: 'Martello da Guerra',
+      grants: [
+        ClassEquipmentGrant(
+          catalogId: 'weapon',
+          itemId: 'warhammer',
+        ),
+      ],
+      requiredProficiencyIds: {
+        'martial_weapons',
+      },
+    );
+
+    expect(
+      alternative.requiredProficiencyIds,
+      {'martial_weapons'},
+    );
+  });
+
+  test('prepared spellcasting supports ability-based formulas', () {
+    const spellcasting = ClassSpellcastingDefinition(
+      progression: ClassSpellcastingProgression.full,
+      ability: 'SAG',
+      minimumLevel: 1,
+      preparesSpells: true,
+      preparedSpellLevelDivisor: 1,
+    );
+
+    expect(spellcasting.preparedSpellsAtLevel(0), 0);
+    expect(
+      spellcasting.preparedSpellsAtLevel(
+        1,
+        abilityModifiers: {'SAG': 3},
+      ),
+      4,
+    );
+    expect(
+      spellcasting.preparedSpellsAtLevel(
+        10,
+        abilityModifiers: {'SAG': 5},
+      ),
+      15,
+    );
+    expect(
+      spellcasting.preparedSpellsAtLevel(
+        1,
+        abilityModifiers: {'SAG': -2},
+      ),
+      1,
+    );
+  });
 }

@@ -117,10 +117,16 @@ class ClassEquipmentAlternative {
   final String label;
   final List<ClassEquipmentGrant> grants;
 
+  /// Competenze necessarie per selezionare questa alternativa.
+  ///
+  /// Esempi: arma da guerra o armatura pesante concessa dal dominio.
+  final Set<String> requiredProficiencyIds;
+
   const ClassEquipmentAlternative({
     required this.id,
     required this.label,
     required this.grants,
+    this.requiredProficiencyIds = const {},
   });
 }
 
@@ -235,6 +241,15 @@ class ClassSpellcastingDefinition {
   /// Incantesimi appartenenti alla lista della classe.
   final Set<String> spellIds;
 
+  /// Divisore applicato al livello di classe nel calcolo degli
+  /// incantesimi preparati.
+  ///
+  /// 1 per Chierico, Druido e Mago; 2 per Paladino.
+  final int preparedSpellLevelDivisor;
+
+  /// Numero minimo di incantesimi preparabili.
+  final int minimumPreparedSpells;
+
   /// Livello degli slot del Patto Magico per ogni livello di classe.
   final Map<int, int> pactSlotLevelByClassLevel;
 
@@ -248,8 +263,12 @@ class ClassSpellcastingDefinition {
     this.cantripsKnownByLevel = const {},
     this.spellsKnownByLevel = const {},
     this.spellIds = const {},
+    this.preparedSpellLevelDivisor = 1,
+    this.minimumPreparedSpells = 1,
     this.pactSlotLevelByClassLevel = const {},
-  }) : assert(minimumLevel > 0);
+  })  : assert(minimumLevel > 0),
+        assert(preparedSpellLevelDivisor > 0),
+        assert(minimumPreparedSpells >= 0);
 
   List<int> slotsAtLevel(int level) =>
       List<int>.unmodifiable(slotsByClassLevel[level] ?? const []);
@@ -272,6 +291,19 @@ class ClassSpellcastingDefinition {
 
   int pactSlotLevelAtLevel(int level) =>
       _progressiveValue(pactSlotLevelByClassLevel, level);
+
+  int preparedSpellsAtLevel(
+    int level, {
+    Map<String, int> abilityModifiers = const {},
+  }) {
+    if (!preparesSpells || level < minimumLevel) return 0;
+
+    final classContribution = level ~/ preparedSpellLevelDivisor;
+    final abilityContribution = abilityModifiers[ability] ?? 0;
+    final total = classContribution + abilityContribution;
+
+    return total < minimumPreparedSpells ? minimumPreparedSpells : total;
+  }
 }
 
 class CharacterClassFeatureDefinition {
@@ -314,6 +346,17 @@ class CharacterSubclassDefinition {
   final RuleContent content;
   final Map<int, List<String>> featuresByLevel;
   final Map<String, CharacterClassFeatureDefinition> featureDefinitions;
+
+  /// Incantesimi di sottoclasse sempre preparati, indicizzati dal livello
+  /// minimo della classe in cui diventano disponibili.
+  final Map<int, Set<String>> alwaysPreparedSpellIdsByLevel;
+
+  /// Risorse consumabili concesse esclusivamente dalla sottoclasse.
+  ///
+  /// Esempi: Interdizione Luminosa del Dominio della Luce e Prete
+  /// della Guerra del Dominio della Guerra.
+  final List<ClassResourceDefinition> resources;
+
   final bool homebrew;
   final bool supplemental;
 
@@ -324,11 +367,25 @@ class CharacterSubclassDefinition {
     required this.content,
     required this.featuresByLevel,
     required this.featureDefinitions,
+    this.alwaysPreparedSpellIdsByLevel = const {},
+    this.resources = const [],
     this.options = const [],
     this.optionProgression,
     this.homebrew = false,
     this.supplemental = false,
   });
+
+  Set<String> alwaysPreparedSpellIdsAtLevel(int level) {
+    final result = <String>{};
+
+    for (final entry in alwaysPreparedSpellIdsByLevel.entries) {
+      if (entry.key <= level) {
+        result.addAll(entry.value);
+      }
+    }
+
+    return Set<String>.unmodifiable(result);
+  }
 
   final List<SubclassOptionDefinition> options;
   final SubclassOptionProgression? optionProgression;
