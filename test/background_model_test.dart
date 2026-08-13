@@ -1,6 +1,8 @@
 import 'dart:io';
 
+import 'package:dnd_character_sheet/data/background_data.dart';
 import 'package:dnd_character_sheet/data/character_data.dart';
+import 'package:dnd_character_sheet/data/equipment_data.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
@@ -59,5 +61,119 @@ void main() {
     expect(values.length, 18);
     expect(names.toSet().length, 18);
     expect(values.toSet().length, 18);
+  });
+
+  test('acolyte background is structurally complete', () {
+    final acolyte = backgroundDefinitions[BackgroundIds.acolyte];
+
+    expect(acolyte, isNotNull);
+
+    final background = acolyte!;
+
+    expect(background.id, BackgroundIds.acolyte);
+    expect(background.name, 'Accolito');
+    expect(background.isVariant, isFalse);
+    expect(background.parentBackgroundId, isNull);
+
+    expect(
+      background.effects.skillProficiencies,
+      {
+        'Intuizione',
+        'Religione',
+      },
+    );
+
+    final choices = {
+      for (final choice in background.effects.choices) choice.id: choice,
+    };
+
+    expect(choices.length, 3);
+
+    final languages = choices['acolyte_languages'];
+    expect(languages, isNotNull);
+    expect(languages!.type, CharacterChoiceType.language);
+    expect(languages.minimumSelections, 2);
+    expect(languages.maximumSelections, 2);
+    expect(languages.requireNewAcquisition, isTrue);
+    expect(languages.optionIds, characterLanguageIds);
+
+    final holySymbol = choices['acolyte_holy_symbol'];
+    expect(holySymbol, isNotNull);
+    expect(holySymbol!.catalogId, 'focus');
+    expect(holySymbol.optionIds.length, 3);
+
+    final prayerItem = choices['acolyte_prayer_item'];
+    expect(prayerItem, isNotNull);
+    expect(prayerItem!.catalogId, 'equipment');
+    expect(
+      prayerItem.optionIds,
+      {
+        EquipmentIds.prayerBook,
+        EquipmentIds.prayerWheel,
+      },
+    );
+
+    expect(background.feature, isNotNull);
+    expect(background.feature!.id, 'shelter_of_the_faithful');
+    expect(background.feature!.ruleTags, isNotEmpty);
+
+    final characteristics = background.suggestedCharacteristics;
+    expect(characteristics.isComplete, isTrue);
+
+    final tables = [
+      characteristics.personalityTraits!,
+      characteristics.ideals!,
+      characteristics.bonds!,
+      characteristics.flaws!,
+    ];
+
+    expect(tables[0].dieSides, 8);
+    expect(tables[0].entries.length, 8);
+
+    for (final table in tables.skip(1)) {
+      expect(table.dieSides, 6);
+      expect(table.entries.length, 6);
+    }
+
+    for (final table in tables) {
+      for (var roll = 1; roll <= table.dieSides; roll++) {
+        final matchingEntries =
+            table.entries.where((entry) => entry.matches(roll)).toList();
+
+        expect(
+          matchingEntries.length,
+          1,
+          reason: '${table.id}: il risultato $roll deve avere una sola voce',
+        );
+
+        expect(table.entryForRoll(roll), isNotNull);
+      }
+    }
+
+    expect(background.startingCoins, {'MO': 15});
+
+    final equipment = {
+      for (final item in background.startingEquipment)
+        item.itemId: item.quantity,
+    };
+
+    expect(
+      equipment,
+      {
+        EquipmentIds.incense: 5,
+        EquipmentIds.robes: 1,
+        EquipmentIds.commonClothes: 1,
+        EquipmentIds.pouch: 1,
+      },
+    );
+
+    expect(
+      equipmentDefinitions.containsKey(EquipmentIds.prayerBook),
+      isTrue,
+    );
+    expect(
+      equipmentDefinitions.containsKey(EquipmentIds.prayerWheel),
+      isTrue,
+    );
   });
 }

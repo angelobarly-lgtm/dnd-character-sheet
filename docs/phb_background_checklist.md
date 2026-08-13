@@ -19,7 +19,7 @@ Ogni background dovrà includere:
 
 ## Background principali
 
-- [ ] Accolito
+- [x] Accolito
 - [ ] Artigiano di Gilda
   - [ ] Variante: Mercante di Gilda
 - [ ] Ciarlatano

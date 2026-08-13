@@ -582,6 +582,22 @@ class BackgroundSuggestedCharacteristics {
       flaws != null;
 }
 
+/// Oggetto concesso dalla dotazione iniziale di un background.
+class BackgroundEquipmentGrant {
+  final String itemId;
+
+  /// Catalogo che possiede l'oggetto, per esempio `equipment` o `focus`.
+  final String catalogId;
+
+  final int quantity;
+
+  const BackgroundEquipmentGrant({
+    required this.itemId,
+    this.catalogId = 'equipment',
+    this.quantity = 1,
+  }) : assert(quantity > 0);
+}
+
 class BackgroundDefinition {
   final String id;
   final String name;
@@ -608,6 +624,9 @@ class BackgroundDefinition {
 
   final List<String> startingEquipmentPacks;
 
+  /// Oggetti individuali concessi direttamente dal background.
+  final List<BackgroundEquipmentGrant> startingEquipment;
+
   final bool homebrew;
 
   const BackgroundDefinition({
@@ -621,6 +640,7 @@ class BackgroundDefinition {
     this.suggestedCharacteristics = const BackgroundSuggestedCharacteristics(),
     this.startingCoins = const {},
     this.startingEquipmentPacks = const [],
+    this.startingEquipment = const [],
     this.homebrew = false,
   });
 

@@ -126,9 +126,21 @@ class EquipmentIds {
   static const commonClothes = "common_clothes";
   static const almsBox = "alms_box";
   static const censer = "censer";
+  static const prayerBook = "prayer_book";
+  static const prayerWheel = "prayer_wheel";
 }
 
 final equipmentDefinitions = <String, EquipmentDefinition>{
+  EquipmentIds.prayerBook: const EquipmentDefinition(
+    id: EquipmentIds.prayerBook,
+    name: "Libro di Preghiere",
+    category: EquipmentCategory.miscellaneous,
+  ),
+  EquipmentIds.prayerWheel: const EquipmentDefinition(
+    id: EquipmentIds.prayerWheel,
+    name: "Ruota della Preghiera",
+    category: EquipmentCategory.miscellaneous,
+  ),
   EquipmentIds.backpack: const EquipmentDefinition(
     id: EquipmentIds.backpack,
     name: "Zaino",
