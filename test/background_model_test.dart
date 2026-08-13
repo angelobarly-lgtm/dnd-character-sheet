@@ -176,4 +176,95 @@ void main() {
       isTrue,
     );
   });
+
+  test('first PHB background block is structurally valid', () {
+    expect(
+      backgroundDefinitions.keys.toSet(),
+      {
+        BackgroundIds.acolyte,
+        BackgroundIds.guildArtisan,
+        BackgroundIds.guildMerchant,
+        BackgroundIds.charlatan,
+      },
+    );
+
+    expect(mainBackgroundDefinitions.length, 3);
+
+    final merchant = backgroundDefinitions[BackgroundIds.guildMerchant];
+    expect(merchant, isNotNull);
+    expect(merchant!.isVariant, isTrue);
+    expect(
+      merchant.parentBackgroundId,
+      BackgroundIds.guildArtisan,
+    );
+
+    expect(
+      backgroundVariantsFor(BackgroundIds.guildArtisan)
+          .map((background) => background.id)
+          .toSet(),
+      {
+        BackgroundIds.guildMerchant,
+      },
+    );
+
+    for (final background in backgroundDefinitions.values) {
+      expect(background.id, isNotEmpty);
+      expect(background.name, isNotEmpty);
+      expect(background.content.id, background.id);
+      expect(background.content.name, background.name);
+      expect(background.feature, isNotNull);
+      expect(background.suggestedCharacteristics.isComplete, isTrue);
+
+      final tables = [
+        background.suggestedCharacteristics.personalityTraits!,
+        background.suggestedCharacteristics.ideals!,
+        background.suggestedCharacteristics.bonds!,
+        background.suggestedCharacteristics.flaws!,
+        ...background.tables,
+      ];
+
+      for (final table in tables) {
+        for (var roll = 1; roll <= table.dieSides; roll++) {
+          final matches =
+              table.entries.where((entry) => entry.matches(roll)).length;
+
+          expect(
+            matches,
+            1,
+            reason: '${background.id}/${table.id}: risultato $roll non univoco',
+          );
+        }
+      }
+
+      if (background.isVariant) {
+        expect(
+          backgroundDefinitions.containsKey(
+            background.parentBackgroundId,
+          ),
+          isTrue,
+        );
+      }
+    }
+
+    final artisan = backgroundDefinitions[BackgroundIds.guildArtisan]!;
+    expect(artisan.tables.single.dieSides, 20);
+    expect(artisan.effects.skillProficiencies, {
+      'Intuizione',
+      'Persuasione',
+    });
+
+    final charlatan = backgroundDefinitions[BackgroundIds.charlatan]!;
+    expect(charlatan.effects.skillProficiencies, {
+      'Inganno',
+      'Rapidità di Mano',
+    });
+    expect(
+      charlatan.effects.toolProficiencies,
+      {
+        'forgery_kit',
+        'disguise_kit',
+      },
+    );
+    expect(charlatan.tables.single.dieSides, 6);
+  });
 }

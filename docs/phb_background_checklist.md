@@ -20,9 +20,9 @@ Ogni background dovrà includere:
 ## Background principali
 
 - [x] Accolito
-- [ ] Artigiano di Gilda
-  - [ ] Variante: Mercante di Gilda
-- [ ] Ciarlatano
+- [x] Artigiano di Gilda
+  - [x] Variante: Mercante di Gilda
+- [x] Ciarlatano
 - [ ] Criminale
   - [ ] Variante: Spia
 - [ ] Eremita

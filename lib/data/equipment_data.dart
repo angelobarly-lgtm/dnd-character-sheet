@@ -128,9 +128,55 @@ class EquipmentIds {
   static const censer = "censer";
   static const prayerBook = "prayer_book";
   static const prayerWheel = "prayer_wheel";
+  static const guildLetter = "guild_letter";
+  static const travelersClothes = "travelers_clothes";
+  static const cart = "cart";
+  static const charlatanColoredBottles = "charlatan_colored_bottles";
+  static const loadedDice = "loaded_dice";
+  static const markedCards = "marked_cards";
+  static const falseDucalSignetRing = "false_ducal_signet_ring";
 }
 
 final equipmentDefinitions = <String, EquipmentDefinition>{
+  EquipmentIds.guildLetter: const EquipmentDefinition(
+    id: EquipmentIds.guildLetter,
+    name: "Lettera di Presentazione della Gilda",
+    category: EquipmentCategory.miscellaneous,
+  ),
+  EquipmentIds.travelersClothes: const EquipmentDefinition(
+    id: EquipmentIds.travelersClothes,
+    name: "Abito da Viaggiatore",
+    category: EquipmentCategory.clothing,
+    weight: 4,
+    cost: 2,
+  ),
+  EquipmentIds.cart: const EquipmentDefinition(
+    id: EquipmentIds.cart,
+    name: "Carretto",
+    category: EquipmentCategory.miscellaneous,
+    weight: 200,
+    cost: 15,
+  ),
+  EquipmentIds.charlatanColoredBottles: const EquipmentDefinition(
+    id: EquipmentIds.charlatanColoredBottles,
+    name: "Dieci Bottiglie Sigillate di Liquido Colorato",
+    category: EquipmentCategory.miscellaneous,
+  ),
+  EquipmentIds.loadedDice: const EquipmentDefinition(
+    id: EquipmentIds.loadedDice,
+    name: "Serie di Dadi Truccati",
+    category: EquipmentCategory.miscellaneous,
+  ),
+  EquipmentIds.markedCards: const EquipmentDefinition(
+    id: EquipmentIds.markedCards,
+    name: "Mazzo di Carte Segnate",
+    category: EquipmentCategory.miscellaneous,
+  ),
+  EquipmentIds.falseDucalSignetRing: const EquipmentDefinition(
+    id: EquipmentIds.falseDucalSignetRing,
+    name: "Anello con Sigillo di un Duca Immaginario",
+    category: EquipmentCategory.miscellaneous,
+  ),
   EquipmentIds.prayerBook: const EquipmentDefinition(
     id: EquipmentIds.prayerBook,
     name: "Libro di Preghiere",

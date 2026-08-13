@@ -28,4 +28,13 @@ class MountIds {
   static const warhorse = "warhorse";
 }
 
-const mountDefinitions = <String, MountDefinition>{};
+const mountDefinitions = <String, MountDefinition>{
+  MountIds.mule: MountDefinition(
+    id: MountIds.mule,
+    name: 'Mulo',
+    cost: 8,
+    currency: 'gp',
+    speed: 12,
+    carryingCapacity: 420,
+  ),
+};
