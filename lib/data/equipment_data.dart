@@ -137,9 +137,27 @@ class EquipmentIds {
   static const falseDucalSignetRing = "false_ducal_signet_ring";
   static const scrollCase = "scroll_case";
   static const animalTrophy = "animal_trophy";
+  static const admirerLoveLetter = "admirer_love_letter";
+  static const admirerLockOfHair = "admirer_lock_of_hair";
+  static const admirerTrinket = "admirer_trinket";
 }
 
 final equipmentDefinitions = <String, EquipmentDefinition>{
+  EquipmentIds.admirerLoveLetter: const EquipmentDefinition(
+    id: EquipmentIds.admirerLoveLetter,
+    name: "Lettera d'Amore di un Ammiratore",
+    category: EquipmentCategory.miscellaneous,
+  ),
+  EquipmentIds.admirerLockOfHair: const EquipmentDefinition(
+    id: EquipmentIds.admirerLockOfHair,
+    name: "Ciocca di Capelli di un Ammiratore",
+    category: EquipmentCategory.miscellaneous,
+  ),
+  EquipmentIds.admirerTrinket: const EquipmentDefinition(
+    id: EquipmentIds.admirerTrinket,
+    name: "Monile Donato da un Ammiratore",
+    category: EquipmentCategory.miscellaneous,
+  ),
   EquipmentIds.animalTrophy: const EquipmentDefinition(
     id: EquipmentIds.animalTrophy,
     name: "Trofeo di un Animale Ucciso",

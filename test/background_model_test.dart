@@ -192,10 +192,12 @@ void main() {
         BackgroundIds.hermit,
         BackgroundIds.folkHero,
         BackgroundIds.outlander,
+        BackgroundIds.entertainer,
+        BackgroundIds.gladiator,
       },
     );
 
-    expect(mainBackgroundDefinitions.length, 7);
+    expect(mainBackgroundDefinitions.length, 8);
 
     final merchant = backgroundDefinitions[BackgroundIds.guildMerchant];
     expect(merchant, isNotNull);
@@ -472,6 +474,167 @@ void main() {
     expect(weaponDefinitions.containsKey('quarterstaff'), isTrue);
     expect(
       equipmentDefinitions.containsKey(EquipmentIds.animalTrophy),
+      isTrue,
+    );
+  });
+  test('entertainer and gladiator backgrounds are structurally valid', () {
+    final entertainer = backgroundDefinitions[BackgroundIds.entertainer];
+    final gladiator = backgroundDefinitions[BackgroundIds.gladiator];
+
+    expect(entertainer, isNotNull);
+    expect(gladiator, isNotNull);
+
+    expect(
+      entertainer!.effects.skillProficiencies,
+      {
+        'Acrobazia',
+        'Intrattenere',
+      },
+    );
+    expect(
+      entertainer.effects.toolProficiencies,
+      {
+        ToolIds.disguiseKit,
+      },
+    );
+    expect(entertainer.feature!.id, 'by_popular_demand');
+    expect(entertainer.tables.single.dieSides, 10);
+    expect(entertainer.tables.single.entries.length, 10);
+    expect(entertainer.startingCoins, {'MO': 15});
+
+    final entertainerChoices = {
+      for (final choice in entertainer.effects.choices) choice.id: choice,
+    };
+
+    final entertainerInstrument =
+        entertainerChoices['entertainer_musical_instrument'];
+    final entertainerToken = entertainerChoices['entertainer_admirer_token'];
+
+    expect(entertainerInstrument, isNotNull);
+    expect(entertainerInstrument!.options.length, 10);
+
+    for (final option in entertainerInstrument.options) {
+      expect(
+        option.effects.toolProficiencies,
+        contains(option.id),
+      );
+      expect(
+        option.effects.grantedEquipmentIds,
+        contains(option.id),
+      );
+    }
+
+    expect(
+      entertainerToken!.optionIds.toSet(),
+      {
+        EquipmentIds.admirerLoveLetter,
+        EquipmentIds.admirerLockOfHair,
+        EquipmentIds.admirerTrinket,
+      },
+    );
+
+    expect(
+      {
+        for (final item in entertainer.startingEquipment)
+          item.itemId: item.catalogId,
+      },
+      {
+        EquipmentIds.costume: 'equipment',
+        EquipmentIds.pouch: 'equipment',
+      },
+    );
+
+    expect(gladiator!.isVariant, isTrue);
+    expect(
+      gladiator.parentBackgroundId,
+      BackgroundIds.entertainer,
+    );
+    expect(gladiator.feature!.id, 'by_popular_demand');
+
+    expect(
+      backgroundVariantsFor(BackgroundIds.entertainer)
+          .map((background) => background.id)
+          .toSet(),
+      {
+        BackgroundIds.gladiator,
+      },
+    );
+
+    final gladiatorChoices = {
+      for (final choice in gladiator.effects.choices) choice.id: choice,
+    };
+
+    final proficiencyChoice =
+        gladiatorChoices['gladiator_musical_instrument_proficiency'];
+    final displayEquipment = gladiatorChoices['gladiator_display_equipment'];
+    final gladiatorToken = gladiatorChoices['gladiator_admirer_token'];
+
+    expect(proficiencyChoice, isNotNull);
+    expect(proficiencyChoice!.options.length, 10);
+
+    for (final option in proficiencyChoice.options) {
+      expect(
+        option.effects.toolProficiencies,
+        contains(option.id),
+      );
+      expect(option.effects.grantedEquipmentIds, isEmpty);
+    }
+
+    expect(displayEquipment, isNotNull);
+    expect(displayEquipment!.options.length, 12);
+    expect(
+      displayEquipment.options.map((option) => option.id).toSet(),
+      {
+        ToolIds.bagpipes,
+        ToolIds.drum,
+        ToolIds.dulcimer,
+        ToolIds.flute,
+        ToolIds.lute,
+        ToolIds.lyre,
+        ToolIds.horn,
+        ToolIds.panFlute,
+        ToolIds.shawm,
+        ToolIds.viol,
+        'trident',
+        'net',
+      },
+    );
+
+    for (final option in displayEquipment.options) {
+      expect(
+        option.effects.grantedEquipmentIds,
+        contains(option.id),
+      );
+    }
+
+    expect(
+      gladiatorToken!.optionIds.toSet(),
+      {
+        EquipmentIds.admirerLoveLetter,
+        EquipmentIds.admirerLockOfHair,
+        EquipmentIds.admirerTrinket,
+      },
+    );
+
+    expect(weaponDefinitions.containsKey('trident'), isTrue);
+    expect(weaponDefinitions.containsKey('net'), isTrue);
+
+    expect(
+      equipmentDefinitions.containsKey(
+        EquipmentIds.admirerLoveLetter,
+      ),
+      isTrue,
+    );
+    expect(
+      equipmentDefinitions.containsKey(
+        EquipmentIds.admirerLockOfHair,
+      ),
+      isTrue,
+    );
+    expect(
+      equipmentDefinitions.containsKey(
+        EquipmentIds.admirerTrinket,
+      ),
       isTrue,
     );
   });

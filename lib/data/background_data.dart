@@ -1719,6 +1719,284 @@ const _wandererFeature = BackgroundFeatureDefinition(
   },
 );
 
+const _entertainerArtForms = BackgroundTableDefinition(
+  id: 'entertainer_art_forms',
+  name: 'Discipline Artistiche',
+  dieSides: 10,
+  entries: [
+    BackgroundTableEntry(
+      minimumRoll: 1,
+      maximumRoll: 1,
+      label: 'Acrobata.',
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 2,
+      maximumRoll: 2,
+      label: 'Attore.',
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 3,
+      maximumRoll: 3,
+      label: 'Cantore.',
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 4,
+      maximumRoll: 4,
+      label: 'Danzatore.',
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 5,
+      maximumRoll: 5,
+      label: 'Giocoliere.',
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 6,
+      maximumRoll: 6,
+      label: 'Giullare.',
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 7,
+      maximumRoll: 7,
+      label: 'Mangiatore di fuoco.',
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 8,
+      maximumRoll: 8,
+      label: 'Narratore.',
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 9,
+      maximumRoll: 9,
+      label: 'Poeta.',
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 10,
+      maximumRoll: 10,
+      label: 'Strumentista.',
+    ),
+  ],
+);
+const _entertainerPersonalityTraits = BackgroundTableDefinition(
+  id: 'entertainer_personality_traits',
+  name: 'Tratti Caratteriali',
+  dieSides: 8,
+  entries: [
+    BackgroundTableEntry(
+      minimumRoll: 1,
+      maximumRoll: 1,
+      label: 'Possiede una storia interessante per ogni situazione.',
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 2,
+      maximumRoll: 2,
+      label:
+          'Quando arriva in un luogo nuovo si informa subito sulle dicerie e sui pettegolezzi locali.',
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 3,
+      maximumRoll: 3,
+      label:
+          'È un inguaribile romantico, sempre alla ricerca di qualcuno di speciale.',
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 4,
+      maximumRoll: 4,
+      label:
+          'Sa allentare le tensioni tanto bene che nessuno rimane arrabbiato a lungo con lui o con i suoi compagni.',
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 5,
+      maximumRoll: 5,
+      label:
+          'Apprezza un insulto ben costruito anche quando è rivolto contro di lui.',
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 6,
+      maximumRoll: 6,
+      label: 'Si amareggia quando non è al centro dell’attenzione.',
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 7,
+      maximumRoll: 7,
+      label: 'Punta sempre alla perfezione in ogni esibizione.',
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 8,
+      maximumRoll: 8,
+      label:
+          'Cambia umore o opinione con la stessa rapidità con cui cambia la tonalità di una canzone.',
+    ),
+  ],
+);
+const _entertainerIdeals = BackgroundTableDefinition(
+  id: 'entertainer_ideals',
+  name: 'Ideali',
+  dieSides: 6,
+  entries: [
+    BackgroundTableEntry(
+      minimumRoll: 1,
+      maximumRoll: 1,
+      label:
+          'Bellezza. Attraverso le proprie esibizioni vuole rendere il mondo migliore.',
+      alignment: 'Buono',
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 2,
+      maximumRoll: 2,
+      label:
+          'Tradizione. Le storie, le leggende e le canzoni del passato non devono essere dimenticate.',
+      alignment: 'Legale',
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 3,
+      maximumRoll: 3,
+      label:
+          'Creatività. Il mondo ha bisogno di nuove idee e di azioni significative.',
+      alignment: 'Caotico',
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 4,
+      maximumRoll: 4,
+      label: 'Avidità. Si esibisce soltanto per ottenere denaro e fama.',
+      alignment: 'Malvagio',
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 5,
+      maximumRoll: 5,
+      label:
+          'Persone. I sorrisi sul volto del pubblico sono l’unica cosa che conta.',
+      alignment: 'Neutrale',
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 6,
+      maximumRoll: 6,
+      label:
+          'Onestà. L’arte deve scaturire dal cuore, riflettere l’anima e rivelare chi siamo veramente.',
+      alignment: 'Qualsiasi',
+    ),
+  ],
+);
+const _entertainerBonds = BackgroundTableDefinition(
+  id: 'entertainer_bonds',
+  name: 'Legami',
+  dieSides: 6,
+  entries: [
+    BackgroundTableEntry(
+      minimumRoll: 1,
+      maximumRoll: 1,
+      label:
+          'Il suo strumento musicale è il bene più prezioso perché gli ricorda una persona amata.',
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 2,
+      maximumRoll: 2,
+      label:
+          'Qualcuno ha rubato il suo prezioso strumento e ha giurato di recuperarlo.',
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 3,
+      maximumRoll: 3,
+      label: 'Vuole diventare famoso a qualsiasi costo.',
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 4,
+      maximumRoll: 4,
+      label:
+          'Ammira un eroe delle antiche leggende e confronta continuamente le proprie imprese con le sue.',
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 5,
+      maximumRoll: 5,
+      label:
+          'Farebbe qualsiasi cosa per dimostrare di essere superiore al proprio odiato rivale.',
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 6,
+      maximumRoll: 6,
+      label:
+          'Farebbe qualsiasi cosa per i membri della sua vecchia compagnia di artisti.',
+    ),
+  ],
+);
+const _entertainerFlaws = BackgroundTableDefinition(
+  id: 'entertainer_flaws',
+  name: 'Difetti',
+  dieSides: 6,
+  entries: [
+    BackgroundTableEntry(
+      minimumRoll: 1,
+      maximumRoll: 1,
+      label: 'Farebbe qualunque cosa pur di ottenere fama e onore.',
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 2,
+      maximumRoll: 2,
+      label:
+          'Quando vede un bel viso perde completamente il proprio buon senso.',
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 3,
+      maximumRoll: 3,
+      label:
+          'Uno scandalo gli impedisce di tornare a casa e problemi simili sembrano seguirlo ovunque.',
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 4,
+      maximumRoll: 4,
+      label:
+          'Ha ridicolizzato un nobile che ora vuole la sua testa e probabilmente commetterebbe di nuovo lo stesso errore.',
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 5,
+      maximumRoll: 5,
+      label:
+          'Non riesce a nascondere i propri sentimenti e la sua lingua affilata lo mette spesso nei guai.',
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 6,
+      maximumRoll: 6,
+      label:
+          'Nonostante ogni sforzo, non riesce a essere affidabile nemmeno con i propri amici.',
+    ),
+  ],
+);
+const _entertainerCharacteristics = BackgroundSuggestedCharacteristics(
+  personalityTraits: _entertainerPersonalityTraits,
+  ideals: _entertainerIdeals,
+  bonds: _entertainerBonds,
+  flaws: _entertainerFlaws,
+);
+
+const _byPopularDemandFeature = BackgroundFeatureDefinition(
+  id: 'by_popular_demand',
+  content: RuleContent(
+    id: 'by_popular_demand',
+    name: 'A Grande Richiesta',
+    type: RuleContentType.background,
+    description: RuleDescription(
+      summary:
+          'Trova sempre un luogo in cui esibirsi e riceve vitto e alloggio in cambio dello spettacolo.',
+      details:
+          'L’intrattenitore trova normalmente un luogo in cui esibirsi, come una locanda, una taverna, un circo, un teatro o una corte. Riceve gratuitamente vitto e alloggio di qualità adeguata al locale se si esibisce ogni notte. Nelle località in cui si è già esibito può inoltre essere riconosciuto e ammirato come una celebrità locale.',
+    ),
+    source: RuleSource(
+      name: 'Manuale del Giocatore 2014',
+      reference: 'Pagine 135-136',
+    ),
+    ownerId: BackgroundIds.entertainer,
+  ),
+  ruleTags: {
+    'can_find_performance_venue',
+    'performance_may_be_at_inn_or_tavern',
+    'performance_may_be_at_circus_or_theater',
+    'performance_may_be_at_noble_court',
+    'nightly_performance_provides_food',
+    'nightly_performance_provides_lodging',
+    'lodging_quality_depends_on_venue',
+    'recognized_as_local_celebrity',
+  },
+);
+
 /// Registro canonico dei background.
 ///
 /// Verrà popolato progressivamente seguendo la checklist PHB.
@@ -3302,6 +3580,473 @@ const Map<String, BackgroundDefinition> backgroundDefinitions = {
       ),
       BackgroundEquipmentGrant(
         itemId: EquipmentIds.travelersClothes,
+      ),
+      BackgroundEquipmentGrant(
+        itemId: EquipmentIds.pouch,
+      ),
+    ],
+  ),
+  BackgroundIds.entertainer: BackgroundDefinition(
+    id: BackgroundIds.entertainer,
+    name: 'Intrattenitore',
+    content: RuleContent(
+      id: BackgroundIds.entertainer,
+      name: 'Intrattenitore',
+      type: RuleContentType.background,
+      description: RuleDescription(
+        summary:
+            'Un artista capace di entusiasmare, divertire e ispirare il proprio pubblico.',
+        details:
+            'Che si dedichi alla musica, alla poesia, alla danza, alla recitazione o alla comicità, vive per la propria arte e sa mantenere l’attenzione degli spettatori.',
+      ),
+      source: RuleSource(
+        name: 'Manuale del Giocatore 2014',
+        reference: 'Pagine 135-136',
+      ),
+      visual: RuleVisualIdentity(
+        family: RuleVisualFamily.background,
+        iconId: 'entertainer',
+      ),
+      ownerId: BackgroundIds.entertainer,
+    ),
+    effects: CharacterEffects(
+      skillProficiencies: {
+        'Acrobazia',
+        'Intrattenere',
+      },
+      toolProficiencies: {
+        ToolIds.disguiseKit,
+      },
+      choices: [
+        CharacterChoiceDefinition(
+          id: 'entertainer_musical_instrument',
+          label: 'Scegli lo strumento musicale conosciuto e ricevuto',
+          type: CharacterChoiceType.other,
+          options: [
+            CharacterChoiceOptionDefinition(
+              id: ToolIds.bagpipes,
+              label: 'Cornamusa',
+              effects: CharacterEffects(
+                toolProficiencies: {
+                  ToolIds.bagpipes,
+                },
+                grantedEquipmentIds: [
+                  ToolIds.bagpipes,
+                ],
+              ),
+            ),
+            CharacterChoiceOptionDefinition(
+              id: ToolIds.drum,
+              label: 'Tamburo',
+              effects: CharacterEffects(
+                toolProficiencies: {
+                  ToolIds.drum,
+                },
+                grantedEquipmentIds: [
+                  ToolIds.drum,
+                ],
+              ),
+            ),
+            CharacterChoiceOptionDefinition(
+              id: ToolIds.dulcimer,
+              label: 'Salterio',
+              effects: CharacterEffects(
+                toolProficiencies: {
+                  ToolIds.dulcimer,
+                },
+                grantedEquipmentIds: [
+                  ToolIds.dulcimer,
+                ],
+              ),
+            ),
+            CharacterChoiceOptionDefinition(
+              id: ToolIds.flute,
+              label: 'Flauto',
+              effects: CharacterEffects(
+                toolProficiencies: {
+                  ToolIds.flute,
+                },
+                grantedEquipmentIds: [
+                  ToolIds.flute,
+                ],
+              ),
+            ),
+            CharacterChoiceOptionDefinition(
+              id: ToolIds.lute,
+              label: 'Liuto',
+              effects: CharacterEffects(
+                toolProficiencies: {
+                  ToolIds.lute,
+                },
+                grantedEquipmentIds: [
+                  ToolIds.lute,
+                ],
+              ),
+            ),
+            CharacterChoiceOptionDefinition(
+              id: ToolIds.lyre,
+              label: 'Lira',
+              effects: CharacterEffects(
+                toolProficiencies: {
+                  ToolIds.lyre,
+                },
+                grantedEquipmentIds: [
+                  ToolIds.lyre,
+                ],
+              ),
+            ),
+            CharacterChoiceOptionDefinition(
+              id: ToolIds.horn,
+              label: 'Corno',
+              effects: CharacterEffects(
+                toolProficiencies: {
+                  ToolIds.horn,
+                },
+                grantedEquipmentIds: [
+                  ToolIds.horn,
+                ],
+              ),
+            ),
+            CharacterChoiceOptionDefinition(
+              id: ToolIds.panFlute,
+              label: 'Flauto di Pan',
+              effects: CharacterEffects(
+                toolProficiencies: {
+                  ToolIds.panFlute,
+                },
+                grantedEquipmentIds: [
+                  ToolIds.panFlute,
+                ],
+              ),
+            ),
+            CharacterChoiceOptionDefinition(
+              id: ToolIds.shawm,
+              label: 'Ciaramella',
+              effects: CharacterEffects(
+                toolProficiencies: {
+                  ToolIds.shawm,
+                },
+                grantedEquipmentIds: [
+                  ToolIds.shawm,
+                ],
+              ),
+            ),
+            CharacterChoiceOptionDefinition(
+              id: ToolIds.viol,
+              label: 'Viola',
+              effects: CharacterEffects(
+                toolProficiencies: {
+                  ToolIds.viol,
+                },
+                grantedEquipmentIds: [
+                  ToolIds.viol,
+                ],
+              ),
+            ),
+          ],
+          requireNewAcquisition: true,
+        ),
+        CharacterChoiceDefinition(
+          id: 'entertainer_admirer_token',
+          label: 'Scegli il pegno ricevuto da un ammiratore',
+          type: CharacterChoiceType.equipment,
+          catalogId: 'equipment',
+          optionIds: [
+            EquipmentIds.admirerLoveLetter,
+            EquipmentIds.admirerLockOfHair,
+            EquipmentIds.admirerTrinket,
+          ],
+        ),
+      ],
+    ),
+    feature: _byPopularDemandFeature,
+    tables: [
+      _entertainerArtForms,
+    ],
+    suggestedCharacteristics: _entertainerCharacteristics,
+    startingCoins: {
+      'MO': 15,
+    },
+    startingEquipment: [
+      BackgroundEquipmentGrant(
+        itemId: EquipmentIds.costume,
+      ),
+      BackgroundEquipmentGrant(
+        itemId: EquipmentIds.pouch,
+      ),
+    ],
+  ),
+  BackgroundIds.gladiator: BackgroundDefinition(
+    id: BackgroundIds.gladiator,
+    name: 'Gladiatore',
+    content: RuleContent(
+      id: BackgroundIds.gladiator,
+      name: 'Gladiatore',
+      type: RuleContentType.background,
+      description: RuleDescription(
+        summary:
+            'Un combattente addestrato a trasformare la battaglia in uno spettacolo.',
+        details:
+            'È un intrattenitore specializzato nel combattimento appariscente. Può esibirsi in arene e fosse clandestine e può sostituire lo strumento musicale della dotazione con un’arma economica ma insolita.',
+      ),
+      source: RuleSource(
+        name: 'Manuale del Giocatore 2014',
+        reference: 'Pagina 136',
+      ),
+      visual: RuleVisualIdentity(
+        family: RuleVisualFamily.background,
+        iconId: 'gladiator',
+      ),
+      ownerId: BackgroundIds.gladiator,
+    ),
+    parentBackgroundId: BackgroundIds.entertainer,
+    effects: CharacterEffects(
+      skillProficiencies: {
+        'Acrobazia',
+        'Intrattenere',
+      },
+      toolProficiencies: {
+        ToolIds.disguiseKit,
+      },
+      choices: [
+        CharacterChoiceDefinition(
+          id: 'gladiator_musical_instrument_proficiency',
+          label: 'Scegli lo strumento musicale in cui sei competente',
+          type: CharacterChoiceType.other,
+          options: [
+            CharacterChoiceOptionDefinition(
+              id: ToolIds.bagpipes,
+              label: 'Cornamusa',
+              effects: CharacterEffects(
+                toolProficiencies: {
+                  ToolIds.bagpipes,
+                },
+              ),
+            ),
+            CharacterChoiceOptionDefinition(
+              id: ToolIds.drum,
+              label: 'Tamburo',
+              effects: CharacterEffects(
+                toolProficiencies: {
+                  ToolIds.drum,
+                },
+              ),
+            ),
+            CharacterChoiceOptionDefinition(
+              id: ToolIds.dulcimer,
+              label: 'Salterio',
+              effects: CharacterEffects(
+                toolProficiencies: {
+                  ToolIds.dulcimer,
+                },
+              ),
+            ),
+            CharacterChoiceOptionDefinition(
+              id: ToolIds.flute,
+              label: 'Flauto',
+              effects: CharacterEffects(
+                toolProficiencies: {
+                  ToolIds.flute,
+                },
+              ),
+            ),
+            CharacterChoiceOptionDefinition(
+              id: ToolIds.lute,
+              label: 'Liuto',
+              effects: CharacterEffects(
+                toolProficiencies: {
+                  ToolIds.lute,
+                },
+              ),
+            ),
+            CharacterChoiceOptionDefinition(
+              id: ToolIds.lyre,
+              label: 'Lira',
+              effects: CharacterEffects(
+                toolProficiencies: {
+                  ToolIds.lyre,
+                },
+              ),
+            ),
+            CharacterChoiceOptionDefinition(
+              id: ToolIds.horn,
+              label: 'Corno',
+              effects: CharacterEffects(
+                toolProficiencies: {
+                  ToolIds.horn,
+                },
+              ),
+            ),
+            CharacterChoiceOptionDefinition(
+              id: ToolIds.panFlute,
+              label: 'Flauto di Pan',
+              effects: CharacterEffects(
+                toolProficiencies: {
+                  ToolIds.panFlute,
+                },
+              ),
+            ),
+            CharacterChoiceOptionDefinition(
+              id: ToolIds.shawm,
+              label: 'Ciaramella',
+              effects: CharacterEffects(
+                toolProficiencies: {
+                  ToolIds.shawm,
+                },
+              ),
+            ),
+            CharacterChoiceOptionDefinition(
+              id: ToolIds.viol,
+              label: 'Viola',
+              effects: CharacterEffects(
+                toolProficiencies: {
+                  ToolIds.viol,
+                },
+              ),
+            ),
+          ],
+          requireNewAcquisition: true,
+        ),
+        CharacterChoiceDefinition(
+          id: 'gladiator_display_equipment',
+          label:
+              'Scegli uno strumento musicale oppure un’arma insolita economica',
+          type: CharacterChoiceType.other,
+          options: [
+            CharacterChoiceOptionDefinition(
+              id: ToolIds.bagpipes,
+              label: 'Cornamusa',
+              effects: CharacterEffects(
+                grantedEquipmentIds: [
+                  ToolIds.bagpipes,
+                ],
+              ),
+            ),
+            CharacterChoiceOptionDefinition(
+              id: ToolIds.drum,
+              label: 'Tamburo',
+              effects: CharacterEffects(
+                grantedEquipmentIds: [
+                  ToolIds.drum,
+                ],
+              ),
+            ),
+            CharacterChoiceOptionDefinition(
+              id: ToolIds.dulcimer,
+              label: 'Salterio',
+              effects: CharacterEffects(
+                grantedEquipmentIds: [
+                  ToolIds.dulcimer,
+                ],
+              ),
+            ),
+            CharacterChoiceOptionDefinition(
+              id: ToolIds.flute,
+              label: 'Flauto',
+              effects: CharacterEffects(
+                grantedEquipmentIds: [
+                  ToolIds.flute,
+                ],
+              ),
+            ),
+            CharacterChoiceOptionDefinition(
+              id: ToolIds.lute,
+              label: 'Liuto',
+              effects: CharacterEffects(
+                grantedEquipmentIds: [
+                  ToolIds.lute,
+                ],
+              ),
+            ),
+            CharacterChoiceOptionDefinition(
+              id: ToolIds.lyre,
+              label: 'Lira',
+              effects: CharacterEffects(
+                grantedEquipmentIds: [
+                  ToolIds.lyre,
+                ],
+              ),
+            ),
+            CharacterChoiceOptionDefinition(
+              id: ToolIds.horn,
+              label: 'Corno',
+              effects: CharacterEffects(
+                grantedEquipmentIds: [
+                  ToolIds.horn,
+                ],
+              ),
+            ),
+            CharacterChoiceOptionDefinition(
+              id: ToolIds.panFlute,
+              label: 'Flauto di Pan',
+              effects: CharacterEffects(
+                grantedEquipmentIds: [
+                  ToolIds.panFlute,
+                ],
+              ),
+            ),
+            CharacterChoiceOptionDefinition(
+              id: ToolIds.shawm,
+              label: 'Ciaramella',
+              effects: CharacterEffects(
+                grantedEquipmentIds: [
+                  ToolIds.shawm,
+                ],
+              ),
+            ),
+            CharacterChoiceOptionDefinition(
+              id: ToolIds.viol,
+              label: 'Viola',
+              effects: CharacterEffects(
+                grantedEquipmentIds: [
+                  ToolIds.viol,
+                ],
+              ),
+            ),
+            CharacterChoiceOptionDefinition(
+              id: 'trident',
+              label: 'Tridente',
+              effects: CharacterEffects(
+                grantedEquipmentIds: [
+                  'trident',
+                ],
+              ),
+            ),
+            CharacterChoiceOptionDefinition(
+              id: 'net',
+              label: 'Rete',
+              effects: CharacterEffects(
+                grantedEquipmentIds: [
+                  'net',
+                ],
+              ),
+            ),
+          ],
+        ),
+        CharacterChoiceDefinition(
+          id: 'gladiator_admirer_token',
+          label: 'Scegli il pegno ricevuto da un ammiratore',
+          type: CharacterChoiceType.equipment,
+          catalogId: 'equipment',
+          optionIds: [
+            EquipmentIds.admirerLoveLetter,
+            EquipmentIds.admirerLockOfHair,
+            EquipmentIds.admirerTrinket,
+          ],
+        ),
+      ],
+    ),
+    feature: _byPopularDemandFeature,
+    tables: [
+      _entertainerArtForms,
+    ],
+    suggestedCharacteristics: _entertainerCharacteristics,
+    startingCoins: {
+      'MO': 15,
+    },
+    startingEquipment: [
+      BackgroundEquipmentGrant(
+        itemId: EquipmentIds.costume,
       ),
       BackgroundEquipmentGrant(
         itemId: EquipmentIds.pouch,

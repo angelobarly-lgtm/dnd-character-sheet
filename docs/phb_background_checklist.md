@@ -28,8 +28,8 @@ Ogni background dovrà includere:
 - [x] Eremita
 - [x] Eroe Popolare
 - [x] Forestiero
-- [ ] Intrattenitore
-  - [ ] Variante: Gladiatore
+- [x] Intrattenitore
+  - [x] Variante: Gladiatore
 - [ ] Marinaio
   - [ ] Variante: Pirata
 - [ ] Monello
