@@ -140,9 +140,27 @@ class EquipmentIds {
   static const admirerLoveLetter = "admirer_love_letter";
   static const admirerLockOfHair = "admirer_lock_of_hair";
   static const admirerTrinket = "admirer_trinket";
+  static const sailorsRabbitFoot = "sailors_rabbit_foot";
+  static const sailorsHoleyStone = "sailors_holey_stone";
+  static const randomTrinket = "random_trinket";
 }
 
 final equipmentDefinitions = <String, EquipmentDefinition>{
+  EquipmentIds.sailorsRabbitFoot: const EquipmentDefinition(
+    id: EquipmentIds.sailorsRabbitFoot,
+    name: "Zampa di Coniglio Portafortuna",
+    category: EquipmentCategory.miscellaneous,
+  ),
+  EquipmentIds.sailorsHoleyStone: const EquipmentDefinition(
+    id: EquipmentIds.sailorsHoleyStone,
+    name: "Piccola Pietra Forata Portafortuna",
+    category: EquipmentCategory.miscellaneous,
+  ),
+  EquipmentIds.randomTrinket: const EquipmentDefinition(
+    id: EquipmentIds.randomTrinket,
+    name: "Oggetto Insolito Casuale",
+    category: EquipmentCategory.miscellaneous,
+  ),
   EquipmentIds.admirerLoveLetter: const EquipmentDefinition(
     id: EquipmentIds.admirerLoveLetter,
     name: "Lettera d'Amore di un Ammiratore",

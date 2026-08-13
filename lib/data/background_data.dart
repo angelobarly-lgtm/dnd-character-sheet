@@ -1997,6 +1997,252 @@ const _byPopularDemandFeature = BackgroundFeatureDefinition(
   },
 );
 
+const _sailorPersonalityTraits = BackgroundTableDefinition(
+  id: 'sailor_personality_traits',
+  name: 'Tratti Caratteriali',
+  dieSides: 8,
+  entries: [
+    BackgroundTableEntry(
+      minimumRoll: 1,
+      maximumRoll: 1,
+      label:
+          'I suoi amici sanno di poter contare su di lui in ogni circostanza.',
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 2,
+      maximumRoll: 2,
+      label:
+          'Lavora duramente per potersi divertire con altrettanto entusiasmo quando il lavoro è finito.',
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 3,
+      maximumRoll: 3,
+      label:
+          'Ama attraccare in porti sconosciuti e conoscere nuovi amici davanti a una fiasca di birra.',
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 4,
+      maximumRoll: 4,
+      label:
+          'È disposto ad alterare leggermente la verità pur di raccontare una buona storia.',
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 5,
+      maximumRoll: 5,
+      label:
+          'Considera una rissa in taverna un ottimo modo per conoscere una nuova città.',
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 6,
+      maximumRoll: 6,
+      label: 'Non rifiuta mai una scommessa amichevole.',
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 7,
+      maximumRoll: 7,
+      label: 'Usa un linguaggio tanto sporco quanto la tana di un otyugh.',
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 8,
+      maximumRoll: 8,
+      label:
+          'Apprezza il lavoro ben fatto, soprattutto quando riesce a convincere qualcun altro a svolgerlo.',
+    ),
+  ],
+);
+const _sailorIdeals = BackgroundTableDefinition(
+  id: 'sailor_ideals',
+  name: 'Ideali',
+  dieSides: 6,
+  entries: [
+    BackgroundTableEntry(
+      minimumRoll: 1,
+      maximumRoll: 1,
+      label:
+          'Rispetto. Una nave resta unita grazie al rispetto reciproco tra capitano ed equipaggio.',
+      alignment: 'Buono',
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 2,
+      maximumRoll: 2,
+      label:
+          'Giustizia. Poiché tutti collaborano, le ricompense devono essere divise equamente.',
+      alignment: 'Legale',
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 3,
+      maximumRoll: 3,
+      label:
+          'Libertà. Il mare rappresenta la libertà di andare ovunque e fare qualsiasi cosa.',
+      alignment: 'Caotico',
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 4,
+      maximumRoll: 4,
+      label:
+          'Dominio. Si considera un predatore e vede le altre navi come prede.',
+      alignment: 'Malvagio',
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 5,
+      maximumRoll: 5,
+      label:
+          'Persone. Si sente responsabile verso la propria ciurma, non verso ideali astratti.',
+      alignment: 'Neutrale',
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 6,
+      maximumRoll: 6,
+      label:
+          'Ambizione. Desidera una nave propria per poter decidere autonomamente il suo destino.',
+      alignment: 'Qualsiasi',
+    ),
+  ],
+);
+const _sailorBonds = BackgroundTableDefinition(
+  id: 'sailor_bonds',
+  name: 'Legami',
+  dieSides: 6,
+  entries: [
+    BackgroundTableEntry(
+      minimumRoll: 1,
+      maximumRoll: 1,
+      label:
+          'La sua lealtà appartiene prima al capitano e poi a tutti gli altri.',
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 2,
+      maximumRoll: 2,
+      label:
+          'La nave è l’unica cosa che conta veramente: capitani e marinai vanno e vengono.',
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 3,
+      maximumRoll: 3,
+      label: 'Non dimenticherà mai il proprio primo viaggio.',
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 4,
+      maximumRoll: 4,
+      label:
+          'In una città portuale ha conosciuto una persona per cui ha quasi abbandonato il mare.',
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 5,
+      maximumRoll: 5,
+      label:
+          'È stato imbrogliato durante la divisione di un bottino e vuole ottenere ciò che gli spetta.',
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 6,
+      maximumRoll: 6,
+      label:
+          'Pirati spietati hanno ucciso il capitano e la ciurma, saccheggiato la nave e lo hanno abbandonato; ora cerca vendetta.',
+    ),
+  ],
+);
+const _sailorFlaws = BackgroundTableDefinition(
+  id: 'sailor_flaws',
+  name: 'Difetti',
+  dieSides: 6,
+  entries: [
+    BackgroundTableEntry(
+      minimumRoll: 1,
+      maximumRoll: 1,
+      label: 'Obbedisce agli ordini anche quando li considera sbagliati.',
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 2,
+      maximumRoll: 2,
+      label: 'È disposto a dire qualsiasi cosa pur di evitare altro lavoro.',
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 3,
+      maximumRoll: 3,
+      label:
+          'Se qualcuno mette in dubbio il suo coraggio non si ritira, per quanto la situazione diventi pericolosa.',
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 4,
+      maximumRoll: 4,
+      label: 'Quando comincia a bere gli riesce molto difficile fermarsi.',
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 5,
+      maximumRoll: 5,
+      label:
+          'Non riesce a evitare di intascare monete e piccoli oggetti lasciati incustoditi.',
+    ),
+    BackgroundTableEntry(
+      minimumRoll: 6,
+      maximumRoll: 6,
+      label: 'Il suo orgoglio probabilmente finirà per causare la sua rovina.',
+    ),
+  ],
+);
+const _sailorCharacteristics = BackgroundSuggestedCharacteristics(
+  personalityTraits: _sailorPersonalityTraits,
+  ideals: _sailorIdeals,
+  bonds: _sailorBonds,
+  flaws: _sailorFlaws,
+);
+
+const _shipsPassageFeature = BackgroundFeatureDefinition(
+  id: 'ships_passage',
+  content: RuleContent(
+    id: 'ships_passage',
+    name: 'Passaggio Via Nave',
+    type: RuleContentType.background,
+    description: RuleDescription(
+      summary:
+          'Può ottenere un passaggio gratuito su una nave per sé e per i propri compagni.',
+      details:
+          'Il marinaio può chiedere un passaggio gratuito sulla nave su cui ha prestato servizio o su un’altra nave con cui mantiene buoni rapporti. Non può garantire tempi o rotta e il DM stabilisce la durata del viaggio. In cambio, il marinaio e i suoi compagni devono aiutare l’equipaggio durante la traversata.',
+    ),
+    source: RuleSource(
+      name: 'Manuale del Giocatore 2014',
+      reference: 'Pagine 136-137',
+    ),
+    ownerId: BackgroundIds.sailor,
+  ),
+  ruleTags: {
+    'can_request_free_ship_passage',
+    'passage_includes_adventuring_companions',
+    'uses_former_or_friendly_ship',
+    'route_is_not_guaranteed',
+    'travel_time_is_determined_by_dm',
+    'travelers_must_help_ship_crew',
+  },
+);
+
+const _badReputationFeature = BackgroundFeatureDefinition(
+  id: 'bad_reputation',
+  content: RuleContent(
+    id: 'bad_reputation',
+    name: 'Pessima Fama',
+    type: RuleContentType.background,
+    description: RuleDescription(
+      summary:
+          'La sua reputazione incute paura e gli consente di evitare conseguenze per alcune infrazioni minori.',
+      details:
+          'Negli insediamenti civilizzati la gente teme il pirata. Può passarla liscia per infrazioni minori, come non pagare un pasto o sfondare la porta di un negozio, perché la maggior parte delle persone non denuncia le sue azioni alle autorità.',
+    ),
+    source: RuleSource(
+      name: 'Manuale del Giocatore 2014',
+      reference: 'Pagina 137',
+    ),
+    ownerId: BackgroundIds.pirate,
+  ),
+  ruleTags: {
+    'feared_due_to_bad_reputation',
+    'applies_in_civilized_settlements',
+    'minor_offenses_often_go_unreported',
+    'can_avoid_consequences_for_unpaid_meal',
+    'can_avoid_consequences_for_minor_property_damage',
+    'does_not_cover_serious_crimes',
+  },
+);
+
 /// Registro canonico dei background.
 ///
 /// Verrà popolato progressivamente seguendo la checklist PHB.
@@ -4047,6 +4293,140 @@ const Map<String, BackgroundDefinition> backgroundDefinitions = {
     startingEquipment: [
       BackgroundEquipmentGrant(
         itemId: EquipmentIds.costume,
+      ),
+      BackgroundEquipmentGrant(
+        itemId: EquipmentIds.pouch,
+      ),
+    ],
+  ),
+  BackgroundIds.sailor: BackgroundDefinition(
+    id: BackgroundIds.sailor,
+    name: 'Marinaio',
+    content: RuleContent(
+      id: BackgroundIds.sailor,
+      name: 'Marinaio',
+      type: RuleContentType.background,
+      description: RuleDescription(
+        summary: 'Ha prestato servizio per anni a bordo di un vascello.',
+        details:
+            'Ha affrontato burrasche, mostri degli abissi e predoni. La vita di bordo, il rapporto con la ciurma e l’orizzonte lontano hanno plasmato la sua esperienza e il suo carattere.',
+      ),
+      source: RuleSource(
+        name: 'Manuale del Giocatore 2014',
+        reference: 'Pagine 136-137',
+      ),
+      visual: RuleVisualIdentity(
+        family: RuleVisualFamily.background,
+        iconId: 'sailor',
+      ),
+      ownerId: BackgroundIds.sailor,
+    ),
+    effects: CharacterEffects(
+      skillProficiencies: {
+        'Atletica',
+        'Percezione',
+      },
+      toolProficiencies: {
+        ToolIds.navigatorsTools,
+        ToolIds.waterVehicles,
+      },
+      choices: [
+        CharacterChoiceDefinition(
+          id: 'sailor_lucky_charm',
+          label: 'Scegli un portafortuna',
+          type: CharacterChoiceType.equipment,
+          catalogId: 'equipment',
+          optionIds: [
+            EquipmentIds.sailorsRabbitFoot,
+            EquipmentIds.sailorsHoleyStone,
+            EquipmentIds.randomTrinket,
+          ],
+        ),
+      ],
+    ),
+    feature: _shipsPassageFeature,
+    suggestedCharacteristics: _sailorCharacteristics,
+    startingCoins: {
+      'MO': 10,
+    },
+    startingEquipment: [
+      BackgroundEquipmentGrant(
+        itemId: 'club',
+        catalogId: 'weapon',
+      ),
+      BackgroundEquipmentGrant(
+        itemId: EquipmentIds.silkRope,
+      ),
+      BackgroundEquipmentGrant(
+        itemId: EquipmentIds.commonClothes,
+      ),
+      BackgroundEquipmentGrant(
+        itemId: EquipmentIds.pouch,
+      ),
+    ],
+  ),
+  BackgroundIds.pirate: BackgroundDefinition(
+    id: BackgroundIds.pirate,
+    name: 'Pirata',
+    content: RuleContent(
+      id: BackgroundIds.pirate,
+      name: 'Pirata',
+      type: RuleContentType.background,
+      description: RuleDescription(
+        summary:
+            'Un marinaio cresciuto tra scorrerie, sangue e combattimenti in mare.',
+        details:
+            'Ha prestato servizio agli ordini di un temibile pirata e ha imparato a sopravvivere in un mondo di squali e predoni. Le sue azioni gli hanno procurato una reputazione inquietante in numerose città portuali.',
+      ),
+      source: RuleSource(
+        name: 'Manuale del Giocatore 2014',
+        reference: 'Pagina 137',
+      ),
+      visual: RuleVisualIdentity(
+        family: RuleVisualFamily.background,
+        iconId: 'pirate',
+      ),
+      ownerId: BackgroundIds.pirate,
+    ),
+    parentBackgroundId: BackgroundIds.sailor,
+    effects: CharacterEffects(
+      skillProficiencies: {
+        'Atletica',
+        'Percezione',
+      },
+      toolProficiencies: {
+        ToolIds.navigatorsTools,
+        ToolIds.waterVehicles,
+      },
+      choices: [
+        CharacterChoiceDefinition(
+          id: 'pirate_lucky_charm',
+          label: 'Scegli un portafortuna',
+          type: CharacterChoiceType.equipment,
+          catalogId: 'equipment',
+          optionIds: [
+            EquipmentIds.sailorsRabbitFoot,
+            EquipmentIds.sailorsHoleyStone,
+            EquipmentIds.randomTrinket,
+          ],
+        ),
+      ],
+    ),
+    feature: _badReputationFeature,
+    suggestedCharacteristics: _sailorCharacteristics,
+    startingCoins: {
+      'MO': 10,
+    },
+    startingEquipment: [
+      BackgroundEquipmentGrant(
+        itemId: 'club',
+        catalogId: 'weapon',
+      ),
+      BackgroundEquipmentGrant(
+        itemId: EquipmentIds.silkRope,
+      ),
+      BackgroundEquipmentGrant(
+        itemId: EquipmentIds.commonClothes,
       ),
       BackgroundEquipmentGrant(
         itemId: EquipmentIds.pouch,

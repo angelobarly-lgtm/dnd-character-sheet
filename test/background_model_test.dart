@@ -194,10 +194,12 @@ void main() {
         BackgroundIds.outlander,
         BackgroundIds.entertainer,
         BackgroundIds.gladiator,
+        BackgroundIds.sailor,
+        BackgroundIds.pirate,
       },
     );
 
-    expect(mainBackgroundDefinitions.length, 8);
+    expect(mainBackgroundDefinitions.length, 9);
 
     final merchant = backgroundDefinitions[BackgroundIds.guildMerchant];
     expect(merchant, isNotNull);
@@ -634,6 +636,97 @@ void main() {
     expect(
       equipmentDefinitions.containsKey(
         EquipmentIds.admirerTrinket,
+      ),
+      isTrue,
+    );
+  });
+  test('sailor and pirate backgrounds are structurally valid', () {
+    final sailor = backgroundDefinitions[BackgroundIds.sailor];
+    final pirate = backgroundDefinitions[BackgroundIds.pirate];
+
+    expect(sailor, isNotNull);
+    expect(pirate, isNotNull);
+
+    expect(
+      sailor!.effects.skillProficiencies,
+      {
+        'Atletica',
+        'Percezione',
+      },
+    );
+    expect(
+      sailor.effects.toolProficiencies,
+      {
+        ToolIds.navigatorsTools,
+        ToolIds.waterVehicles,
+      },
+    );
+    expect(sailor.feature!.id, 'ships_passage');
+    expect(sailor.startingCoins, {'MO': 10});
+    expect(sailor.suggestedCharacteristics.isComplete, isTrue);
+
+    final sailorCharm = sailor.effects.choices.single;
+    expect(sailorCharm.id, 'sailor_lucky_charm');
+    expect(
+      sailorCharm.optionIds.toSet(),
+      {
+        EquipmentIds.sailorsRabbitFoot,
+        EquipmentIds.sailorsHoleyStone,
+        EquipmentIds.randomTrinket,
+      },
+    );
+
+    expect(
+      {
+        for (final item in sailor.startingEquipment)
+          item.itemId: item.catalogId,
+      },
+      {
+        'club': 'weapon',
+        EquipmentIds.silkRope: 'equipment',
+        EquipmentIds.commonClothes: 'equipment',
+        EquipmentIds.pouch: 'equipment',
+      },
+    );
+
+    expect(weaponDefinitions.containsKey('club'), isTrue);
+
+    expect(pirate!.isVariant, isTrue);
+    expect(pirate.parentBackgroundId, BackgroundIds.sailor);
+    expect(pirate.feature!.id, 'bad_reputation');
+    expect(
+      pirate.effects.skillProficiencies,
+      sailor.effects.skillProficiencies,
+    );
+    expect(
+      pirate.effects.toolProficiencies,
+      sailor.effects.toolProficiencies,
+    );
+
+    expect(
+      backgroundVariantsFor(BackgroundIds.sailor)
+          .map((background) => background.id)
+          .toSet(),
+      {
+        BackgroundIds.pirate,
+      },
+    );
+
+    expect(
+      equipmentDefinitions.containsKey(
+        EquipmentIds.sailorsRabbitFoot,
+      ),
+      isTrue,
+    );
+    expect(
+      equipmentDefinitions.containsKey(
+        EquipmentIds.sailorsHoleyStone,
+      ),
+      isTrue,
+    );
+    expect(
+      equipmentDefinitions.containsKey(
+        EquipmentIds.randomTrinket,
       ),
       isTrue,
     );

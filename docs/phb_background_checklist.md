@@ -30,8 +30,8 @@ Ogni background dovrà includere:
 - [x] Forestiero
 - [x] Intrattenitore
   - [x] Variante: Gladiatore
-- [ ] Marinaio
-  - [ ] Variante: Pirata
+- [x] Marinaio
+  - [x] Variante: Pirata
 - [ ] Monello
 - [ ] Nobile
   - [ ] Variante: Cavaliere
