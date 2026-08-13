@@ -39,9 +39,9 @@
 - [x] Scholar's Pack
 
 ## Mounts and Vehicles
-- [ ] Mounts
-- [ ] Tack and Harness
-- [ ] Vehicles
+- [x] Mounts
+- [x] Tack and Harness
+- [x] Vehicles
 
 ## Trade Goods
 - [ ] Trade Goods
