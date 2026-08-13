@@ -251,6 +251,8 @@ class EquipmentIds {
   static const potionOfHealing = "potion_of_healing";
   static const quiver = "quiver";
   static const spellbook = "spellbook";
+  static const scholarSandBag = "scholar_sand_bag";
+  static const scholarSmallKnife = "scholar_small_knife";
   static const ironSpikes = "iron_spikes";
 }
 
@@ -1321,5 +1323,26 @@ final equipmentDefinitions = <String, EquipmentDefinition>{
     weightKg: 0.5,
     cost: 5,
     currency: "gp",
+  ),
+  EquipmentIds.scholarSandBag: const EquipmentDefinition(
+    id: EquipmentIds.scholarSandBag,
+    name: "Sacchetto di Sabbia dello Studioso",
+    category: EquipmentCategory.miscellaneous,
+    description:
+        "Un piccolo sacchetto di sabbia incluso nella Dotazione da Studioso.",
+    ruleTags: {
+      "included_in_scholar_pack",
+      "not_sold_separately",
+    },
+  ),
+  EquipmentIds.scholarSmallKnife: const EquipmentDefinition(
+    id: EquipmentIds.scholarSmallKnife,
+    name: "Coltellino dello Studioso",
+    category: EquipmentCategory.miscellaneous,
+    description: "Un piccolo coltello incluso nella Dotazione da Studioso.",
+    ruleTags: {
+      "included_in_scholar_pack",
+      "not_sold_separately",
+    },
   ),
 };

@@ -27,16 +27,16 @@
 - [x] Ammunition
 
 ## Adventuring Gear
-- [ ] PHB complete
+- [x] PHB complete
 
 ## Equipment Packs
-- [ ] Burglar's Pack
-- [ ] Diplomat's Pack
-- [ ] Dungeoneer's Pack
-- [ ] Entertainer's Pack
-- [ ] Explorer's Pack
-- [ ] Priest's Pack
-- [ ] Scholar's Pack
+- [x] Burglar's Pack
+- [x] Diplomat's Pack
+- [x] Dungeoneer's Pack
+- [x] Entertainer's Pack
+- [x] Explorer's Pack
+- [x] Priest's Pack
+- [x] Scholar's Pack
 
 ## Mounts and Vehicles
 - [ ] Mounts
