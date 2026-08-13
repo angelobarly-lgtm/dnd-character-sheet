@@ -8,6 +8,77 @@ enum EquipmentCategory {
   miscellaneous,
 }
 
+/// Modalità principale con cui un oggetto viene utilizzato.
+enum EquipmentUseType {
+  action,
+  attack,
+  apply,
+  consume,
+  deploy,
+  passive,
+}
+
+/// Effetto meccanico prodotto dall’utilizzo di un oggetto.
+///
+/// I campi opzionali consentono di descrivere oggetti offensivi,
+/// curativi, consumabili e strumenti con utilizzi limitati senza
+/// introdurre logica specifica nella UI.
+class EquipmentUseDefinition {
+  final String id;
+  final String name;
+  final EquipmentUseType type;
+
+  /// Gittate espresse in metri.
+  final double? normalRangeMeters;
+  final double? longRangeMeters;
+
+  final String? damageDice;
+  final String? damageType;
+
+  final String? healingDice;
+  final int healingBonus;
+
+  final String? savingThrowAbility;
+  final int? savingThrowDc;
+
+  /// Numero di utilizzi contenuti nell’oggetto.
+  ///
+  /// Null indica che non esiste un contatore specifico.
+  final int? uses;
+
+  /// Numero di utilizzi consumati da una singola attivazione.
+  final int usesConsumed;
+
+  /// Indica che l’oggetto stesso viene consumato dall’utilizzo.
+  final bool consumesItem;
+
+  /// Tag meccanici stabili per regole non rappresentabili tramite
+  /// i campi numerici del modello.
+  final Set<String> ruleTags;
+
+  const EquipmentUseDefinition({
+    required this.id,
+    required this.name,
+    required this.type,
+    this.normalRangeMeters,
+    this.longRangeMeters,
+    this.damageDice,
+    this.damageType,
+    this.healingDice,
+    this.healingBonus = 0,
+    this.savingThrowAbility,
+    this.savingThrowDc,
+    this.uses,
+    this.usesConsumed = 1,
+    this.consumesItem = false,
+    this.ruleTags = const {},
+  })  : assert(normalRangeMeters == null || normalRangeMeters >= 0),
+        assert(longRangeMeters == null || longRangeMeters >= 0),
+        assert(savingThrowDc == null || savingThrowDc > 0),
+        assert(uses == null || uses > 0),
+        assert(usesConsumed > 0);
+}
+
 class EquipmentDefinition {
   final String id;
   final String name;
@@ -23,6 +94,15 @@ class EquipmentDefinition {
   final double? containerCapacity;
   final bool canContainItems;
 
+  /// Descrizione regolamentare dell’oggetto.
+  final String description;
+
+  /// Utilizzi o attivazioni meccaniche disponibili.
+  final List<EquipmentUseDefinition> uses;
+
+  /// Tag passivi o proprietà generali dell’oggetto.
+  final Set<String> ruleTags;
+
   const EquipmentDefinition({
     required this.id,
     required this.name,
@@ -34,6 +114,9 @@ class EquipmentDefinition {
     this.isContainer = false,
     this.containerCapacity,
     this.canContainItems = false,
+    this.description = '',
+    this.uses = const [],
+    this.ruleTags = const {},
   });
 }
 
@@ -153,9 +236,374 @@ class EquipmentIds {
   static const soldierEnemyDaggerTrophy = "soldier_enemy_dagger_trophy";
   static const soldierBrokenBladeTrophy = "soldier_broken_blade_trophy";
   static const soldierTornBannerTrophy = "soldier_torn_banner_trophy";
+  static const abacus = "abacus";
+  static const acidVial = "acid_vial";
+  static const alchemistsFireFlask = "alchemists_fire_flask";
+  static const antitoxinVial = "antitoxin_vial";
+  static const book = "book";
+  static const caltrops = "caltrops";
+  static const crossbowBoltCase = "crossbow_bolt_case";
+  static const chalk = "chalk";
+  static const sledgehammer = "sledgehammer";
+  static const healersKit = "healers_kit";
+  static const holyWaterFlask = "holy_water_flask";
+  static const basicPoison = "basic_poison";
+  static const potionOfHealing = "potion_of_healing";
+  static const quiver = "quiver";
+  static const spellbook = "spellbook";
+  static const ironSpikes = "iron_spikes";
 }
 
 final equipmentDefinitions = <String, EquipmentDefinition>{
+  EquipmentIds.potionOfHealing: const EquipmentDefinition(
+    id: EquipmentIds.potionOfHealing,
+    name: "Pozione di Guarigione",
+    category: EquipmentCategory.adventuringGear,
+    weight: 0.5,
+    cost: 50,
+    currency: "gp",
+    description:
+        "Una creatura può bere la pozione o somministrarla a un’altra creatura per ripristinarne i punti ferita.",
+    uses: [
+      EquipmentUseDefinition(
+        id: "drink_or_administer_healing_potion",
+        name: "Bere o Somministrare la Pozione",
+        type: EquipmentUseType.consume,
+        healingDice: "2d4",
+        healingBonus: 2,
+        consumesItem: true,
+        ruleTags: {
+          "requires_action",
+          "can_be_administered_to_another_creature",
+          "target_regains_hit_points",
+          "has_no_effect_on_dead_creature",
+        },
+      ),
+    ],
+  ),
+  EquipmentIds.quiver: const EquipmentDefinition(
+    id: EquipmentIds.quiver,
+    name: "Faretra",
+    category: EquipmentCategory.container,
+    weight: 1,
+    cost: 1,
+    currency: "gp",
+    isContainer: true,
+    containerCapacity: 20,
+    canContainItems: true,
+    description:
+        "Un contenitore progettato per trasportare fino a venti frecce.",
+    ruleTags: {
+      "holds_arrows",
+      "maximum_20_arrows",
+    },
+  ),
+  EquipmentIds.spellbook: const EquipmentDefinition(
+    id: EquipmentIds.spellbook,
+    name: "Libro degli Incantesimi",
+    category: EquipmentCategory.adventuringGear,
+    weight: 3,
+    cost: 50,
+    currency: "gp",
+    description:
+        "Un volume rilegato contenente cento pagine di pergamena adatte a trascrivere incantesimi.",
+    ruleTags: {
+      "contains_100_blank_vellum_pages",
+      "can_record_wizard_spells",
+      "required_for_wizard_spell_preparation",
+    },
+  ),
+  EquipmentIds.ironSpikes: const EquipmentDefinition(
+    id: EquipmentIds.ironSpikes,
+    name: "Chiodi di Ferro, 10",
+    category: EquipmentCategory.adventuringGear,
+    weight: 5,
+    cost: 1,
+    currency: "gp",
+    stackable: true,
+    description:
+        "Un assortimento di dieci robusti chiodi di ferro utilizzabili per fissare corde, bloccare accessi o altri impieghi pratici.",
+    ruleTags: {
+      "bundle_contains_10_iron_spikes",
+      "can_secure_rope",
+      "can_wedge_objects_or_doors",
+    },
+  ),
+  EquipmentIds.sledgehammer: const EquipmentDefinition(
+    id: EquipmentIds.sledgehammer,
+    name: "Mazza da Fabbro",
+    category: EquipmentCategory.adventuringGear,
+    weight: 10,
+    cost: 2,
+    currency: "gp",
+    description:
+        "Un pesante martello da lavoro progettato per colpire con grande forza.",
+    ruleTags: {
+      "heavy_work_hammer",
+      "usable_as_improvised_weapon",
+    },
+  ),
+  EquipmentIds.healersKit: const EquipmentDefinition(
+    id: EquipmentIds.healersKit,
+    name: "Kit del Guaritore",
+    category: EquipmentCategory.adventuringGear,
+    weight: 3,
+    cost: 5,
+    currency: "gp",
+    description:
+        "Una borsa contenente bende, pomate e stecche. Il kit dispone di dieci utilizzi.",
+    uses: [
+      EquipmentUseDefinition(
+        id: "healers_kit_stabilize",
+        name: "Stabilizzare una Creatura",
+        type: EquipmentUseType.action,
+        uses: 10,
+        usesConsumed: 1,
+        ruleTags: {
+          "target_creature_at_0_hit_points",
+          "stabilizes_target",
+          "medicine_check_not_required",
+        },
+      ),
+    ],
+    ruleTags: {
+      "contains_10_uses",
+    },
+  ),
+  EquipmentIds.holyWaterFlask: const EquipmentDefinition(
+    id: EquipmentIds.holyWaterFlask,
+    name: "Acqua Santa, Ampolla",
+    category: EquipmentCategory.adventuringGear,
+    weight: 1,
+    cost: 25,
+    currency: "gp",
+    description:
+        "L’acqua benedetta danneggia immondi e non morti quando viene versata o scagliata contro di loro.",
+    uses: [
+      EquipmentUseDefinition(
+        id: "holy_water_splash",
+        name: "Versare o Lanciare l’Acqua Santa",
+        type: EquipmentUseType.attack,
+        normalRangeMeters: 6,
+        damageDice: "2d6",
+        damageType: "radiant",
+        consumesItem: true,
+        ruleTags: {
+          "requires_action",
+          "treated_as_improvised_weapon_when_thrown",
+          "ranged_attack",
+          "target_fiend_or_undead",
+          "contents_can_be_splashed_on_adjacent_target",
+          "flask_shatters_on_thrown_hit",
+        },
+      ),
+    ],
+    ruleTags: {
+      "cleric_or_paladin_can_create",
+      "creation_requires_1_hour",
+      "creation_consumes_25_gp_powdered_silver",
+      "creation_expends_first_level_spell_slot",
+    },
+  ),
+  EquipmentIds.basicPoison: const EquipmentDefinition(
+    id: EquipmentIds.basicPoison,
+    name: "Veleno Base, Fiala",
+    category: EquipmentCategory.adventuringGear,
+    cost: 100,
+    currency: "gp",
+    description:
+        "Il veleno può rivestire un’arma tagliente o perforante oppure fino a tre munizioni.",
+    uses: [
+      EquipmentUseDefinition(
+        id: "apply_basic_poison",
+        name: "Applicare il Veleno Base",
+        type: EquipmentUseType.apply,
+        damageDice: "1d4",
+        damageType: "poison",
+        savingThrowAbility: "COS",
+        savingThrowDc: 10,
+        consumesItem: true,
+        ruleTags: {
+          "requires_action",
+          "coats_one_slashing_or_piercing_weapon",
+          "can_instead_coat_up_to_3_pieces_of_ammunition",
+          "poison_remains_potent_for_1_minute",
+          "damage_applies_on_hit",
+          "damage_requires_failed_saving_throw",
+        },
+      ),
+    ],
+  ),
+  EquipmentIds.book: const EquipmentDefinition(
+    id: EquipmentIds.book,
+    name: "Libro",
+    category: EquipmentCategory.adventuringGear,
+    weight: 5,
+    cost: 25,
+    currency: "gp",
+    description:
+        "Un volume che può contenere poesia, storia, conoscenze specialistiche, diagrammi o appunti relativi a un particolare argomento.",
+    ruleTags: {
+      "contains_written_knowledge",
+      "subject_defined_by_book",
+    },
+  ),
+  EquipmentIds.caltrops: const EquipmentDefinition(
+    id: EquipmentIds.caltrops,
+    name: "Triboli, Sacchetto da 20",
+    category: EquipmentCategory.adventuringGear,
+    weight: 2,
+    cost: 1,
+    currency: "gp",
+    description:
+        "Un sacchetto contiene venti punte metalliche che possono essere sparse sul terreno per ostacolare il passaggio.",
+    uses: [
+      EquipmentUseDefinition(
+        id: "deploy_caltrops",
+        name: "Spargere i Triboli",
+        type: EquipmentUseType.deploy,
+        damageDice: "1",
+        damageType: "piercing",
+        savingThrowAbility: "DES",
+        savingThrowDc: 15,
+        consumesItem: true,
+        ruleTags: {
+          "requires_action",
+          "covers_1_5_meter_square",
+          "creature_entering_area_makes_saving_throw",
+          "failed_save_stops_creature_movement",
+          "failed_save_reduces_walking_speed_by_3_meters",
+          "speed_penalty_ends_after_regaining_at_least_1_hit_point",
+          "moving_at_half_speed_avoids_saving_throw",
+        },
+      ),
+    ],
+  ),
+  EquipmentIds.crossbowBoltCase: const EquipmentDefinition(
+    id: EquipmentIds.crossbowBoltCase,
+    name: "Custodia per Quadrelli",
+    category: EquipmentCategory.container,
+    weight: 1,
+    cost: 1,
+    currency: "gp",
+    isContainer: true,
+    containerCapacity: 20,
+    canContainItems: true,
+    description:
+        "Una custodia di legno capace di contenere fino a venti quadrelli da balestra.",
+    ruleTags: {
+      "holds_crossbow_bolts",
+      "maximum_20_crossbow_bolts",
+    },
+  ),
+  EquipmentIds.chalk: const EquipmentDefinition(
+    id: EquipmentIds.chalk,
+    name: "Gesso, Pezzo",
+    category: EquipmentCategory.adventuringGear,
+    cost: 1,
+    currency: "cp",
+    description:
+        "Un piccolo pezzo di gesso utilizzabile per scrivere o tracciare segni su superfici adatte.",
+    ruleTags: {
+      "can_mark_surfaces",
+    },
+  ),
+  EquipmentIds.abacus: const EquipmentDefinition(
+    id: EquipmentIds.abacus,
+    name: "Abaco",
+    category: EquipmentCategory.adventuringGear,
+    weight: 2,
+    cost: 2,
+    currency: "gp",
+    description:
+        "Uno strumento di calcolo manuale formato da file di elementi mobili.",
+    ruleTags: {
+      "manual_calculation_tool",
+    },
+  ),
+  EquipmentIds.acidVial: const EquipmentDefinition(
+    id: EquipmentIds.acidVial,
+    name: "Acido, Fiala",
+    category: EquipmentCategory.adventuringGear,
+    weight: 1,
+    cost: 25,
+    currency: "gp",
+    description:
+        "La fiala può essere versata sul contenuto oppure scagliata contro una creatura o un oggetto entro 6 metri.",
+    uses: [
+      EquipmentUseDefinition(
+        id: "acid_vial_splash",
+        name: "Versare o Lanciare l’Acido",
+        type: EquipmentUseType.attack,
+        normalRangeMeters: 6,
+        damageDice: "2d6",
+        damageType: "acid",
+        consumesItem: true,
+        ruleTags: {
+          "requires_action",
+          "ranged_attack",
+          "target_creature_or_object",
+          "contents_can_be_splashed_on_adjacent_target",
+          "vial_shatters_on_thrown_hit",
+        },
+      ),
+    ],
+  ),
+  EquipmentIds.alchemistsFireFlask: const EquipmentDefinition(
+    id: EquipmentIds.alchemistsFireFlask,
+    name: "Fuoco dell’Alchimista, Ampolla",
+    category: EquipmentCategory.adventuringGear,
+    weight: 1,
+    cost: 50,
+    currency: "gp",
+    description:
+        "Il fluido adesivo si incendia a contatto con l’aria e continua a bruciare sul bersaglio colpito.",
+    uses: [
+      EquipmentUseDefinition(
+        id: "alchemists_fire_throw",
+        name: "Lanciare il Fuoco dell’Alchimista",
+        type: EquipmentUseType.attack,
+        normalRangeMeters: 6,
+        damageDice: "1d4",
+        damageType: "fire",
+        consumesItem: true,
+        ruleTags: {
+          "requires_action",
+          "treated_as_improvised_weapon",
+          "ranged_attack",
+          "target_creature_or_object",
+          "damage_occurs_at_start_of_target_turn",
+          "burning_damage_repeats_until_extinguished",
+          "extinguish_requires_action",
+          "extinguish_requires_dc_10_dexterity_check",
+        },
+      ),
+    ],
+  ),
+  EquipmentIds.antitoxinVial: const EquipmentDefinition(
+    id: EquipmentIds.antitoxinVial,
+    name: "Antitossina, Fiala",
+    category: EquipmentCategory.adventuringGear,
+    cost: 50,
+    currency: "gp",
+    description:
+        "Una creatura che beve la fiala ottiene temporaneamente una maggiore resistenza agli effetti del veleno.",
+    uses: [
+      EquipmentUseDefinition(
+        id: "drink_antitoxin",
+        name: "Bere l’Antitossina",
+        type: EquipmentUseType.consume,
+        consumesItem: true,
+        ruleTags: {
+          "requires_action",
+          "grants_advantage_on_saving_throws_against_poison",
+          "effect_duration_1_hour",
+          "no_effect_on_constructs",
+          "no_effect_on_undead",
+        },
+      ),
+    ],
+  ),
   EquipmentIds.sageDeadColleagueLetter: const EquipmentDefinition(
     id: EquipmentIds.sageDeadColleagueLetter,
     name: "Lettera di un Collega Defunto",
