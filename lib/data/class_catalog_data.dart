@@ -357,6 +357,12 @@ class CharacterSubclassDefinition {
   /// della Guerra del Dominio della Guerra.
   final List<ClassResourceDefinition> resources;
 
+  /// Recuperi degli slot concessi dalla sottoclasse.
+  final List<ClassSpellSlotRecoveryDefinition> spellSlotRecoveries;
+
+  /// Trasformazioni concesse o modificate dalla sottoclasse.
+  final List<ClassTransformationDefinition> transformations;
+
   final bool homebrew;
   final bool supplemental;
 
@@ -369,6 +375,8 @@ class CharacterSubclassDefinition {
     required this.featureDefinitions,
     this.alwaysPreparedSpellIdsByLevel = const {},
     this.resources = const [],
+    this.spellSlotRecoveries = const [],
+    this.transformations = const [],
     this.options = const [],
     this.optionProgression,
     this.homebrew = false,
@@ -389,6 +397,112 @@ class CharacterSubclassDefinition {
 
   final List<SubclassOptionDefinition> options;
   final SubclassOptionProgression? optionProgression;
+}
+
+class ClassSpellSlotRecoveryDefinition {
+  final String id;
+  final String name;
+  final int minimumLevel;
+  final String resourceId;
+  final int classLevelDivisor;
+  final bool roundUp;
+  final int maximumSlotLevel;
+  final bool requiresShortRest;
+
+  const ClassSpellSlotRecoveryDefinition({
+    required this.id,
+    required this.name,
+    required this.minimumLevel,
+    required this.resourceId,
+    required this.classLevelDivisor,
+    this.roundUp = false,
+    required this.maximumSlotLevel,
+    this.requiresShortRest = false,
+  })  : assert(minimumLevel > 0),
+        assert(classLevelDivisor > 0),
+        assert(maximumSlotLevel > 0);
+
+  int maximumCombinedSlotLevelsAtLevel(int level) {
+    if (level < minimumLevel) return 0;
+
+    if (roundUp) {
+      return (level + classLevelDivisor - 1) ~/ classLevelDivisor;
+    }
+
+    return level ~/ classLevelDivisor;
+  }
+
+  bool canRecoverSlotLevel(int slotLevel) =>
+      slotLevel > 0 && slotLevel <= maximumSlotLevel;
+}
+
+enum ClassTransformationAction {
+  action,
+  bonusAction,
+}
+
+class ClassTransformationDefinition {
+  final String id;
+  final String name;
+  final int minimumLevel;
+  final String resourceId;
+  final int resourceCost;
+  final ClassTransformationAction action;
+  final int durationHoursLevelDivisor;
+  final Map<int, double> maximumChallengeRatingByLevel;
+  final int? swimmingSpeedMinimumLevel;
+  final int? flyingSpeedMinimumLevel;
+  final int? spellcastingMinimumLevel;
+  final Set<String> allowedCreatureTypes;
+  final Set<String> fixedFormIds;
+  final bool retainsMentalAbilityScores;
+  final bool retainsAlignmentAndPersonality;
+
+  const ClassTransformationDefinition({
+    required this.id,
+    required this.name,
+    required this.minimumLevel,
+    required this.resourceId,
+    this.resourceCost = 1,
+    this.action = ClassTransformationAction.action,
+    required this.durationHoursLevelDivisor,
+    required this.maximumChallengeRatingByLevel,
+    this.swimmingSpeedMinimumLevel,
+    this.flyingSpeedMinimumLevel,
+    this.spellcastingMinimumLevel,
+    this.allowedCreatureTypes = const {},
+    this.fixedFormIds = const {},
+    this.retainsMentalAbilityScores = true,
+    this.retainsAlignmentAndPersonality = true,
+  })  : assert(minimumLevel > 0),
+        assert(resourceCost > 0),
+        assert(durationHoursLevelDivisor > 0);
+
+  double maximumChallengeRatingAtLevel(int level) {
+    if (level < minimumLevel) return 0;
+
+    var result = 0.0;
+
+    for (final entry in maximumChallengeRatingByLevel.entries) {
+      if (entry.key <= level) result = entry.value;
+    }
+
+    return result;
+  }
+
+  int durationHoursAtLevel(int level) {
+    if (level < minimumLevel) return 0;
+    return level ~/ durationHoursLevelDivisor;
+  }
+
+  bool allowsSwimmingSpeedAtLevel(int level) =>
+      swimmingSpeedMinimumLevel != null && level >= swimmingSpeedMinimumLevel!;
+
+  bool allowsFlyingSpeedAtLevel(int level) =>
+      flyingSpeedMinimumLevel != null && level >= flyingSpeedMinimumLevel!;
+
+  bool allowsSpellcastingAtLevel(int level) =>
+      spellcastingMinimumLevel != null && level >= spellcastingMinimumLevel!;
 }
 
 class ClassProgressionValueDefinition {
@@ -429,6 +543,8 @@ class CharacterClassDefinition {
   final Map<int, List<String>> featuresByLevel;
   final Map<String, CharacterClassFeatureDefinition> featureDefinitions;
   final List<ClassResourceDefinition> resources;
+  final List<ClassSpellSlotRecoveryDefinition> spellSlotRecoveries;
+  final List<ClassTransformationDefinition> transformations;
   final List<ClassProgressionValueDefinition> progressionValues;
   final ClassSpellcastingDefinition? spellcasting;
   final int subclassSelectionLevel;
@@ -447,6 +563,8 @@ class CharacterClassDefinition {
     this.startingEquipmentChoices = const [],
     this.fixedStartingEquipment = const [],
     this.resources = const [],
+    this.spellSlotRecoveries = const [],
+    this.transformations = const [],
     this.progressionValues = const [],
     this.spellcasting,
     this.subclasses = const {},
@@ -461,6 +579,31 @@ class CharacterClassDefinition {
     for (final definition in progressionValues) {
       if (definition.id == id) {
         return definition.valueAtLevel(level);
+      }
+    }
+
+    return null;
+  }
+
+  ClassTransformationDefinition? transformationFor(
+    String transformationId, {
+    String? subclassId,
+  }) {
+    if (subclassId != null) {
+      final subclass = subclasses[subclassId];
+
+      if (subclass != null) {
+        for (final transformation in subclass.transformations) {
+          if (transformation.id == transformationId) {
+            return transformation;
+          }
+        }
+      }
+    }
+
+    for (final transformation in transformations) {
+      if (transformation.id == transformationId) {
+        return transformation;
       }
     }
 

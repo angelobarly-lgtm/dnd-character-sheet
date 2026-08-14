@@ -20,9 +20,9 @@ verificate dal livello 1 al livello 20.
   - [x] Dominio della Natura
   - [x] Dominio della Tempesta
   - [x] Dominio della Vita
-- [ ] Druido
-  - [ ] Circolo della Luna
-  - [ ] Circolo della Terra
+- [x] Druido
+  - [x] Circolo della Luna
+  - [x] Circolo della Terra
 - [ ] Guerriero
   - [ ] Campione
   - [ ] Maestro di Battaglia

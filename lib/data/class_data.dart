@@ -278,6 +278,11 @@ class SubclassOptionDefinition {
   /// direttamente l'incantesimo senza dipendere dal testo descrittivo.
   final String? spellId;
 
+  /// Incantesimi sempre preparati concessi dall’opzione ai vari livelli.
+  ///
+  /// Serve, per esempio, per gli otto ambienti del Circolo della Terra.
+  final Map<int, Set<String>> alwaysPreparedSpellIdsByLevel;
+
   /// Manuale o altra fonte editoriale dell'opzione.
   final String source;
 
@@ -299,10 +304,23 @@ class SubclassOptionDefinition {
     this.allowsAdditionalResource = false,
     this.resource,
     this.spellId,
+    this.alwaysPreparedSpellIdsByLevel = const {},
     this.source = '',
     this.sourceRef = '',
     this.grantedAutomatically = false,
   });
+
+  Set<String> alwaysPreparedSpellIdsAtLevel(int level) {
+    final result = <String>{};
+
+    for (final entry in alwaysPreparedSpellIdsByLevel.entries) {
+      if (entry.key <= level) {
+        result.addAll(entry.value);
+      }
+    }
+
+    return Set<String>.unmodifiable(result);
+  }
 }
 
 class SubclassOptionProgression {
