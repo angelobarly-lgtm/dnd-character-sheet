@@ -9,7 +9,6 @@ verificate dal livello 1 al livello 20.
   - [x] Cammino del Berserker
   - [x] Cammino del Guerriero Totemico
 - [x] Bardo
-  - [ ] Collegio del Sapere
   - [x] Collegio della Sapienza
   - [x] Collegio del Valore
 - [x] Chierico
@@ -23,10 +22,10 @@ verificate dal livello 1 al livello 20.
 - [x] Druido
   - [x] Circolo della Luna
   - [x] Circolo della Terra
-- [ ] Guerriero
-  - [ ] Campione
-  - [ ] Maestro di Battaglia
-  - [ ] Cavaliere Mistico
+- [x] Guerriero
+  - [x] Campione
+  - [x] Maestro di Battaglia
+  - [x] Cavaliere Mistico
 - [ ] Ladro
   - [ ] Furfante
   - [ ] Assassino

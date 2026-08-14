@@ -109,6 +109,29 @@ class ClassEquipmentGrant {
   }) : assert(quantity > 0);
 }
 
+class ClassEquipmentItemChoice {
+  final String id;
+  final String label;
+  final String catalogId;
+  final Set<String> optionIds;
+  final int selections;
+
+  /// Permette di scegliere più volte lo stesso oggetto.
+  ///
+  /// Serve, per esempio, alla dotazione del Guerriero che consente
+  /// di scegliere due armi da guerra anche dello stesso tipo.
+  final bool allowDuplicates;
+
+  const ClassEquipmentItemChoice({
+    required this.id,
+    required this.label,
+    required this.catalogId,
+    required this.optionIds,
+    this.selections = 1,
+    this.allowDuplicates = false,
+  }) : assert(selections > 0);
+}
+
 /// Una singola alternativa può concedere più oggetti insieme.
 ///
 /// Esempio: armatura di cuoio, arco lungo e 20 frecce.
@@ -116,6 +139,9 @@ class ClassEquipmentAlternative {
   final String id;
   final String label;
   final List<ClassEquipmentGrant> grants;
+
+  /// Oggetti che devono essere scelti all’interno dell’alternativa.
+  final List<ClassEquipmentItemChoice> itemChoices;
 
   /// Competenze necessarie per selezionare questa alternativa.
   ///
@@ -126,6 +152,7 @@ class ClassEquipmentAlternative {
     required this.id,
     required this.label,
     required this.grants,
+    this.itemChoices = const [],
     this.requiredProficiencyIds = const {},
   });
 }
@@ -225,6 +252,50 @@ class ClassResourceDefinition {
   }
 }
 
+/// Gruppo di incantesimi conosciuti soggetto a regole comuni.
+///
+/// Permette di rappresentare classi come Cavaliere Mistico e
+/// Mistificatore Arcano, che conoscono alcuni incantesimi vincolati
+/// a determinate scuole e altri completamente liberi.
+class ClassSpellLearningPoolDefinition {
+  final String id;
+  final String name;
+
+  /// Scuole ammesse, espresse con gli ID canonici di SpellSchool.
+  ///
+  /// Un insieme vuoto indica che sono ammesse tutte le scuole.
+  final Set<String> allowedSchoolIds;
+
+  /// Numero totale di incantesimi appartenenti al gruppo ai livelli
+  /// in cui il valore cambia.
+  final Map<int, int> knownByLevel;
+
+  /// Conserva il vincolo del gruppo quando un incantesimo viene
+  /// sostituito salendo di livello.
+  final bool preservePoolOnReplacement;
+
+  const ClassSpellLearningPoolDefinition({
+    required this.id,
+    required this.name,
+    this.allowedSchoolIds = const {},
+    required this.knownByLevel,
+    this.preservePoolOnReplacement = true,
+  });
+
+  int knownAtLevel(int level) {
+    var result = 0;
+
+    for (final entry in knownByLevel.entries) {
+      if (entry.key <= level) result = entry.value;
+    }
+
+    return result;
+  }
+
+  bool allowsSchool(String schoolId) =>
+      allowedSchoolIds.isEmpty || allowedSchoolIds.contains(schoolId);
+}
+
 class ClassSpellcastingDefinition {
   final ClassSpellcastingProgression progression;
   final String ability;
@@ -240,6 +311,9 @@ class ClassSpellcastingDefinition {
 
   /// Incantesimi appartenenti alla lista della classe.
   final Set<String> spellIds;
+
+  /// Gruppi di incantesimi conosciuti sottoposti a vincoli differenti.
+  final List<ClassSpellLearningPoolDefinition> learningPools;
 
   /// Divisore applicato al livello di classe nel calcolo degli
   /// incantesimi preparati.
@@ -263,6 +337,7 @@ class ClassSpellcastingDefinition {
     this.cantripsKnownByLevel = const {},
     this.spellsKnownByLevel = const {},
     this.spellIds = const {},
+    this.learningPools = const [],
     this.preparedSpellLevelDivisor = 1,
     this.minimumPreparedSpells = 1,
     this.pactSlotLevelByClassLevel = const {},
@@ -288,6 +363,11 @@ class ClassSpellcastingDefinition {
 
   int spellsKnownAtLevel(int level) =>
       _progressiveValue(spellsKnownByLevel, level);
+
+  int spellsKnownFromPoolsAtLevel(int level) => learningPools.fold<int>(
+        0,
+        (total, pool) => total + pool.knownAtLevel(level),
+      );
 
   int pactSlotLevelAtLevel(int level) =>
       _progressiveValue(pactSlotLevelByClassLevel, level);
@@ -351,6 +431,11 @@ class CharacterSubclassDefinition {
   /// minimo della classe in cui diventano disponibili.
   final Map<int, Set<String>> alwaysPreparedSpellIdsByLevel;
 
+  /// Progressione magica concessa direttamente dalla sottoclasse.
+  ///
+  /// Esempi: Cavaliere Mistico e futuro Mistificatore Arcano.
+  final ClassSpellcastingDefinition? spellcasting;
+
   /// Risorse consumabili concesse esclusivamente dalla sottoclasse.
   ///
   /// Esempi: Interdizione Luminosa del Dominio della Luce e Prete
@@ -363,6 +448,12 @@ class CharacterSubclassDefinition {
   /// Trasformazioni concesse o modificate dalla sottoclasse.
   final List<ClassTransformationDefinition> transformations;
 
+  /// Valori progressivi appartenenti esclusivamente alla sottoclasse.
+  ///
+  /// Esempi: dado di superiorità del Maestro di Battaglia e altri
+  /// valori che cambiano con il livello senza appartenere alla classe base.
+  final List<ClassProgressionValueDefinition> progressionValues;
+
   final bool homebrew;
   final bool supplemental;
 
@@ -374,14 +465,26 @@ class CharacterSubclassDefinition {
     required this.featuresByLevel,
     required this.featureDefinitions,
     this.alwaysPreparedSpellIdsByLevel = const {},
+    this.spellcasting,
     this.resources = const [],
     this.spellSlotRecoveries = const [],
     this.transformations = const [],
+    this.progressionValues = const [],
     this.options = const [],
     this.optionProgression,
     this.homebrew = false,
     this.supplemental = false,
   });
+
+  String? progressionValue(String id, int level) {
+    for (final definition in progressionValues) {
+      if (definition.id == id) {
+        return definition.valueAtLevel(level);
+      }
+    }
+
+    return null;
+  }
 
   Set<String> alwaysPreparedSpellIdsAtLevel(int level) {
     final result = <String>{};

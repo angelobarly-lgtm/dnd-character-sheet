@@ -24,6 +24,15 @@ abstract final class FightingStyleIds {
   static const unarmedFighting = 'unarmed_fighting';
 }
 
+const Set<String> phbFighterFightingStyleIds = {
+  FightingStyleIds.archery,
+  FightingStyleIds.defense,
+  FightingStyleIds.dueling,
+  FightingStyleIds.greatWeaponFighting,
+  FightingStyleIds.protection,
+  FightingStyleIds.twoWeaponFighting,
+};
+
 const Map<String, FightingStyleDefinition> fightingStyleDefinitions = {
   FightingStyleIds.archery: FightingStyleDefinition(
     id: FightingStyleIds.archery,
