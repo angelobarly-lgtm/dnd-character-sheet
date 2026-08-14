@@ -570,6 +570,9 @@ class CharacterSubclassDefinition {
   /// Trasformazioni concesse o modificate dalla sottoclasse.
   final List<ClassTransformationDefinition> transformations;
 
+  /// Compagni concessi esclusivamente dalla sottoclasse.
+  final List<ClassCompanionDefinition> companions;
+
   /// Modifiche al costo e al tempo di copiatura del libro.
   final List<ClassSpellbookCopyAdjustmentDefinition> spellbookCopyAdjustments;
 
@@ -594,6 +597,7 @@ class CharacterSubclassDefinition {
     this.resources = const [],
     this.spellSlotRecoveries = const [],
     this.transformations = const [],
+    this.companions = const [],
     this.spellbookCopyAdjustments = const [],
     this.progressionValues = const [],
     this.options = const [],
@@ -734,6 +738,152 @@ class ClassTransformationDefinition {
       spellcastingMinimumLevel != null && level >= spellcastingMinimumLevel!;
 }
 
+enum ClassCompanionSize {
+  tiny,
+  small,
+  medium,
+  large,
+  huge,
+  gargantuan,
+}
+
+enum ClassCompanionCommandActivation {
+  noAction,
+  action,
+  bonusAction,
+}
+
+enum ClassCompanionProficiencyBonusTarget {
+  armorClass,
+  attackRolls,
+  damageRolls,
+  proficientSavingThrows,
+  proficientSkillChecks,
+}
+
+class ClassCompanionCommandDefinition {
+  final String id;
+  final String name;
+  final int minimumLevel;
+  final ClassCompanionCommandActivation activation;
+  final Set<String> actions;
+  final bool verbal;
+  final bool requiresCompanionNotAttacking;
+
+  const ClassCompanionCommandDefinition({
+    required this.id,
+    required this.name,
+    required this.minimumLevel,
+    required this.activation,
+    required this.actions,
+    this.verbal = false,
+    this.requiresCompanionNotAttacking = false,
+  }) : assert(minimumLevel > 0);
+}
+
+/// Regole di un compagno concesso da una classe o sottoclasse.
+///
+/// Gli ID delle creature restano nel futuro bestiario: questo modello descrive
+/// i requisiti di selezione, la progressione e l'economia delle azioni senza
+/// duplicare le statistiche della creatura.
+class ClassCompanionDefinition {
+  final String id;
+  final String name;
+  final String featureId;
+  final int minimumLevel;
+  final String creatureCatalogId;
+  final Set<String> allowedCreatureTypes;
+  final double maximumChallengeRating;
+  final ClassCompanionSize maximumSize;
+  final Set<ClassCompanionProficiencyBonusTarget> proficiencyBonusTargets;
+  final int hitPointMinimumClassLevelMultiplier;
+  final bool usesHigherOfStatBlockOrMinimumHitPoints;
+  final bool usesOwnHitDiceDuringShortRest;
+  final bool sharesOwnerInitiative;
+  final bool movesOnOwnerTurn;
+  final bool reactionsRequireCommand;
+  final bool actsIndependentlyWhenOwnerAbsentOrIncapacitated;
+  final bool canTakeAnyActionWhenIndependent;
+  final bool protectsOwnerWhenIndependent;
+  final bool soloFavoredTerrainStealthAtNormalPace;
+  final int? weaponAttackWhileCommandingAttackMinimumLevel;
+  final Map<int, int> attacksPerAttackCommandByLevel;
+  final int? attackCommandAllowsMultiattackMinimumLevel;
+  final int replacementBondHours;
+  final bool replacementRequiresNonhostileCreature;
+  final int? sharedSelfSpellMinimumLevel;
+  final double sharedSpellMaximumDistanceMeters;
+  final List<ClassCompanionCommandDefinition> commands;
+
+  const ClassCompanionDefinition({
+    required this.id,
+    required this.name,
+    required this.featureId,
+    required this.minimumLevel,
+    this.creatureCatalogId = 'bestiary',
+    this.allowedCreatureTypes = const {},
+    required this.maximumChallengeRating,
+    required this.maximumSize,
+    this.proficiencyBonusTargets = const {},
+    this.hitPointMinimumClassLevelMultiplier = 0,
+    this.usesHigherOfStatBlockOrMinimumHitPoints = false,
+    this.usesOwnHitDiceDuringShortRest = false,
+    this.sharesOwnerInitiative = false,
+    this.movesOnOwnerTurn = false,
+    this.reactionsRequireCommand = true,
+    this.actsIndependentlyWhenOwnerAbsentOrIncapacitated = false,
+    this.canTakeAnyActionWhenIndependent = false,
+    this.protectsOwnerWhenIndependent = false,
+    this.soloFavoredTerrainStealthAtNormalPace = false,
+    this.weaponAttackWhileCommandingAttackMinimumLevel,
+    this.attacksPerAttackCommandByLevel = const {},
+    this.attackCommandAllowsMultiattackMinimumLevel,
+    this.replacementBondHours = 0,
+    this.replacementRequiresNonhostileCreature = false,
+    this.sharedSelfSpellMinimumLevel,
+    this.sharedSpellMaximumDistanceMeters = 0,
+    this.commands = const [],
+  })  : assert(minimumLevel > 0),
+        assert(maximumChallengeRating >= 0),
+        assert(hitPointMinimumClassLevelMultiplier >= 0),
+        assert(replacementBondHours >= 0),
+        assert(sharedSpellMaximumDistanceMeters >= 0);
+
+  ClassCompanionCommandDefinition? commandFor(String commandId) {
+    for (final command in commands) {
+      if (command.id == commandId) return command;
+    }
+
+    return null;
+  }
+
+  Iterable<ClassCompanionCommandDefinition> commandsAtLevel(int level) =>
+      commands.where((command) => command.minimumLevel <= level);
+
+  int attacksPerAttackCommandAtLevel(int level) {
+    if (level < minimumLevel) return 0;
+
+    var result = 0;
+    for (final entry in attacksPerAttackCommandByLevel.entries) {
+      if (entry.key <= level) result = entry.value;
+    }
+
+    return result;
+  }
+
+  bool ownerCanAttackWhileCommandingAtLevel(int level) =>
+      weaponAttackWhileCommandingAttackMinimumLevel != null &&
+      level >= weaponAttackWhileCommandingAttackMinimumLevel!;
+
+  bool attackCommandAllowsMultiattackAtLevel(int level) =>
+      attackCommandAllowsMultiattackMinimumLevel != null &&
+      level >= attackCommandAllowsMultiattackMinimumLevel!;
+
+  bool sharesSelfTargetedSpellsAtLevel(int level) =>
+      sharedSelfSpellMinimumLevel != null &&
+      level >= sharedSelfSpellMinimumLevel!;
+}
+
 class ClassProgressionValueDefinition {
   final String id;
   final String name;
@@ -774,6 +924,7 @@ class CharacterClassDefinition {
   final List<ClassResourceDefinition> resources;
   final List<ClassSpellSlotRecoveryDefinition> spellSlotRecoveries;
   final List<ClassTransformationDefinition> transformations;
+  final List<ClassCompanionDefinition> companions;
   final List<ClassProgressionValueDefinition> progressionValues;
   final ClassSpellcastingDefinition? spellcasting;
   final ClassSpellbookDefinition? spellbook;
@@ -795,6 +946,7 @@ class CharacterClassDefinition {
     this.resources = const [],
     this.spellSlotRecoveries = const [],
     this.transformations = const [],
+    this.companions = const [],
     this.progressionValues = const [],
     this.spellcasting,
     this.spellbook,
@@ -811,6 +963,27 @@ class CharacterClassDefinition {
       if (definition.id == id) {
         return definition.valueAtLevel(level);
       }
+    }
+
+    return null;
+  }
+
+  ClassCompanionDefinition? companionFor(
+    String companionId, {
+    String? subclassId,
+  }) {
+    if (subclassId != null) {
+      final subclass = subclasses[subclassId];
+
+      if (subclass != null) {
+        for (final companion in subclass.companions) {
+          if (companion.id == companionId) return companion;
+        }
+      }
+    }
+
+    for (final companion in companions) {
+      if (companion.id == companionId) return companion;
     }
 
     return null;

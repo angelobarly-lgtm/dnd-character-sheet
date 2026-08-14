@@ -47,9 +47,9 @@ verificate dal livello 1 al livello 20.
   - [x] Giuramento degli Antichi
   - [x] Giuramento di Devozione
   - [x] Giuramento di Vendetta
-- [ ] Ranger
-  - [ ] Cacciatore
-  - [ ] Signore delle Bestie
+- [x] Ranger
+  - [x] Cacciatore
+  - [x] Signore delle Bestie
 - [ ] Stregone
   - [ ] Discendenza Draconica
   - [ ] Magia Selvaggia
