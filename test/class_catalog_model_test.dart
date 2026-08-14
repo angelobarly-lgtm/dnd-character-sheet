@@ -526,4 +526,34 @@ void main() {
       75,
     );
   });
+
+  test('class resources support a fixed base plus ability modifier', () {
+    const resource = ClassResourceDefinition(
+      id: 'base_plus_ability',
+      name: 'Base più Caratteristica',
+      minimumLevel: 1,
+      recovery: ClassResourceRecovery.longRest,
+      maximumByLevel: {},
+      maximumAbility: 'CAR',
+      baseMaximum: 1,
+      minimumMaximum: 1,
+    );
+
+    expect(resource.maximumAtLevel(0), 0);
+    expect(resource.maximumAtLevel(1), 1);
+    expect(
+      resource.maximumAtLevel(
+        1,
+        abilityModifiers: const {'CAR': 3},
+      ),
+      4,
+    );
+    expect(
+      resource.maximumAtLevel(
+        1,
+        abilityModifiers: const {'CAR': -2},
+      ),
+      1,
+    );
+  });
 }

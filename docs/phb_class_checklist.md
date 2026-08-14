@@ -43,10 +43,10 @@ verificate dal livello 1 al livello 20.
   - [x] Via della Mano Aperta
   - [x] Via dell’Ombra
   - [x] Via dei Quattro Elementi
-- [ ] Paladino
-  - [ ] Giuramento degli Antichi
-  - [ ] Giuramento di Devozione
-  - [ ] Giuramento di Vendetta
+- [x] Paladino
+  - [x] Giuramento degli Antichi
+  - [x] Giuramento di Devozione
+  - [x] Giuramento di Vendetta
 - [ ] Ranger
   - [ ] Cacciatore
   - [ ] Signore delle Bestie

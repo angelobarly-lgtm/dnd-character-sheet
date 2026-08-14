@@ -198,6 +198,11 @@ class ClassResourceDefinition {
   /// Minimo applicato alle risorse basate su una caratteristica.
   final int minimumMaximum;
 
+  /// Valore fisso aggiunto alla formula del massimo.
+  ///
+  /// Permette di rappresentare formule come 1 + modificatore di Carisma.
+  final int baseMaximum;
+
   /// Contributo del livello di classe al massimo della risorsa.
   final int classLevelMultiplier;
 
@@ -219,12 +224,14 @@ class ClassResourceDefinition {
     this.unlimitedFromLevel,
     this.maximumAbility,
     this.minimumMaximum = 0,
+    this.baseMaximum = 0,
     this.classLevelMultiplier = 0,
     this.additionalMaximumAbility,
     this.recoveryByLevel = const {},
   })  : assert(minimumLevel > 0),
         assert(unlimitedFromLevel == null || unlimitedFromLevel > 0),
         assert(minimumMaximum >= 0),
+        assert(baseMaximum >= 0),
         assert(classLevelMultiplier >= 0);
 
   bool isUnlimitedAtLevel(int level) =>
@@ -247,16 +254,17 @@ class ClassResourceDefinition {
     if (level < minimumLevel) return 0;
 
     if (maximumAbility != null) {
-      final abilityMaximum = abilityModifiers[maximumAbility] ?? minimumMaximum;
+      final abilityModifier = abilityModifiers[maximumAbility] ?? 0;
+      final abilityMaximum = baseMaximum + abilityModifier;
 
       return abilityMaximum < minimumMaximum ? minimumMaximum : abilityMaximum;
     }
 
-    var maximum = 0;
+    var maximum = baseMaximum;
 
     for (final entry in maximumByLevel.entries) {
       if (entry.key <= level && entry.value >= 0) {
-        maximum = entry.value;
+        maximum = baseMaximum + entry.value;
       }
     }
 
