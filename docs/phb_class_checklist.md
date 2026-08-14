@@ -26,10 +26,10 @@ verificate dal livello 1 al livello 20.
   - [x] Campione
   - [x] Maestro di Battaglia
   - [x] Cavaliere Mistico
-- [ ] Ladro
-  - [ ] Furfante
-  - [ ] Assassino
-  - [ ] Mistificatore Arcano
+- [x] Ladro
+  - [x] Furfante
+  - [x] Assassino
+  - [x] Mistificatore Arcano
 - [ ] Mago
   - [ ] Scuola di Abiurazione
   - [ ] Scuola di Ammaliamento

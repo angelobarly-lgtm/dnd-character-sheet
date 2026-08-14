@@ -5,6 +5,7 @@ import 'cleric_class_data.dart';
 import 'druid_class_data.dart';
 import 'fighter_class_data.dart';
 import 'monk_class_data.dart';
+import 'rogue_class_data.dart';
 
 export 'class_catalog_data.dart';
 
@@ -15,6 +16,7 @@ final Map<String, CharacterClassDefinition> phbClassDefinitions = {
   ClassIds.druid: druidClassDefinition,
   ClassIds.fighter: fighterClassDefinition,
   ClassIds.monk: monkClassDefinition,
+  ClassIds.rogue: rogueClassDefinition,
 };
 
 CharacterClassDefinition? phbClassDefinitionFor(String id) =>
