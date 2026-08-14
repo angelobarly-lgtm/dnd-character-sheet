@@ -37,32 +37,36 @@ const Map<String, FightingStyleDefinition> fightingStyleDefinitions = {
   FightingStyleIds.archery: FightingStyleDefinition(
     id: FightingStyleIds.archery,
     name: 'Tiro',
-    description: '+2 ai tiri per colpire con armi a distanza.',
+    description: '+2 ai tiri per colpire effettuati con le armi a distanza.',
   ),
   FightingStyleIds.defense: FightingStyleDefinition(
     id: FightingStyleIds.defense,
     name: 'Difesa',
-    description: '+1 CA mentre indossi un\'armatura.',
+    description: '+1 alla CA finché indossi un’armatura.',
   ),
   FightingStyleIds.dueling: FightingStyleDefinition(
     id: FightingStyleIds.dueling,
     name: 'Duellare',
-    description: '+2 ai danni con un\'arma a una mano.',
+    description:
+        '+2 ai tiri per i danni quando impugni un’arma da mischia in una mano e non impugni altre armi.',
   ),
   FightingStyleIds.greatWeaponFighting: FightingStyleDefinition(
     id: FightingStyleIds.greatWeaponFighting,
     name: 'Combattere con Armi Possenti',
-    description: 'Ritira 1 e 2 sui dadi di danno.',
+    description:
+        'Quando ottieni 1 o 2 su un dado di danno di un attacco con un’arma da mischia impugnata a due mani, puoi ripetere il tiro e devi usare il nuovo risultato. L’arma deve possedere la proprietà a due mani o versatile.',
   ),
   FightingStyleIds.protection: FightingStyleDefinition(
     id: FightingStyleIds.protection,
     name: 'Protezione',
-    description: 'Imponi svantaggio a un attacco contro un alleato.',
+    description:
+        'Quando una creatura che puoi vedere attacca un bersaglio diverso da te entro 1,5 metri, puoi usare la reazione per imporre svantaggio al tiro per colpire. Devi impugnare uno scudo.',
   ),
   FightingStyleIds.twoWeaponFighting: FightingStyleDefinition(
     id: FightingStyleIds.twoWeaponFighting,
     name: 'Combattere con Due Armi',
-    description: 'Aggiungi il modificatore al danno del secondo attacco.',
+    description:
+        'Quando combatti con due armi, puoi aggiungere il modificatore di caratteristica ai danni del secondo attacco.',
   ),
   FightingStyleIds.blindFighting: FightingStyleDefinition(
     id: FightingStyleIds.blindFighting,

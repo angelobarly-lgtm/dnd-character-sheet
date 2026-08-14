@@ -262,4 +262,149 @@ void main() {
       isEmpty,
     );
   });
+
+  test('manual audit preserves the complete PHB Monk rules', () {
+    final martialArts = monk.featureDefinitions['martial_arts']!;
+    final deflectMissiles = monk.featureDefinitions['deflect_missiles']!;
+    final purity = monk.featureDefinitions['purity_of_body']!;
+    final timelessBody = monk.featureDefinitions['timeless_body']!;
+    final emptyBody = monk.featureDefinitions['empty_body']!;
+
+    expect(monk.content.source.name, 'Manuale del Giocatore 2014');
+    expect(monk.content.source.reference, 'Pagine 76-80');
+
+    expect(
+      martialArts.content.description.details,
+      allOf(
+        contains('armi da mischia semplici'),
+        contains('due mani'),
+        contains('pesante'),
+        contains('un’arma da monaco'),
+      ),
+    );
+    expect(
+      monk.featureDefinitions['ki']!.content.description.details,
+      contains('30 minuti'),
+    );
+    expect(
+      deflectMissiles.content.description.details,
+      allOf(
+        contains('mano libera'),
+        contains('stessa reazione'),
+        contains('6/18 metri'),
+      ),
+    );
+    expect(
+        purity.content.description.details, contains('malattie e ai veleni'));
+    expect(
+      timelessBody.content.description.details,
+      contains('morire di vecchiaia'),
+    );
+    expect(
+      emptyBody.content.description.details,
+      allOf(
+        contains('senza componenti materiali'),
+        contains('nessun’altra creatura'),
+      ),
+    );
+
+    final weaponChoice = monk.startingEquipmentChoices.singleWhere(
+      (choice) => choice.id == 'monk_starting_weapon',
+    );
+    final javelin = weaponChoice.alternatives.singleWhere(
+      (alternative) => alternative.id == 'monk_weapon_javelin',
+    );
+    expect(javelin.label, 'Giavellotto');
+
+    final packChoice = monk.startingEquipmentChoices.singleWhere(
+      (choice) => choice.id == 'monk_starting_pack',
+    );
+    final dungeoneerPack = packChoice.alternatives.singleWhere(
+      (alternative) => alternative.id == 'monk_pack_dungeoneer',
+    );
+    expect(dungeoneerPack.label, 'Dotazione da Avventuriero');
+  });
+
+  test('Open Hand preserves every Quivering Palm limitation', () {
+    final palm = monkOpenHandFeatureDefinitions['quivering_palm']!;
+    final details = palm.content.description.details;
+
+    expect(details, contains('stesso piano di esistenza'));
+    expect(details, contains('una sola creatura'));
+    expect(details, contains('in modo innocuo'));
+    expect(details, contains('10d10 danni necrotici'));
+  });
+
+  test('Four Elements follows PHB Ki costs and spell limits', () {
+    final fourElements = monk.subclasses[MonkSubclassIds.fourElements]!;
+
+    expect(
+      fourElements.progressionValue(
+        'maximum_ki_per_elemental_spell',
+        4,
+      ),
+      isNull,
+    );
+    expect(
+      fourElements.progressionValue(
+        'maximum_ki_per_elemental_spell',
+        5,
+      ),
+      '3',
+    );
+    expect(
+      fourElements.progressionValue(
+        'maximum_ki_per_elemental_spell',
+        8,
+      ),
+      '3',
+    );
+    expect(
+      fourElements.progressionValue(
+        'maximum_ki_per_elemental_spell',
+        9,
+      ),
+      '4',
+    );
+    expect(
+      fourElements.progressionValue(
+        'maximum_ki_per_elemental_spell',
+        13,
+      ),
+      '5',
+    );
+    expect(
+      fourElements.progressionValue(
+        'maximum_ki_per_elemental_spell',
+        17,
+      ),
+      '6',
+    );
+    expect(
+      fourElements.progressionValue(
+        'maximum_ki_per_elemental_spell',
+        20,
+      ),
+      '6',
+    );
+
+    final waterWhip = fourElements.options.singleWhere(
+      (option) => option.id == 'frusta_d_acqua',
+    );
+    final airFist = fourElements.options.singleWhere(
+      (option) => option.id == 'pugno_dell_aria_inviolabile',
+    );
+
+    expect(waterWhip.cost, 2);
+    expect(waterWhip.maximumCost, isNull);
+    expect(waterWhip.allowsAdditionalResource, isTrue);
+    expect(waterWhip.description.details, contains('3d10'));
+    expect(waterWhip.description.details, contains('7,5 metri'));
+
+    expect(airFist.cost, 2);
+    expect(airFist.maximumCost, isNull);
+    expect(airFist.allowsAdditionalResource, isTrue);
+    expect(airFist.description.details, contains('3d10'));
+    expect(airFist.description.details, contains('6 metri'));
+  });
 }

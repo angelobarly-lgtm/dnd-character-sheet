@@ -96,7 +96,7 @@ const battleMasterManeuverDefinitions =
   ),
   BattleMasterManeuverIds.evasiveFootwork: BattleMasterManeuverDefinition(
     id: BattleMasterManeuverIds.evasiveFootwork,
-    name: 'Passo Evasivo',
+    name: 'Scarto Elusivo',
     description:
         'Quando si muove, il Guerriero può aggiungere il dado di superiorità alla propria Classe Armatura fino al termine del movimento.',
     triggers: {
@@ -124,7 +124,7 @@ const battleMasterManeuverDefinitions =
   ),
   BattleMasterManeuverIds.goadingAttack: BattleMasterManeuverDefinition(
     id: BattleMasterManeuverIds.goadingAttack,
-    name: 'Attacco Provocatorio',
+    name: 'Attacco Adescante',
     description:
         'Dopo aver colpito con un attacco con arma, il Guerriero aggiunge il dado di superiorità ai danni e può rendere più difficili gli attacchi del bersaglio contro altre creature.',
     triggers: {
@@ -139,7 +139,7 @@ const battleMasterManeuverDefinitions =
   ),
   BattleMasterManeuverIds.lungingAttack: BattleMasterManeuverDefinition(
     id: BattleMasterManeuverIds.lungingAttack,
-    name: 'Attacco in Affondo',
+    name: 'Attacco con Affondo',
     description:
         'Quando effettua un attacco con arma da mischia, il Guerriero aumenta la portata dell’attacco di 1,5 metri e aggiunge il dado di superiorità ai danni se colpisce.',
     triggers: {
@@ -209,7 +209,7 @@ const battleMasterManeuverDefinitions =
   ),
   BattleMasterManeuverIds.pushingAttack: BattleMasterManeuverDefinition(
     id: BattleMasterManeuverIds.pushingAttack,
-    name: 'Attacco Spingente',
+    name: 'Attacco con Spinta',
     description:
         'Dopo aver colpito con un attacco con arma, il Guerriero aggiunge il dado di superiorità ai danni e può spingere il bersaglio fino a 4,5 metri.',
     triggers: {
@@ -224,7 +224,7 @@ const battleMasterManeuverDefinitions =
   ),
   BattleMasterManeuverIds.rally: BattleMasterManeuverDefinition(
     id: BattleMasterManeuverIds.rally,
-    name: 'Incoraggiare',
+    name: 'Incoraggiamento',
     description:
         'Con un’azione bonus il Guerriero concede a un alleato che può vederlo o sentirlo punti ferita temporanei pari al dado di superiorità più il modificatore di Carisma.',
     triggers: {
@@ -238,7 +238,7 @@ const battleMasterManeuverDefinitions =
   ),
   BattleMasterManeuverIds.riposte: BattleMasterManeuverDefinition(
     id: BattleMasterManeuverIds.riposte,
-    name: 'Risposta',
+    name: 'Replica',
     description:
         'Quando una creatura manca il Guerriero con un attacco in mischia, egli usa la propria reazione per effettuare un attacco in mischia e aggiunge il dado di superiorità ai danni se colpisce.',
     triggers: {
@@ -252,7 +252,7 @@ const battleMasterManeuverDefinitions =
   ),
   BattleMasterManeuverIds.sweepingAttack: BattleMasterManeuverDefinition(
     id: BattleMasterManeuverIds.sweepingAttack,
-    name: 'Attacco Sferzante',
+    name: 'Attacco con Spazzata',
     description:
         'Dopo aver colpito con un attacco in mischia, il Guerriero può infliggere il risultato del dado di superiorità a una seconda creatura adiacente al bersaglio originale.',
     triggers: {

@@ -126,9 +126,41 @@ void main() {
       (option) => option.id == 'zanne_del_serpente_di_fuoco',
     );
 
-    expect(waterWhip.maximumCost, 4);
-    expect(unbrokenAir.maximumCost, 4);
+    expect(waterWhip.cost, 2);
+    expect(waterWhip.maximumCost, isNull);
+    expect(unbrokenAir.cost, 2);
+    expect(unbrokenAir.maximumCost, isNull);
+    expect(fireSnake.cost, 1);
     expect(fireSnake.maximumCost, isNull);
+
+    expect(
+      fourElements.progressionValue(
+        'maximum_ki_per_elemental_spell',
+        5,
+      ),
+      '3',
+    );
+    expect(
+      fourElements.progressionValue(
+        'maximum_ki_per_elemental_spell',
+        9,
+      ),
+      '4',
+    );
+    expect(
+      fourElements.progressionValue(
+        'maximum_ki_per_elemental_spell',
+        13,
+      ),
+      '5',
+    );
+    expect(
+      fourElements.progressionValue(
+        'maximum_ki_per_elemental_spell',
+        17,
+      ),
+      '6',
+    );
   });
 
   test('elemental disciplines use metric distances', () {

@@ -88,7 +88,7 @@ final bardFeatureDefinitions = <String, CharacterClassFeatureDefinition>{
     summary:
         'Il Bardo usa il Carisma per lanciare gli incantesimi della propria lista.',
     details:
-        'Dal 1° livello conosce trucchetti e incantesimi da Bardo. Il Carisma determina la CD dei tiri salvezza e il modificatore degli attacchi con incantesimo. Può usare uno strumento musicale come focus da incantatore.',
+        'Dal 1° livello conosce trucchetti e incantesimi da Bardo. Il Carisma determina la CD dei tiri salvezza e il modificatore degli attacchi con incantesimo. Può lanciare come rituale un incantesimo da Bardo che conosce se possiede il descrittore rituale e può usare uno strumento musicale come focus da incantatore. Ogni volta che acquisisce un livello da Bardo può sostituire un incantesimo da Bardo conosciuto con un altro incantesimo della lista del Bardo di un livello per cui possiede slot.',
     ruleTags: {
       'spellcasting',
       'charisma',
@@ -100,7 +100,7 @@ final bardFeatureDefinitions = <String, CharacterClassFeatureDefinition>{
     name: 'Ispirazione Bardica',
     summary: 'Il Bardo concede a un alleato un dado di Ispirazione Bardica.',
     details:
-        'Come azione bonus sceglie una creatura diversa da sé entro 18 metri che possa sentirlo. Entro 10 minuti la creatura può aggiungere il dado a una prova di caratteristica, un tiro per colpire o un tiro salvezza. Gli utilizzi sono pari al modificatore di Carisma, con un minimo di uno.',
+        'Come azione bonus sceglie una creatura diversa da sé entro 18 metri che possa sentirlo. Entro 10 minuti la creatura può aggiungere il dado a una prova di caratteristica, un tiro per colpire o un tiro salvezza. Può decidere dopo avere tirato il d20, ma deve usare il dado prima che il DM dichiari l’esito. Una creatura può possedere un solo dado di Ispirazione Bardica alla volta. Gli utilizzi sono pari al modificatore di Carisma, con un minimo di uno.',
     resourceId: 'bardic_inspiration',
     ruleTags: {
       'bonus_action',
@@ -126,7 +126,7 @@ final bardFeatureDefinitions = <String, CharacterClassFeatureDefinition>{
     summary:
         'La musica del Bardo migliora il recupero durante un riposo breve.',
     details:
-        'Dal 2° livello, se il Bardo o creature amiche recuperano punti ferita spendendo Dadi Vita al termine di un riposo breve, ciascuna recupera punti ferita aggiuntivi tirando il dado del Canto di Riposo.',
+        'Dal 2° livello, se il Bardo o creature amiche che possono udire la sua esibizione recuperano punti ferita spendendo uno o più Dadi Vita al termine di un riposo breve, ciascuna recupera punti ferita aggiuntivi tirando il dado del Canto di Riposo.',
     ruleTags: {
       'short_rest',
       'healing',
@@ -197,7 +197,7 @@ final bardFeatureDefinitions = <String, CharacterClassFeatureDefinition>{
     name: 'Controfascino',
     summary: 'Il Bardo usa la musica per contrastare paura e fascinazione.',
     details:
-        'Dal 6° livello, con un’azione, si esibisce fino alla fine del proprio turno successivo. Il Bardo e le creature amiche entro 9 metri che possano sentirlo ottengono vantaggio ai tiri salvezza contro essere affascinati o spaventati.',
+        'Dal 6° livello, con un’azione, si esibisce fino alla fine del proprio turno successivo. Il Bardo e le creature amiche entro 9 metri che possano sentirlo ottengono vantaggio ai tiri salvezza contro essere affascinati o spaventati. L’esibizione termina anticipatamente se il Bardo diventa incapacitato o viene silenziato, oppure se la conclude volontariamente senza spendere un’azione.',
     ruleTags: {
       'action',
       'range_9_meters',
@@ -418,7 +418,7 @@ final bardLoreFeatureDefinitions = <String, CharacterClassFeatureDefinition>{
     subclassId: BardSubclassIds.lore,
     summary: 'Il Bardo usa l’Ispirazione Bardica per ostacolare una creatura.',
     details:
-        'Dal 3° livello, quando una creatura entro 18 metri che possa sentirlo effettua un tiro per colpire, una prova di caratteristica o un tiro per i danni, il Bardo può usare la reazione e spendere un’Ispirazione Bardica per sottrarre il risultato del dado dal tiro.',
+        'Dal 3° livello, quando una creatura che il Bardo può vedere entro 18 metri e che possa sentirlo effettua un tiro per colpire, una prova di caratteristica o un tiro per i danni, il Bardo può usare la reazione e spendere un’Ispirazione Bardica per sottrarre il risultato del dado dal tiro. Può farlo dopo il tiro, ma prima che il DM dichiari l’esito; nel caso dei danni, prima che siano applicati. La creatura è immune se non può sentire il Bardo o se è immune alla condizione di affascinato.',
     resourceId: 'bardic_inspiration',
     ruleTags: {
       'reaction',
@@ -496,7 +496,7 @@ final bardValorFeatureDefinitions = <String, CharacterClassFeatureDefinition>{
     subclassId: BardSubclassIds.valor,
     summary: 'L’Ispirazione Bardica può aumentare danni o Classe Armatura.',
     details:
-        'Dal 3° livello una creatura con un dado di Ispirazione Bardica può aggiungerlo ai danni di un attacco con arma. In alternativa, quando viene colpita, può usare la reazione per aggiungerlo alla propria CA contro quell’attacco.',
+        'Dal 3° livello una creatura con un dado di Ispirazione Bardica può aggiungerlo ai danni di un attacco con arma dopo avere visto il tiro per i danni. In alternativa, quando viene effettuato un tiro per colpire contro di lei, può usare la reazione per aggiungere il dado alla propria CA contro quell’attacco dopo avere visto il tiro, ma prima di sapere se l’attacco colpisce.',
     resourceId: 'bardic_inspiration',
     ruleTags: {
       'weapon_damage',

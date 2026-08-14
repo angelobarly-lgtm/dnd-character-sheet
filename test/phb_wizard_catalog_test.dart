@@ -140,6 +140,158 @@ void main() {
     }
   });
 
+  test('manual audit: Wizard and traditions use the Italian PHB pages', () {
+    expect(wizard.content.source.reference, 'Pagine 81-84');
+
+    final expectedReferences = {
+      WizardSubclassIds.abjuration: 'Pagine 84-85',
+      WizardSubclassIds.enchantment: 'Pagina 85',
+      WizardSubclassIds.divination: 'Pagine 85-86',
+      WizardSubclassIds.conjuration: 'Pagina 86',
+      WizardSubclassIds.illusion: 'Pagine 86-87',
+      WizardSubclassIds.evocation: 'Pagina 87',
+      WizardSubclassIds.necromancy: 'Pagine 87-88',
+      WizardSubclassIds.transmutation: 'Pagina 88',
+    };
+
+    for (final entry in expectedReferences.entries) {
+      final source = wizard.subclasses[entry.key]!.content.source;
+
+      expect(source.name, 'Manuale del Giocatore 2014');
+      expect(source.reference, entry.value);
+    }
+  });
+
+  test('manual audit: Wizard base spell rules are complete', () {
+    final casting = wizard.featureDefinitions[WizardFeatureIds.spellcasting]!;
+    final mastery = wizard.featureDefinitions[WizardFeatureIds.spellMastery]!;
+    final signatures =
+        wizard.featureDefinitions[WizardFeatureIds.signatureSpells]!;
+
+    expect(
+        casting.content.description.details, contains('1 minuto per livello'));
+    expect(
+      casting.content.description.details,
+      contains('anche se non è preparato'),
+    );
+    expect(
+      casting.content.description.details,
+      contains('8 + bonus di competenza'),
+    );
+    expect(mastery.content.name, 'Maestria negli Incantesimi');
+    expect(
+      mastery.content.description.details,
+      contains('livello superiore'),
+    );
+    expect(
+      signatures.content.description.details,
+      contains('non contano nel limite'),
+    );
+    expect(
+      signatures.content.description.details,
+      contains('una volta al 3° livello'),
+    );
+  });
+
+  test('manual audit: official Wizard feature names are preserved', () {
+    final names = wizard.subclasses.values
+        .expand((school) => school.featureDefinitions.values)
+        .map((feature) => feature.content.name)
+        .toSet();
+
+    expect(
+      names,
+      containsAll({
+        'Abiuratore Sapiente',
+        'Ammaliatore Sapiente',
+        'Divinatore Sapiente',
+        'Evocatore Sapiente',
+        'Illusionista Sapiente',
+        'Invocatore Sapiente',
+        'Necromante Sapiente',
+        'Trasmutatore Sapiente',
+        'Portento',
+        'Portento Superiore',
+        'Terzo Occhio',
+        'Evocazioni Perduranti',
+        'Illusioni Duttili',
+        'Sosia Illusorio',
+        'Saturazione Magica',
+        'Impervio alla Non Morte',
+      }),
+    );
+  });
+
+  test('manual audit: corrected school restrictions are enforced', () {
+    final conjuration = wizard.subclasses[WizardSubclassIds.conjuration]!;
+    final enchantment = wizard.subclasses[WizardSubclassIds.enchantment]!;
+    final evocation = wizard.subclasses[WizardSubclassIds.evocation]!;
+    final necromancy = wizard.subclasses[WizardSubclassIds.necromancy]!;
+    final transmutation = wizard.subclasses[WizardSubclassIds.transmutation]!;
+
+    final minorConjuration = conjuration
+        .featureDefinitions[WizardConjurationFeatureIds.minorConjuration]!;
+    expect(minorConjuration.content.description.details, contains('5 kg'));
+    expect(
+      minorConjuration.content.description.details,
+      isNot(contains('quando infligge danni')),
+    );
+
+    final memories = enchantment
+        .featureDefinitions[WizardEnchantmentFeatureIds.alterMemories]!;
+    expect(memories.ruleTags, contains('intelligence_saving_throw'));
+    expect(
+      memories.content.description.details,
+      contains('tiro salvezza su Intelligenza'),
+    );
+    expect(
+      memories.content.description.details,
+      contains('non superiore alla durata'),
+    );
+
+    final saturation =
+        evocation.featureDefinitions[WizardEvocationFeatureIds.overchannel]!;
+    expect(
+      saturation.content.description.details,
+      isNot(contains('non possono essere ridotti o evitati')),
+    );
+
+    final command = necromancy
+        .featureDefinitions[WizardNecromancyFeatureIds.commandUndead]!;
+    expect(
+      command.content.description.details,
+      contains('non può più utilizzare questo privilegio'),
+    );
+
+    final alchemy = transmutation
+        .featureDefinitions[WizardTransmutationFeatureIds.minorAlchemy]!;
+    final stone = transmutation
+        .featureDefinitions[WizardTransmutationFeatureIds.transmutersStone]!;
+    final master = transmutation
+        .featureDefinitions[WizardTransmutationFeatureIds.masterTransmuter]!;
+
+    expect(
+      alchemy.content.description.details,
+      contains('spigolo di 30 centimetri'),
+    );
+    expect(
+      stone.content.description.details,
+      contains('finché è privo di ingombro'),
+    );
+    expect(
+      stone.content.description.details,
+      contains('soltanto se porta la pietra con sé'),
+    );
+    expect(
+      master.content.description.details,
+      contains('spigolo di 1,5 metri'),
+    );
+    expect(
+      master.content.description.details,
+      contains('fino a un minimo di 13 anni'),
+    );
+  });
+
   test('every subclass resource is linked to a granted feature', () {
     final resourceIds = <String>[];
 

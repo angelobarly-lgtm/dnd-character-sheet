@@ -261,4 +261,94 @@ void main() {
       }),
     );
   });
+
+  test('manual audit preserves the complete PHB Barbarian rules', () {
+    final rage = barbarian.resources.singleWhere(
+      (resource) => resource.id == 'rage',
+    );
+    final rageDetails =
+        barbarian.featureDefinitions['rage']!.content.description.details;
+    final feralInstinct =
+        barbarian.featureDefinitions['feral_instinct']!.content.description;
+    final relentlessRage =
+        barbarian.featureDefinitions['relentless_rage']!.content.description;
+
+    expect(barbarian.content.source.name, 'Manuale del Giocatore 2014');
+    expect(barbarian.content.source.reference, 'Pagine 46-50');
+
+    expect(rage.recovery, ClassResourceRecovery.longRest);
+    expect(rage.maximumAtLevel(1), 2);
+    expect(rage.maximumAtLevel(3), 3);
+    expect(rage.maximumAtLevel(6), 4);
+    expect(rage.maximumAtLevel(12), 5);
+    expect(rage.maximumAtLevel(17), 6);
+    expect(rage.isUnlimitedAtLevel(20), isTrue);
+
+    expect(
+      rageDetails,
+      allOf(
+        contains('non può lanciare incantesimi'),
+        contains('concentrarsi'),
+        contains('senza avere attaccato'),
+        contains('senza avere subito danni'),
+        contains('azione bonus'),
+      ),
+    );
+    expect(feralInstinct.details, contains('non è incapacitato'));
+    expect(
+      feralInstinct.details,
+      contains('prima di fare qualsiasi altra cosa'),
+    );
+    expect(relentlessRage.details, contains('non viene ucciso sul colpo'));
+
+    expect(barbarian.progressionValue('rage_damage', 1), '+2');
+    expect(barbarian.progressionValue('rage_damage', 9), '+3');
+    expect(barbarian.progressionValue('rage_damage', 16), '+4');
+    expect(barbarian.progressionValue('brutal_critical_dice', 9), '1');
+    expect(barbarian.progressionValue('brutal_critical_dice', 13), '2');
+    expect(barbarian.progressionValue('brutal_critical_dice', 17), '3');
+  });
+
+  test('Berserker preserves the PHB limits of Intimidating Presence', () {
+    final berserker = barbarian.subclasses[BarbarianSubclassIds.berserker]!;
+    final presence = berserker.featureDefinitions['intimidating_presence']!;
+    final details = presence.content.description.details;
+
+    expect(details, contains('9 metri'));
+    expect(details, contains('18 metri'));
+    expect(details, contains('24 ore'));
+    expect(details, contains('linea di vista'));
+    expect(details, contains('modificatore di Carisma'));
+  });
+
+  test('Totem Warrior uses the official manual wording and distances', () {
+    final totem = barbarian.subclasses[BarbarianSubclassIds.totemWarrior]!;
+
+    expect(totem.name, 'Cammino del Combattente Totemico');
+    expect(totem.content.name, 'Cammino del Combattente Totemico');
+    expect(totem.content.source.reference, 'Pagine 49-50');
+
+    for (final option in totem.options) {
+      expect(option.sourceRef, 'Pagina 50');
+    }
+
+    final eagleAspect = totem.options.singleWhere(
+      (option) => option.id == 'aspect_of_the_beast_eagle',
+    );
+    final bearAttunement = totem.options.singleWhere(
+      (option) => option.id == 'totemic_attunement_bear',
+    );
+
+    expect(eagleAspect.description.details, contains('1,5 km'));
+    expect(eagleAspect.description.details, isNot(contains('1,6 km')));
+
+    expect(
+      bearAttunement.description.details,
+      allOf(
+        contains('un altro personaggio dotato di questo privilegio'),
+        contains('vedere o sentire'),
+        contains('non può essere spaventata'),
+      ),
+    );
+  });
 }

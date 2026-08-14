@@ -11,7 +11,7 @@ const _barbarianFeatureSpecs = <String, List<String>>{
   'rage': [
     'Ira',
     'Il Barbaro entra in uno stato di furia combattiva che aumenta la sua potenza e resistenza.',
-    'Come azione bonus, finché non indossa un’armatura pesante, ottiene vantaggio alle prove e ai tiri salvezza di Forza, un bonus ai danni degli attacchi in mischia basati su Forza e resistenza ai danni contundenti, perforanti e taglienti. L’Ira dura 1 minuto e termina secondo le condizioni previste.',
+    'Come azione bonus, finché non indossa un’armatura pesante, ottiene vantaggio alle prove e ai tiri salvezza di Forza, un bonus ai danni degli attacchi con armi da mischia basati su Forza e resistenza ai danni contundenti, perforanti e taglienti. Durante l’Ira non può lanciare incantesimi né concentrarsi su di essi. L’Ira dura 1 minuto e termina anticipatamente se perde i sensi o conclude un turno senza avere attaccato una creatura ostile dal turno precedente e senza avere subito danni; può anche terminarla come azione bonus.',
   ],
   'unarmored_defense': [
     'Difesa Senza Armatura',
@@ -51,7 +51,7 @@ const _barbarianFeatureSpecs = <String, List<String>>{
   'feral_instinct': [
     'Istinto Ferino',
     'Gli istinti del Barbaro gli permettono di agire rapidamente.',
-    'Dal 7° livello ottiene vantaggio ai tiri di iniziativa. Se è sorpreso, può agire normalmente nel primo turno entrando in Ira prima di compiere qualsiasi altra azione.',
+    'Dal 7° livello ottiene vantaggio ai tiri di iniziativa. Se è sorpreso e non è incapacitato, può agire normalmente nel primo turno soltanto se entra in Ira prima di fare qualsiasi altra cosa.',
   ],
   'brutal_critical': [
     'Critico Brutale',
@@ -61,7 +61,7 @@ const _barbarianFeatureSpecs = <String, List<String>>{
   'relentless_rage': [
     'Ira Implacabile',
     'Il Barbaro può continuare a combattere quando dovrebbe cadere a 0 punti ferita.',
-    'Dall’11° livello, mentre è in Ira, può effettuare un tiro salvezza di Costituzione con CD 10 per restare a 1 punto ferita. La CD aumenta di 5 dopo ogni utilizzo successivo e torna a 10 dopo un riposo breve o lungo.',
+    'Dall’11° livello, se scende a 0 punti ferita mentre è in Ira e non viene ucciso sul colpo, può effettuare un tiro salvezza di Costituzione con CD 10 per restare a 1 punto ferita. La CD aumenta di 5 dopo ogni utilizzo successivo e torna a 10 dopo un riposo breve o lungo.',
   ],
   'persistent_rage': [
     'Ira Persistente',
@@ -235,7 +235,7 @@ final barbarianBerserkerFeatureDefinitions =
     summary:
         'Il Barbaro può terrorizzare una creatura con la propria presenza.',
     details:
-        'Dal 10° livello usa un’azione per costringere una creatura entro 9 metri che possa vederlo o udirlo a effettuare un tiro salvezza di Saggezza. La CD è 8 + bonus di competenza + modificatore di Carisma. In caso di fallimento la creatura è spaventata fino alla fine del turno successivo del Barbaro; l’effetto può essere prolungato usando altre azioni.',
+        'Dal 10° livello usa un’azione per costringere una creatura entro 9 metri che possa vederlo o udirlo a effettuare un tiro salvezza di Saggezza. La CD è 8 + bonus di competenza + modificatore di Carisma. In caso di fallimento la creatura è spaventata fino alla fine del turno successivo del Barbaro e l’effetto può essere prolungato usando altre azioni. Termina se la creatura conclude il turno fuori dalla linea di vista o oltre 18 metri; se supera il tiro salvezza, il Barbaro non può usare nuovamente il privilegio su di essa per 24 ore.',
     ruleTags: {
       'action',
       'range_9_meters',
@@ -354,7 +354,7 @@ SubclassOptionDefinition _barbarianTotemOption({
       category: category,
       minimumLevel: minimumLevel,
       source: 'Manuale del Giocatore 2014',
-      sourceRef: 'Pagine 50-51',
+      sourceRef: 'Pagina 50',
       description: RuleDescription(
         summary: summary,
         details: details,
@@ -407,7 +407,7 @@ final barbarianTotemOptions = <SubclassOptionDefinition>[
     summary:
         'La vista dell’Aquila permette di osservare chiaramente a grande distanza.',
     details:
-        'Il Barbaro vede fino a 1,6 km senza difficoltà e distingue dettagli come se fossero a non più di 30 metri. La luce fioca non impone svantaggio alle prove di Saggezza (Percezione) basate sulla vista.',
+        'Il Barbaro vede fino a 1,5 km senza difficoltà e distingue dettagli come se fossero a non più di 30 metri. La luce fioca non impone svantaggio alle prove di Saggezza (Percezione) basate sulla vista.',
   ),
   _barbarianTotemOption(
     id: 'aspect_of_the_beast_wolf',
@@ -426,7 +426,7 @@ final barbarianTotemOptions = <SubclassOptionDefinition>[
     summary:
         'Durante l’Ira il Barbaro costringe i nemici vicini a concentrarsi su di lui.',
     details:
-        'Mentre è in Ira, le creature ostili entro 1,5 metri subiscono svantaggio agli attacchi contro bersagli diversi dal Barbaro. Le creature immuni alla paura non sono influenzate.',
+        'Mentre è in Ira, le creature ostili entro 1,5 metri subiscono svantaggio agli attacchi contro bersagli diversi dal Barbaro o da un altro personaggio dotato di questo privilegio. Una creatura non è influenzata se non può vedere o sentire il Barbaro oppure se non può essere spaventata.',
   ),
   _barbarianTotemOption(
     id: 'totemic_attunement_eagle',
@@ -475,16 +475,16 @@ final barbarianBerserkerDefinition = CharacterSubclassDefinition(
 
 final barbarianTotemWarriorDefinition = CharacterSubclassDefinition(
   id: BarbarianSubclassIds.totemWarrior,
-  name: 'Cammino del Guerriero Totemico',
+  name: 'Cammino del Combattente Totemico',
   classId: ClassIds.barbarian,
   content: const RuleContent(
     id: BarbarianSubclassIds.totemWarrior,
-    name: 'Cammino del Guerriero Totemico',
+    name: 'Cammino del Combattente Totemico',
     type: RuleContentType.subclassFeature,
     description: RuleDescription(
       summary: 'Un cammino spirituale che trae capacità dagli spiriti animali.',
       details:
-          'Il Guerriero Totemico entra in comunione con Orso, Aquila e Lupo, scegliendo indipendentemente uno spirito ai livelli previsti.',
+          'Il Combattente Totemico entra in comunione con Orso, Aquila e Lupo, scegliendo indipendentemente uno spirito ai livelli previsti.',
     ),
     source: _phbBarbarianPathSource,
     ownerId: ClassIds.barbarian,

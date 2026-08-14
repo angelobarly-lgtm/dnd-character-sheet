@@ -360,6 +360,107 @@ void main() {
     );
   });
 
+  test('the six PHB fighting styles retain their complete restrictions', () {
+    expect(
+      fightingStyleDefinitions[FightingStyleIds.dueling]!.description,
+      contains('non impugni altre armi'),
+    );
+    expect(
+      fightingStyleDefinitions[FightingStyleIds.greatWeaponFighting]!
+          .description,
+      contains('devi usare il nuovo risultato'),
+    );
+    expect(
+      fightingStyleDefinitions[FightingStyleIds.greatWeaponFighting]!
+          .description,
+      contains('a due mani o versatile'),
+    );
+    expect(
+      fightingStyleDefinitions[FightingStyleIds.protection]!.description,
+      contains('bersaglio diverso da te'),
+    );
+    expect(
+      fightingStyleDefinitions[FightingStyleIds.protection]!.description,
+      contains('1,5 metri'),
+    );
+    expect(
+      fightingStyleDefinitions[FightingStyleIds.protection]!.description,
+      contains('impugnare uno scudo'),
+    );
+  });
+
+  test('Battle Master uses all official Italian maneuver names', () {
+    const expectedNames = {
+      BattleMasterManeuverIds.evasiveFootwork: 'Scarto Elusivo',
+      BattleMasterManeuverIds.goadingAttack: 'Attacco Adescante',
+      BattleMasterManeuverIds.lungingAttack: 'Attacco con Affondo',
+      BattleMasterManeuverIds.pushingAttack: 'Attacco con Spinta',
+      BattleMasterManeuverIds.rally: 'Incoraggiamento',
+      BattleMasterManeuverIds.riposte: 'Replica',
+      BattleMasterManeuverIds.sweepingAttack: 'Attacco con Spazzata',
+    };
+
+    for (final entry in expectedNames.entries) {
+      expect(
+        battleMasterManeuverDefinitions[entry.key]!.name,
+        entry.value,
+      );
+    }
+  });
+
+  test('Combat Superiority preserves maneuver limits and replacement', () {
+    final details = battleMaster
+        .featureDefinitions[BattleMasterFeatureIds.combatSuperiority]!
+        .content
+        .description
+        .details;
+
+    expect(details, contains('una manovra per ogni attacco'));
+    expect(details, contains('livelli 7, 10 e 15'));
+    expect(details, contains('può sostituire una manovra'));
+    expect(details, contains('Forza o Destrezza, a sua scelta'));
+  });
+
+  test('Champion source includes both PHB pages', () {
+    expect(
+      champion.content.source.reference,
+      'Pagine 72-73',
+    );
+
+    for (final feature in champion.featureDefinitions.values) {
+      expect(feature.content.source.reference, 'Pagine 72-73');
+    }
+  });
+
+  test('Eldritch Knight uses the official Bound Weapon rules', () {
+    final weapon =
+        eldritchKnight.featureDefinitions[EldritchKnightFeatureIds.weaponBond]!;
+
+    expect(weapon.content.name, 'Arma Vincolata');
+
+    final details = weapon.content.description.details;
+
+    expect(details, contains('durante un riposo breve'));
+    expect(details, contains('a meno che non sia incapacitato'));
+    expect(details, contains('stesso piano di esistenza'));
+    expect(details, contains('soltanto una'));
+    expect(details, contains('una terza'));
+  });
+
+  test('Eldritch Knight spell replacement respects school exceptions', () {
+    final details = eldritchKnight
+        .featureDefinitions[EldritchKnightFeatureIds.spellcasting]!
+        .content
+        .description
+        .details;
+
+    expect(details, contains('riposo lungo'));
+    expect(details, contains('sostituire un incantesimo da Mago'));
+    expect(details, contains('livello per cui possiede slot'));
+    expect(details, contains('Abiurazione o Invocazione'));
+    expect(details, contains('quattro incantesimi di scuola libera'));
+  });
+
   test('all class and subclass resources are structurally coherent', () {
     final resources = [
       ...fighter.resources,

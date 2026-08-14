@@ -9,7 +9,7 @@ import 'spell_data.dart';
 
 const _phbWizardSource = RuleSource(
   name: 'Manuale del Giocatore 2014',
-  reference: 'Pagine 112-115',
+  reference: 'Pagine 81-84',
 );
 
 class WizardSubclassIds {
@@ -99,7 +99,7 @@ const _wizardFeatureSpecs = <String, List<String>>{
   WizardFeatureIds.spellcasting: [
     'Incantesimi',
     'Il Mago usa Intelligenza e prepara gli incantesimi contenuti nel proprio libro.',
-    'Al 1° livello conosce tre trucchetti e possiede un libro con sei incantesimi da Mago di 1° livello. Prepara un numero di incantesimi pari al livello da Mago più il modificatore di Intelligenza, con un minimo di uno.',
+    'Al 1° livello conosce tre trucchetti e possiede un libro con sei incantesimi da Mago di 1° livello. Prepara dal libro un numero di incantesimi pari al livello da Mago più il modificatore di Intelligenza, con un minimo di uno, e recupera tutti gli slot dopo un riposo lungo. Può cambiare la lista preparata dopo un riposo lungo studiando almeno 1 minuto per livello di ogni incantesimo. Può celebrare come rituale un incantesimo da Mago con il descrittore rituale presente nel libro anche se non è preparato e può usare un focus arcano. Intelligenza determina la CD, pari a 8 + bonus di competenza + modificatore di Intelligenza, e il modificatore di attacco. A ogni nuovo livello da Mago aggiunge gratuitamente al libro due incantesimi di un livello che può lanciare.',
   ],
   WizardFeatureIds.arcaneRecovery: [
     'Recupero Arcano',
@@ -117,14 +117,14 @@ const _wizardFeatureSpecs = <String, List<String>>{
     'Ottiene questo privilegio ai livelli 4, 8, 12, 16 e 19.',
   ],
   WizardFeatureIds.spellMastery: [
-    'Padronanza degli Incantesimi',
+    'Maestria negli Incantesimi',
     'Il Mago può lanciare a volontà due incantesimi preparati di basso livello.',
-    'Al 18° livello sceglie un incantesimo di 1° livello e uno di 2° livello presenti nel libro. Può lanciarli al livello più basso senza spendere slot e sostituirli dopo otto ore di studio.',
+    'Al 18° livello sceglie un incantesimo da Mago di 1° livello e uno di 2° livello presenti nel libro. Quando li ha preparati può lanciarli al loro livello più basso senza spendere slot. Per lanciarli a un livello superiore deve spendere normalmente uno slot. Dopo otto ore di studio può sostituire uno o entrambi con incantesimi diversi degli stessi livelli.',
   ],
   WizardFeatureIds.signatureSpells: [
     'Incantesimi Personali',
     'Due incantesimi di 3° livello diventano sempre preparati e più facili da lanciare.',
-    'Al 20° livello sceglie due incantesimi di 3° livello presenti nel libro. Sono sempre preparati e ciascuno può essere lanciato una volta senza slot, recuperando gli utilizzi con un riposo breve o lungo.',
+    'Al 20° livello sceglie due incantesimi da Mago di 3° livello presenti nel libro. Sono sempre preparati, non contano nel limite degli incantesimi preparati e ciascuno può essere lanciato una volta al 3° livello senza spendere slot. Recupera entrambi gli utilizzi dopo un riposo breve o lungo. Per lanciarli a un livello superiore deve spendere normalmente uno slot.',
   ],
 };
 
@@ -334,13 +334,13 @@ class WizardConjurationFeatureIds {
 }
 
 const _phbWizardAbjurationSource = RuleSource(
-  name: 'Manuale del Giocatore',
-  reference: 'Mago: Scuola di Abiurazione',
+  name: 'Manuale del Giocatore 2014',
+  reference: 'Pagine 84-85',
 );
 
 const _phbWizardConjurationSource = RuleSource(
-  name: 'Manuale del Giocatore',
-  reference: 'Mago: Scuola di Evocazione',
+  name: 'Manuale del Giocatore 2014',
+  reference: 'Pagina 86',
 );
 
 CharacterClassFeatureDefinition _wizardSchoolFeature({
@@ -386,7 +386,7 @@ final wizardAbjurationFeatureDefinitions =
     <String, CharacterClassFeatureDefinition>{
   WizardAbjurationFeatureIds.savant: _wizardSchoolFeature(
     id: WizardAbjurationFeatureIds.savant,
-    name: 'Sapiente di Abiurazione',
+    name: 'Abiuratore Sapiente',
     summary:
         'Copiare nel libro un incantesimo di Abiurazione richiede metà tempo e metà oro.',
     details:
@@ -520,7 +520,7 @@ final wizardConjurationFeatureDefinitions =
     <String, CharacterClassFeatureDefinition>{
   WizardConjurationFeatureIds.savant: _wizardSchoolFeature(
     id: WizardConjurationFeatureIds.savant,
-    name: 'Sapiente di Evocazione',
+    name: 'Evocatore Sapiente',
     summary:
         'Copiare nel libro un incantesimo di Evocazione richiede metà tempo e metà oro.',
     details:
@@ -540,14 +540,14 @@ final wizardConjurationFeatureDefinitions =
     summary:
         'Il Mago evoca temporaneamente un piccolo oggetto non magico già osservato.',
     details:
-        'Dal 2° livello, il Mago può usare un’azione per evocare nella propria mano o in uno spazio libero entro 3 metri un oggetto inanimato non magico già visto. L’oggetto non può superare circa 90 centimetri per lato né 4,5 kg, emana luce fioca entro 1,5 metri e scompare dopo un’ora, quando il privilegio viene usato di nuovo, quando subisce danni o quando infligge danni.',
+        'Dal 2° livello, il Mago può usare un’azione per evocare nella propria mano o in uno spazio libero visibile entro 3 metri un oggetto inanimato non magico già visto. L’oggetto non può essere più lungo di 90 centimetri né pesare più di 5 kg, appare palesemente magico ed emana luce fioca entro 1,5 metri. Scompare dopo un’ora, quando il privilegio viene usato nuovamente oppure quando subisce qualsiasi danno.',
     schoolId: 'conjuration',
     source: _phbWizardConjurationSource,
     ruleTags: {
       'action',
       'range_3_meters',
       'temporary_object',
-      'maximum_weight_4_5_kg',
+      'maximum_weight_5_kg',
       'duration_1_hour',
     },
   ),
@@ -585,7 +585,7 @@ final wizardConjurationFeatureDefinitions =
   ),
   WizardConjurationFeatureIds.durableSummons: _wizardSchoolFeature(
     id: WizardConjurationFeatureIds.durableSummons,
-    name: 'Evocazioni Durevoli',
+    name: 'Evocazioni Perduranti',
     summary:
         'Le creature evocate o create dagli incantesimi ottengono punti ferita temporanei.',
     details:
@@ -665,20 +665,20 @@ class WizardEnchantmentFeatureIds {
 }
 
 const _phbWizardDivinationSource = RuleSource(
-  name: 'Manuale del Giocatore',
-  reference: 'Mago: Scuola di Divinazione',
+  name: 'Manuale del Giocatore 2014',
+  reference: 'Pagine 85-86',
 );
 
 const _phbWizardEnchantmentSource = RuleSource(
-  name: 'Manuale del Giocatore',
-  reference: 'Mago: Scuola di Ammaliamento',
+  name: 'Manuale del Giocatore 2014',
+  reference: 'Pagina 85',
 );
 
 final wizardDivinationFeatureDefinitions =
     <String, CharacterClassFeatureDefinition>{
   WizardDivinationFeatureIds.savant: _wizardSchoolFeature(
     id: WizardDivinationFeatureIds.savant,
-    name: 'Sapiente di Divinazione',
+    name: 'Divinatore Sapiente',
     summary:
         'Copiare nel libro un incantesimo di Divinazione richiede metà tempo e metà oro.',
     details:
@@ -694,7 +694,7 @@ final wizardDivinationFeatureDefinitions =
   ),
   WizardDivinationFeatureIds.portent: _wizardSchoolFeature(
     id: WizardDivinationFeatureIds.portent,
-    name: 'Presagio',
+    name: 'Portento',
     summary:
         'Dopo un riposo lungo il Mago registra due risultati di d20 da sostituire a futuri tiri.',
     details:
@@ -731,7 +731,7 @@ final wizardDivinationFeatureDefinitions =
   ),
   WizardDivinationFeatureIds.thirdEye: _wizardSchoolFeature(
     id: WizardDivinationFeatureIds.thirdEye,
-    name: 'Il Terzo Occhio',
+    name: 'Terzo Occhio',
     summary:
         'Il Mago ottiene temporaneamente una tra quattro percezioni soprannaturali.',
     details:
@@ -750,10 +750,10 @@ final wizardDivinationFeatureDefinitions =
   ),
   WizardDivinationFeatureIds.greaterPortent: _wizardSchoolFeature(
     id: WizardDivinationFeatureIds.greaterPortent,
-    name: 'Presagio Superiore',
-    summary: 'Il Mago registra tre risultati di Presagio anziché due.',
+    name: 'Portento Superiore',
+    summary: 'Il Mago registra tre risultati di Portento anziché due.',
     details:
-        'Dal 14° livello, il Mago tira tre d20 per Presagio al termine di ogni riposo lungo e conserva tutti e tre i risultati.',
+        'Dal 14° livello, quando utilizza Portento il Mago tira tre d20 anziché due dopo ogni riposo lungo.',
     schoolId: 'divination',
     source: _phbWizardDivinationSource,
     resourceId: WizardDivinationFeatureIds.portent,
@@ -795,7 +795,7 @@ final wizardDivinationDefinition = CharacterSubclassDefinition(
   resources: const [
     ClassResourceDefinition(
       id: WizardDivinationFeatureIds.portent,
-      name: 'Presagio',
+      name: 'Portento',
       minimumLevel: 2,
       recovery: ClassResourceRecovery.longRest,
       maximumByLevel: {
@@ -805,7 +805,7 @@ final wizardDivinationDefinition = CharacterSubclassDefinition(
     ),
     ClassResourceDefinition(
       id: WizardDivinationFeatureIds.thirdEye,
-      name: 'Il Terzo Occhio',
+      name: 'Terzo Occhio',
       minimumLevel: 10,
       recovery: ClassResourceRecovery.shortRest,
       maximumByLevel: {10: 1},
@@ -827,7 +827,7 @@ final wizardEnchantmentFeatureDefinitions =
     <String, CharacterClassFeatureDefinition>{
   WizardEnchantmentFeatureIds.savant: _wizardSchoolFeature(
     id: WizardEnchantmentFeatureIds.savant,
-    name: 'Sapiente di Ammaliamento',
+    name: 'Ammaliatore Sapiente',
     summary:
         'Copiare nel libro un incantesimo di Ammaliamento richiede metà tempo e metà oro.',
     details:
@@ -847,7 +847,7 @@ final wizardEnchantmentFeatureDefinitions =
     summary:
         'Lo sguardo del Mago può affascinare e rendere incapace una creatura vicina.',
     details:
-        'Dal 2° livello, il Mago può usare un’azione contro una creatura entro 1,5 metri che possa vederlo o sentirlo. Se fallisce un tiro salvezza su Saggezza contro la CD degli incantesimi, la creatura è affascinata, incapacitata e ha velocità zero fino alla fine del turno successivo del Mago. L’effetto può essere mantenuto usando un’azione a ogni turno. Dopo la fine dell’effetto o un tiro salvezza riuscito, quella creatura ne è immune fino al successivo riposo lungo del Mago.',
+        'Dal 2° livello, il Mago può usare un’azione contro una creatura entro 1,5 metri che sia in grado di vederlo e sentirlo. Se fallisce un tiro salvezza su Saggezza, la creatura è affascinata, incapacitata, visibilmente frastornata e ha velocità zero fino alla fine del turno successivo del Mago. Il Mago può mantenere l’effetto usando la propria azione a ogni turno. L’effetto termina se il Mago si allontana oltre 1,5 metri, se la creatura non può più vederlo o sentirlo oppure se subisce danni. Dopo la fine dell’effetto o un tiro salvezza iniziale riuscito, il privilegio non può essere usato nuovamente sulla stessa creatura fino al successivo riposo lungo.',
     schoolId: 'enchantment',
     source: _phbWizardEnchantmentSource,
     ruleTags: {
@@ -865,7 +865,7 @@ final wizardEnchantmentFeatureDefinitions =
     name: 'Fascino Istintivo',
     summary: 'Il Mago può deviare un attacco verso un’altra creatura vicina.',
     details:
-        'Dal 6° livello, quando una creatura visibile entro 9 metri effettua un attacco contro il Mago, egli può usare la propria reazione. Se l’attaccante fallisce un tiro salvezza su Saggezza, deve scegliere come bersaglio la creatura più vicina diversa dal Mago e da sé stesso. Dopo un tiro salvezza riuscito, quella creatura ne è immune fino al successivo riposo lungo del Mago.',
+        'Dal 6° livello, quando una creatura visibile entro 9 metri effettua un tiro per colpire contro il Mago, egli può usare la propria reazione, purché un’altra creatura si trovi entro la gittata dell’attacco. Deve decidere prima di sapere se l’attacco colpirà. Se l’attaccante fallisce un tiro salvezza su Saggezza, deve bersagliare la creatura più vicina diversa dal Mago e da sé stesso; a parità di distanza sceglie l’attaccante. Dopo un tiro salvezza riuscito, il privilegio non può essere usato nuovamente contro quella creatura fino al successivo riposo lungo. Le creature immuni alla condizione affascinato sono immuni a questo effetto.',
     schoolId: 'enchantment',
     source: _phbWizardEnchantmentSource,
     ruleTags: {
@@ -897,12 +897,12 @@ final wizardEnchantmentFeatureDefinitions =
     summary:
         'Le creature affascinate possono ignorare l’influenza magica e dimenticare il tempo trascorso.',
     details:
-        'Dal 14° livello, quando il Mago affascina una creatura con un incantesimo, può impedirle di sapere di essere stata affascinata. Prima che l’incantesimo termini può inoltre costringerla a un tiro salvezza su Carisma; se fallisce, dimentica un numero di ore pari a uno più il modificatore di Carisma del Mago, con un minimo di un’ora.',
+        'Dal 14° livello, quando il Mago affascina una o più creature con un incantesimo, può fare in modo che una di esse resti inconsapevole di essere stata affascinata. Prima che l’incantesimo termini può usare una volta la propria azione per imporle un tiro salvezza su Intelligenza contro la CD degli incantesimi. Se fallisce, dimentica un numero di ore pari a 1 più il modificatore di Carisma del Mago, fino a un minimo di un’ora. Il Mago può scegliere un periodo inferiore, ma non superiore alla durata dell’incantesimo di ammaliamento.',
     schoolId: 'enchantment',
     source: _phbWizardEnchantmentSource,
     ruleTags: {
       'charmed_target_unaware',
-      'charisma_saving_throw',
+      'intelligence_saving_throw',
       'erase_memories',
       'minimum_1_hour',
     },
@@ -969,13 +969,13 @@ class WizardIllusionChoiceIds {
 }
 
 const _phbWizardEvocationSource = RuleSource(
-  name: 'Manuale del Giocatore',
-  reference: 'Mago: Scuola di Invocazione',
+  name: 'Manuale del Giocatore 2014',
+  reference: 'Pagina 87',
 );
 
 const _phbWizardIllusionSource = RuleSource(
-  name: 'Manuale del Giocatore',
-  reference: 'Mago: Scuola di Illusione',
+  name: 'Manuale del Giocatore 2014',
+  reference: 'Pagine 86-87',
 );
 
 CharacterChoiceDefinition _improvedMinorIllusionCantripChoice() {
@@ -1005,7 +1005,7 @@ final wizardEvocationFeatureDefinitions =
     <String, CharacterClassFeatureDefinition>{
   WizardEvocationFeatureIds.savant: _wizardSchoolFeature(
     id: WizardEvocationFeatureIds.savant,
-    name: 'Sapiente di Invocazione',
+    name: 'Invocatore Sapiente',
     summary:
         'Copiare nel libro un incantesimo di Invocazione richiede metà tempo e metà oro.',
     details:
@@ -1067,11 +1067,11 @@ final wizardEvocationFeatureDefinitions =
   ),
   WizardEvocationFeatureIds.overchannel: _wizardSchoolFeature(
     id: WizardEvocationFeatureIds.overchannel,
-    name: 'Sovraccarico',
+    name: 'Saturazione Magica',
     summary:
         'Il Mago può massimizzare i danni di un incantesimo, rischiando danni necrotici con gli usi successivi.',
     details:
-        'Dal 14° livello, quando il Mago lancia un incantesimo da Mago dal 1° al 5° livello che infligge danni, può infliggere il massimo danno possibile invece di tirare. Il primo uso dopo un riposo lungo è sicuro. Ogni uso aggiuntivo prima del riposo lungo infligge immediatamente 2d12 danni necrotici per livello dell’incantesimo; ogni ulteriore uso aumenta di 1d12 per livello questi danni, che ignorano resistenza e immunità e non possono essere ridotti o evitati.',
+        'Dal 14° livello, quando il Mago lancia un incantesimo da Mago dal 1° al 5° livello che infligge danni, può infliggere il massimo danno possibile invece di tirare. Il primo uso dopo un riposo lungo non produce effetti avversi. Ogni uso aggiuntivo prima del riposo lungo infligge immediatamente 2d12 danni necrotici per livello dell’incantesimo; ogni ulteriore uso aumenta di 1d12 per livello questi danni. I danni necrotici ignorano resistenza e immunità.',
     schoolId: 'evocation',
     source: _phbWizardEvocationSource,
     resourceId: WizardEvocationFeatureIds.overchannel,
@@ -1083,7 +1083,6 @@ final wizardEvocationFeatureDefinitions =
       'additional_d12_per_repeated_use',
       'necrotic_damage',
       'ignores_resistance_and_immunity',
-      'damage_cannot_be_reduced_or_prevented',
     },
   ),
 };
@@ -1118,7 +1117,7 @@ final wizardEvocationDefinition = CharacterSubclassDefinition(
   resources: const [
     ClassResourceDefinition(
       id: WizardEvocationFeatureIds.overchannel,
-      name: 'Sovraccarico: uso sicuro',
+      name: 'Saturazione Magica: uso sicuro',
       minimumLevel: 14,
       recovery: ClassResourceRecovery.longRest,
       maximumByLevel: {14: 1},
@@ -1140,7 +1139,7 @@ final wizardIllusionFeatureDefinitions =
     <String, CharacterClassFeatureDefinition>{
   WizardIllusionFeatureIds.savant: _wizardSchoolFeature(
     id: WizardIllusionFeatureIds.savant,
-    name: 'Sapiente di Illusione',
+    name: 'Illusionista Sapiente',
     summary:
         'Copiare nel libro un incantesimo di Illusione richiede metà tempo e metà oro.',
     details:
@@ -1172,7 +1171,7 @@ final wizardIllusionFeatureDefinitions =
   ),
   WizardIllusionFeatureIds.malleableIllusions: _wizardSchoolFeature(
     id: WizardIllusionFeatureIds.malleableIllusions,
-    name: 'Illusioni Malleabili',
+    name: 'Illusioni Duttili',
     summary: 'Il Mago può modificare un’illusione persistente già lanciata.',
     details:
         'Dal 6° livello, quando il Mago lancia un incantesimo di Illusione con durata di almeno un minuto, può usare un’azione per modificarne la natura entro i normali parametri dell’incantesimo, purché possa vedere l’illusione.',
@@ -1187,7 +1186,7 @@ final wizardIllusionFeatureDefinitions =
   ),
   WizardIllusionFeatureIds.illusorySelf: _wizardSchoolFeature(
     id: WizardIllusionFeatureIds.illusorySelf,
-    name: 'Sé Illusorio',
+    name: 'Sosia Illusorio',
     summary:
         'Un duplicato illusorio fa mancare automaticamente un attacco diretto contro il Mago.',
     details:
@@ -1250,7 +1249,7 @@ final wizardIllusionDefinition = CharacterSubclassDefinition(
   resources: const [
     ClassResourceDefinition(
       id: WizardIllusionFeatureIds.illusorySelf,
-      name: 'Sé Illusorio',
+      name: 'Sosia Illusorio',
       minimumLevel: 10,
       recovery: ClassResourceRecovery.shortRest,
       maximumByLevel: {10: 1},
@@ -1290,20 +1289,20 @@ class WizardTransmutationChoiceIds {
 }
 
 const _phbWizardNecromancySource = RuleSource(
-  name: 'Manuale del Giocatore',
-  reference: 'Mago: Scuola di Necromanzia',
+  name: 'Manuale del Giocatore 2014',
+  reference: 'Pagine 87-88',
 );
 
 const _phbWizardTransmutationSource = RuleSource(
-  name: 'Manuale del Giocatore',
-  reference: 'Mago: Scuola di Trasmutazione',
+  name: 'Manuale del Giocatore 2014',
+  reference: 'Pagina 88',
 );
 
 final wizardNecromancyFeatureDefinitions =
     <String, CharacterClassFeatureDefinition>{
   WizardNecromancyFeatureIds.savant: _wizardSchoolFeature(
     id: WizardNecromancyFeatureIds.savant,
-    name: 'Sapiente di Necromanzia',
+    name: 'Necromante Sapiente',
     summary:
         'Copiare nel libro un incantesimo di Necromanzia richiede metà tempo e metà oro.',
     details:
@@ -1355,7 +1354,7 @@ final wizardNecromancyFeatureDefinitions =
   ),
   WizardNecromancyFeatureIds.inuredToUndeath: _wizardSchoolFeature(
     id: WizardNecromancyFeatureIds.inuredToUndeath,
-    name: 'Assuefazione alla Non Morte',
+    name: 'Impervio alla Non Morte',
     summary:
         'Il Mago resiste ai danni necrotici e il suo massimo di punti ferita non può essere ridotto.',
     details:
@@ -1375,7 +1374,7 @@ final wizardNecromancyFeatureDefinitions =
     name: 'Comandare Non Morti',
     summary: 'Il Mago può assoggettare un non morto visibile entro 18 metri.',
     details:
-        'Dal 14° livello, il Mago può usare un’azione per scegliere un non morto visibile entro 18 metri. Il bersaglio effettua un tiro salvezza su Carisma contro la CD degli incantesimi; se fallisce diventa amichevole e obbedisce finché il privilegio non viene usato di nuovo. Un non morto con Intelligenza almeno 8 dispone di vantaggio al tiro salvezza; con Intelligenza almeno 12 può ripeterlo ogni ora finché non si libera.',
+        'Dal 14° livello, il Mago può usare un’azione per scegliere un non morto visibile entro 18 metri. Il bersaglio effettua un tiro salvezza su Carisma contro la CD degli incantesimi. Se lo supera, il Mago non può più utilizzare questo privilegio contro quella creatura; se lo fallisce, diventa amichevole e obbedisce finché il privilegio non viene usato di nuovo. Un non morto con Intelligenza almeno 8 dispone di vantaggio al tiro salvezza; con Intelligenza almeno 12 può ripeterlo alla fine di ogni ora finché non si libera.',
     schoolId: 'necromancy',
     source: _phbWizardNecromancySource,
     ruleTags: {
@@ -1433,7 +1432,7 @@ final wizardTransmutationFeatureDefinitions =
     <String, CharacterClassFeatureDefinition>{
   WizardTransmutationFeatureIds.savant: _wizardSchoolFeature(
     id: WizardTransmutationFeatureIds.savant,
-    name: 'Sapiente di Trasmutazione',
+    name: 'Trasmutatore Sapiente',
     summary:
         'Copiare nel libro un incantesimo di Trasmutazione richiede metà tempo e metà oro.',
     details:
@@ -1453,7 +1452,7 @@ final wizardTransmutationFeatureDefinitions =
     summary:
         'Il Mago trasforma temporaneamente un materiale comune in un altro.',
     details:
-        'Dal 2° livello, il Mago può trasformare legno, pietra, ferro, rame o argento in un altro materiale dello stesso elenco. Servono 10 minuti per circa 0,028 metri cubi di materiale. La trasformazione dura un’ora o termina quando il Mago perde la concentrazione.',
+        'Dal 2° livello, il Mago può trasformare un oggetto non magico composto interamente di legno, pietra non preziosa, ferro, rame o argento in un oggetto fatto di un altro materiale dello stesso elenco. Ogni 10 minuti può trasformare una quantità di materiale pari a un cubo con spigolo di 30 centimetri. La trasformazione dura un’ora o termina quando il Mago perde la concentrazione come se si concentrasse su un incantesimo.',
     schoolId: 'transmutation',
     source: _phbWizardTransmutationSource,
     ruleTags: {
@@ -1462,7 +1461,7 @@ final wizardTransmutationFeatureDefinitions =
       'iron',
       'copper',
       'silver',
-      '10_minutes_per_0_028_cubic_meters',
+      '10_minutes_per_30_cm_edge_cube',
       'duration_1_hour',
       'concentration',
     },
@@ -1472,7 +1471,7 @@ final wizardTransmutationFeatureDefinitions =
     name: 'Pietra del Trasmutatore',
     summary: 'Il Mago crea una pietra che conferisce uno tra diversi benefici.',
     details:
-        'Dal 6° livello, dopo 8 ore di lavoro il Mago crea una Pietra del Trasmutatore. Chi la possiede ottiene il beneficio scelto: scurovisione entro 18 metri, aumento della velocità di 3 metri, competenza nei tiri salvezza su Costituzione oppure resistenza ad acido, freddo, fuoco, fulmine o tuono. Il beneficio può essere cambiato quando il Mago lancia un incantesimo di Trasmutazione di 1° livello o superiore. Creare una nuova pietra distrugge la precedente.',
+        'Dal 6° livello, dopo 8 ore di lavoro il Mago crea una Pietra del Trasmutatore. Chi la possiede ottiene il beneficio scelto: scurovisione entro 18 metri, aumento della velocità di 3 metri finché è privo di ingombro, competenza nei tiri salvezza su Costituzione oppure resistenza ad acido, freddo, fuoco, fulmine o tuono. Quando il Mago lancia un incantesimo di Trasmutazione di 1° livello o superiore può cambiare il beneficio soltanto se porta la pietra con sé. Creare una nuova pietra fa cessare di funzionare la precedente.',
     schoolId: 'transmutation',
     source: _phbWizardTransmutationSource,
     choices: const [
@@ -1524,7 +1523,7 @@ final wizardTransmutationFeatureDefinitions =
     summary:
         'Consumando la pietra il Mago produce uno tra quattro potenti effetti.',
     details:
-        'Dal 14° livello, il Mago può usare un’azione e consumare la Pietra del Trasmutatore per trasformare un grande oggetto, guarire completamente una creatura e purificarla, lanciare Rianimare Morti senza slot oppure ridurre l’età apparente di una creatura di 3d10 anni senza estenderne la vita. Una nuova pietra può essere creata dopo un riposo lungo.',
+        'Dal 14° livello, il Mago può usare un’azione e distruggere la Pietra del Trasmutatore per scegliere un effetto. Trasformazione Migliore richiede 10 minuti e converte un oggetto non magico contenuto in un cubo con spigolo di 1,5 metri in un oggetto di taglia e massa analoghe e valore pari o inferiore. Panacea rimuove tutte le maledizioni, malattie e veleni da una creatura toccata e le ripristina tutti i punti ferita. Ripristinare Vita lancia Rianimare Morti senza slot e senza che l’incantesimo sia presente nel libro. Ripristinare Giovinezza riduce l’età apparente di 3d10 anni, fino a un minimo di 13 anni, senza estendere la vita. La pietra non può essere ricreata prima di un riposo lungo.',
     schoolId: 'transmutation',
     source: _phbWizardTransmutationSource,
     resourceId: WizardTransmutationFeatureIds.masterTransmuter,

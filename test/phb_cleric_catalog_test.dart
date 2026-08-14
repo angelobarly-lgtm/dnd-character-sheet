@@ -220,12 +220,12 @@ void main() {
       },
     );
 
-    expect(resources['light_warding_flare']!.name, 'Interdizione Luminosa');
+    expect(resources['light_warding_flare']!.name, 'Lampo di Interdizione');
     expect(
       resources['tempest_wrath_of_the_storm']!.name,
       'Ira della Tempesta',
     );
-    expect(resources['war_priest']!.name, 'Prete della Guerra');
+    expect(resources['war_priest']!.name, 'Sacerdote di Guerra');
 
     for (final resource in resources.values) {
       expect(resource.maximumAbility, 'SAG');
@@ -253,6 +253,147 @@ void main() {
         'nature_domain_skill',
       },
     );
+  });
+
+  test('Cleric spell preparation and domain spells follow the manual', () {
+    final spellcasting =
+        cleric.featureDefinitions['spellcasting']!.content.description.details;
+    final domain =
+        cleric.featureDefinitions['divine_domain']!.content.description.details;
+
+    expect(spellcasting, contains('livelli per cui possiede slot'));
+    expect(spellcasting, contains('riposo lungo'));
+    expect(spellcasting, contains('1 minuto per livello'));
+    expect(spellcasting, contains('simbolo sacro'));
+
+    expect(domain, contains('non contano nel numero'));
+    expect(domain, contains('considerato un incantesimo da Chierico'));
+  });
+
+  test('Channel Divinity and Turn Undead retain their complete rules', () {
+    final channel = cleric
+        .featureDefinitions['channel_divinity']!.content.description.details;
+    final turn =
+        cleric.featureDefinitions['turn_undead']!.content.description.details;
+
+    expect(channel, contains('sceglie quale effetto'));
+    expect(channel, contains('CD degli incantesimi da Chierico'));
+
+    expect(turn, contains('allontanarsi il più possibile'));
+    expect(turn, contains('non può effettuare reazioni'));
+    expect(turn, contains('Scattare'));
+    expect(turn, contains('Schivare'));
+  });
+
+  test('Divine Intervention retains DM adjudication and recovery rules', () {
+    final details = cleric
+        .featureDefinitions['divine_intervention']!.content.description.details;
+
+    expect(details, contains('Il DM determina'));
+    expect(details, contains('incantesimo da Chierico o di dominio'));
+    expect(details, contains('7 giorni'));
+    expect(details, contains('riposo lungo'));
+  });
+
+  test('official Italian domain feature names match the 2014 manual', () {
+    final knowledge = cleric.subclasses[ClericSubclassIds.knowledge]!;
+    final war = cleric.subclasses[ClericSubclassIds.war]!;
+    final light = cleric.subclasses[ClericSubclassIds.light]!;
+    final nature = cleric.subclasses[ClericSubclassIds.nature]!;
+    final tempest = cleric.subclasses[ClericSubclassIds.tempest]!;
+    final life = cleric.subclasses[ClericSubclassIds.life]!;
+
+    expect(
+      knowledge.featureDefinitions['knowledge_of_the_ages']!.content.name,
+      'Incanalare Divinità: Conoscenze Secolari',
+    );
+    expect(
+      war.featureDefinitions['war_priest']!.content.name,
+      'Sacerdote di Guerra',
+    );
+    expect(
+      light.featureDefinitions['warding_flare']!.content.name,
+      'Lampo di Interdizione',
+    );
+    expect(
+      light.featureDefinitions['improved_flare']!.content.name,
+      'Lampo Migliorato',
+    );
+    expect(
+      nature.featureDefinitions['charm_animals_and_plants']!.content.name,
+      'Incanalare Divinità: Charme su Animali e Vegetali',
+    );
+    expect(
+      nature.featureDefinitions['dampen_elements']!.content.name,
+      'Mitigare Elementi',
+    );
+    expect(
+      tempest.featureDefinitions['destructive_wrath']!.content.name,
+      'Incanalare Divinità: Collera Distruttiva',
+    );
+    expect(
+      tempest.featureDefinitions['thunderbolt_strike']!.content.name,
+      'Colpo del Tuono e del Fulmine',
+    );
+    expect(
+      life.featureDefinitions['preserve_life']!.content.name,
+      'Incanalare Divinità: Preservare Vita',
+    );
+  });
+
+  test('Knowledge and Trickery preserve their targeting restrictions', () {
+    final knowledge = cleric.subclasses[ClericSubclassIds.knowledge]!
+        .featureDefinitions['read_thoughts']!.content.description.details;
+    final trickery = cleric.subclasses[ClericSubclassIds.trickery]!
+        .featureDefinitions['invoke_duplicity']!.content.description.details;
+
+    expect(knowledge, contains('può vedere'));
+    expect(knowledge, contains('successivo riposo lungo'));
+    expect(knowledge, contains('per 1 minuto'));
+    expect(knowledge, contains('fallisce automaticamente'));
+
+    expect(trickery, contains('entro 36 metri'));
+    expect(trickery, contains('usando i propri sensi'));
+    expect(trickery, contains('può vedere l’illusione'));
+  });
+
+  test('War and Light preserve their PHB decision windows and immunities', () {
+    final war = cleric.subclasses[ClericSubclassIds.war]!
+        .featureDefinitions['war_gods_blessing']!.content.description.details;
+    final flare = cleric.subclasses[ClericSubclassIds.light]!
+        .featureDefinitions['warding_flare']!.content.description.details;
+    final radiance = cleric
+        .subclasses[ClericSubclassIds.light]!
+        .featureDefinitions['radiance_of_the_dawn']!
+        .content
+        .description
+        .details;
+
+    expect(war, contains('dopo avere visto il tiro'));
+    expect(war, contains('prima che il DM dichiari'));
+
+    expect(flare, contains('prima che il DM dichiari'));
+    expect(flare, contains('non può essere accecato'));
+
+    expect(radiance, contains('copertura totale'));
+  });
+
+  test('Nature and Life preserve targets and healing exclusions', () {
+    final nature = cleric
+        .subclasses[ClericSubclassIds.nature]!
+        .featureDefinitions['charm_animals_and_plants']!
+        .content
+        .description
+        .details;
+    final life = cleric.subclasses[ClericSubclassIds.life]!
+        .featureDefinitions['preserve_life']!.content.description.details;
+
+    expect(nature, contains('in grado di vedere il Chierico'));
+    expect(nature, contains('considerata amichevole'));
+
+    expect(life, contains('cinque volte'));
+    expect(life, contains('metà dei suoi punti ferita massimi'));
+    expect(life, contains('costrutti o non morti'));
   });
 
   test('Cleric reaches level 20 with the official progression values', () {

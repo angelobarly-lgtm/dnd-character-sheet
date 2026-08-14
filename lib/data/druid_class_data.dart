@@ -516,7 +516,7 @@ final druidLandCircleFeatureDefinitions =
     summary:
         'Il Druido attraversa la vegetazione e il terreno difficile senza rallentare.',
     details:
-        'Dal 6° livello muoversi attraverso terreno difficile non magico non costa movimento extra. Può inoltre attraversare vegetazione non magica senza rallentare né subire danni e dispone di vantaggio contro piante create magicamente per ostacolare il movimento.',
+        'Dal 6° livello muoversi attraverso terreno difficile non magico non costa movimento extra. Può inoltre attraversare vegetazione non magica senza rallentare e senza subire danni da spine, aculei o pericoli simili. Dispone di vantaggio ai tiri salvezza contro vegetali creati o manipolati magicamente per ostacolare il movimento.',
     ruleTags: {
       'ignore_nonmagical_difficult_terrain',
       'ignore_nonmagical_plants',
@@ -549,10 +549,10 @@ final druidLandCircleFeatureDefinitions =
   'natures_sanctuary': _druidSubclassFeature(
     subclassId: DruidSubclassIds.land,
     id: 'natures_sanctuary',
-    name: 'Santuario della Natura',
+    name: 'Rifugio della Natura',
     summary: 'Animali e vegetali esitano ad attaccare il Druido.',
     details:
-        'Dal 14° livello, quando una bestia o una creatura vegetale attacca il Druido, deve superare un tiro salvezza di Saggezza. Se fallisce deve scegliere un altro bersaglio o l’attacco manca. Se supera il tiro è immune a questo effetto per 24 ore.',
+        'Dal 14° livello, quando una bestia o una creatura vegetale attacca il Druido, deve effettuare un tiro salvezza di Saggezza contro la CD degli incantesimi del Druido. Se fallisce deve scegliere un altro bersaglio o l’attacco manca automaticamente. Se supera il tiro è immune all’effetto per 24 ore. La creatura è consapevole dell’effetto prima di effettuare l’attacco.',
     ruleTags: {
       'beast',
       'plant',
@@ -628,7 +628,7 @@ final druidFeatureDefinitions = <String, CharacterClassFeatureDefinition>{
     summary:
         'Il Druido conosce il linguaggio segreto utilizzato dagli altri druidi.',
     details:
-        'Dal 1° livello il Druido conosce il Druidico. Può parlare questo linguaggio e usarlo per lasciare messaggi nascosti che gli altri druidi individuano automaticamente.',
+        'Dal 1° livello il Druido conosce il Druidico. Può parlare questo linguaggio e usarlo per lasciare messaggi segreti che gli altri conoscitori del Druidico individuano automaticamente. Le altre creature possono notare la presenza di un messaggio superando una prova di Saggezza (Percezione) con CD 15, ma non possono decifrarlo senza l’aiuto della magia.',
     effects: const CharacterEffects(
       languages: {
         'druidic',
@@ -644,7 +644,7 @@ final druidFeatureDefinitions = <String, CharacterClassFeatureDefinition>{
     name: 'Incantesimi',
     summary: 'Il Druido prepara e lancia incantesimi naturali usando Saggezza.',
     details:
-        'Dal 1° livello conosce i trucchetti da Druido e prepara ogni giorno un numero di incantesimi pari al livello da Druido più il modificatore di Saggezza, con un minimo di uno. Può lanciare come rituale un incantesimo da Druido preparato che possieda il descrittore rituale.',
+        'Dal 1° livello conosce i trucchetti da Druido e prepara un numero di incantesimi pari al livello da Druido più il modificatore di Saggezza, con un minimo di uno. Gli incantesimi preparati devono appartenere a livelli per cui possiede slot. Può cambiare la lista al termine di un riposo lungo, pregando e meditando per almeno 1 minuto per livello di ogni incantesimo preparato. Può lanciare come rituale un incantesimo da Druido preparato che possieda il descrittore rituale e può usare un focus druidico come focus da incantatore.',
     ruleTags: {
       'spellcasting',
       'wisdom',
@@ -671,7 +671,7 @@ final druidFeatureDefinitions = <String, CharacterClassFeatureDefinition>{
     summary:
         'Il Druido assume magicamente la forma di una bestia già osservata.',
     details:
-        'Dal 2° livello usa un’azione e un utilizzo di Forma Selvatica per trasformarsi in una bestia che ha già visto. Il grado di sfida massimo e le velocità consentite dipendono dal livello. La trasformazione dura un numero di ore pari a metà del livello da Druido.',
+        'Dal 2° livello usa un’azione e un utilizzo di Forma Selvatica per trasformarsi in una bestia che ha già visto. Il grado di sfida massimo e le velocità consentite dipendono dal livello. La trasformazione dura un numero di ore pari a metà del livello da Druido arrotondato per difetto; può prolungarla spendendo un altro utilizzo, terminarla anticipatamente con un’azione bonus e torna automaticamente alla forma normale se cade privo di sensi, scende a 0 punti ferita o muore. Le statistiche sono sostituite da quelle della bestia, ma conserva allineamento, personalità, Intelligenza, Saggezza, Carisma e le proprie competenze; usa il bonus della bestia quando una competenza condivisa è superiore e non può usare azioni leggendarie o di tana. Assume i punti ferita e i Dadi Vita della bestia e gli eventuali danni eccedenti si trasferiscono alla forma normale. Non può lanciare incantesimi, ma conserva la concentrazione e può continuare a usare le azioni di un incantesimo già lanciato. Mantiene i privilegi che la nuova forma può fisicamente utilizzare e i sensi speciali posseduti anche dalla bestia. Decide se l’equipaggiamento cade a terra, si fonde nella forma o rimane indossato; l’equipaggiamento fuso non produce effetti.',
     resourceId: 'wild_shape',
     ruleTags: {
       'transformation',
@@ -749,7 +749,7 @@ final druidFeatureDefinitions = <String, CharacterClassFeatureDefinition>{
     summary:
         'Il Druido può usare Forma Selvatica senza limiti e semplifica le componenti degli incantesimi.',
     details:
-        'Al 20° livello può usare Forma Selvatica un numero illimitato di volte. Può inoltre ignorare le componenti verbali e somatiche degli incantesimi da Druido e le componenti materiali prive di costo e non consumate.',
+        'Al 20° livello può usare Forma Selvatica un numero illimitato di volte. Può inoltre ignorare le componenti verbali e somatiche degli incantesimi da Druido e le componenti materiali prive di costo e non consumate, sia nella forma normale sia in una forma bestiale assunta tramite Forma Selvatica.',
     resourceId: 'wild_shape',
     ruleTags: {
       'unlimited_resource',

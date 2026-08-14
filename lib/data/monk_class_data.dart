@@ -41,7 +41,7 @@ const _monkSimpleWeaponNames = <String, String>{
   'dagger': 'Pugnale',
   'greatclub': 'Randello Pesante',
   'handaxe': 'Accetta',
-  'javelin': 'Giacollotto',
+  'javelin': 'Giavellotto',
   'light_hammer': 'Martello Leggero',
   'mace': 'Mazza',
   'quarterstaff': 'Bastone Ferrato',
@@ -62,7 +62,7 @@ const _monkFeatureSpecs = <String, List<String>>{
   'martial_arts': [
     'Arti Marziali',
     'Il Monaco combatte efficacemente senz’armi e con le armi monastiche.',
-    'Quando non indossa armatura e non usa uno scudo può usare Destrezza al posto di Forza, impiegare il dado delle Arti Marziali e compiere un colpo senz’armi come azione bonus dopo l’azione di Attacco.',
+    'Finché è senz’armi o impugna soltanto spade corte o armi da mischia semplici prive delle proprietà a due mani e pesante, e non indossa armatura né usa uno scudo, può usare Destrezza al posto di Forza, usare il dado delle Arti Marziali e sferrare un colpo senz’armi come azione bonus dopo avere usato l’azione di Attacco con un colpo senz’armi o un’arma da monaco.',
   ],
   'ki': [
     'Ki',
@@ -82,7 +82,7 @@ const _monkFeatureSpecs = <String, List<String>>{
   'deflect_missiles': [
     'Deviare Proiettili',
     'Il Monaco può usare la reazione per ridurre i danni di un attacco con arma a distanza.',
-    'La riduzione è pari a 1d10 + Destrezza + livello da Monaco. Se il danno scende a zero può afferrare il proiettile e, spendendo 1 Ki, rilanciarlo.',
+    'La riduzione è pari a 1d10 + modificatore di Destrezza + livello da Monaco. Se riduce il danno a 0 può afferrare il proiettile, purché sia abbastanza piccolo e abbia una mano libera. Spendendo 1 punto Ki come parte della stessa reazione può effettuare con competenza un attacco a distanza: il proiettile è considerato un’arma da monaco con gittata 6/18 metri.',
   ],
   'slow_fall': [
     'Caduta Lenta',
@@ -127,7 +127,7 @@ const _monkFeatureSpecs = <String, List<String>>{
   'purity_of_body': [
     'Purezza del Corpo',
     'Il controllo del Ki rende il Monaco immune a malattie e veleno.',
-    'Dal 10° livello il Monaco è immune alle malattie e alla condizione avvelenato.',
+    'Dal 10° livello il Monaco è immune alle malattie e ai veleni.',
   ],
   'tongue_of_the_sun_and_moon': [
     'Lingua del Sole e della Luna',
@@ -142,12 +142,12 @@ const _monkFeatureSpecs = <String, List<String>>{
   'timeless_body': [
     'Corpo Senza Tempo',
     'Il Ki protegge il Monaco dagli effetti debilitanti dell’età.',
-    'Dal 15° livello non subisce la fragilità della vecchiaia, non può essere invecchiato magicamente e non necessita più di cibo o acqua.',
+    'Dal 15° livello non subisce la fragilità della vecchiaia, non può essere invecchiato magicamente e non necessita più di cibo o acqua; può comunque morire di vecchiaia.',
   ],
   'empty_body': [
     'Corpo Vuoto',
     'Il Monaco può spendere Ki per diventare invisibile e resistente ai danni.',
-    'Dal 18° livello può spendere 4 Ki per diventare invisibile per 1 minuto e ottenere resistenza a tutti i danni tranne quelli da forza; può inoltre spendere 8 Ki per usare Proiezione Astrale su se stesso.',
+    'Dal 18° livello può usare un’azione e spendere 4 Ki per diventare invisibile per 1 minuto e ottenere resistenza a tutti i danni tranne quelli da forza. Può inoltre spendere 8 Ki per lanciare Proiezione Astrale senza componenti materiali, bersagliando soltanto se stesso e senza portare nessun’altra creatura.',
   ],
   'perfect_self': [
     'Perfezione Interiore',
@@ -312,7 +312,7 @@ final monkOpenHandFeatureDefinitions =
     subclassId: MonkSubclassIds.openHand,
     summary: 'Il Monaco imprime vibrazioni letali in una creatura colpita.',
     details:
-        'Dal 17° livello, dopo un colpo senz’armi, può spendere 3 Ki. Le vibrazioni durano per un numero di giorni pari al livello da Monaco. Usando un’azione può terminarle: con un tiro salvezza di Costituzione fallito il bersaglio scende a 0 punti ferita, mentre con un successo subisce 10d10 danni necrotici.',
+        'Dal 17° livello, dopo un colpo senz’armi, può spendere 3 Ki. Le vibrazioni durano per un numero di giorni pari al livello da Monaco. Quando Monaco e bersaglio si trovano sullo stesso piano di esistenza, il Monaco può usare un’azione per terminarle: con un tiro salvezza di Costituzione fallito il bersaglio scende a 0 punti ferita, mentre con un successo subisce 10d10 danni necrotici. Può mantenere una sola creatura alla volta sotto questo effetto e può terminarlo in modo innocuo.',
     resourceId: 'ki',
     ruleTags: {
       'unarmed_strike',
@@ -517,12 +517,11 @@ final monkFourElementsOptions = <SubclassOptionDefinition>[
     name: 'Frusta d’Acqua',
     minimumLevel: 3,
     cost: 2,
-    maximumCost: 4,
     allowsAdditionalResource: true,
     summary:
         'Una frusta d’acqua danneggia e può sbilanciare o trascinare una creatura.',
     details:
-        'Con un’azione e almeno 2 punti Ki bersaglia una creatura visibile entro 9 metri. Un tiro salvezza di Destrezza determina danni ed effetti; può spendere fino a 2 Ki aggiuntivi per aumentare il danno.',
+        'Con un’azione e 2 punti Ki bersaglia una creatura visibile entro 9 metri. Infligge 3d10 danni contundenti più 1d10 per ogni punto Ki aggiuntivo. Se il tiro salvezza di Destrezza fallisce, il Monaco può rendere il bersaglio prono o trascinarlo fino a 7,5 metri verso di sé; con un successo il bersaglio subisce metà danni e nessun effetto aggiuntivo.',
   ),
   _elementalDiscipline(
     id: 'pugno_dei_quattro_tuoni',
@@ -538,12 +537,11 @@ final monkFourElementsOptions = <SubclassOptionDefinition>[
     name: 'Pugno dell’Aria Inviolabile',
     minimumLevel: 3,
     cost: 2,
-    maximumCost: 4,
     allowsAdditionalResource: true,
     summary:
         'Una scarica d’aria colpisce, respinge e può abbattere una creatura.',
     details:
-        'Con un’azione e almeno 2 punti Ki bersaglia una creatura entro 9 metri. Il bersaglio effettua un tiro salvezza di Forza; può spendere fino a 2 Ki aggiuntivi per aumentare il danno.',
+        'Con un’azione e 2 punti Ki bersaglia una creatura entro 9 metri. Infligge 3d10 danni contundenti più 1d10 per ogni punto Ki aggiuntivo. Se il tiro salvezza di Forza fallisce, il Monaco può spingere il bersaglio fino a 6 metri e renderlo prono; con un successo il bersaglio subisce metà danni e non viene spinto né reso prono.',
   ),
   _elementalDiscipline(
     id: 'spiriti_della_burrasca_impetuosa',
@@ -728,6 +726,18 @@ final monkFourElementsDefinition = CharacterSubclassDefinition(
       17,
     },
   ),
+  progressionValues: const [
+    ClassProgressionValueDefinition(
+      id: 'maximum_ki_per_elemental_spell',
+      name: 'Punti Ki Massimi per Incantesimo Elementale',
+      valuesByLevel: {
+        5: '3',
+        9: '4',
+        13: '5',
+        17: '6',
+      },
+    ),
+  ],
 );
 
 final monkSubclasses = <String, CharacterSubclassDefinition>{
@@ -807,7 +817,7 @@ final monkClassDefinition = CharacterClassDefinition(
       alternatives: [
         ClassEquipmentAlternative(
           id: 'monk_pack_dungeoneer',
-          label: 'Dotazione da Esploratore di Sotterranei',
+          label: 'Dotazione da Avventuriero',
           grants: [
             ClassEquipmentGrant(
               catalogId: 'equipment_pack',

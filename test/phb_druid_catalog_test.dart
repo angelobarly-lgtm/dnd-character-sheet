@@ -283,6 +283,80 @@ void main() {
     );
   });
 
+  test('Druidic preserves its complete secret-message rules', () {
+    final details =
+        druid.featureDefinitions['druidic']!.content.description.details;
+
+    expect(details, contains('individuano automaticamente'));
+    expect(details, contains('Saggezza (Percezione)'));
+    expect(details, contains('CD 15'));
+    expect(details, contains('senza l’aiuto della magia'));
+  });
+
+  test('Druid spell preparation follows the complete PHB procedure', () {
+    final details =
+        druid.featureDefinitions['spellcasting']!.content.description.details;
+
+    expect(details, contains('livelli per cui possiede slot'));
+    expect(details, contains('riposo lungo'));
+    expect(details, contains('1 minuto per livello'));
+    expect(details, contains('focus druidico'));
+  });
+
+  test('Wild Shape retains all PHB transformation rules', () {
+    final details =
+        druid.featureDefinitions['wild_shape']!.content.description.details;
+
+    expect(details, contains('arrotondato per difetto'));
+    expect(details, contains('azione bonus'));
+    expect(details, contains('privo di sensi'));
+    expect(details, contains('0 punti ferita'));
+    expect(details, contains('azioni leggendarie o di tana'));
+    expect(details, contains('danni eccedenti'));
+    expect(details, contains('conserva la concentrazione'));
+    expect(details, contains('sensi speciali'));
+    expect(details, contains('si fonde nella forma'));
+  });
+
+  test('Circle of the Land uses the official Nature Refuge name', () {
+    final land = druid.subclasses[DruidSubclassIds.land]!;
+    final refuge = land.featureDefinitions['natures_sanctuary']!;
+
+    expect(refuge.content.name, 'Rifugio della Natura');
+    expect(
+      refuge.content.description.details,
+      contains('CD degli incantesimi del Druido'),
+    );
+    expect(
+      refuge.content.description.details,
+      contains('consapevole dell’effetto'),
+    );
+    expect(
+      refuge.content.description.details,
+      contains('24 ore'),
+    );
+  });
+
+  test('Land Stride includes thorns and magical-plant saving throws', () {
+    final details = druid.subclasses[DruidSubclassIds.land]!
+        .featureDefinitions['lands_stride']!.content.description.details;
+
+    expect(details, contains('spine, aculei'));
+    expect(details, contains('tiri salvezza'));
+    expect(details, contains('creati o manipolati magicamente'));
+  });
+
+  test('Archdruid component benefits work in both forms', () {
+    final details =
+        druid.featureDefinitions['archdruid']!.content.description.details;
+
+    expect(details, contains('numero illimitato'));
+    expect(details, contains('componenti verbali e somatiche'));
+    expect(details, contains('prive di costo e non consumate'));
+    expect(details, contains('forma normale'));
+    expect(details, contains('forma bestiale'));
+  });
+
   test('all subclass choices have unique stable IDs', () {
     final ids = <String>[
       for (final circle in druid.subclasses.values)

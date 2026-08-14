@@ -46,7 +46,7 @@ void main() {
       final resource = domain.resources.single;
 
       expect(resource.id, 'light_warding_flare');
-      expect(resource.name, 'Interdizione Luminosa');
+      expect(resource.name, 'Lampo di Interdizione');
       expect(resource.minimumLevel, 1);
       expect(resource.recovery, ClassResourceRecovery.longRest);
       expect(resource.maximumAbility, 'SAG');

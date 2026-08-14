@@ -441,6 +441,164 @@ void main() {
     }
   });
 
+  test('manual audit: Rogue sources match the Italian PHB pages', () {
+    expect(rogue.content.source.reference, 'Pagine 76-79');
+    expect(thief.content.source.reference, 'Pagina 79');
+    expect(assassin.content.source.reference, 'Pagina 79');
+    expect(arcaneTrickster.content.source.reference, 'Pagine 79-80');
+  });
+
+  test('manual audit: core Rogue clauses are complete', () {
+    final thievesCant = rogue.featureDefinitions[RogueFeatureIds.thievesCant]!;
+    final sneakAttack = rogue.featureDefinitions[RogueFeatureIds.sneakAttack]!;
+    final strokeOfLuck =
+        rogue.featureDefinitions[RogueFeatureIds.strokeOfLuck]!;
+
+    expect(
+      thievesCant.content.description.details,
+      contains('quadruplo del tempo'),
+    );
+    expect(
+      thievesCant.content.description.details,
+      contains('rifugi sicuri'),
+    );
+    expect(
+      sneakAttack.content.description.details,
+      contains('entro 1,5 metri'),
+    );
+    expect(
+      sneakAttack.content.description.details,
+      contains('non dispone di svantaggio'),
+    );
+    expect(
+      strokeOfLuck.content.description.details,
+      contains('bersaglio entro gittata'),
+    );
+    expect(
+      strokeOfLuck.content.description.details,
+      contains('risultato del d20 come un 20'),
+    );
+  });
+
+  test('manual audit: Thief uses the official feature names and rules', () {
+    final useMagicDevice =
+        thief.featureDefinitions[ThiefFeatureIds.useMagicDevice]!;
+    final reflexes = thief.featureDefinitions[ThiefFeatureIds.thievesReflexes]!;
+
+    expect(useMagicDevice.content.name, 'Usare Oggetto Magico');
+    expect(
+      useMagicDevice.content.description.details,
+      contains('classe, razza e livello'),
+    );
+    expect(
+      reflexes.content.description.details,
+      contains('iniziativa meno 10'),
+    );
+    expect(
+      reflexes.content.description.details,
+      contains('sorpreso'),
+    );
+  });
+
+  test('manual audit: Assassin infiltration clauses are complete', () {
+    final infiltration =
+        assassin.featureDefinitions[AssassinFeatureIds.infiltrationExpertise]!;
+    final impostor = assassin.featureDefinitions[AssassinFeatureIds.impostor]!;
+    final deathStrike =
+        assassin.featureDefinitions[AssassinFeatureIds.deathStrike]!;
+
+    expect(
+      infiltration.content.description.details,
+      contains('sette giorni e 25 mo'),
+    );
+    expect(
+      infiltration.content.description.details,
+      contains('abiti, lettere di presentazione e certificati'),
+    );
+    expect(
+      infiltration.content.description.details,
+      contains('motivo valido per dubitare'),
+    );
+    expect(
+      impostor.content.description.details,
+      contains('osservatore casuale'),
+    );
+    expect(
+      impostor.content.description.details,
+      contains('Carisma (Inganno)'),
+    );
+    expect(
+      deathStrike.content.description.details,
+      contains('8 + bonus di competenza'),
+    );
+  });
+
+  test('manual audit: Arcane Trickster casting clauses are complete', () {
+    final casting = arcaneTrickster
+        .featureDefinitions[ArcaneTricksterFeatureIds.spellcasting]!;
+    final mageHand = arcaneTrickster
+        .featureDefinitions[ArcaneTricksterFeatureIds.mageHandLegerdemain]!;
+    final spellThief = arcaneTrickster
+        .featureDefinitions[ArcaneTricksterFeatureIds.spellThief]!;
+
+    expect(
+      casting.content.description.details,
+      contains('riposo lungo'),
+    );
+    expect(
+      casting.content.description.details,
+      contains('sostituire uno degli incantesimi'),
+    );
+    expect(
+      casting.content.description.details,
+      contains('8 + bonus di competenza'),
+    );
+
+    final mageHandTargets =
+        mageHand.effects.ruleEffects.map((effect) => effect.target).toSet();
+
+    expect(
+      mageHandTargets,
+      containsAll({
+        'mage_hand_visibility',
+        'mage_hand_additional_uses',
+        'mage_hand_unnoticed_task',
+        'control_mage_hand',
+      }),
+    );
+    expect(
+      mageHand.content.description.details,
+      contains('Rapidità di Mano'),
+    );
+    expect(
+      mageHand.content.description.details,
+      contains('Saggezza (Percezione)'),
+    );
+
+    final spellThiefTargets =
+        spellThief.effects.ruleEffects.map((effect) => effect.target).toSet();
+
+    expect(
+      spellThiefTargets,
+      containsAll({
+        'spell_targeting_or_including_rogue',
+        'caster_spellcasting_ability_saving_throw',
+        'spell_effect_against_rogue',
+        'stolen_spell_duration_hours',
+        'stolen_spell_casting',
+        'original_caster_spell_access',
+      }),
+    );
+    expect(
+      spellThief.content.description.details,
+      contains('usando i propri slot'),
+    );
+    expect(
+      spellThief.content.description.details,
+      contains('non è un incantesimo da Mago'),
+    );
+  });
+
   test('all resource references resolve within their owner', () {
     final rogueResourceIds =
         rogue.resources.map((resource) => resource.id).toSet();

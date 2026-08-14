@@ -129,7 +129,7 @@ void main() {
     );
 
     expect(wolfSpirit.description.details, contains('1,5 metri'));
-    expect(eagleAspect.description.details, contains('1,6 km'));
+    expect(eagleAspect.description.details, contains('1,5 km'));
     expect(eagleAspect.description.details, contains('30 metri'));
     expect(bearAttunement.description.details, contains('1,5 metri'));
   });

@@ -137,7 +137,7 @@ final clericFeatureDefinitions = <String, CharacterClassFeatureDefinition>{
     name: 'Incantesimi',
     summary: 'Il Chierico prepara e lancia incantesimi divini usando Saggezza.',
     details:
-        'Dal 1° livello conosce i trucchetti da Chierico e prepara ogni giorno un numero di incantesimi pari al livello da Chierico più il modificatore di Saggezza, con un minimo di uno. Può lanciare come rituale un incantesimo da Chierico preparato che possieda il descrittore rituale.',
+        'Dal 1° livello conosce i trucchetti da Chierico e prepara un numero di incantesimi pari al livello da Chierico più il modificatore di Saggezza, con un minimo di uno. Gli incantesimi preparati devono appartenere a livelli per cui possiede slot. Può cambiare la lista al termine di un riposo lungo, pregando e meditando per almeno 1 minuto per livello di ogni incantesimo preparato. Può lanciare come rituale un incantesimo da Chierico preparato che possieda il descrittore rituale e può usare un simbolo sacro come focus da incantatore.',
     ruleTags: {
       'spellcasting',
       'wisdom',
@@ -150,7 +150,7 @@ final clericFeatureDefinitions = <String, CharacterClassFeatureDefinition>{
     name: 'Dominio Divino',
     summary: 'Il Chierico sceglie un dominio collegato alla propria divinità.',
     details:
-        'Al 1° livello sceglie un Dominio Divino. Il dominio concede incantesimi sempre preparati e privilegi ai livelli 1, 2, 6, 8 e 17.',
+        'Al 1° livello sceglie un Dominio Divino. Il dominio concede incantesimi sempre preparati, che non contano nel numero di incantesimi preparabili, e privilegi ai livelli 1, 2, 6, 8 e 17. Un incantesimo di dominio non presente nella lista del Chierico è comunque considerato un incantesimo da Chierico per lui.',
     ruleTags: {
       'subclass_selection',
       'domain_spells',
@@ -162,7 +162,7 @@ final clericFeatureDefinitions = <String, CharacterClassFeatureDefinition>{
     summary:
         'Il Chierico incanala energia divina per produrre effetti speciali.',
     details:
-        'Dal 2° livello dispone di un utilizzo di Incanalare Divinità. Gli utilizzi diventano due al 6° livello e tre al 18° livello. Recupera tutti gli utilizzi al termine di un riposo breve o lungo.',
+        'Dal 2° livello dispone di un utilizzo di Incanalare Divinità e sceglie quale effetto produrre ogni volta che lo utilizza. Gli utilizzi diventano due al 6° livello e tre al 18° livello. Recupera tutti gli utilizzi al termine di un riposo breve o lungo. La CD degli effetti che richiedono un tiro salvezza è pari alla CD degli incantesimi da Chierico.',
     resourceId: 'channel_divinity',
     ruleTags: {
       'short_rest',
@@ -175,7 +175,7 @@ final clericFeatureDefinitions = <String, CharacterClassFeatureDefinition>{
     name: 'Incanalare Divinità: Scacciare Non Morti',
     summary: 'Il Chierico presenta il simbolo sacro e scaccia i non morti.',
     details:
-        'Come azione, ogni non morto entro 9 metri che possa vedere o sentire il Chierico effettua un tiro salvezza di Saggezza. In caso di fallimento è scacciato per 1 minuto o finché non subisce danni.',
+        'Come azione, ogni non morto entro 9 metri che possa vedere o sentire il Chierico effettua un tiro salvezza di Saggezza. In caso di fallimento è scacciato per 1 minuto o finché non subisce danni. Una creatura scacciata deve tentare di allontanarsi il più possibile, non può muoversi volontariamente entro 9 metri dal Chierico e non può effettuare reazioni. Come azione può soltanto Scattare, tentare di liberarsi da un effetto che le impedisce di muoversi o Schivare se non può muoversi.',
     resourceId: 'channel_divinity',
     ruleTags: {
       'action',
@@ -216,7 +216,7 @@ final clericFeatureDefinitions = <String, CharacterClassFeatureDefinition>{
     name: 'Intervento Divino',
     summary: 'Il Chierico può chiedere alla propria divinità di intervenire.',
     details:
-        'Dal 10° livello usa un’azione per descrivere l’aiuto richiesto e tira un d100. Se il risultato è pari o inferiore al livello da Chierico, la divinità interviene. Dopo un successo non può usare nuovamente il privilegio per 7 giorni; dopo un fallimento deve completare un riposo lungo.',
+        'Dal 10° livello usa un’azione per descrivere l’aiuto richiesto e tira un d100. Se il risultato è pari o inferiore al livello da Chierico, la divinità interviene. Il DM determina la natura dell’intervento; l’effetto di un incantesimo da Chierico o di dominio è appropriato. Dopo un successo non può usare nuovamente il privilegio per 7 giorni; dopo un fallimento deve completare un riposo lungo.',
     ruleTags: {
       'action',
       'd100',
@@ -321,7 +321,7 @@ final clericTempestDomainFeatureDefinitions =
   'destructive_wrath': _clericDomainFeature(
     domainId: ClericSubclassIds.tempest,
     id: 'destructive_wrath',
-    name: 'Incanalare Divinità: Ira Distruttiva',
+    name: 'Incanalare Divinità: Collera Distruttiva',
     summary:
         'Il Chierico infligge il massimo danno possibile con fulmini o tuoni.',
     details:
@@ -337,7 +337,7 @@ final clericTempestDomainFeatureDefinitions =
   'thunderbolt_strike': _clericDomainFeature(
     domainId: ClericSubclassIds.tempest,
     id: 'thunderbolt_strike',
-    name: 'Colpo del Fulmine',
+    name: 'Colpo del Tuono e del Fulmine',
     summary:
         'I danni da fulmine possono spingere una creatura lontano dal Chierico.',
     details:
@@ -404,7 +404,7 @@ final clericTrickeryDomainFeatureDefinitions =
     summary:
         'Il Chierico crea un duplicato illusorio che può fungere da origine degli incantesimi.',
     details:
-        'Dal 2° livello usa Incanalare Divinità come azione per creare un duplicato illusorio entro 9 metri, mantenendo la concentrazione fino a 1 minuto. Può spostarlo fino a 9 metri con un’azione bonus, lanciare incantesimi come se si trovasse nella sua posizione e ottenere vantaggio agli attacchi se entrambi sono entro 1,5 metri dal bersaglio.',
+        'Dal 2° livello usa Incanalare Divinità come azione per creare un duplicato illusorio entro 9 metri, mantenendo la concentrazione fino a 1 minuto. Può spostarlo fino a 9 metri con un’azione bonus, ma il duplicato deve rimanere entro 36 metri. Può lanciare incantesimi come se si trovasse nella posizione dell’illusione usando i propri sensi. Ottiene vantaggio ai tiri per colpire quando sia il Chierico sia il duplicato sono entro 1,5 metri da una creatura che può vedere l’illusione.',
     resourceId: 'channel_divinity',
     ruleTags: {
       'channel_divinity',
@@ -492,7 +492,7 @@ final clericWarDomainFeatureDefinitions =
   'war_priest': _clericDomainFeature(
     domainId: ClericSubclassIds.war,
     id: 'war_priest',
-    name: 'Prete della Guerra',
+    name: 'Sacerdote di Guerra',
     summary:
         'Dopo aver attaccato, il Chierico può effettuare un altro attacco come azione bonus.',
     details:
@@ -526,7 +526,7 @@ final clericWarDomainFeatureDefinitions =
     name: 'Incanalare Divinità: Benedizione del Dio della Guerra',
     summary: 'Il Chierico concede +10 al tiro per colpire di un alleato.',
     details:
-        'Dal 6° livello, quando una creatura entro 9 metri effettua un tiro per colpire, il Chierico può usare la reazione e Incanalare Divinità per concedere un bonus di +10 al tiro.',
+        'Dal 6° livello, quando una creatura entro 9 metri effettua un tiro per colpire, il Chierico può usare la reazione e Incanalare Divinità per concedere un bonus di +10 al tiro. Decide dopo avere visto il tiro, ma prima che il DM dichiari se l’attacco colpisce o manca.',
     resourceId: 'channel_divinity',
     ruleTags: {
       'channel_divinity',
@@ -712,7 +712,7 @@ final clericWarDomainDefinition = CharacterSubclassDefinition(
   resources: const [
     ClassResourceDefinition(
       id: 'war_priest',
-      name: 'Prete della Guerra',
+      name: 'Sacerdote di Guerra',
       minimumLevel: 1,
       recovery: ClassResourceRecovery.longRest,
       maximumByLevel: {},
@@ -769,11 +769,11 @@ final clericLightDomainFeatureDefinitions =
   'warding_flare': _clericDomainFeature(
     domainId: ClericSubclassIds.light,
     id: 'warding_flare',
-    name: 'Interdizione Luminosa',
+    name: 'Lampo di Interdizione',
     summary:
         'Il Chierico impone svantaggio a un attacco sprigionando luce divina.',
     details:
-        'Dal 1° livello, quando una creatura entro 9 metri che il Chierico può vedere effettua un attacco contro di lui, può usare la reazione per imporre svantaggio. Può farlo un numero di volte pari al modificatore di Saggezza, con un minimo di una volta, recuperando gli utilizzi dopo un riposo lungo.',
+        'Dal 1° livello, quando una creatura entro 9 metri che il Chierico può vedere effettua un attacco contro di lui, può usare la reazione per imporre svantaggio prima che il DM dichiari se l’attacco colpisce o manca. Un attaccante che non può essere accecato è immune. Può farlo un numero di volte pari al modificatore di Saggezza, con un minimo di una volta, recuperando gli utilizzi dopo un riposo lungo.',
     resourceId: 'light_warding_flare',
     ruleTags: {
       'reaction',
@@ -790,7 +790,7 @@ final clericLightDomainFeatureDefinitions =
     summary:
         'Il Chierico disperde l’oscurità e infligge danni radiosi ai nemici.',
     details:
-        'Dal 2° livello usa Incanalare Divinità come azione per dissolvere l’oscurità magica entro 9 metri. Le creature ostili nell’area effettuano un tiro salvezza di Costituzione, subendo 2d10 più il livello da Chierico danni radiosi in caso di fallimento, o la metà in caso di successo.',
+        'Dal 2° livello usa Incanalare Divinità come azione per dissolvere l’oscurità magica entro 9 metri. Le creature ostili nell’area effettuano un tiro salvezza di Costituzione, subendo 2d10 più il livello da Chierico danni radiosi in caso di fallimento, o la metà in caso di successo. Una creatura con copertura totale rispetto al Chierico non è influenzata.',
     resourceId: 'channel_divinity',
     ruleTags: {
       'channel_divinity',
@@ -805,11 +805,11 @@ final clericLightDomainFeatureDefinitions =
   'improved_flare': _clericDomainFeature(
     domainId: ClericSubclassIds.light,
     id: 'improved_flare',
-    name: 'Interdizione Luminosa Migliorata',
+    name: 'Lampo Migliorato',
     summary:
-        'Il Chierico può proteggere con Interdizione Luminosa anche un alleato.',
+        'Il Chierico può proteggere con Lampo di Interdizione anche un alleato.',
     details:
-        'Dal 6° livello può usare Interdizione Luminosa quando una creatura entro 9 metri attacca un’altra creatura che il Chierico può vedere.',
+        'Dal 6° livello può usare Lampo di Interdizione quando una creatura entro 9 metri attacca un’altra creatura che il Chierico può vedere.',
     resourceId: 'light_warding_flare',
     ruleTags: {
       'reaction',
@@ -838,7 +838,7 @@ final clericLightDomainFeatureDefinitions =
     summary:
         'Il Chierico emette luce solare che rende vulnerabili agli effetti di fuoco e radiosi.',
     details:
-        'Dal 17° livello può usare un’azione per attivare un’aura di luce solare del raggio di 18 metri. I nemici nell’area subiscono svantaggio ai tiri salvezza contro gli incantesimi che infliggono danni da fuoco o radiosi.',
+        'Dal 17° livello può usare un’azione per attivare un’aura di luce solare che dura 1 minuto o finché non la congeda con un’altra azione. Emette luce intensa entro 18 metri e luce fioca per ulteriori 9 metri. I nemici nella luce intensa subiscono svantaggio ai tiri salvezza contro gli incantesimi che infliggono danni da fuoco o radiosi.',
     ruleTags: {
       'action',
       'aura_18_meters',
@@ -903,11 +903,11 @@ final clericNatureDomainFeatureDefinitions =
   'charm_animals_and_plants': _clericDomainFeature(
     domainId: ClericSubclassIds.nature,
     id: 'charm_animals_and_plants',
-    name: 'Incanalare Divinità: Affascinare Animali e Vegetali',
+    name: 'Incanalare Divinità: Charme su Animali e Vegetali',
     summary:
         'Il Chierico affascina bestie e creature vegetali nelle vicinanze.',
     details:
-        'Dal 2° livello usa Incanalare Divinità come azione. Ogni bestia o creatura vegetale entro 9 metri effettua un tiro salvezza di Saggezza; in caso di fallimento è affascinata per 1 minuto o finché non subisce danni.',
+        'Dal 2° livello usa Incanalare Divinità come azione. Ogni bestia o creatura vegetale entro 9 metri che sia in grado di vedere il Chierico effettua un tiro salvezza di Saggezza; in caso di fallimento è affascinata per 1 minuto o finché non subisce danni ed è considerata amichevole verso il Chierico e le creature da lui designate.',
     resourceId: 'channel_divinity',
     ruleTags: {
       'channel_divinity',
@@ -922,7 +922,7 @@ final clericNatureDomainFeatureDefinitions =
   'dampen_elements': _clericDomainFeature(
     domainId: ClericSubclassIds.nature,
     id: 'dampen_elements',
-    name: 'Smorzare Elementi',
+    name: 'Mitigare Elementi',
     summary:
         'Il Chierico concede temporaneamente resistenza a un danno elementale.',
     details:
@@ -960,7 +960,7 @@ final clericNatureDomainFeatureDefinitions =
     summary:
         'Il Chierico può comandare le creature affascinate dal proprio potere divino.',
     details:
-        'Dal 17° livello, mentre una creatura è affascinata da Affascinare Animali e Vegetali, il Chierico può usare un’azione bonus nel proprio turno per comandare verbalmente ciò che ciascuna creatura deve fare nel turno successivo.',
+        'Dal 17° livello, mentre una creatura è affascinata da Charme su Animali e Vegetali, il Chierico può usare un’azione bonus nel proprio turno per comandare verbalmente ciò che ciascuna creatura deve fare nel turno successivo.',
     ruleTags: {
       'bonus_action',
       'command_charmed_creatures',
@@ -1001,7 +1001,7 @@ final clericLightDomainDefinition = CharacterSubclassDefinition(
   resources: const [
     ClassResourceDefinition(
       id: 'light_warding_flare',
-      name: 'Interdizione Luminosa',
+      name: 'Lampo di Interdizione',
       minimumLevel: 1,
       recovery: ClassResourceRecovery.longRest,
       maximumByLevel: {},
@@ -1147,7 +1147,7 @@ final clericKnowledgeDomainFeatureDefinitions =
     summary:
         'Il Chierico legge i pensieri superficiali e può impartire una suggestione.',
     details:
-        'Dal 6° livello usa Incanalare Divinità su una creatura entro 18 metri. Se il bersaglio fallisce un tiro salvezza di Saggezza, il Chierico ne legge i pensieri superficiali e può lanciare Suggestione senza consumare uno slot.',
+        'Dal 6° livello usa un’azione e Incanalare Divinità su una creatura che può vedere entro 18 metri. Se il bersaglio supera il tiro salvezza di Saggezza, non può essere bersaglio del privilegio fino al successivo riposo lungo del Chierico. Se fallisce, il Chierico ne legge i pensieri superficiali per 1 minuto finché rimane entro 18 metri. Durante questo periodo può usare un’azione per terminare l’effetto e lanciare Suggestione senza consumare uno slot; il bersaglio fallisce automaticamente il tiro salvezza contro l’incantesimo.',
     resourceId: 'channel_divinity',
     spellIds: {
       SpellIds.suggestion,
@@ -1180,7 +1180,7 @@ final clericKnowledgeDomainFeatureDefinitions =
     name: 'Visioni del Passato',
     summary: 'Il Chierico riceve visioni relative a un oggetto o a un luogo.',
     details:
-        'Dal 17° livello, dopo almeno 1 minuto di meditazione, può leggere le impressioni psichiche lasciate su un oggetto o in un luogo. La durata massima della lettura è pari al modificatore di Saggezza in minuti.',
+        'Dal 17° livello, dopo almeno 1 minuto di meditazione, può leggere le impressioni psichiche lasciate su un oggetto o in un luogo. La durata massima della lettura è pari al punteggio di Saggezza in minuti. Dopo avere usato il privilegio deve completare un riposo breve o lungo prima di poterlo usare di nuovo.',
     ruleTags: {
       'object_reading',
       'area_reading',
@@ -1226,10 +1226,10 @@ final clericLifeDomainFeatureDefinitions =
   'preserve_life': _clericDomainFeature(
     domainId: ClericSubclassIds.life,
     id: 'preserve_life',
-    name: 'Incanalare Divinità: Preservare la Vita',
+    name: 'Incanalare Divinità: Preservare Vita',
     summary: 'Il Chierico distribuisce energia curativa tra creature ferite.',
     details:
-        'Dal 2° livello usa Incanalare Divinità per distribuire punti ferita pari a cinque volte il proprio livello da Chierico tra creature entro 9 metri. Una creatura non può essere curata oltre la metà dei suoi punti ferita massimi.',
+        'Dal 2° livello usa un’azione e Incanalare Divinità per distribuire punti ferita pari a cinque volte il proprio livello da Chierico tra creature entro 9 metri. Una creatura non può essere curata oltre la metà dei suoi punti ferita massimi. Il privilegio non può influenzare costrutti o non morti.',
     resourceId: 'channel_divinity',
     ruleTags: {
       'channel_divinity',

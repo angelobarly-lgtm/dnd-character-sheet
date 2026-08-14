@@ -7,7 +7,7 @@ verificate dal livello 1 al livello 20.
 
 - [x] Barbaro
   - [x] Cammino del Berserker
-  - [x] Cammino del Guerriero Totemico
+  - [x] Cammino del Combattente Totemico
 - [x] Bardo
   - [x] Collegio della Sapienza
   - [x] Collegio del Valore

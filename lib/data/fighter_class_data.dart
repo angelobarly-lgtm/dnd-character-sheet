@@ -168,7 +168,7 @@ class ChampionFeatureIds {
 
 const _phbChampionSource = RuleSource(
   name: 'Manuale del Giocatore 2014',
-  reference: 'Pagina 72',
+  reference: 'Pagine 72-73',
 );
 
 CharacterClassFeatureDefinition _championFeature({
@@ -438,7 +438,7 @@ final battleMasterFeatureDefinitions =
     summary:
         'Il Maestro di Battaglia apprende manovre alimentate dai Dadi di Superiorità.',
     details:
-        'Dal 3° livello conosce tre manovre e possiede quattro Dadi di Superiorità d8. Recupera tutti i dadi spesi al termine di un riposo breve o lungo. La CD delle manovre è 8 più il bonus di competenza più il modificatore di Forza o Destrezza.',
+        'Dal 3° livello conosce tre manovre e possiede quattro Dadi di Superiorità d8. Può usare soltanto una manovra per ogni attacco. Apprende due manovre aggiuntive ai livelli 7, 10 e 15 e, ogni volta che ne apprende di nuove, può sostituire una manovra conosciuta. Recupera tutti i dadi spesi al termine di un riposo breve o lungo. La CD delle manovre è 8 più il bonus di competenza più il modificatore di Forza o Destrezza, a sua scelta.',
     resourceId: BattleMasterResourceIds.superiorityDice,
     effects: CharacterEffects(
       ruleEffects: [
@@ -724,7 +724,7 @@ final eldritchKnightFeatureDefinitions =
     name: 'Incantesimi',
     summary: 'Il Cavaliere Mistico apprende a lanciare incantesimi da Mago.',
     details:
-        'Dal 3° livello usa Intelligenza come caratteristica da incantatore. I trucchetti possono appartenere a qualsiasi scuola. La maggior parte degli incantesimi conosciuti deve appartenere ad Abiurazione o Invocazione, mentre quattro incantesimi possono essere scelti liberamente ai livelli 3, 8, 14 e 20.',
+        'Dal 3° livello usa Intelligenza come caratteristica da incantatore e recupera tutti gli slot spesi al termine di un riposo lungo. I trucchetti possono appartenere a qualsiasi scuola. La maggior parte degli incantesimi conosciuti deve appartenere ad Abiurazione o Invocazione, mentre quattro incantesimi possono essere scelti liberamente ai livelli 3, 8, 14 e 20. Ogni volta che acquisisce un livello da Guerriero può sostituire un incantesimo da Mago conosciuto con un altro di un livello per cui possiede slot; il sostituto deve essere di Abiurazione o Invocazione, salvo quando sostituisce uno dei quattro incantesimi di scuola libera.',
     effects: CharacterEffects(
       ruleEffects: [
         CharacterRuleEffect(
@@ -746,11 +746,11 @@ final eldritchKnightFeatureDefinitions =
   ),
   EldritchKnightFeatureIds.weaponBond: _eldritchKnightFeature(
     id: EldritchKnightFeatureIds.weaponBond,
-    name: 'Legame con l’Arma',
+    name: 'Arma Vincolata',
     summary:
         'Il Cavaliere Mistico crea un legame magico con un massimo di due armi.',
     details:
-        'Con un rituale di un’ora crea un legame con un’arma. Non può essere disarmato dall’arma legata mentre è cosciente e può richiamarla nella propria mano con un’azione bonus se si trova sullo stesso piano di esistenza. Può mantenere fino a due armi legate.',
+        'Con un rituale di un’ora, che può celebrare durante un riposo breve, crea un legame con un’arma tenuta a portata di mano. Non può essere disarmato dall’arma legata a meno che non sia incapacitato. Se si trova sullo stesso piano di esistenza, può evocarla nella propria mano con un’azione bonus. Può mantenere fino a due armi legate ed evocarne soltanto una con la stessa azione bonus; vincolarne una terza spezza uno dei legami precedenti.',
     effects: const CharacterEffects(
       ruleEffects: [
         CharacterRuleEffect(

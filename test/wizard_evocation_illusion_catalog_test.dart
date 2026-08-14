@@ -115,7 +115,6 @@ void main() {
         'additional_use_2d12_per_spell_level',
         'additional_d12_per_repeated_use',
         'ignores_resistance_and_immunity',
-        'damage_cannot_be_reduced_or_prevented',
       }),
     );
   });

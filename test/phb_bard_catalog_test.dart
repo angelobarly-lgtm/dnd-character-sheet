@@ -402,6 +402,69 @@ void main() {
     );
   });
 
+  test('Bard spellcasting preserves PHB ritual and replacement rules', () {
+    final details =
+        bard.featureDefinitions['spellcasting']!.content.description.details;
+
+    expect(details, contains('come rituale'));
+    expect(details, contains('che conosce'));
+    expect(details, contains('descrittore rituale'));
+    expect(details, contains('sostituire un incantesimo da Bardo conosciuto'));
+    expect(details, contains('un livello per cui possiede slot'));
+  });
+
+  test('Bardic Inspiration preserves its complete PHB timing', () {
+    final details = bard
+        .featureDefinitions['bardic_inspiration']!.content.description.details;
+
+    expect(details, contains('creatura diversa da sé'));
+    expect(details, contains('18 metri'));
+    expect(details, contains('10 minuti'));
+    expect(details, contains('dopo avere tirato il d20'));
+    expect(details, contains('prima che il DM dichiari l’esito'));
+    expect(details, contains('un solo dado di Ispirazione Bardica'));
+  });
+
+  test('Song of Rest requires allies to hear the performance', () {
+    final details =
+        bard.featureDefinitions['song_of_rest']!.content.description.details;
+
+    expect(details, contains('possono udire'));
+    expect(details, contains('uno o più Dadi Vita'));
+    expect(details, contains('riposo breve'));
+  });
+
+  test('Countercharm contains all PHB interruption conditions', () {
+    final details =
+        bard.featureDefinitions['countercharm']!.content.description.details;
+
+    expect(details, contains('9 metri'));
+    expect(details, contains('incapacitato'));
+    expect(details, contains('silenz'));
+    expect(details, contains('senza spendere un’azione'));
+  });
+
+  test('Cutting Words preserves visibility timing and immunity rules', () {
+    final details = bard.subclasses[BardSubclassIds.lore]!
+        .featureDefinitions['cutting_words']!.content.description.details;
+
+    expect(details, contains('può vedere'));
+    expect(details, contains('18 metri'));
+    expect(details, contains('prima che il DM dichiari l’esito'));
+    expect(details, contains('prima che siano applicati'));
+    expect(details, contains('non può sentire'));
+    expect(details, contains('immune alla condizione di affascinato'));
+  });
+
+  test('Combat Inspiration uses the exact PHB decision windows', () {
+    final details = bard.subclasses[BardSubclassIds.valor]!
+        .featureDefinitions['combat_inspiration']!.content.description.details;
+
+    expect(details, contains('dopo avere visto il tiro per i danni'));
+    expect(details, contains('può usare la reazione'));
+    expect(details, contains('prima di sapere se l’attacco colpisce'));
+  });
+
   test('universal registry contains the first three PHB classes', () {
     expect(
       phbClassDefinitions.keys.toSet(),

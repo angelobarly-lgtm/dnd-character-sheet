@@ -9,7 +9,7 @@ import 'spell_data.dart';
 
 const _phbRogueSource = RuleSource(
   name: 'Manuale del Giocatore 2014',
-  reference: 'Pagine 94-96',
+  reference: 'Pagine 76-79',
 );
 
 class RogueSubclassIds {
@@ -83,7 +83,7 @@ const _rogueFeatureSpecs = <String, List<String>>{
   RogueFeatureIds.thievesCant: [
     'Gergo Ladresco',
     'Il Ladro conosce un linguaggio segreto utilizzato negli ambienti criminali.',
-    'Durante una normale conversazione può nascondere messaggi comprensibili soltanto a chi conosce il Gergo Ladresco. Conosce inoltre segni e simboli segreti usati per comunicare brevi informazioni.',
+    'Durante una conversazione apparentemente normale può nascondere messaggi comprensibili soltanto a chi conosce il Gergo Ladresco. Trasmettere un concetto in questo modo richiede il quadruplo del tempo normalmente necessario. Conosce inoltre simboli e segni segreti che indicano pericoli, territori controllati da una gilda, bottini o bersagli appetibili e rifugi sicuri.',
   ],
   RogueFeatureIds.cunningAction: [
     'Azione Scaltra',
@@ -138,7 +138,7 @@ const _rogueFeatureSpecs = <String, List<String>>{
   RogueFeatureIds.strokeOfLuck: [
     'Colpo di Fortuna',
     'Il Ladro trasforma un fallimento decisivo in un successo.',
-    'Al 20° livello può trasformare un proprio attacco mancato in un colpo oppure considerare il risultato di una prova di caratteristica fallita come un 20 naturale. Recupera l’utilizzo dopo un riposo breve o lungo.',
+    'Al 20° livello, se un suo attacco manca un bersaglio entro gittata, può trasformarlo in un attacco con successo. In alternativa, quando fallisce una prova di caratteristica, può considerare il risultato del d20 come un 20. Recupera l’utilizzo dopo un riposo breve o lungo.',
   ],
 };
 
@@ -397,7 +397,7 @@ final rogueFeatureDefinitions = <String, CharacterClassFeatureDefinition>{
 
 const _phbThiefSource = RuleSource(
   name: 'Manuale del Giocatore 2014',
-  reference: 'Pagina 97',
+  reference: 'Pagina 79',
 );
 
 class ThiefFeatureIds {
@@ -526,7 +526,7 @@ final thiefFeatureDefinitions = <String, CharacterClassFeatureDefinition>{
   ),
   ThiefFeatureIds.useMagicDevice: _thiefFeature(
     id: ThiefFeatureIds.useMagicDevice,
-    name: 'Utilizzare Oggetti Magici',
+    name: 'Usare Oggetto Magico',
     summary:
         'Il Furfante può usare oggetti magici normalmente preclusi ad altri personaggi.',
     details:
@@ -614,7 +614,7 @@ final thiefSubclassDefinition = CharacterSubclassDefinition(
 
 const _phbAssassinSource = RuleSource(
   name: 'Manuale del Giocatore 2014',
-  reference: 'Pagina 97',
+  reference: 'Pagina 79',
 );
 
 class AssassinFeatureIds {
@@ -711,7 +711,7 @@ final assassinFeatureDefinitions = <String, CharacterClassFeatureDefinition>{
     summary:
         'L’Assassino può costruire una falsa identità completa e credibile.',
     details:
-        'Dal 9° livello può impiegare sette giorni e 25 mo per creare una falsa identità dotata di storia, professione e affiliazioni. Non può stabilire un’identità appartenente a una persona esistente.',
+        'Dal 9° livello può impiegare sette giorni e 25 mo per creare una falsa identità dotata di storia, professione e affiliazioni. Non può assumere un’identità appartenente a una persona esistente. Può procurarsi abiti, lettere di presentazione e certificati apparentemente autentici; quando usa questa identità come travestimento, le altre creature gli credono finché non ricevono un motivo valido per dubitare di lui.',
     effects: const CharacterEffects(
       ruleEffects: [
         CharacterRuleEffect(
@@ -749,7 +749,7 @@ final assassinFeatureDefinitions = <String, CharacterClassFeatureDefinition>{
     summary:
         'L’Assassino imita linguaggio, scrittura e comportamento di un’altra persona.',
     details:
-        'Dal 13° livello, dopo avere studiato per almeno tre ore il linguaggio, la scrittura e il comportamento di una creatura, può imitarla. Dispone di vantaggio alle prove di Carisma (Inganno) effettuate per evitare che l’inganno venga scoperto.',
+        'Dal 13° livello, dopo avere studiato per almeno tre ore la parlata, la calligrafia e il modo di fare di una persona, può imitarla infallibilmente. L’inganno è impossibile da discernere per un osservatore casuale; contro una creatura sospettosa dispone di vantaggio alle prove di Carisma (Inganno) effettuate per evitare di essere scoperto.',
     effects: const CharacterEffects(
       ruleEffects: [
         CharacterRuleEffect(
@@ -847,7 +847,7 @@ final assassinSubclassDefinition = CharacterSubclassDefinition(
 
 const _phbArcaneTricksterSource = RuleSource(
   name: 'Manuale del Giocatore 2014',
-  reference: 'Pagine 97-98',
+  reference: 'Pagine 79-80',
 );
 
 class ArcaneTricksterFeatureIds {
@@ -914,7 +914,7 @@ final arcaneTricksterFeatureDefinitions =
     summary:
         'Il Mistificatore Arcano apprende a lanciare incantesimi da Mago usando Intelligenza.',
     details:
-        'Dal 3° livello apprende Mano Magica e altri trucchetti da Mago. La maggior parte degli incantesimi conosciuti deve appartenere alle scuole di Ammaliamento o Illusione, mentre quattro incantesimi possono essere scelti liberamente ai livelli 3, 8, 14 e 20.',
+        'Dal 3° livello apprende Mano Magica e altri due trucchetti da Mago; al 10° livello apprende un ulteriore trucchetto. Recupera tutti gli slot spesi dopo un riposo lungo. Due dei tre incantesimi iniziali e la maggior parte di quelli appresi successivamente devono appartenere ad Ammaliamento o Illusione; gli incantesimi ottenuti ai livelli 3, 8, 14 e 20 possono appartenere a qualsiasi scuola. Ogni volta che acquisisce un livello può sostituire uno degli incantesimi conosciuti con un incantesimo da Mago di un livello che può lanciare, rispettando le stesse restrizioni di scuola. Intelligenza è la caratteristica da incantatore: la CD è 8 + bonus di competenza + modificatore di Intelligenza e il modificatore di attacco è bonus di competenza + modificatore di Intelligenza.',
     spellIds: const {
       SpellIds.mageHand,
     },
@@ -944,7 +944,7 @@ final arcaneTricksterFeatureDefinitions =
     summary:
         'Il Mistificatore Arcano usa Mano Magica per compiere azioni furtive a distanza.',
     details:
-        'Dal 3° livello, quando lancia Mano Magica, la mano spettrale può essere invisibile. Può usarla per riporre o recuperare oggetti portati da altre creature e per usare gli Arnesi da Scasso a distanza. Può controllarla tramite l’azione bonus concessa da Azione Scaltra.',
+        'Dal 3° livello, quando lancia Mano Magica, può rendere invisibile la mano spettrale. Può usarla per riporre un oggetto in un contenitore indossato o trasportato da un’altra creatura, recuperare un oggetto da tale contenitore oppure usare gli Arnesi da Scasso per aprire serrature e disattivare trappole a distanza. Può svolgere questi compiti senza essere notato superando una prova di Destrezza (Rapidità di Mano) contrapposta alla prova di Saggezza (Percezione) della creatura. Può inoltre controllare la mano con l’azione bonus concessa da Azione Scaltra.',
     spellIds: const {
       SpellIds.mageHand,
     },
@@ -969,6 +969,16 @@ final arcaneTricksterFeatureDefinitions =
             'carried_container',
           ],
           condition: 'stow_retrieve_objects_and_use_thieves_tools_at_range',
+        ),
+        CharacterRuleEffect(
+          id: 'arcane_trickster_mage_hand_unnoticed',
+          type: CharacterRuleEffectType.conditional,
+          target: 'mage_hand_unnoticed_task',
+          referenceIds: [
+            'sleight_of_hand',
+            'perception',
+          ],
+          condition: 'dexterity_sleight_of_hand_opposed_by_wisdom_perception',
         ),
         CharacterRuleEffect(
           id: 'arcane_trickster_mage_hand_bonus_action',
@@ -1052,7 +1062,7 @@ final arcaneTricksterFeatureDefinitions =
     summary:
         'Il Mistificatore Arcano può neutralizzare e sottrarre temporaneamente un incantesimo.',
     details:
-        'Dal 17° livello, subito dopo che una creatura lo bersaglia o lo include nell’area di un incantesimo, può usare la propria reazione per imporle un tiro salvezza usando la caratteristica da incantatore. Se il tiro fallisce, l’effetto contro il Ladro è negato e, se l’incantesimo è almeno di 1° livello e di un livello che può lanciare, il Ladro lo conosce per 8 ore mentre la creatura non può lanciarlo.',
+        'Dal 17° livello, subito dopo che una creatura lo bersaglia o lo include nell’area di un incantesimo, può usare la propria reazione per imporle un tiro salvezza usando la sua caratteristica da incantatore contro la CD degli incantesimi del Ladro. Se il tiro fallisce, l’effetto contro il Ladro è negato. Se l’incantesimo è almeno di 1° livello e di un livello che può lanciare, per 8 ore il Ladro lo conosce e può lanciarlo usando i propri slot, anche se non è un incantesimo da Mago; nello stesso periodo la creatura non può lanciarlo.',
     resourceId: ArcaneTricksterResourceIds.spellThief,
     effects: const CharacterEffects(
       ruleEffects: [
@@ -1086,6 +1096,23 @@ final arcaneTricksterFeatureDefinitions =
           value: 8,
           condition:
               'spell_level_at_least_one_and_not_above_rogue_casting_limit',
+        ),
+        CharacterRuleEffect(
+          id: 'arcane_trickster_spell_thief_casting',
+          type: CharacterRuleEffectType.conditional,
+          target: 'stolen_spell_casting',
+          referenceIds: [
+            'rogue_spell_slots',
+          ],
+          condition:
+              'rogue_knows_and_may_cast_stolen_spell_with_own_slots_for_eight_hours',
+        ),
+        CharacterRuleEffect(
+          id: 'arcane_trickster_spell_thief_lockout',
+          type: CharacterRuleEffectType.conditional,
+          target: 'original_caster_spell_access',
+          value: 0,
+          condition: 'original_caster_cannot_cast_stolen_spell_for_eight_hours',
         ),
       ],
     ),

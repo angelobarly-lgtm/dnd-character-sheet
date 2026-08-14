@@ -161,7 +161,7 @@ void main() {
           .ruleTags,
       containsAll({
         'temporary_object',
-        'maximum_weight_4_5_kg',
+        'maximum_weight_5_kg',
         'duration_1_hour',
       }),
     );

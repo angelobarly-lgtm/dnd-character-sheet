@@ -168,7 +168,7 @@ void main() {
           .ruleTags,
       containsAll({
         'charmed_target_unaware',
-        'charisma_saving_throw',
+        'intelligence_saving_throw',
         'erase_memories',
         'minimum_1_hour',
       }),
