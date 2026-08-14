@@ -564,6 +564,15 @@ class CharacterSubclassDefinition {
   /// della Guerra del Dominio della Guerra.
   final List<ClassResourceDefinition> resources;
 
+  /// Conversioni tra risorse e slot concesse dalla sottoclasse.
+  final List<ClassResourceConversionDefinition> resourceConversions;
+
+  /// Utilizzi strutturati delle risorse di sottoclasse.
+  final List<ClassResourceUsageDefinition> resourceUsages;
+
+  /// Tabelle casuali appartenenti alla sottoclasse.
+  final List<ClassRandomTableDefinition> randomTables;
+
   /// Recuperi degli slot concessi dalla sottoclasse.
   final List<ClassSpellSlotRecoveryDefinition> spellSlotRecoveries;
 
@@ -595,6 +604,9 @@ class CharacterSubclassDefinition {
     this.alwaysPreparedSpellIdsByLevel = const {},
     this.spellcasting,
     this.resources = const [],
+    this.resourceConversions = const [],
+    this.resourceUsages = const [],
+    this.randomTables = const [],
     this.spellSlotRecoveries = const [],
     this.transformations = const [],
     this.companions = const [],
@@ -736,6 +748,148 @@ class ClassTransformationDefinition {
 
   bool allowsSpellcastingAtLevel(int level) =>
       spellcastingMinimumLevel != null && level >= spellcastingMinimumLevel!;
+}
+
+enum ClassFeatureActivation {
+  passive,
+  noAction,
+  action,
+  bonusAction,
+  reaction,
+  whenCasting,
+}
+
+enum ClassResourceCostScaling {
+  fixed,
+  spellLevelMinimumOne,
+}
+
+/// Conversione bidirezionale tra una risorsa di classe e gli slot.
+class ClassResourceConversionDefinition {
+  final String id;
+  final String name;
+  final int minimumLevel;
+  final String resourceId;
+  final ClassFeatureActivation activation;
+  final Map<int, int> resourceCostBySpellSlotLevel;
+  final int resourceGainedPerExpendedSlotLevel;
+  final int maximumCreatedSpellSlotLevel;
+  final bool createdSpellSlotsExpireOnLongRest;
+
+  const ClassResourceConversionDefinition({
+    required this.id,
+    required this.name,
+    required this.minimumLevel,
+    required this.resourceId,
+    required this.activation,
+    required this.resourceCostBySpellSlotLevel,
+    this.resourceGainedPerExpendedSlotLevel = 1,
+    required this.maximumCreatedSpellSlotLevel,
+    this.createdSpellSlotsExpireOnLongRest = true,
+  })  : assert(minimumLevel > 0),
+        assert(resourceGainedPerExpendedSlotLevel > 0),
+        assert(maximumCreatedSpellSlotLevel > 0);
+
+  int? resourceCostForSpellSlotLevel(int spellSlotLevel) =>
+      resourceCostBySpellSlotLevel[spellSlotLevel];
+
+  int resourceGainedForExpendedSpellSlotLevel(int spellSlotLevel) =>
+      spellSlotLevel <= 0
+          ? 0
+          : spellSlotLevel * resourceGainedPerExpendedSlotLevel;
+
+  bool canCreateSpellSlotLevel(int spellSlotLevel) =>
+      spellSlotLevel > 0 &&
+      spellSlotLevel <= maximumCreatedSpellSlotLevel &&
+      resourceCostBySpellSlotLevel.containsKey(spellSlotLevel);
+}
+
+/// Uso strutturato di una risorsa, per esempio un'opzione di Metamagia.
+class ClassResourceUsageDefinition {
+  final String id;
+  final RuleContent content;
+  final int minimumLevel;
+  final String resourceId;
+  final int baseResourceCost;
+  final ClassResourceCostScaling costScaling;
+  final ClassFeatureActivation activation;
+  final bool combinableWithOtherUsages;
+  final CharacterEffects effects;
+
+  const ClassResourceUsageDefinition({
+    required this.id,
+    required this.content,
+    required this.minimumLevel,
+    required this.resourceId,
+    required this.baseResourceCost,
+    this.costScaling = ClassResourceCostScaling.fixed,
+    required this.activation,
+    this.combinableWithOtherUsages = false,
+    this.effects = const CharacterEffects(),
+  })  : assert(minimumLevel > 0),
+        assert(baseResourceCost > 0);
+
+  int resourceCostForSpellLevel(int spellLevel) {
+    switch (costScaling) {
+      case ClassResourceCostScaling.fixed:
+        return baseResourceCost;
+      case ClassResourceCostScaling.spellLevelMinimumOne:
+        return spellLevel < 1 ? 1 : spellLevel;
+    }
+  }
+}
+
+class ClassRandomTableEntryDefinition {
+  final String id;
+  final int minimumRoll;
+  final int maximumRoll;
+  final String description;
+  final CharacterEffects effects;
+  final Set<String> spellIds;
+
+  /// Creature coinvolte dall'esito, predisposte per il bestiario.
+  final Set<String> creatureIds;
+
+  const ClassRandomTableEntryDefinition({
+    required this.id,
+    required this.minimumRoll,
+    required this.maximumRoll,
+    required this.description,
+    this.effects = const CharacterEffects(),
+    this.spellIds = const {},
+    this.creatureIds = const {},
+  })  : assert(minimumRoll > 0),
+        assert(maximumRoll >= minimumRoll);
+
+  bool matches(int roll) => roll >= minimumRoll && roll <= maximumRoll;
+}
+
+/// Tabella casuale concessa da una classe o sottoclasse.
+class ClassRandomTableDefinition {
+  final String id;
+  final RuleContent content;
+  final int minimumLevel;
+  final int dieSides;
+  final List<ClassRandomTableEntryDefinition> entries;
+
+  const ClassRandomTableDefinition({
+    required this.id,
+    required this.content,
+    required this.minimumLevel,
+    required this.dieSides,
+    required this.entries,
+  })  : assert(minimumLevel > 0),
+        assert(dieSides > 0);
+
+  ClassRandomTableEntryDefinition? entryForRoll(int roll) {
+    if (roll < 1 || roll > dieSides) return null;
+
+    for (final entry in entries) {
+      if (entry.matches(roll)) return entry;
+    }
+
+    return null;
+  }
 }
 
 enum ClassCompanionSize {
@@ -922,6 +1076,9 @@ class CharacterClassDefinition {
   final Map<int, List<String>> featuresByLevel;
   final Map<String, CharacterClassFeatureDefinition> featureDefinitions;
   final List<ClassResourceDefinition> resources;
+  final List<ClassResourceConversionDefinition> resourceConversions;
+  final List<ClassResourceUsageDefinition> resourceUsages;
+  final List<ClassRandomTableDefinition> randomTables;
   final List<ClassSpellSlotRecoveryDefinition> spellSlotRecoveries;
   final List<ClassTransformationDefinition> transformations;
   final List<ClassCompanionDefinition> companions;
@@ -944,6 +1101,9 @@ class CharacterClassDefinition {
     this.startingEquipmentChoices = const [],
     this.fixedStartingEquipment = const [],
     this.resources = const [],
+    this.resourceConversions = const [],
+    this.resourceUsages = const [],
+    this.randomTables = const [],
     this.spellSlotRecoveries = const [],
     this.transformations = const [],
     this.companions = const [],
@@ -963,6 +1123,66 @@ class CharacterClassDefinition {
       if (definition.id == id) {
         return definition.valueAtLevel(level);
       }
+    }
+
+    return null;
+  }
+
+  ClassResourceConversionDefinition? resourceConversionFor(
+    String conversionId, {
+    String? subclassId,
+  }) {
+    if (subclassId != null) {
+      final subclass = subclasses[subclassId];
+      if (subclass != null) {
+        for (final conversion in subclass.resourceConversions) {
+          if (conversion.id == conversionId) return conversion;
+        }
+      }
+    }
+
+    for (final conversion in resourceConversions) {
+      if (conversion.id == conversionId) return conversion;
+    }
+
+    return null;
+  }
+
+  ClassResourceUsageDefinition? resourceUsageFor(
+    String usageId, {
+    String? subclassId,
+  }) {
+    if (subclassId != null) {
+      final subclass = subclasses[subclassId];
+      if (subclass != null) {
+        for (final usage in subclass.resourceUsages) {
+          if (usage.id == usageId) return usage;
+        }
+      }
+    }
+
+    for (final usage in resourceUsages) {
+      if (usage.id == usageId) return usage;
+    }
+
+    return null;
+  }
+
+  ClassRandomTableDefinition? randomTableFor(
+    String tableId, {
+    String? subclassId,
+  }) {
+    if (subclassId != null) {
+      final subclass = subclasses[subclassId];
+      if (subclass != null) {
+        for (final table in subclass.randomTables) {
+          if (table.id == tableId) return table;
+        }
+      }
+    }
+
+    for (final table in randomTables) {
+      if (table.id == tableId) return table;
     }
 
     return null;

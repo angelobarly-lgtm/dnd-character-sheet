@@ -50,9 +50,9 @@ verificate dal livello 1 al livello 20.
 - [x] Ranger
   - [x] Cacciatore
   - [x] Signore delle Bestie
-- [ ] Stregone
-  - [ ] Discendenza Draconica
-  - [ ] Magia Selvaggia
+- [x] Stregone
+  - [x] Discendenza Draconica
+  - [x] Magia Selvaggia
 - [ ] Warlock
   - [ ] Il Signore Fatato
   - [ ] L’Immondo
