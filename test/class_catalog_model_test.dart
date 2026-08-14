@@ -437,4 +437,93 @@ void main() {
       1,
     );
   });
+
+  test('ClassSpellbookDefinition tracks automatic and copied spells', () {
+    const spellbook = ClassSpellbookDefinition(
+      catalogId: 'equipment',
+      itemId: 'spellbook',
+      initialSpells: 6,
+      spellsLearnedPerLevel: 2,
+      copyTimeHoursPerSpellLevel: 2,
+      copyCostGpPerSpellLevel: 50,
+      backupCopyTimeHoursPerSpellLevel: 1,
+      backupCopyCostGpPerSpellLevel: 10,
+    );
+
+    expect(spellbook.automaticSpellsAtLevel(0), 0);
+    expect(spellbook.automaticSpellsAtLevel(1), 6);
+    expect(spellbook.automaticSpellsAtLevel(2), 8);
+    expect(spellbook.automaticSpellsAtLevel(20), 44);
+
+    expect(spellbook.copyTimeHours(3), 6);
+    expect(spellbook.copyCostGp(3), 150);
+    expect(
+      spellbook.copyTimeHours(3, ownNotation: true),
+      3,
+    );
+    expect(
+      spellbook.copyCostGp(3, ownNotation: true),
+      30,
+    );
+    expect(spellbook.ritualSpellsNeedPreparation, isFalse);
+  });
+  test('class resources support level plus ability formulas', () {
+    const resource = ClassResourceDefinition(
+      id: 'arcane_ward',
+      name: 'Interdizione Arcana',
+      minimumLevel: 2,
+      recovery: ClassResourceRecovery.longRest,
+      maximumByLevel: {},
+      classLevelMultiplier: 2,
+      additionalMaximumAbility: 'INT',
+    );
+
+    expect(
+      resource.maximumAtLevel(
+        1,
+        abilityModifiers: const {'INT': 3},
+      ),
+      0,
+    );
+    expect(
+      resource.maximumAtLevel(
+        2,
+        abilityModifiers: const {'INT': 3},
+      ),
+      7,
+    );
+    expect(
+      resource.maximumAtLevel(
+        20,
+        abilityModifiers: const {'INT': 5},
+      ),
+      45,
+    );
+  });
+
+  test('spellbook copying adjustments support school discounts', () {
+    const adjustment = ClassSpellbookCopyAdjustmentDefinition(
+      id: 'abjuration_savant',
+      schoolId: 'abjuration',
+      timeNumerator: 1,
+      timeDenominator: 2,
+      costNumerator: 1,
+      costDenominator: 2,
+    );
+
+    expect(
+      adjustment.adjustedCopyHours(
+        3,
+        baseHoursPerSpellLevel: 2,
+      ),
+      3,
+    );
+    expect(
+      adjustment.adjustedCopyCostGp(
+        3,
+        baseCostGpPerSpellLevel: 50,
+      ),
+      75,
+    );
+  });
 }

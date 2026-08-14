@@ -30,15 +30,15 @@ verificate dal livello 1 al livello 20.
   - [x] Furfante
   - [x] Assassino
   - [x] Mistificatore Arcano
-- [ ] Mago
-  - [ ] Scuola di Abiurazione
-  - [ ] Scuola di Ammaliamento
-  - [ ] Scuola di Divinazione
-  - [ ] Scuola di Evocazione
-  - [ ] Scuola di Illusione
-  - [ ] Scuola di Invocazione
-  - [ ] Scuola di Necromanzia
-  - [ ] Scuola di Trasmutazione
+- [x] Mago
+  - [x] Scuola di Abiurazione
+  - [x] Scuola di Ammaliamento
+  - [x] Scuola di Divinazione
+  - [x] Scuola di Evocazione
+  - [x] Scuola di Illusione
+  - [x] Scuola di Invocazione
+  - [x] Scuola di Necromanzia
+  - [x] Scuola di Trasmutazione
 - [x] Monaco
   - [x] Via della Mano Aperta
   - [x] Via dell’Ombra

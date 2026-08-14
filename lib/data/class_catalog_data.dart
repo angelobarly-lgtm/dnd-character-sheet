@@ -198,6 +198,15 @@ class ClassResourceDefinition {
   /// Minimo applicato alle risorse basate su una caratteristica.
   final int minimumMaximum;
 
+  /// Contributo del livello di classe al massimo della risorsa.
+  final int classLevelMultiplier;
+
+  /// Modificatore di caratteristica aggiunto al massimo della risorsa.
+  ///
+  /// È distinto da [maximumAbility], che determina direttamente
+  /// il numero di utilizzi di una risorsa.
+  final String? additionalMaximumAbility;
+
   /// Cambiamenti del tipo di recupero durante la progressione.
   final Map<int, ClassResourceRecovery> recoveryByLevel;
 
@@ -210,10 +219,13 @@ class ClassResourceDefinition {
     this.unlimitedFromLevel,
     this.maximumAbility,
     this.minimumMaximum = 0,
+    this.classLevelMultiplier = 0,
+    this.additionalMaximumAbility,
     this.recoveryByLevel = const {},
   })  : assert(minimumLevel > 0),
         assert(unlimitedFromLevel == null || unlimitedFromLevel > 0),
-        assert(minimumMaximum >= 0);
+        assert(minimumMaximum >= 0),
+        assert(classLevelMultiplier >= 0);
 
   bool isUnlimitedAtLevel(int level) =>
       unlimitedFromLevel != null && level >= unlimitedFromLevel!;
@@ -248,7 +260,13 @@ class ClassResourceDefinition {
       }
     }
 
-    return maximum;
+    maximum += level * classLevelMultiplier;
+
+    if (additionalMaximumAbility != null) {
+      maximum += abilityModifiers[additionalMaximumAbility] ?? 0;
+    }
+
+    return maximum < minimumMaximum ? minimumMaximum : maximum;
   }
 }
 
@@ -386,6 +404,102 @@ class ClassSpellcastingDefinition {
   }
 }
 
+/// Libro degli incantesimi posseduto da una classe.
+///
+/// Conserva le regole statiche del libro. Gli incantesimi effettivamente
+/// scelti dal personaggio appartengono allo stato persistente del personaggio.
+/// Modifica ai tempi e ai costi di copiatura per una scuola di magia.
+class ClassSpellbookCopyAdjustmentDefinition {
+  final String id;
+  final String schoolId;
+  final int timeNumerator;
+  final int timeDenominator;
+  final int costNumerator;
+  final int costDenominator;
+
+  const ClassSpellbookCopyAdjustmentDefinition({
+    required this.id,
+    required this.schoolId,
+    required this.timeNumerator,
+    required this.timeDenominator,
+    required this.costNumerator,
+    required this.costDenominator,
+  })  : assert(timeNumerator > 0),
+        assert(timeDenominator > 0),
+        assert(costNumerator > 0),
+        assert(costDenominator > 0);
+
+  double adjustedCopyHours(
+    int spellLevel, {
+    required int baseHoursPerSpellLevel,
+  }) =>
+      spellLevel * baseHoursPerSpellLevel * timeNumerator / timeDenominator;
+
+  int adjustedCopyCostGp(
+    int spellLevel, {
+    required int baseCostGpPerSpellLevel,
+  }) =>
+      spellLevel * baseCostGpPerSpellLevel * costNumerator ~/ costDenominator;
+}
+
+class ClassSpellbookDefinition {
+  final String catalogId;
+  final String itemId;
+  final int initialSpells;
+  final int initialSpellLevel;
+  final int spellsLearnedPerLevel;
+  final int copyTimeHoursPerSpellLevel;
+  final int copyCostGpPerSpellLevel;
+  final int backupCopyTimeHoursPerSpellLevel;
+  final int backupCopyCostGpPerSpellLevel;
+
+  /// I rituali presenti nel libro possono essere lanciati senza prepararli.
+  final bool ritualSpellsNeedPreparation;
+
+  const ClassSpellbookDefinition({
+    required this.catalogId,
+    required this.itemId,
+    required this.initialSpells,
+    this.initialSpellLevel = 1,
+    required this.spellsLearnedPerLevel,
+    required this.copyTimeHoursPerSpellLevel,
+    required this.copyCostGpPerSpellLevel,
+    required this.backupCopyTimeHoursPerSpellLevel,
+    required this.backupCopyCostGpPerSpellLevel,
+    this.ritualSpellsNeedPreparation = false,
+  })  : assert(initialSpells > 0),
+        assert(initialSpellLevel > 0),
+        assert(spellsLearnedPerLevel >= 0),
+        assert(copyTimeHoursPerSpellLevel > 0),
+        assert(copyCostGpPerSpellLevel >= 0),
+        assert(backupCopyTimeHoursPerSpellLevel > 0),
+        assert(backupCopyCostGpPerSpellLevel >= 0);
+
+  int automaticSpellsAtLevel(int level) {
+    if (level < 1) return 0;
+    return initialSpells + ((level - 1) * spellsLearnedPerLevel);
+  }
+
+  int copyTimeHours(int spellLevel, {bool ownNotation = false}) {
+    if (spellLevel < 1) return 0;
+
+    final hoursPerLevel = ownNotation
+        ? backupCopyTimeHoursPerSpellLevel
+        : copyTimeHoursPerSpellLevel;
+
+    return spellLevel * hoursPerLevel;
+  }
+
+  int copyCostGp(int spellLevel, {bool ownNotation = false}) {
+    if (spellLevel < 1) return 0;
+
+    final costPerLevel =
+        ownNotation ? backupCopyCostGpPerSpellLevel : copyCostGpPerSpellLevel;
+
+    return spellLevel * costPerLevel;
+  }
+}
+
 class CharacterClassFeatureDefinition {
   final String id;
   final RuleContent content;
@@ -448,6 +562,9 @@ class CharacterSubclassDefinition {
   /// Trasformazioni concesse o modificate dalla sottoclasse.
   final List<ClassTransformationDefinition> transformations;
 
+  /// Modifiche al costo e al tempo di copiatura del libro.
+  final List<ClassSpellbookCopyAdjustmentDefinition> spellbookCopyAdjustments;
+
   /// Valori progressivi appartenenti esclusivamente alla sottoclasse.
   ///
   /// Esempi: dado di superiorità del Maestro di Battaglia e altri
@@ -469,6 +586,7 @@ class CharacterSubclassDefinition {
     this.resources = const [],
     this.spellSlotRecoveries = const [],
     this.transformations = const [],
+    this.spellbookCopyAdjustments = const [],
     this.progressionValues = const [],
     this.options = const [],
     this.optionProgression,
@@ -650,6 +768,7 @@ class CharacterClassDefinition {
   final List<ClassTransformationDefinition> transformations;
   final List<ClassProgressionValueDefinition> progressionValues;
   final ClassSpellcastingDefinition? spellcasting;
+  final ClassSpellbookDefinition? spellbook;
   final int subclassSelectionLevel;
   final Map<String, CharacterSubclassDefinition> subclasses;
   final bool homebrew;
@@ -670,6 +789,7 @@ class CharacterClassDefinition {
     this.transformations = const [],
     this.progressionValues = const [],
     this.spellcasting,
+    this.spellbook,
     this.subclasses = const {},
     this.homebrew = false,
   })  : assert(hitDie > 0),
