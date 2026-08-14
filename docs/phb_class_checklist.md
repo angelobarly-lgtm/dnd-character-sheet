@@ -53,10 +53,10 @@ verificate dal livello 1 al livello 20.
 - [x] Stregone
   - [x] Discendenza Draconica
   - [x] Magia Selvaggia
-- [ ] Warlock
-  - [ ] Il Signore Fatato
-  - [ ] L’Immondo
-  - [ ] Il Grande Antico
+- [x] Warlock
+  - [x] Il Signore Fatato
+  - [x] L’Immondo
+  - [x] Il Grande Antico
 
 ## Totali attesi
 

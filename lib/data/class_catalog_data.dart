@@ -549,6 +549,12 @@ class CharacterSubclassDefinition {
   final Map<int, List<String>> featuresByLevel;
   final Map<String, CharacterClassFeatureDefinition> featureDefinitions;
 
+  /// Incantesimi aggiunti alla lista della classe dalla sottoclasse.
+  ///
+  /// Non sono automaticamente conosciuti o preparati. Le chiavi sono i
+  /// livelli di classe in cui diventano disponibili.
+  final Map<int, Set<String>> expandedSpellIdsByLevel;
+
   /// Incantesimi di sottoclasse sempre preparati, indicizzati dal livello
   /// minimo della classe in cui diventano disponibili.
   final Map<int, Set<String>> alwaysPreparedSpellIdsByLevel;
@@ -601,6 +607,7 @@ class CharacterSubclassDefinition {
     required this.content,
     required this.featuresByLevel,
     required this.featureDefinitions,
+    this.expandedSpellIdsByLevel = const {},
     this.alwaysPreparedSpellIdsByLevel = const {},
     this.spellcasting,
     this.resources = const [],
@@ -626,6 +633,18 @@ class CharacterSubclassDefinition {
     }
 
     return null;
+  }
+
+  Set<String> expandedSpellIdsAtLevel(int level) {
+    final result = <String>{};
+
+    for (final entry in expandedSpellIdsByLevel.entries) {
+      if (entry.key <= level) {
+        result.addAll(entry.value);
+      }
+    }
+
+    return Set<String>.unmodifiable(result);
   }
 
   Set<String> alwaysPreparedSpellIdsAtLevel(int level) {

@@ -9,6 +9,7 @@ import 'paladin_class_data.dart';
 import 'ranger_class_data.dart';
 import 'rogue_class_data.dart';
 import 'sorcerer_class_data.dart';
+import 'warlock_class_data.dart';
 import 'wizard_class_data.dart';
 
 export 'class_catalog_data.dart';
@@ -24,6 +25,7 @@ final Map<String, CharacterClassDefinition> phbClassDefinitions = {
   ClassIds.ranger: rangerClassDefinition,
   ClassIds.rogue: rogueClassDefinition,
   ClassIds.sorcerer: sorcererClassDefinition,
+  ClassIds.warlock: warlockClassDefinition,
   ClassIds.wizard: wizardClassDefinition,
 };
 
