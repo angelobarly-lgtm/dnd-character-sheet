@@ -14,6 +14,20 @@ class ShopPurchaseResult {
   });
 }
 
+class CoinConversionResult {
+  final bool success;
+  final String? error;
+  final Map<String, int> coins;
+  final int convertedAmount;
+
+  const CoinConversionResult({
+    required this.success,
+    required this.coins,
+    this.error,
+    this.convertedAmount = 0,
+  });
+}
+
 /// Gestisce pagamenti e acquisti senza dipendere dall’interfaccia.
 ///
 /// Le monete del personaggio usano le abbreviazioni italiane:
@@ -70,6 +84,79 @@ class ShopTransactionService {
       coins: coins,
       coin: coin,
       amount: current + delta,
+    );
+  }
+
+  /// Converte volontariamente una quantità da un taglio a un altro.
+  ///
+  /// Non modifica le altre denominazioni e accetta soltanto conversioni
+  /// che producono un numero intero di monete di destinazione.
+  CoinConversionResult convertCoins({
+    required Map<String, int> coins,
+    required String fromCoin,
+    required String toCoin,
+    required int amount,
+  }) {
+    final unchanged = Map<String, int>.from(coins);
+
+    final fromValue = coinValuesInCopper[fromCoin];
+    final toValue = coinValuesInCopper[toCoin];
+
+    if (fromValue == null || toValue == null) {
+      return CoinConversionResult(
+        success: false,
+        error: 'Denominazione sconosciuta.',
+        coins: unchanged,
+      );
+    }
+
+    if (fromCoin == toCoin) {
+      return CoinConversionResult(
+        success: false,
+        error: 'Scegli una denominazione diversa.',
+        coins: unchanged,
+      );
+    }
+
+    if (amount <= 0) {
+      return CoinConversionResult(
+        success: false,
+        error: 'La quantità deve essere maggiore di zero.',
+        coins: unchanged,
+      );
+    }
+
+    final available = coins[fromCoin] ?? 0;
+
+    if (available < amount) {
+      return CoinConversionResult(
+        success: false,
+        error: 'Monete $fromCoin insufficienti.',
+        coins: unchanged,
+      );
+    }
+
+    final copperToConvert = amount * fromValue;
+
+    if (copperToConvert % toValue != 0) {
+      return CoinConversionResult(
+        success: false,
+        error:
+            '$amount $fromCoin non possono essere convertite esattamente in $toCoin.',
+        coins: unchanged,
+      );
+    }
+
+    final convertedAmount = copperToConvert ~/ toValue;
+
+    final updated = Map<String, int>.from(coins)
+      ..[fromCoin] = available - amount
+      ..[toCoin] = (coins[toCoin] ?? 0) + convertedAmount;
+
+    return CoinConversionResult(
+      success: true,
+      coins: updated,
+      convertedAmount: convertedAmount,
     );
   }
 

@@ -10,6 +10,9 @@ import 'data/character_data.dart';
 import 'data/background_data.dart';
 import 'data/feat_data.dart';
 import 'data/race_data.dart';
+import 'data/damage_type_data.dart';
+import 'data/weapon_data.dart';
+import 'data/weapon_property_data.dart';
 import 'widgets/shop_page.dart';
 import 'widgets/glossary_page.dart';
 
@@ -40,7 +43,38 @@ const skillAbility = <String, String>{
   'Storia': 'INT',
 };
 
-const monkSavingThrows = {'FOR', 'DES'};
+const skillNamesById = <String, String>{
+  'acrobatics': 'Acrobazia',
+  'animal_handling': 'Addestrare Animali',
+  'arcana': 'Arcano',
+  'athletics': 'Atletica',
+  'deception': 'Inganno',
+  'history': 'Storia',
+  'insight': 'Intuizione',
+  'intimidation': 'Intimidire',
+  'investigation': 'Indagare',
+  'medicine': 'Medicina',
+  'nature': 'Natura',
+  'perception': 'Percezione',
+  'performance': 'Intrattenere',
+  'persuasion': 'Persuasione',
+  'religion': 'Religione',
+  'sleight_of_hand': 'Rapidità di Mano',
+  'stealth': 'Furtività',
+  'survival': 'Sopravvivenza',
+};
+
+String skillDisplayName(String idOrName) =>
+    skillNamesById[idOrName] ?? idOrName;
+
+String canonicalSkillId(String idOrName) {
+  for (final entry in skillNamesById.entries) {
+    if (entry.key == idOrName || entry.value == idOrName) {
+      return entry.key;
+    }
+  }
+  return idOrName;
+}
 
 enum V06Coin { mr, ma, me, mo, mp }
 
@@ -828,13 +862,13 @@ class HeroData {
         ...?catalogClassDefinition?.proficiencies.savingThrows,
       };
 
-  Set<String> get effectiveSkillProficiencies => {
+  Set<String> get effectiveSkillProficiencies => <String>{
         ...skillProficiencies,
         ...resolvedRaceEffects.effects.skillProficiencies,
         ...resolvedBackgroundEffects.skillProficiencies,
         ...backgroundSelectionsOfType(CharacterChoiceType.skill),
         ...classSelectionsOfType(CharacterChoiceType.skill),
-      };
+      }.map(skillDisplayName).toSet();
 
   /// Lingue effettivamente conosciute.
   Set<String> get effectiveLanguages => {
@@ -1311,7 +1345,7 @@ class Store {
 }
 
 class V06Rules {
-  static int abilityMod(int score) => (score - 10) ~/ 2;
+  static int abilityMod(int score) => ((score - 10) / 2).floor();
   static int proficiencyBonus(int level) => 2 + ((max(1, level) - 1) ~/ 4);
   static int monkLevelOneHp(int constitutionScore, {int extra = 0}) =>
       8 + abilityMod(constitutionScore) + extra;
@@ -1321,6 +1355,168 @@ class V06Rules {
       8 + proficiency + castingAbilityModifier;
   static int spellAttackBonus(int proficiency, int castingAbilityModifier) =>
       proficiency + castingAbilityModifier;
+}
+
+const legacyWeaponIds = <String, String>{
+  'Bastone ferrato': 'quarterstaff',
+  'Pugnale': 'dagger',
+  'Spada corta': 'shortsword',
+  'Ascia': 'handaxe',
+  'Giavellotto': 'javelin',
+  'Martello leggero': 'light_hammer',
+  'Lancia': 'spear',
+};
+
+WeaponDefinition? weaponDefinitionForSelection(String selection) {
+  final direct = weaponDefinitions[selection];
+  if (direct != null) return direct;
+
+  final legacyId = legacyWeaponIds[selection];
+  if (legacyId != null) return weaponDefinitions[legacyId];
+
+  final normalized = selection.trim().toLowerCase();
+
+  for (final definition in weaponDefinitions.values) {
+    if (definition.name.toLowerCase() == normalized) {
+      return definition;
+    }
+  }
+
+  return null;
+}
+
+String weaponDisplayNameFor(String selection) {
+  if (selection == 'Colpo senz’armi') return selection;
+
+  return weaponDefinitionForSelection(selection)?.name ?? selection;
+}
+
+bool isMonkWeapon(WeaponDefinition definition) {
+  if (definition.id == 'shortsword') return true;
+
+  return definition.category == WeaponCategory.simple &&
+      definition.kind == WeaponKind.melee &&
+      !definition.properties.contains(WeaponPropertyIds.heavy) &&
+      !definition.properties.contains(WeaponPropertyIds.twoHanded);
+}
+
+String weaponAbilityFor(HeroData hero, String selection) {
+  final definition = weaponDefinitionForSelection(selection);
+
+  if (selection == 'Colpo senz’armi') {
+    if (hero.classId != ClassIds.monk) return 'FOR';
+  } else if (definition == null) {
+    return 'FOR';
+  }
+
+  final canChoose = selection == 'Colpo senz’armi' ||
+      definition!.properties.contains(WeaponPropertyIds.finesse) ||
+      (hero.classId == ClassIds.monk && isMonkWeapon(definition));
+
+  if (canChoose) {
+    final strength = hero.scores['FOR'] ?? 10;
+    final dexterity = hero.scores['DES'] ?? 10;
+
+    return dexterity > strength ? 'DES' : 'FOR';
+  }
+
+  return definition.kind == WeaponKind.ranged ? 'DES' : 'FOR';
+}
+
+bool weaponIsProficientFor(HeroData hero, String selection) {
+  if (selection == 'Colpo senz’armi') return true;
+
+  final definition = weaponDefinitionForSelection(selection);
+  if (definition == null) return false;
+
+  final proficiencies = hero.effectiveWeaponProficiencies;
+  final category = definition.category == WeaponCategory.simple
+      ? 'simple_weapons'
+      : 'martial_weapons';
+
+  return proficiencies.contains(definition.id) ||
+      proficiencies.contains(definition.name) ||
+      proficiencies.contains(selection) ||
+      proficiencies.contains(category);
+}
+
+String weaponDamageDiceFor(HeroData hero, String selection) {
+  final martial = int.tryParse(hero.martialDie.substring(1)) ?? 4;
+
+  if (selection == 'Colpo senz’armi') {
+    return hero.classId == ClassIds.monk ? '1d$martial' : '1d4';
+  }
+
+  final definition = weaponDefinitionForSelection(selection);
+  if (definition == null) return '1d4';
+
+  if (hero.classId == ClassIds.monk && isMonkWeapon(definition)) {
+    final match = RegExp(r'^(\d+)d(\d+)$').firstMatch(definition.damageDice);
+
+    if (match != null && int.parse(match.group(1)!) == 1) {
+      final baseSides = int.parse(match.group(2)!);
+
+      return '1d${max(baseSides, martial)}';
+    }
+  }
+
+  return definition.damageDice;
+}
+
+int weaponDieFor(HeroData hero, String selection) {
+  final dice = weaponDamageDiceFor(hero, selection);
+  final match = RegExp(r'^\d+d(\d+)$').firstMatch(dice);
+
+  if (match == null) {
+    return int.tryParse(dice) ?? 1;
+  }
+
+  return int.parse(match.group(1)!);
+}
+
+String weaponDamageTypeFor(String selection) {
+  if (selection == 'Colpo senz’armi') return 'Contundente';
+
+  final definition = weaponDefinitionForSelection(selection);
+  if (definition == null) return 'Contundente';
+
+  return damageTypeDefinitions[definition.damageType]?.name ??
+      definition.damageType;
+}
+
+int rollDamageExpression(String expression, Random random) {
+  final fixed = int.tryParse(expression);
+
+  if (fixed != null) {
+    return max(0, fixed);
+  }
+
+  final match = RegExp(r'^(\d+)d(\d+)$').firstMatch(expression);
+  if (match == null) return 0;
+
+  final count = int.parse(match.group(1)!);
+  final sides = int.parse(match.group(2)!);
+  var total = 0;
+
+  for (var index = 0; index < count; index++) {
+    total += random.nextInt(sides) + 1;
+  }
+
+  return total;
+}
+
+int weaponAttackBonusFor(HeroData hero, String selection) {
+  final ability = weaponAbilityFor(hero, selection);
+  final abilityModifier = mod(hero.scores[ability] ?? 10);
+
+  return abilityModifier +
+      (weaponIsProficientFor(hero, selection) ? hero.prof : 0);
+}
+
+int weaponDamageBonusFor(HeroData hero, String selection) {
+  final ability = weaponAbilityFor(hero, selection);
+
+  return mod(hero.scores[ability] ?? 10);
 }
 
 class V06Quantity {
@@ -1840,9 +2036,12 @@ class _CreatorPageState extends State<CreatorPage> {
   ) =>
       switch (type) {
         CharacterChoiceType.skill => {
-            ...creatorResolvedRaceEffects.effects.skillProficiencies,
-            ...?creatorBackgroundDefinition?.effects.skillProficiencies,
-            ...backgroundSelectionsForCreator(CharacterChoiceType.skill),
+            for (final skill in <String>{
+              ...creatorResolvedRaceEffects.effects.skillProficiencies,
+              ...?creatorBackgroundDefinition?.effects.skillProficiencies,
+              ...backgroundSelectionsForCreator(CharacterChoiceType.skill),
+            })
+              canonicalSkillId(skill),
           },
         CharacterChoiceType.language => {
             'Comune',
@@ -2406,6 +2605,10 @@ class _CreatorPageState extends State<CreatorPage> {
       'CAR': 'Carisma',
     };
 
+    if (choice.type == CharacterChoiceType.skill) {
+      return skillDisplayName(id);
+    }
+
     return abilityLabels[id] ?? id;
   }
 
@@ -2467,6 +2670,10 @@ class _CreatorPageState extends State<CreatorPage> {
       'SAG': 'Saggezza',
       'CAR': 'Carisma',
     };
+
+    if (choice.type == CharacterChoiceType.skill) {
+      return skillDisplayName(id);
+    }
 
     if (choice.type == CharacterChoiceType.feat) {
       return featNameFor(id);
@@ -4426,7 +4633,7 @@ class _SheetPageState extends State<SheetPage> {
     );
   }
 
-  Future<void> rollCheck(String label, int bonus) async {
+  Future<bool> rollCheck(String label, int bonus) async {
     final first = Random().nextInt(20) + 1;
     final mode = await showModalBottomSheet<String>(
       context: context,
@@ -4462,7 +4669,7 @@ class _SheetPageState extends State<SheetPage> {
         ),
       ),
     );
-    if (mode == null || !mounted) return;
+    if (mode == null || !mounted) return false;
     final second = mode == 'normale' ? null : Random().nextInt(20) + 1;
     final natural = second == null
         ? first
@@ -4494,6 +4701,8 @@ class _SheetPageState extends State<SheetPage> {
         ],
       ),
     );
+
+    return true;
   }
 
   Widget statBox(String a) => InkWell(
@@ -5032,7 +5241,6 @@ class _SheetPageState extends State<SheetPage> {
 
     final effectiveSkills = h.effectiveSkillProficiencies;
     final savingThrowProficiencies = <String>{
-      ...monkSavingThrows,
       ...h.effectiveSavingThrowProficiencies,
       if (h.classId == ClassIds.monk && h.level >= 14) ...abilities,
     };
@@ -5233,6 +5441,7 @@ class _SheetPageState extends State<SheetPage> {
       final bonus = mod(h.scores[ability]!) + (proficient ? h.prof : 0);
 
       return InkWell(
+        key: Key('official_save_$ability'),
         onTap: () => rollCheck('Tiro salvezza $ability', bonus),
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 5),
@@ -5263,6 +5472,7 @@ class _SheetPageState extends State<SheetPage> {
       final bonus = mod(h.scores[entry.value]!) + (proficient ? h.prof : 0);
 
       return InkWell(
+        key: Key('official_skill_${canonicalSkillId(entry.key)}'),
         onTap: () => rollCheck(entry.key, bonus),
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 4),
@@ -5620,13 +5830,13 @@ class _SheetPageState extends State<SheetPage> {
         );
 
     Widget attacksPanel() {
-      final name = h.equippedWeapon;
-      final data = weaponInfo[name];
-      final ability = '${data?['ability'] ?? 'DES'}';
-      final damageBonus = mod(h.scores[ability] ?? 10);
-      final damage =
-          '1d${weaponDie(name)}${damageBonus == 0 ? '' : sign(damageBonus)}';
-      final damageType = '${data?['damage'] ?? 'contundente'}';
+      final selection = h.equippedWeapon;
+      final name = weaponDisplayNameFor(selection);
+      final ability = weaponAbilityFor(h, selection);
+      final damageBonus = weaponDamageBonusFor(h, selection);
+      final damageDice = weaponDamageDiceFor(h, selection);
+      final damage = '$damageDice${damageBonus == 0 ? '' : sign(damageBonus)}';
+      final damageType = weaponDamageTypeFor(selection);
 
       return officialPanel(
         title: 'Attacchi e incantesimi',
@@ -5651,7 +5861,7 @@ class _SheetPageState extends State<SheetPage> {
             const Divider(color: ink),
             InkWell(
               key: const Key('official_primary_attack'),
-              onTap: () => rollWeaponAttack(name),
+              onTap: () => rollWeaponAttack(selection),
               child: Padding(
                 padding: const EdgeInsets.symmetric(vertical: 7),
                 child: Row(
@@ -5668,7 +5878,7 @@ class _SheetPageState extends State<SheetPage> {
                     Expanded(
                       flex: 2,
                       child: Text(
-                        sign(weaponAttackBonus(name)),
+                        sign(weaponAttackBonus(selection)),
                         style: const TextStyle(
                           fontWeight: FontWeight.w900,
                         ),
@@ -5677,7 +5887,7 @@ class _SheetPageState extends State<SheetPage> {
                     Expanded(
                       flex: 4,
                       child: Text(
-                        '$damage $damageType',
+                        '$damage $damageType · $ability',
                         style: const TextStyle(fontSize: 12),
                       ),
                     ),
@@ -6356,36 +6566,91 @@ class _SheetPageState extends State<SheetPage> {
         ],
       );
 
-  int weaponDie(String name) {
-    if (name == 'Colpo senz’armi') {
-      return int.tryParse(h.martialDie.substring(1)) ?? 4;
-    }
-    final data = weaponInfo[name];
-    final base = (data?['die'] as int?) ?? 4;
-    final martial = int.tryParse(h.martialDie.substring(1)) ?? 4;
-    return (data?['monk'] == true) ? max(base, martial) : base;
+  int weaponAttackBonus(String selection) => weaponAttackBonusFor(h, selection);
+
+  String weaponDamage(String selection) {
+    final dice = weaponDamageDiceFor(h, selection);
+    final bonus = weaponDamageBonusFor(h, selection);
+
+    return '$dice${bonus == 0 ? '' : sign(bonus)} '
+        '${weaponDamageTypeFor(selection)}';
   }
 
-  int weaponAttackBonus(String name) {
-    final ability = '${weaponInfo[name]?['ability'] ?? 'DES'}';
-    return mod(h.scores[ability] ?? 10) + h.prof;
-  }
+  Future<void> rollWeaponAttack(String selection) async {
+    final name = weaponDisplayNameFor(selection);
+    final ability = weaponAbilityFor(h, selection);
 
-  String weaponDamage(String name) {
-    final die = weaponDie(name);
-    final ability = '${weaponInfo[name]?['ability'] ?? 'DES'}';
-    final bonus = mod(h.scores[ability] ?? 10);
-    final type = weaponInfo[name]?['damage'] == 'marziale'
-        ? 'contundente'
-        : '${weaponInfo[name]?['damage'] ?? ''}';
-    return '1d$die ${sign(bonus)} $type';
-  }
-
-  Future<void> rollWeaponAttack(String name) async {
-    await rollCheck(
-      'Attacco · $name',
-      weaponAttackBonus(name),
+    final completed = await rollCheck(
+      'Attacco · $name · $ability',
+      weaponAttackBonus(selection),
     );
+
+    if (!completed || !mounted) return;
+
+    final expression = weaponDamageDiceFor(h, selection);
+    final naturalDamage = rollDamageExpression(expression, Random());
+    final damageBonus = weaponDamageBonusFor(h, selection);
+    final totalDamage = max(0, naturalDamage + damageBonus);
+    final damageType = weaponDamageTypeFor(selection);
+
+    await showDialog<void>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text('Danno · $name'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              '🎲 $expression → $naturalDamage',
+              style: const TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(height: 8),
+            Text('$ability ${sign(damageBonus)}'),
+            const Divider(),
+            Text(
+              'DANNI $totalDamage · $damageType',
+              style: Theme.of(ctx).textTheme.headlineSmall,
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: const Text('CHIUDI'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  List<String> get availableWeaponSelections {
+    final selections = <String>['Colpo senz’armi'];
+
+    for (final item in h.inventory) {
+      if (item['catalogId']?.toString() != 'weapon') continue;
+
+      final id = item['id']?.toString();
+
+      if (id != null && weaponDefinitions.containsKey(id)) {
+        selections.add(id);
+      }
+    }
+
+    if (!selections.contains(h.equippedWeapon)) {
+      selections.add(h.equippedWeapon);
+    }
+
+    final unique = selections.toSet().toList();
+
+    unique.sort(
+      (first, second) =>
+          weaponDisplayNameFor(first).compareTo(weaponDisplayNameFor(second)),
+    );
+
+    return unique;
   }
 
   Widget equipmentTab() => ListView(
@@ -6395,7 +6660,7 @@ class _SheetPageState extends State<SheetPage> {
               style: Theme.of(context).textTheme.headlineSmall),
           const SizedBox(height: 6),
           const Text(
-              'Il Monaco calcola qui il danno delle armi compatibili con le Arti Marziali. Armature e scudi non vengono equipaggiati perché disattivano parti fondamentali della classe.'),
+              'Il tiro per colpire usa FOR o DES secondo l’arma e aggiunge il bonus di competenza soltanto quando posseduto. Per il Monaco, le armi compatibili usano correttamente Arti Marziali.'),
           const SizedBox(height: 12),
           Card(
             child: ListTile(
@@ -6438,7 +6703,7 @@ class _SheetPageState extends State<SheetPage> {
             title: 'Equipaggiato',
             child: ListTile(
               leading: const Icon(Icons.gavel),
-              title: Text(h.equippedWeapon),
+              title: Text(weaponDisplayNameFor(h.equippedWeapon)),
               subtitle: Text(
                 'Attacco ${sign(weaponAttackBonus(h.equippedWeapon))} · '
                 'Danno: ${weaponDamage(h.equippedWeapon)}',
@@ -6452,13 +6717,16 @@ class _SheetPageState extends State<SheetPage> {
             subtitle:
                 'Tocca un’arma per equipaggiarla; il danno mostrato usa il dado marziale quando applicabile.',
             child: Column(
-              children: weaponInfo.keys.map((w) {
+              children: availableWeaponSelections.map((w) {
                 final selected = h.equippedWeapon == w;
                 return ListTile(
                   leading: Icon(
                       selected ? Icons.check_circle : Icons.circle_outlined),
-                  title: Text(w),
-                  subtitle: Text('Danno: ${weaponDamage(w)}'),
+                  title: Text(weaponDisplayNameFor(w)),
+                  subtitle: Text(
+                    'Danno: ${weaponDamage(w)} · '
+                    '${weaponAbilityFor(h, w)}',
+                  ),
                   trailing: selected
                       ? const Text('EQUIPAGGIATA')
                       : const Text('EQUIPAGGIA'),

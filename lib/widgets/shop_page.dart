@@ -125,6 +125,209 @@ class _ShopPageState extends State<ShopPage> {
 
   Future<void> _notifyChanged() => widget.onChanged(_coins, _inventory);
 
+  Future<void> _manageCoin(String coin) async {
+    const denominations = ['MR', 'MA', 'ME', 'MO', 'MP'];
+
+    final amountController = TextEditingController();
+    var operation = 'add';
+    var targetCoin = denominations.firstWhere(
+      (candidate) => candidate != coin,
+    );
+    String? error;
+    String? successMessage;
+
+    final updated = await showDialog<Map<String, int>>(
+      context: context,
+      builder: (dialogContext) => StatefulBuilder(
+        builder: (context, setDialogState) => AlertDialog(
+          title: Text('Gestisci $coin'),
+          content: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Disponibili: ${_coins[coin] ?? 0} $coin',
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 16),
+                DropdownButtonFormField<String>(
+                  initialValue: operation,
+                  decoration: const InputDecoration(
+                    labelText: 'Operazione',
+                    border: OutlineInputBorder(),
+                  ),
+                  items: const [
+                    DropdownMenuItem(
+                      value: 'add',
+                      child: Text('AGGIUNGI'),
+                    ),
+                    DropdownMenuItem(
+                      value: 'convert',
+                      child: Text('CONVERTI'),
+                    ),
+                  ],
+                  onChanged: (value) {
+                    if (value == null) return;
+
+                    setDialogState(() {
+                      operation = value;
+                      error = null;
+                    });
+                  },
+                ),
+                const SizedBox(height: 12),
+                TextField(
+                  controller: amountController,
+                  keyboardType: TextInputType.number,
+                  decoration: InputDecoration(
+                    labelText: operation == 'add'
+                        ? 'Quantità da aggiungere'
+                        : 'Quantità di $coin da convertire',
+                    border: const OutlineInputBorder(),
+                  ),
+                ),
+                if (operation == 'convert') ...[
+                  const SizedBox(height: 12),
+                  DropdownButtonFormField<String>(
+                    initialValue: targetCoin,
+                    decoration: const InputDecoration(
+                      labelText: 'Converti in',
+                      border: OutlineInputBorder(),
+                    ),
+                    items: denominations
+                        .where((candidate) => candidate != coin)
+                        .map(
+                          (candidate) => DropdownMenuItem(
+                            value: candidate,
+                            child: Text(candidate),
+                          ),
+                        )
+                        .toList(),
+                    onChanged: (value) {
+                      if (value == null) return;
+
+                      setDialogState(() {
+                        targetCoin = value;
+                        error = null;
+                      });
+                    },
+                  ),
+                  const SizedBox(height: 12),
+                  const Text(
+                    'Rapporti: 1 MP = 10 MO = 20 ME = '
+                    '100 MA = 1.000 MR.',
+                  ),
+                  const SizedBox(height: 6),
+                  const Text(
+                    'La conversione avviene soltanto se il risultato '
+                    'è un numero intero di monete.',
+                  ),
+                ],
+                if (error != null) ...[
+                  const SizedBox(height: 12),
+                  Text(
+                    error!,
+                    style: TextStyle(
+                      color: Theme.of(context).colorScheme.error,
+                    ),
+                  ),
+                ],
+              ],
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(dialogContext),
+              child: const Text('ANNULLA'),
+            ),
+            FilledButton(
+              onPressed: () {
+                final amount = int.tryParse(
+                  amountController.text.trim(),
+                );
+
+                if (amount == null || amount <= 0) {
+                  setDialogState(
+                    () => error =
+                        'Inserisci una quantità intera maggiore di zero.',
+                  );
+                  return;
+                }
+
+                if (operation == 'add') {
+                  try {
+                    final result = _transactions.adjustCoinAmount(
+                      coins: _coins,
+                      coin: coin,
+                      delta: amount,
+                    );
+
+                    successMessage = 'Aggiunte $amount $coin al portamonete.';
+
+                    Navigator.pop(dialogContext, result);
+                  } on ArgumentError catch (caught) {
+                    setDialogState(
+                      () => error =
+                          caught.message?.toString() ?? 'Quantità non valida.',
+                    );
+                  }
+
+                  return;
+                }
+
+                final conversion = _transactions.convertCoins(
+                  coins: _coins,
+                  fromCoin: coin,
+                  toCoin: targetCoin,
+                  amount: amount,
+                );
+
+                if (!conversion.success) {
+                  setDialogState(
+                    () =>
+                        error = conversion.error ?? 'Conversione non riuscita.',
+                  );
+                  return;
+                }
+
+                successMessage = '$amount $coin convertite in '
+                    '${conversion.convertedAmount} $targetCoin.';
+
+                Navigator.pop(
+                  dialogContext,
+                  conversion.coins,
+                );
+              },
+              child: const Text('CONFERMA'),
+            ),
+          ],
+        ),
+      ),
+    );
+
+    await Future<void>.delayed(kThemeAnimationDuration);
+    amountController.dispose();
+
+    if (updated == null || !mounted) return;
+
+    setState(() {
+      _coins = Map<String, int>.from(updated);
+    });
+
+    await _notifyChanged();
+
+    if (!mounted || successMessage == null) return;
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(successMessage!),
+      ),
+    );
+  }
+
   Future<void> _editCoins() async {
     final controllers = <String, TextEditingController>{
       for (final coin in const ['MR', 'MA', 'ME', 'MO', 'MP'])
@@ -467,7 +670,15 @@ class _ShopPageState extends State<ShopPage> {
                     runSpacing: 8,
                     children: [
                       for (final coin in const ['MR', 'MA', 'ME', 'MO', 'MP'])
-                        Chip(label: Text('$coin ${_coins[coin] ?? 0}')),
+                        ActionChip(
+                          key: Key('wallet_coin_$coin'),
+                          label: Text('$coin ${_coins[coin] ?? 0}'),
+                          avatar: const Icon(
+                            Icons.paid_outlined,
+                            size: 18,
+                          ),
+                          onPressed: () => _manageCoin(coin),
+                        ),
                     ],
                   ),
                 ],
