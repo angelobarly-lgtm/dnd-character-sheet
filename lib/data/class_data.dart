@@ -195,22 +195,156 @@ class RuleContent {
   });
 }
 
+/// Tipo di sezione mostrata nella pagina mobile di una voce.
+enum GlossarySectionType {
+  completeRule,
+  specialCases,
+  example,
+  procedure,
+  interaction,
+  note,
+}
+
+/// Blocco richiudibile della pagina mobile del glossario.
+class GlossarySectionDefinition {
+  final String id;
+  final String title;
+  final GlossarySectionType type;
+  final String content;
+  final bool initiallyExpanded;
+  final Map<String, num> numericValues;
+  final Set<String> tags;
+  final List<String> relatedIds;
+
+  const GlossarySectionDefinition({
+    required this.id,
+    required this.title,
+    required this.type,
+    required this.content,
+    this.initiallyExpanded = false,
+    this.numericValues = const {},
+    this.tags = const {},
+    this.relatedIds = const [],
+  });
+}
+
+/// Provenienza editoriale di una voce del glossario.
+class GlossarySourceDefinition {
+  final String book;
+  final String edition;
+  final String reference;
+  final int? pageStart;
+  final int? pageEnd;
+  final String? section;
+
+  const GlossarySourceDefinition({
+    required this.book,
+    required this.edition,
+    required this.reference,
+    this.pageStart,
+    this.pageEnd,
+    this.section,
+  })  : assert(pageStart == null || pageStart > 0),
+        assert(pageEnd == null || pageEnd > 0),
+        assert(
+          pageStart == null || pageEnd == null || pageEnd >= pageStart,
+        );
+
+  String get pageLabel {
+    if (pageStart == null) return reference;
+    if (pageEnd == null || pageEnd == pageStart) {
+      return 'p. $pageStart';
+    }
+    return 'pp. $pageStart-$pageEnd';
+  }
+}
+
+/// Tipo di contenuto esterno collegato a una voce del glossario.
+enum GlossaryReferenceKind {
+  glossary,
+  classDefinition,
+  subclass,
+  classFeature,
+  race,
+  racialTrait,
+  background,
+  feat,
+  spell,
+  equipment,
+  weapon,
+  armor,
+  creature,
+  damageType,
+  condition,
+  rule,
+}
+
+/// Collegamento dal glossario a un altro catalogo dell’app.
+class GlossaryReferenceDefinition {
+  final GlossaryReferenceKind kind;
+  final String targetId;
+  final String label;
+
+  const GlossaryReferenceDefinition({
+    required this.kind,
+    required this.targetId,
+    this.label = '',
+  });
+}
+
+/// Voce universale del glossario.
+///
+/// [summary] è la spiegazione breve sempre visibile sul telefono.
+/// [sections] contiene i dettagli presentati tramite sezioni a tendina.
 class GlossaryEntry {
   final String id;
   final String name;
+  final Set<String> aliases;
   final GlossaryCategory category;
   final String summary;
   final String details;
+  final List<GlossarySectionDefinition> sections;
   final List<String> relatedIds;
+  final List<GlossaryReferenceDefinition> references;
+  final List<GlossarySourceDefinition> sources;
+  final Set<String> tags;
+  final Set<String> searchTerms;
+  final bool linkable;
+  final bool homebrew;
+  final bool supplemental;
 
   const GlossaryEntry({
     required this.id,
     required this.name,
+    this.aliases = const {},
     required this.category,
     required this.summary,
     this.details = '',
+    this.sections = const [],
     this.relatedIds = const [],
+    this.references = const [],
+    this.sources = const [],
+    this.tags = const {},
+    this.searchTerms = const {},
+    this.linkable = true,
+    this.homebrew = false,
+    this.supplemental = false,
   });
+
+  Set<String> get linkTerms => {
+        name,
+        ...aliases,
+      };
+
+  Set<String> get allRelatedGlossaryIds => {
+        ...relatedIds,
+        ...sections.expand((section) => section.relatedIds),
+        ...references
+            .where(
+              (reference) => reference.kind == GlossaryReferenceKind.glossary,
+            )
+            .map((reference) => reference.targetId),
+      };
 }
 
 /// Registry globale del glossario.

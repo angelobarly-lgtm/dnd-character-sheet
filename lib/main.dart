@@ -10,6 +10,7 @@ import 'data/feat_data.dart';
 import 'data/race_data.dart';
 import 'services/character_builder.dart';
 import 'widgets/shop_page.dart';
+import 'widgets/glossary_page.dart';
 
 import 'data/rule_icon_data.dart';
 
@@ -970,6 +971,15 @@ class _HomePageState extends State<HomePage> {
     await _reload();
   }
 
+  Future<void> _openGlossary() async {
+    await Navigator.push<void>(
+      context,
+      MaterialPageRoute(
+        builder: (_) => const GlossaryIndexPage(),
+      ),
+    );
+  }
+
   Widget _ornament() => const Row(
         children: [
           Expanded(child: Divider(color: gold, thickness: 1)),
@@ -1158,6 +1168,33 @@ class _HomePageState extends State<HomePage> {
                           backgroundColor: const Color(0xfff7f0dd),
                           side: const BorderSide(color: wine, width: 2),
                           padding: const EdgeInsets.symmetric(vertical: 16),
+                        ),
+                      ),
+                      const SizedBox(height: 12),
+                      OutlinedButton.icon(
+                        key: const Key('open_glossary_button'),
+                        onPressed: _openGlossary,
+                        icon: const Icon(
+                          Icons.menu_book_outlined,
+                          color: wine,
+                        ),
+                        label: const Text(
+                          'APRI IL GLOSSARIO',
+                          style: TextStyle(
+                            fontWeight: FontWeight.w900,
+                            letterSpacing: 1,
+                          ),
+                        ),
+                        style: OutlinedButton.styleFrom(
+                          foregroundColor: ink,
+                          backgroundColor: const Color(0xfff7f0dd),
+                          side: const BorderSide(
+                            color: gold,
+                            width: 2,
+                          ),
+                          padding: const EdgeInsets.symmetric(
+                            vertical: 16,
+                          ),
                         ),
                       ),
                     ],
@@ -4717,125 +4754,7 @@ Future<void> showGlossaryEntry(
     return;
   }
 
-  await showModalBottomSheet<void>(
-    context: context,
-    useSafeArea: true,
-    showDragHandle: true,
-    isScrollControlled: true,
-    builder: (ctx) => GlossaryEntrySheet(entry: entry),
-  );
-}
-
-class GlossaryEntrySheet extends StatelessWidget {
-  const GlossaryEntrySheet({
-    super.key,
-    required this.entry,
-  });
-
-  final GlossaryEntry entry;
-
-  String get categoryLabel {
-    switch (entry.category) {
-      case GlossaryCategory.regola:
-        return 'Regola';
-      case GlossaryCategory.condizione:
-        return 'Condizione';
-      case GlossaryCategory.risorsa:
-        return 'Risorsa';
-      case GlossaryCategory.azione:
-        return 'Azione';
-      case GlossaryCategory.caratteristica:
-        return 'Caratteristica';
-      case GlossaryCategory.combattimento:
-        return 'Combattimento';
-      case GlossaryCategory.equipaggiamento:
-        return 'Equipaggiamento';
-      case GlossaryCategory.altro:
-        return 'Altro';
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final related = entry.relatedIds
-        .map(glossaryEntryFor)
-        .whereType<GlossaryEntry>()
-        .toList();
-
-    return SafeArea(
-      top: false,
-      child: SingleChildScrollView(
-        padding: const EdgeInsets.fromLTRB(20, 8, 20, 28),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Text(
-              entry.name,
-              style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                    fontWeight: FontWeight.w900,
-                  ),
-            ),
-            const SizedBox(height: 4),
-            Text(
-              categoryLabel.toUpperCase(),
-              style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                    fontWeight: FontWeight.w900,
-                    letterSpacing: 1,
-                  ),
-            ),
-            const SizedBox(height: 16),
-            Text(
-              entry.summary,
-              style: const TextStyle(
-                fontWeight: FontWeight.w700,
-              ),
-            ),
-            if (entry.details.trim().isNotEmpty) ...[
-              const SizedBox(height: 12),
-              Text(entry.details),
-            ],
-            if (related.isNotEmpty) ...[
-              const SizedBox(height: 20),
-              Text(
-                'VOCI CORRELATE',
-                style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                      fontWeight: FontWeight.w900,
-                      letterSpacing: 0.8,
-                    ),
-              ),
-              const SizedBox(height: 8),
-              Wrap(
-                spacing: 6,
-                runSpacing: 6,
-                children: related
-                    .map(
-                      (relatedEntry) => ActionChip(
-                        avatar: const Icon(
-                          Icons.menu_book_outlined,
-                          size: 16,
-                        ),
-                        label: Text(relatedEntry.name),
-                        onPressed: () {
-                          Navigator.pop(context);
-
-                          showGlossaryEntry(
-                            context,
-                            GlossaryRef(
-                              relatedEntry.id,
-                              relatedEntry.name,
-                            ),
-                          );
-                        },
-                      ),
-                    )
-                    .toList(),
-              ),
-            ],
-          ],
-        ),
-      ),
-    );
-  }
+  await openGlossaryEntryPage(context, entry);
 }
 
 /// Tema visuale centralizzato per tutti i contenuti regolamentari.
@@ -5212,8 +5131,8 @@ class _RuleDescriptionViewState extends State<RuleDescriptionView> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Text(
-          description.summary,
+        GlossaryLinkedText(
+          text: description.summary,
           style: const TextStyle(
             fontWeight: FontWeight.w700,
           ),
@@ -5247,7 +5166,9 @@ class _RuleDescriptionViewState extends State<RuleDescriptionView> {
             children: [
               if (description.details.trim().isNotEmpty) ...[
                 const SizedBox(height: 4),
-                Text(description.details),
+                GlossaryLinkedText(
+                  text: description.details,
+                ),
               ],
               if (metadata.isNotEmpty) ...[
                 const SizedBox(height: 14),
