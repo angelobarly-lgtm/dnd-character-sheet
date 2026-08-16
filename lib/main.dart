@@ -9,7 +9,9 @@ import 'data/glossary_data.dart';
 import 'data/character_data.dart';
 import 'data/background_data.dart';
 import 'data/feat_data.dart';
+import 'data/multiclass_data.dart';
 import 'data/race_data.dart';
+import 'data/armor_data.dart';
 import 'data/damage_type_data.dart';
 import 'data/weapon_data.dart';
 import 'data/weapon_property_data.dart';
@@ -370,7 +372,7 @@ List<Map<String, dynamic>> buildClassStartingInventory({
         'name': entry.key.split('::').last,
         'catalogId': entry.key.split('::').first,
         'quantity': entry.value,
-        'equipped': false,
+        'equipped': entry.key.split('::').first == 'armor',
       },
   ];
 }
@@ -420,63 +422,95 @@ Map<String, int> buildSpellSlotsAtLevel({
   };
 }
 
-void synchronizeHeroClassProgression(
-  HeroData hero, {
-  required int oldLevel,
-}) {
-  final definition = hero.catalogClassDefinition;
-  if (definition == null) return;
-
-  final modifiers = {
-    for (final ability in abilities) ability: mod(hero.scores[ability] ?? 10),
+Map<String, String> heroSpellcastingSubclasses(HeroData hero) {
+  return {
+    for (final classId in hero.activeClassIds)
+      if (hero.subclassForClass(classId) != null)
+        classId: hero.subclassForClass(classId)!,
   };
+}
 
+ClassSpellcastingDefinition? heroSpellcastingForClass(
+  HeroData hero,
+  String requestedClassId,
+) {
+  final definition = phbClassDefinitionFor(requestedClassId);
+  if (definition == null) return null;
+
+  final subclassId = hero.subclassForClass(requestedClassId);
   final subclass =
-      hero.subclass == null ? null : definition.subclasses[hero.subclass];
+      subclassId == null ? null : definition.subclasses[subclassId];
 
-  final updatedResources = Map<String, int>.from(hero.classResources);
+  return subclass?.spellcasting ?? definition.spellcasting;
+}
 
-  for (final resource in [
-    ...definition.resources,
-    ...?subclass?.resources,
-  ]) {
-    if (hero.level < resource.minimumLevel) continue;
+List<int> maximumSpellSlotsForHero(HeroData hero) {
+  final subclasses = heroSpellcastingSubclasses(hero);
 
-    if (resource.isUnlimitedAtLevel(hero.level)) {
-      updatedResources.remove(resource.id);
-      continue;
-    }
-
-    final oldMaximum = resource.maximumAtLevel(
-      oldLevel,
-      abilityModifiers: modifiers,
+  final castingClasses = hero.effectiveClassLevels.entries.where((entry) {
+    return classContributesToCombinedSpellSlots(
+      classId: entry.key,
+      classLevel: entry.value,
+      subclassId: subclasses[entry.key],
     );
-    final newMaximum = resource.maximumAtLevel(
-      hero.level,
-      abilityModifiers: modifiers,
-    );
-    final current = updatedResources[resource.id] ?? oldMaximum;
+  }).toList(growable: false);
 
-    updatedResources[resource.id] =
-        (current + newMaximum - oldMaximum).clamp(0, newMaximum).toInt();
+  if (castingClasses.isEmpty) {
+    return const [];
   }
 
-  hero.classResources = updatedResources;
+  if (castingClasses.length == 1) {
+    final entry = castingClasses.single;
+    final rules = heroSpellcastingForClass(hero, entry.key);
 
-  if (hero.classId == ClassIds.monk) {
-    hero.ki = hero.classResources['ki'] ?? 0;
+    return rules?.slotsAtLevel(entry.value) ?? const [];
   }
 
-  final spellcasting = subclass?.spellcasting ?? definition.spellcasting;
-  final oldSlots = spellcasting?.slotsAtLevel(oldLevel) ?? const <int>[];
-  final newSlots = spellcasting?.slotsAtLevel(hero.level) ?? const <int>[];
+  final casterLevel = multiclassSpellcasterLevel(
+    classLevels: hero.effectiveClassLevels,
+    classSubclasses: subclasses,
+  );
+
+  return multiclassSpellSlotsAtLevel(casterLevel);
+}
+
+int pactSlotLevelForHero(HeroData hero) {
+  final warlockLevel = hero.classLevel(ClassIds.warlock);
+  if (warlockLevel <= 0) return 0;
+
+  final rules = phbClassDefinitionFor(
+    ClassIds.warlock,
+  )?.spellcasting;
+
+  return rules?.pactSlotLevelAtLevel(warlockLevel) ?? 0;
+}
+
+int pactSlotMaximumForHero(HeroData hero) {
+  final warlockLevel = hero.classLevel(ClassIds.warlock);
+  if (warlockLevel <= 0) return 0;
+
+  final slots = phbClassDefinitionFor(
+        ClassIds.warlock,
+      )?.spellcasting?.slotsAtLevel(warlockLevel) ??
+      const <int>[];
+
+  return slots.fold<int>(0, (total, count) => total + count);
+}
+
+void synchronizeCombinedSpellSlots(
+  HeroData hero, {
+  required List<int> oldMaximumSlots,
+  required int oldPactMaximum,
+}) {
+  final newMaximumSlots = maximumSpellSlotsForHero(hero);
   final updatedSlots = <String, int>{};
 
-  for (var index = 0; index < newSlots.length; index++) {
-    final newMaximum = newSlots[index];
+  for (var index = 0; index < newMaximumSlots.length; index++) {
+    final newMaximum = newMaximumSlots[index];
     if (newMaximum <= 0) continue;
 
-    final oldMaximum = index < oldSlots.length ? oldSlots[index] : 0;
+    final oldMaximum =
+        index < oldMaximumSlots.length ? oldMaximumSlots[index] : 0;
     final current = hero.spellSlots['${index + 1}'] ?? oldMaximum;
 
     updatedSlots['${index + 1}'] =
@@ -485,9 +519,179 @@ void synchronizeHeroClassProgression(
 
   hero.spellSlots = updatedSlots;
 
+  final newPactMaximum = pactSlotMaximumForHero(hero);
+  final currentPact =
+      hero.pactSpellSlots < 0 ? oldPactMaximum : hero.pactSpellSlots;
+
+  hero.pactSpellSlots = (currentPact + newPactMaximum - oldPactMaximum)
+      .clamp(0, newPactMaximum)
+      .toInt();
+}
+
+List<int> availableNormalSpellSlotLevels(
+  HeroData hero, {
+  required int minimumLevel,
+}) {
+  final maximumSlots = maximumSpellSlotsForHero(hero);
+
+  int maximumAt(int level) =>
+      level <= maximumSlots.length ? maximumSlots[level - 1] : 0;
+
+  int currentAt(int level) => hero.spellSlots['$level'] ?? maximumAt(level);
+
+  return [
+    for (var level = minimumLevel; level <= 9; level++)
+      if (maximumAt(level) > 0 && currentAt(level) > 0) level,
+  ];
+}
+
+bool canUsePactSlotForSpell(
+  HeroData hero, {
+  required int spellLevel,
+}) {
+  return hero.currentPactSpellSlots > 0 &&
+      pactSlotLevelForHero(hero) >= spellLevel;
+}
+
+bool spendNormalSpellSlot(
+  HeroData hero, {
+  required int slotLevel,
+}) {
+  final maximumSlots = maximumSpellSlotsForHero(hero);
+
+  if (slotLevel <= 0 || slotLevel > maximumSlots.length) {
+    return false;
+  }
+
+  final maximum = maximumSlots[slotLevel - 1];
+  final current = hero.spellSlots['$slotLevel'] ?? maximum;
+
+  if (maximum <= 0 || current <= 0) return false;
+
+  hero.spellSlots = {
+    ...hero.spellSlots,
+    '$slotLevel': current - 1,
+  };
+
+  return true;
+}
+
+bool spendPactSpellSlot(HeroData hero) {
+  if (hero.currentPactSpellSlots <= 0) return false;
+
+  hero.pactSpellSlots = hero.currentPactSpellSlots - 1;
+  return true;
+}
+
+void restoreHeroPactSpellSlots(HeroData hero) {
+  hero.pactSpellSlots = pactSlotMaximumForHero(hero);
+}
+
+void restoreAllHeroSpellSlots(HeroData hero) {
+  final maximumSlots = maximumSpellSlotsForHero(hero);
+
+  hero.spellSlots = {
+    for (var index = 0; index < maximumSlots.length; index++)
+      if (maximumSlots[index] > 0) '${index + 1}': maximumSlots[index],
+  };
+
+  restoreHeroPactSpellSlots(hero);
+}
+
+void synchronizeHeroClassProgression(
+  HeroData hero, {
+  required int oldLevel,
+  String? progressionClassId,
+  int? newLevel,
+  bool synchronizeSpellSlots = true,
+}) {
+  final ownerClassId = progressionClassId ?? hero.classId;
+  final targetNewLevel = newLevel ??
+      (ownerClassId == hero.classId
+          ? hero.level
+          : hero.classLevel(ownerClassId));
+
+  final definition = phbClassDefinitionFor(ownerClassId);
+  if (definition == null) return;
+
+  final modifiers = {
+    for (final ability in abilities) ability: mod(hero.scores[ability] ?? 10),
+  };
+
+  final subclassId = hero.subclassForClass(ownerClassId);
+  final subclass =
+      subclassId == null ? null : definition.subclasses[subclassId];
+
+  final updatedResources = Map<String, int>.from(
+    hero.classResources,
+  );
+
+  for (final resource in [
+    ...definition.resources,
+    ...?subclass?.resources,
+  ]) {
+    if (targetNewLevel < resource.minimumLevel) continue;
+
+    final storageKey = hero.classResourceStorageKey(
+      ownerClassId,
+      resource.id,
+    );
+
+    if (resource.isUnlimitedAtLevel(targetNewLevel)) {
+      updatedResources.remove(storageKey);
+      continue;
+    }
+
+    final oldMaximum = resource.maximumAtLevel(
+      oldLevel,
+      abilityModifiers: modifiers,
+    );
+    final newMaximum = resource.maximumAtLevel(
+      targetNewLevel,
+      abilityModifiers: modifiers,
+    );
+
+    final current = hero.classResourceValueForClass(
+      ownerClassId,
+      resource.id,
+    );
+
+    updatedResources[storageKey] =
+        (current + newMaximum - oldMaximum).clamp(0, newMaximum).toInt();
+  }
+
+  hero.classResources = updatedResources;
+
+  if (ownerClassId == ClassIds.monk && ownerClassId == hero.classId) {
+    hero.ki = hero.classResources['ki'] ?? 0;
+  }
+
+  if (synchronizeSpellSlots) {
+    final spellcasting = subclass?.spellcasting ?? definition.spellcasting;
+    final oldSlots = spellcasting?.slotsAtLevel(oldLevel) ?? const <int>[];
+    final newSlots =
+        spellcasting?.slotsAtLevel(targetNewLevel) ?? const <int>[];
+    final updatedSlots = <String, int>{};
+
+    for (var index = 0; index < newSlots.length; index++) {
+      final newMaximum = newSlots[index];
+      if (newMaximum <= 0) continue;
+
+      final oldMaximum = index < oldSlots.length ? oldSlots[index] : 0;
+      final current = hero.spellSlots['${index + 1}'] ?? oldMaximum;
+
+      updatedSlots['${index + 1}'] =
+          (current + newMaximum - oldMaximum).clamp(0, newMaximum).toInt();
+    }
+
+    hero.spellSlots = updatedSlots;
+  }
+
   hero.preparedSpellIds = {
     ...hero.preparedSpellIds,
-    ...?subclass?.alwaysPreparedSpellIdsAtLevel(hero.level),
+    ...?subclass?.alwaysPreparedSpellIdsAtLevel(
+      targetNewLevel,
+    ),
   }.toList();
 }
 
@@ -534,6 +738,33 @@ const weaponInfo = <String, Map<String, dynamic>>{
   },
 };
 
+class ResolvedHeroFeature {
+  final String ownerClassId;
+  final String ownerClassName;
+  final int requiredClassLevel;
+  final CharacterClassFeatureDefinition definition;
+  final String? subclassId;
+  final String? subclassName;
+
+  const ResolvedHeroFeature({
+    required this.ownerClassId,
+    required this.ownerClassName,
+    required this.requiredClassLevel,
+    required this.definition,
+    this.subclassId,
+    this.subclassName,
+  });
+
+  String get id => definition.id;
+  String get name => definition.content.name;
+
+  String get sourceLabel {
+    final subclassLabel = subclassName == null ? '' : ' · $subclassName';
+
+    return '$ownerClassName $requiredClassLevel$subclassLabel';
+  }
+}
+
 class HeroData {
   HeroData({
     required this.name,
@@ -544,12 +775,17 @@ class HeroData {
     this.tempHp = 0,
     this.ki = 0,
     this.classId = ClassIds.monk,
+    this.classLevels = const {},
     this.classChoices = const {},
     this.classResources = const {},
     this.hitDiceUsed = 0,
+    this.hitDiceUsedByClass = const {},
     this.subclass,
     this.subclassOptionIds = const [],
+    this.classSubclasses = const {},
+    this.classSubclassOptionIds = const {},
     this.feat,
+    this.featAcquisitions = const [],
     this.background = 'Soldato',
     this.backgroundId,
     this.backgroundChoices = const {},
@@ -587,9 +823,11 @@ class HeroData {
     this.inspiration = false,
     this.inventory = const [],
     this.spellSlots = const {},
+    this.pactSpellSlots = -1,
     this.knownSpellIds = const [],
     this.preparedSpellIds = const [],
     this.spellbookSpellIds = const [],
+    this.spellClassIds = const {},
   });
 
   String name;
@@ -618,11 +856,52 @@ class HeroData {
   int level, currentHp, tempHp, ki, hitDiceUsed, deathSuccess, deathFail;
   List<int> hpRolls;
 
+  /// Dadi Vita spesi separatamente per ciascuna classe.
+  ///
+  /// Il campo scalare legacy [hitDiceUsed] resta sincronizzato per
+  /// mantenere compatibili i salvataggi precedenti al multiclasse.
+  Map<String, int> hitDiceUsedByClass;
+
   /// ID canonico della classe scelta.
   ///
   /// Un salvataggio precedente alla migrazione viene interpretato
   /// automaticamente come Monaco.
   String classId;
+
+  /// Livelli posseduti separatamente per ciascuna classe.
+  ///
+  /// Nei salvataggi precedenti al multiclasse la mappa è vuota e viene
+  /// interpretata automaticamente come {classId: level}.
+  Map<String, int> classLevels;
+
+  Map<String, int> get effectiveClassLevels {
+    final explicitLevels = <String, int>{
+      for (final entry in classLevels.entries)
+        if (entry.value > 0) entry.key: entry.value,
+    };
+
+    if (explicitLevels.isEmpty) {
+      return <String, int>{classId: level};
+    }
+
+    return Map<String, int>.unmodifiable(explicitLevels);
+  }
+
+  Set<String> get activeClassIds => effectiveClassLevels.keys.toSet();
+
+  int classLevel(String requestedClassId) =>
+      effectiveClassLevels[requestedClassId] ?? 0;
+
+  int get primaryClassLevel => classLevel(classId);
+
+  int get totalClassLevels => effectiveClassLevels.values.fold<int>(
+        0,
+        (total, classLevel) => total + classLevel,
+      );
+
+  bool get isMulticlass => activeClassIds.length > 1;
+
+  bool get classLevelsMatchCharacterLevel => totalClassLevels == level;
 
   /// Scelte persistenti di competenza e dotazione della classe.
   Map<String, List<String>> classChoices;
@@ -633,6 +912,39 @@ class HeroData {
   Map<String, int> classResources;
 
   String? subclass, feat;
+  List<FeatAcquisition> featAcquisitions;
+
+  /// Sottoclassi separate per ciascuna classe posseduta.
+  ///
+  /// I campi legacy [subclass] e [subclassOptionIds] restano disponibili
+  /// per caricare i vecchi personaggi a classe singola.
+  Map<String, String> classSubclasses;
+  Map<String, List<String>> classSubclassOptionIds;
+
+  String? subclassForClass(String requestedClassId) {
+    final stored = classSubclasses[requestedClassId];
+
+    if (stored != null) return stored;
+    if (requestedClassId == classId) return subclass;
+
+    return null;
+  }
+
+  List<String> subclassOptionsForClass(
+    String requestedClassId,
+  ) {
+    final stored = classSubclassOptionIds[requestedClassId];
+
+    if (stored != null) {
+      return List<String>.unmodifiable(stored);
+    }
+
+    if (requestedClassId == classId) {
+      return List<String>.unmodifiable(subclassOptionIds);
+    }
+
+    return const [];
+  }
 
   /// ID stabili delle opzioni di sottoclasse scelte dal personaggio.
   ///
@@ -693,9 +1005,34 @@ class HeroData {
   bool inspiration;
   List<Map<String, dynamic>> inventory;
   Map<String, int> spellSlots;
+
+  /// Slot della Magia del Patto correntemente disponibili.
+  ///
+  /// -1 identifica un salvataggio precedente alla separazione degli slot.
+  int pactSpellSlots;
+
+  int get currentPactSpellSlots {
+    final maximum = pactSlotMaximumForHero(this);
+    if (maximum <= 0) return 0;
+
+    if (pactSpellSlots >= 0) {
+      return pactSpellSlots.clamp(0, maximum).toInt();
+    }
+
+    final legacyLevel = pactSlotLevelForHero(this);
+    final legacyValue = spellSlots['$legacyLevel'];
+
+    return (legacyValue ?? maximum).clamp(0, maximum).toInt();
+  }
+
   List<String> knownSpellIds;
   List<String> preparedSpellIds;
   List<String> spellbookSpellIds;
+
+  /// Classe con cui ogni incantesimo è stato appreso o preparato.
+  ///
+  /// Gli incantesimi razziali e dei talenti non richiedono una voce.
+  Map<String, String> spellClassIds;
 
   String get resolvedRaceId {
     if (raceId != null && raceId!.isNotEmpty) {
@@ -820,6 +1157,22 @@ class HeroData {
     CharacterChoiceType type,
   ) {
     final result = <String>{};
+
+    for (final entry in classChoices.entries) {
+      final isMulticlassSkill =
+          entry.key.startsWith('multiclass_') && entry.key.endsWith('_skills');
+      final isMulticlassTool =
+          entry.key.startsWith('multiclass_') && entry.key.endsWith('_tools');
+
+      if (type == CharacterChoiceType.skill && isMulticlassSkill) {
+        result.addAll(entry.value);
+      }
+
+      if (type == CharacterChoiceType.tool && isMulticlassTool) {
+        result.addAll(entry.value);
+      }
+    }
+
     final definition = catalogClassDefinition;
 
     if (definition == null) return result;
@@ -865,15 +1218,71 @@ class HeroData {
   Set<String> get effectiveSkillProficiencies => <String>{
         ...skillProficiencies,
         ...resolvedRaceEffects.effects.skillProficiencies,
+        ...?resolvedFeatEffects?.effects.skillProficiencies,
         ...resolvedBackgroundEffects.skillProficiencies,
         ...backgroundSelectionsOfType(CharacterChoiceType.skill),
         ...classSelectionsOfType(CharacterChoiceType.skill),
       }.map(skillDisplayName).toSet();
 
+  Set<String> get effectiveSkillExpertise {
+    final expertise = <String>{};
+
+    for (final entry in classChoices.entries) {
+      if (!entry.key.toLowerCase().contains('expertise')) continue;
+
+      for (final selection in entry.value) {
+        final skill = skillDisplayName(selection);
+        if (skillAbility.containsKey(skill)) expertise.add(skill);
+      }
+    }
+
+    return expertise;
+  }
+
+  int skillProficiencyMultiplier(String skill) {
+    final displayName = skillDisplayName(skill);
+
+    if (effectiveSkillExpertise.contains(displayName)) return 2;
+    if (effectiveSkillProficiencies.contains(displayName)) return 1;
+    return 0;
+  }
+
+  int skillBonus(String skill) {
+    final displayName = skillDisplayName(skill);
+    final ability = skillAbility[displayName];
+    if (ability == null) return 0;
+
+    return mod(scores[ability] ?? 10) +
+        prof * skillProficiencyMultiplier(displayName);
+  }
+
+  int get passivePerception {
+    final passiveEffects = <CharacterRuleEffect>[
+      ...resolvedRaceEffects.effects.ruleEffects,
+      ...resolvedBackgroundEffects.ruleEffects,
+      ...?resolvedFeatEffects?.effects.ruleEffects,
+    ];
+
+    final passiveBonus = passiveEffects
+        .where(
+          (effect) =>
+              effect.type == CharacterRuleEffectType.passiveScoreBonus &&
+              effect.target == 'passive_perception',
+        )
+        .fold<double>(
+          0,
+          (total, effect) => total + (effect.value ?? 0),
+        )
+        .round();
+
+    return 10 + skillBonus('Percezione') + passiveBonus;
+  }
+
   /// Lingue effettivamente conosciute.
   Set<String> get effectiveLanguages => {
         ...languages,
         ...resolvedRaceEffects.effects.languages,
+        ...?resolvedFeatEffects?.effects.languages,
         ...resolvedBackgroundEffects.languages,
         ...backgroundSelectionsOfType(CharacterChoiceType.language),
         ...classSelectionsOfType(CharacterChoiceType.language),
@@ -882,28 +1291,46 @@ class HeroData {
   /// Competenze nelle armi concesse da razza, background e classe.
   Set<String> get effectiveWeaponProficiencies => {
         ...resolvedRaceEffects.effects.weaponProficiencies,
+        ...?resolvedFeatEffects?.effects.weaponProficiencies,
         ...resolvedBackgroundEffects.weaponProficiencies,
         ...backgroundSelectionsOfType(CharacterChoiceType.weapon),
         ...classSelectionsOfType(CharacterChoiceType.weapon),
         ...?catalogClassDefinition?.proficiencies.weapons,
+        for (final multiclassId in activeClassIds)
+          if (multiclassId != classId)
+            ...multiclassWeaponProficienciesFor(
+              multiclassId,
+            ),
       };
 
   /// Competenze nelle armature concesse dalla razza.
   Set<String> get effectiveArmorProficiencies => {
         ...resolvedRaceEffects.effects.armorProficiencies,
+        ...?resolvedFeatEffects?.effects.armorProficiencies,
         ...resolvedBackgroundEffects.armorProficiencies,
         ...backgroundSelectionsOfType(CharacterChoiceType.armor),
         ...classSelectionsOfType(CharacterChoiceType.armor),
         ...?catalogClassDefinition?.proficiencies.armor,
+        for (final multiclassId in activeClassIds)
+          if (multiclassId != classId)
+            ...multiclassArmorProficienciesFor(
+              multiclassId,
+            ),
       };
 
   /// Competenze negli strumenti concesse dalla razza.
   Set<String> get effectiveToolProficiencies => {
         ...resolvedRaceEffects.effects.toolProficiencies,
+        ...?resolvedFeatEffects?.effects.toolProficiencies,
         ...resolvedBackgroundEffects.toolProficiencies,
         ...backgroundSelectionsOfType(CharacterChoiceType.tool),
         ...classSelectionsOfType(CharacterChoiceType.tool),
         ...?catalogClassDefinition?.proficiencies.tools,
+        for (final multiclassId in activeClassIds)
+          if (multiclassId != classId)
+            ...multiclassToolProficienciesFor(
+              multiclassId,
+            ),
       };
 
   Set<String> get damageResistances => {
@@ -940,38 +1367,342 @@ class HeroData {
         ...resolvedRaceEffects.effects.grantedEquipmentIds,
       };
 
+  Set<String> get effectiveCharacterSpellIds => {
+        ...knownSpellIds,
+        ...preparedSpellIds,
+        ...spellbookSpellIds,
+        ...resolvedRaceEffects.effects.grantedCantripIds,
+        ...resolvedRaceEffects.effects.grantedSpellIds,
+        ...?resolvedFeatEffects?.effects.grantedCantripIds,
+        ...?resolvedFeatEffects?.effects.grantedSpellIds,
+      };
+
+  List<String> get activeSpellcastingClassIds {
+    return orderedClassLevels
+        .where((entry) {
+          final rules = heroSpellcastingForClass(this, entry.key);
+
+          return rules != null && entry.value >= rules.minimumLevel;
+        })
+        .map((entry) => entry.key)
+        .toList(growable: false);
+  }
+
+  String spellcastingAbilityForClass(
+    String requestedClassId,
+  ) {
+    return heroSpellcastingForClass(
+          this,
+          requestedClassId,
+        )?.ability ??
+        effectiveSpellcastingAbility;
+  }
+
+  int spellSaveDcForClass(String requestedClassId) {
+    final ability = spellcastingAbilityForClass(
+      requestedClassId,
+    );
+
+    return 8 + prof + mod(scores[ability] ?? 10);
+  }
+
+  int spellAttackBonusForClass(String requestedClassId) {
+    final ability = spellcastingAbilityForClass(
+      requestedClassId,
+    );
+
+    return prof + mod(scores[ability] ?? 10);
+  }
+
+  int maximumSpellLevelForClass(
+    String requestedClassId,
+  ) {
+    final classLevelValue = classLevel(requestedClassId);
+    final rules = heroSpellcastingForClass(
+      this,
+      requestedClassId,
+    );
+
+    if (rules == null || classLevelValue < rules.minimumLevel) {
+      return 0;
+    }
+
+    if (requestedClassId == ClassIds.warlock) {
+      return rules.pactSlotLevelAtLevel(
+        classLevelValue,
+      );
+    }
+
+    final slots = rules.slotsAtLevel(classLevelValue);
+
+    for (var index = slots.length - 1; index >= 0; index--) {
+      if (slots[index] > 0) return index + 1;
+    }
+
+    return 0;
+  }
+
+  Set<String> classSpellIdsFor(
+    String requestedClassId,
+  ) {
+    final definition = phbClassDefinitionFor(
+      requestedClassId,
+    );
+    final rules = heroSpellcastingForClass(
+      this,
+      requestedClassId,
+    );
+
+    if (definition == null || rules == null) {
+      return const {};
+    }
+
+    final result = <String>{
+      ...rules.spellIds,
+      for (final spell in spellDefinitions.values)
+        if (spell.classIds.contains(requestedClassId)) spell.id,
+    };
+
+    final subclassId = subclassForClass(
+      requestedClassId,
+    );
+    final subclass =
+        subclassId == null ? null : definition.subclasses[subclassId];
+
+    result.addAll(
+      subclass?.expandedSpellIdsAtLevel(
+            classLevel(requestedClassId),
+          ) ??
+          const {},
+    );
+
+    return Set<String>.unmodifiable(result);
+  }
+
+  List<SpellDefinition> availableSpellsForClass(
+    String requestedClassId, {
+    bool excludeRegistered = true,
+  }) {
+    final maximumLevel = maximumSpellLevelForClass(
+      requestedClassId,
+    );
+    final classSpellIds = classSpellIdsFor(
+      requestedClassId,
+    );
+    final registered = effectiveCharacterSpellIds;
+
+    final result = spellDefinitions.values.where((spell) {
+      if (!classSpellIds.contains(spell.id)) return false;
+
+      if (excludeRegistered && registered.contains(spell.id)) {
+        return false;
+      }
+
+      return spell.level == 0 ||
+          (maximumLevel > 0 && spell.level <= maximumLevel);
+    }).toList()
+      ..sort((a, b) {
+        final byLevel = a.level.compareTo(b.level);
+
+        return byLevel != 0
+            ? byLevel
+            : a.content.name.compareTo(b.content.name);
+      });
+
+    return List<SpellDefinition>.unmodifiable(result);
+  }
+
+  String? spellcastingClassForSpell(String spellId) {
+    final stored = spellClassIds[spellId];
+
+    if (stored != null && activeSpellcastingClassIds.contains(stored)) {
+      return stored;
+    }
+
+    if (racialSpellIds.contains(spellId) ||
+        racialCantripIds.contains(spellId)) {
+      return null;
+    }
+
+    final featEffects = resolvedFeatEffects?.effects;
+
+    if (featEffects?.grantedSpellIds.contains(spellId) == true ||
+        featEffects?.grantedCantripIds.contains(spellId) == true) {
+      return null;
+    }
+
+    final candidates = activeSpellcastingClassIds
+        .where(
+          (candidate) => classSpellIdsFor(candidate).contains(spellId),
+        )
+        .toList(growable: false);
+
+    if (candidates.contains(classId)) return classId;
+    if (candidates.length == 1) return candidates.single;
+
+    return candidates.isEmpty ? null : candidates.first;
+  }
+
+  bool registerSpellForClass({
+    required String requestedClassId,
+    required String spellId,
+  }) {
+    if (!activeSpellcastingClassIds.contains(
+      requestedClassId,
+    )) {
+      return false;
+    }
+
+    final spell = spellDefinitions[spellId];
+
+    if (spell == null ||
+        !classSpellIdsFor(requestedClassId).contains(spellId)) {
+      return false;
+    }
+
+    final maximumLevel = maximumSpellLevelForClass(
+      requestedClassId,
+    );
+
+    if (spell.level > 0 && spell.level > maximumLevel) {
+      return false;
+    }
+
+    final definition = phbClassDefinitionFor(
+      requestedClassId,
+    );
+    final rules = heroSpellcastingForClass(
+      this,
+      requestedClassId,
+    );
+
+    if (definition == null || rules == null) return false;
+
+    if (spell.level == 0) {
+      knownSpellIds = {...knownSpellIds, spellId}.toList();
+    } else if (definition.spellbook != null) {
+      spellbookSpellIds = {
+        ...spellbookSpellIds,
+        spellId,
+      }.toList();
+    } else if (rules.preparesSpells) {
+      preparedSpellIds = {
+        ...preparedSpellIds,
+        spellId,
+      }.toList();
+    } else {
+      knownSpellIds = {...knownSpellIds, spellId}.toList();
+    }
+
+    spellClassIds = {
+      ...spellClassIds,
+      spellId: requestedClassId,
+    };
+
+    return true;
+  }
+
+  void unregisterCharacterSpell(String spellId) {
+    knownSpellIds = knownSpellIds.where((id) => id != spellId).toList();
+    preparedSpellIds = preparedSpellIds.where((id) => id != spellId).toList();
+    spellbookSpellIds = spellbookSpellIds.where((id) => id != spellId).toList();
+
+    spellClassIds = Map<String, String>.from(spellClassIds)..remove(spellId);
+  }
+
+  String get effectiveSpellcastingAbility {
+    final classAbility = catalogClassDefinition?.spellcasting?.ability;
+    if (classAbility != null) return classAbility;
+
+    final selectedClasses = featChoices['magic_initiate_class'] ??
+        featChoices['ritual_caster_class'] ??
+        featChoices['spell_sniper_class'] ??
+        const [];
+    final selectedClass =
+        selectedClasses.isEmpty ? null : selectedClasses.first;
+
+    switch (selectedClass) {
+      case 'bard':
+      case 'sorcerer':
+      case 'warlock':
+        return 'CAR';
+      case 'wizard':
+        return 'INT';
+      case 'cleric':
+      case 'druid':
+      default:
+        return 'SAG';
+    }
+  }
+
   /// Talento effettivamente concesso dalle regole strutturate.
   ///
   /// I salvataggi legacy possono ancora usare `feat`; i nuovi personaggi
   /// ricavano invece l'ID da grantedFeatIds del resolver razziale.
-  String? get resolvedFeatId {
-    final granted = resolvedRaceEffects.effects.grantedFeatIds;
+  String? get legacyFeatId {
+    if (feat == null || feat!.isEmpty) return null;
 
-    if (granted.isNotEmpty) {
-      return granted.first;
-    }
-
-    // Compatibilità temporanea con salvataggi legacy.
-    if (feat != null && feat!.isNotEmpty) {
-      for (final entry in featDefinitions.entries) {
-        if (entry.value.name == feat || entry.key == feat) {
-          return entry.key;
-        }
+    for (final entry in featDefinitions.entries) {
+      if (entry.value.name == feat || entry.key == feat) {
+        return entry.key;
       }
     }
 
     return null;
   }
 
-  ResolvedFeatEffects? get resolvedFeatEffects {
-    final id = resolvedFeatId;
-    if (id == null) return null;
+  Set<String> get resolvedFeatIds => {
+        ...resolvedRaceEffects.effects.grantedFeatIds,
+        for (final acquisition in featAcquisitions)
+          if (featDefinitions.containsKey(acquisition.featId))
+            acquisition.featId,
+        if (legacyFeatId != null) legacyFeatId!,
+      };
 
-    return resolveFeatEffects(
-      featId: id,
-      selections: featChoices,
-    );
+  String? get resolvedFeatId {
+    final ids = resolvedFeatIds;
+    return ids.isEmpty ? null : ids.first;
   }
+
+  Iterable<ResolvedFeatEffects?> get _resolvedFeatEffectEntries sync* {
+    final seenNonRepeatable = <String>{};
+
+    bool shouldApply(String featId) {
+      if (featCanBeTakenMultipleTimes(featId)) {
+        return true;
+      }
+      return seenNonRepeatable.add(featId);
+    }
+
+    for (final featId in resolvedRaceEffects.effects.grantedFeatIds) {
+      if (!shouldApply(featId)) continue;
+
+      yield resolveFeatEffects(
+        featId: featId,
+        selections: featChoices,
+      );
+    }
+
+    for (final acquisition in featAcquisitions) {
+      if (!shouldApply(acquisition.featId)) continue;
+
+      yield resolveFeatEffects(
+        featId: acquisition.featId,
+        selections: acquisition.selections,
+      );
+    }
+
+    final legacyId = legacyFeatId;
+    if (legacyId != null && shouldApply(legacyId)) {
+      yield resolveFeatEffects(
+        featId: legacyId,
+        selections: featChoices,
+      );
+    }
+  }
+
+  ResolvedFeatEffects? get resolvedFeatEffects =>
+      combineResolvedFeatEffects(_resolvedFeatEffectEntries);
 
   Map<String, int> get scores {
     final out = Map<String, int>.from(baseScores);
@@ -986,7 +1717,7 @@ class HeroData {
     if (featEffects != null) {
       for (final bonus in featEffects.abilityBonuses) {
         if (out.containsKey(bonus.ability)) {
-          out[bonus.ability] = out[bonus.ability]! + bonus.amount;
+          out[bonus.ability] = min(20, out[bonus.ability]! + bonus.amount);
         }
       }
     }
@@ -1007,15 +1738,36 @@ class HeroData {
       catalogClassDefinition?.name ??
       (classId == ClassIds.monk ? 'Monaco' : classId);
 
-  int classResourceValue(String resourceId) {
-    if (resourceId == 'ki' && classId == ClassIds.monk) {
+  String classResourceStorageKey(
+    String ownerClassId,
+    String resourceId,
+  ) {
+    return ownerClassId == classId ? resourceId : '$ownerClassId:$resourceId';
+  }
+
+  int classResourceValueForClass(
+    String ownerClassId,
+    String resourceId,
+  ) {
+    final key = classResourceStorageKey(
+      ownerClassId,
+      resourceId,
+    );
+
+    if (resourceId == 'ki' &&
+        ownerClassId == ClassIds.monk &&
+        ownerClassId == classId) {
       return ki;
     }
 
-    return classResources[resourceId] ?? 0;
+    return classResources[key] ?? 0;
   }
 
-  void setClassResourceValue(String resourceId, int value) {
+  void setClassResourceValueForClass(
+    String ownerClassId,
+    String resourceId,
+    int value,
+  ) {
     if (value < 0) {
       throw ArgumentError.value(
         value,
@@ -1024,29 +1776,211 @@ class HeroData {
       );
     }
 
+    final key = classResourceStorageKey(
+      ownerClassId,
+      resourceId,
+    );
+
     classResources = {
       ...classResources,
-      resourceId: value,
+      key: value,
     };
 
-    if (resourceId == 'ki' && classId == ClassIds.monk) {
+    if (resourceId == 'ki' &&
+        ownerClassId == ClassIds.monk &&
+        ownerClassId == classId) {
       ki = value;
     }
+  }
+
+  int classResourceValue(String resourceId) =>
+      classResourceValueForClass(classId, resourceId);
+
+  void setClassResourceValue(String resourceId, int value) {
+    setClassResourceValueForClass(classId, resourceId, value);
   }
 
   int get hitDie => catalogClassDefinition?.hitDie ?? classDefinition.hitDie;
   int get averageHitDie => (hitDie ~/ 2) + 1;
 
+  int hitDieForClass(String requestedClassId) =>
+      phbClassDefinitionFor(requestedClassId)?.hitDie ??
+      (requestedClassId == classId ? hitDie : 8);
+
+  Map<String, int> get effectiveHitDiceUsedByClass {
+    final explicit = <String, int>{
+      for (final entry in hitDiceUsedByClass.entries)
+        if (entry.value > 0 && classLevel(entry.key) > 0)
+          entry.key: min(entry.value, classLevel(entry.key)),
+    };
+
+    if (explicit.isNotEmpty || hitDiceUsed <= 0) {
+      return Map<String, int>.unmodifiable(explicit);
+    }
+
+    return Map<String, int>.unmodifiable({
+      classId: min(hitDiceUsed, classLevel(classId)),
+    });
+  }
+
+  int hitDiceUsedForClass(String requestedClassId) =>
+      effectiveHitDiceUsedByClass[requestedClassId] ?? 0;
+
+  int hitDiceAvailableForClass(String requestedClassId) => max(
+        0,
+        classLevel(requestedClassId) - hitDiceUsedForClass(requestedClassId),
+      );
+
+  int get hitDiceAvailable => orderedClassLevels.fold<int>(
+        0,
+        (total, entry) => total + hitDiceAvailableForClass(entry.key),
+      );
+
+  String get hitDicePoolLabel {
+    return orderedClassLevels.map((entry) {
+      final available = hitDiceAvailableForClass(entry.key);
+      final die = hitDieForClass(entry.key);
+
+      return '${available}d$die';
+    }).join(' · ');
+  }
+
+  Map<int, int> get availableHitDiceBySize {
+    final result = <int, int>{};
+
+    for (final entry in orderedClassLevels) {
+      final die = hitDieForClass(entry.key);
+      final available = hitDiceAvailableForClass(entry.key);
+
+      result[die] = (result[die] ?? 0) + available;
+    }
+
+    return Map<int, int>.unmodifiable(result);
+  }
+
+  void spendHitDice(
+    String requestedClassId,
+    int count,
+  ) {
+    if (count < 0) {
+      throw ArgumentError.value(count, 'count');
+    }
+
+    final available = hitDiceAvailableForClass(
+      requestedClassId,
+    );
+
+    if (count > available) {
+      throw StateError(
+        'Dadi Vita insufficienti per $requestedClassId',
+      );
+    }
+
+    final updated = Map<String, int>.from(
+      effectiveHitDiceUsedByClass,
+    );
+
+    final next = (updated[requestedClassId] ?? 0) + count;
+
+    if (next <= 0) {
+      updated.remove(requestedClassId);
+    } else {
+      updated[requestedClassId] = next;
+    }
+
+    hitDiceUsedByClass = updated;
+    hitDiceUsed = updated.values.fold<int>(
+      0,
+      (total, used) => total + used,
+    );
+  }
+
+  int recoverHitDice(int maximumRecovery) {
+    if (maximumRecovery <= 0) return 0;
+
+    final updated = Map<String, int>.from(
+      effectiveHitDiceUsedByClass,
+    );
+
+    final classIds = updated.keys.toList()
+      ..sort(
+        (a, b) => hitDieForClass(b).compareTo(
+          hitDieForClass(a),
+        ),
+      );
+
+    var remaining = maximumRecovery;
+    var recovered = 0;
+
+    for (final ownerClassId in classIds) {
+      if (remaining <= 0) break;
+
+      final used = updated[ownerClassId] ?? 0;
+      final amount = min(used, remaining);
+
+      if (amount <= 0) continue;
+
+      final next = used - amount;
+
+      if (next <= 0) {
+        updated.remove(ownerClassId);
+      } else {
+        updated[ownerClassId] = next;
+      }
+
+      remaining -= amount;
+      recovered += amount;
+    }
+
+    hitDiceUsedByClass = updated;
+    hitDiceUsed = updated.values.fold<int>(
+      0,
+      (total, used) => total + used,
+    );
+
+    return recovered;
+  }
+
   int get prof => V06Rules.proficiencyBonus(level);
-  int get maxKi => level >= 2 ? level : 0;
-  int get hitDiceAvailable => max(0, level - hitDiceUsed);
-  String get martialDie => level < 5
-      ? 'd4'
-      : level < 11
-          ? 'd6'
-          : level < 17
-              ? 'd8'
-              : 'd10';
+
+  int get maxKi {
+    final monkLevel = classLevel(ClassIds.monk);
+    return monkLevel >= 2 ? monkLevel : 0;
+  }
+
+  String get martialDie {
+    final monkLevel = classLevel(ClassIds.monk);
+
+    return monkLevel < 5
+        ? 'd4'
+        : monkLevel < 11
+            ? 'd6'
+            : monkLevel < 17
+                ? 'd8'
+                : 'd10';
+  }
+
+  int get passiveInvestigation {
+    final ruleEffects = [
+      ...resolvedRaceEffects.effects.ruleEffects,
+      ...resolvedBackgroundEffects.ruleEffects,
+      ...?resolvedFeatEffects?.effects.ruleEffects,
+    ];
+
+    final passiveBonus = ruleEffects
+        .where(
+          (effect) =>
+              effect.type == CharacterRuleEffectType.passiveScoreBonus &&
+              effect.target == 'passive_investigation',
+        )
+        .fold<int>(
+          0,
+          (sum, effect) => sum + (effect.value ?? 0).round(),
+        );
+
+    return 10 + skillBonus('Indagare') + passiveBonus;
+  }
+
   int get maxHp {
     final con = mod(scores['COS']!);
     final racialHpBonus =
@@ -1061,72 +1995,276 @@ class HeroData {
         .toInt();
   }
 
-  int get ac =>
-      10 +
-      mod(scores['DES']!) +
-      mod(scores['SAG']!) +
-      resolvedRaceEffects.effects.armorClassBonus +
-      (resolvedFeatEffects?.effects.armorClassBonus ?? 0);
+  List<ArmorDefinition> get equippedArmorDefinitions {
+    final equipped = <ArmorDefinition>[];
+
+    for (final item in inventory) {
+      if (item['catalogId']?.toString() != 'armor' ||
+          item['equipped'] != true ||
+          ((item['quantity'] as num?)?.toInt() ?? 0) <= 0) {
+        continue;
+      }
+
+      final definition = armorDefinitions[item['id']?.toString()];
+      if (definition != null) equipped.add(definition);
+    }
+
+    return equipped;
+  }
+
+  ArmorDefinition? get equippedBodyArmor {
+    for (final armor in equippedArmorDefinitions) {
+      if (armor.category != ArmorCategory.shield) return armor;
+    }
+    return null;
+  }
+
+  bool get hasEquippedShield => equippedArmorDefinitions.any(
+        (armor) => armor.category == ArmorCategory.shield,
+      );
+
+  Set<String> get effectiveFightingStyleIds => {
+        for (final selections in classChoices.values) ...selections,
+        ...?featChoices['fighting_initiate_style'],
+      };
+
+  bool get hasDefenseFightingStyle =>
+      effectiveFightingStyleIds.contains('defense');
+
+  int get ac {
+    final dexterity = mod(scores['DES']!);
+    final bodyArmor = equippedBodyArmor;
+    var baseArmorClass = 10 + dexterity;
+
+    if (bodyArmor != null) {
+      var dexterityContribution = bodyArmor.addDexterity ? dexterity : 0;
+
+      final maximumDexterity = bodyArmor.category == ArmorCategory.medium &&
+              resolvedFeatIds.contains(FeatIds.mediumArmorMaster)
+          ? 3
+          : bodyArmor.maxDexterityBonus;
+
+      if (maximumDexterity != null) {
+        dexterityContribution = min(
+          dexterityContribution,
+          maximumDexterity,
+        );
+      }
+
+      baseArmorClass = bodyArmor.armorClass + dexterityContribution;
+    } else if (classId == ClassIds.monk && !hasEquippedShield) {
+      baseArmorClass = 10 + dexterity + mod(scores['SAG']!);
+    } else if (classId == ClassIds.barbarian) {
+      baseArmorClass = 10 + dexterity + mod(scores['COS']!);
+    } else if (classId == ClassIds.sorcerer &&
+        subclass == 'draconic_bloodline') {
+      baseArmorClass = 13 + dexterity;
+    }
+
+    final shieldBonus =
+        hasEquippedShield ? armorDefinitions[ArmorIds.shield]!.armorClass : 0;
+
+    final defenseStyleBonus =
+        bodyArmor != null && hasDefenseFightingStyle ? 1 : 0;
+
+    return baseArmorClass +
+        shieldBonus +
+        defenseStyleBonus +
+        resolvedRaceEffects.effects.armorClassBonus +
+        (resolvedFeatEffects?.effects.armorClassBonus ?? 0);
+  }
+
   int get initiative =>
       mod(scores['DES']!) +
       resolvedRaceEffects.effects.initiativeBonus +
       (resolvedFeatEffects?.effects.initiativeBonus ?? 0);
+
   double get speed {
     final raceDefinition = phbRaceDefinitionFor(resolvedRaceId);
+    final bodyArmor = equippedBodyArmor;
 
     final base = resolvedRaceEffects.effects.walkingSpeedOverride ??
         raceDefinition?.speed ??
         9.0;
 
-    final bonus = level >= 2
-        ? (level >= 18
-            ? 9
-            : level >= 14
-                ? 7.5
-                : level >= 10
-                    ? 6
-                    : level >= 6
-                        ? 4.5
-                        : 3)
-        : 0;
-    return (base + bonus).round() +
+    var classBonus = 0.0;
+
+    if (classId == ClassIds.monk &&
+        level >= 2 &&
+        bodyArmor == null &&
+        !hasEquippedShield) {
+      classBonus = level >= 18
+          ? 9
+          : level >= 14
+              ? 7.5
+              : level >= 10
+                  ? 6
+                  : level >= 6
+                      ? 4.5
+                      : 3;
+    } else if (classId == ClassIds.barbarian &&
+        level >= 5 &&
+        bodyArmor?.category != ArmorCategory.heavy) {
+      classBonus = 3;
+    }
+
+    var total = base +
+        classBonus +
         resolvedRaceEffects.effects.walkingSpeedBonus +
         (resolvedFeatEffects?.effects.walkingSpeedBonus ?? 0);
+
+    final slowedByHeavyArmor = bodyArmor?.category == ArmorCategory.heavy &&
+        (scores['FOR'] ?? 10) < bodyArmor!.strengthRequirement &&
+        resolvedRaceId != RaceIds.dwarf;
+
+    if (slowedByHeavyArmor) total -= 3;
+
+    return max(0.0, total).toDouble();
   }
 
-  List<String> get features {
-    final out = <String>[];
-    for (var l = 1; l <= level; l++) {
-      out.addAll(
-        (monkClass.featuresByLevel[l] ?? const <String>[]).where(
-          (f) =>
-              f != 'Aumento dei Punteggi di Caratteristica' &&
-              f != 'Tradizione Monastica' &&
-              f != 'Privilegio della Tradizione Monastica',
-        ),
-      );
-      if (subclass != null) {
-        out.addAll(
-          monkClass.subclasses[subclass]?.featuresByLevel[l] ??
-              const <String>[],
-        );
+  List<MapEntry<String, int>> get orderedClassLevels {
+    final entries = effectiveClassLevels.entries.toList();
+
+    entries.sort((a, b) {
+      if (a.key == classId && b.key != classId) return -1;
+      if (b.key == classId && a.key != classId) return 1;
+
+      final aName = phbClassDefinitionFor(a.key)?.name ?? a.key;
+      final bName = phbClassDefinitionFor(b.key)?.name ?? b.key;
+
+      return aName.compareTo(bName);
+    });
+
+    return List<MapEntry<String, int>>.unmodifiable(entries);
+  }
+
+  String get resolvedClassLevelLabel {
+    return orderedClassLevels.map((entry) {
+      final name = phbClassDefinitionFor(entry.key)?.name ?? entry.key;
+
+      return '$name ${entry.value}';
+    }).join(' · ');
+  }
+
+  bool _isDisplayedClassFeature(
+    CharacterClassFeatureDefinition feature,
+  ) {
+    final normalizedName = feature.content.name.toLowerCase();
+    final normalizedId = feature.id.toLowerCase();
+
+    if (normalizedName.contains(
+      'aumento dei punteggi di caratteristica',
+    )) {
+      return false;
+    }
+
+    if (normalizedId.contains('ability_score_improvement')) {
+      return false;
+    }
+
+    return true;
+  }
+
+  List<ResolvedHeroFeature> get resolvedClassFeatures {
+    final result = <ResolvedHeroFeature>[];
+
+    for (final classEntry in orderedClassLevels) {
+      final ownerClassId = classEntry.key;
+      final ownerLevel = classEntry.value;
+      final definition = phbClassDefinitionFor(ownerClassId);
+
+      if (definition == null) continue;
+
+      for (var featureLevel = 1; featureLevel <= ownerLevel; featureLevel++) {
+        for (final featureId
+            in definition.featuresByLevel[featureLevel] ?? const <String>[]) {
+          final feature = definition.featureDefinitions[featureId];
+
+          if (feature == null || !_isDisplayedClassFeature(feature)) {
+            continue;
+          }
+
+          result.add(
+            ResolvedHeroFeature(
+              ownerClassId: ownerClassId,
+              ownerClassName: definition.name,
+              requiredClassLevel: featureLevel,
+              definition: feature,
+            ),
+          );
+        }
+      }
+
+      final subclassId = subclassForClass(ownerClassId);
+      final subclassDefinition =
+          subclassId == null ? null : definition.subclasses[subclassId];
+
+      if (subclassDefinition == null) continue;
+
+      for (var featureLevel = 1; featureLevel <= ownerLevel; featureLevel++) {
+        for (final featureId
+            in subclassDefinition.featuresByLevel[featureLevel] ??
+                const <String>[]) {
+          final feature = subclassDefinition.featureDefinitions[featureId];
+
+          if (feature == null || !_isDisplayedClassFeature(feature)) {
+            continue;
+          }
+
+          result.add(
+            ResolvedHeroFeature(
+              ownerClassId: ownerClassId,
+              ownerClassName: definition.name,
+              requiredClassLevel: featureLevel,
+              definition: feature,
+              subclassId: subclassDefinition.id,
+              subclassName: subclassDefinition.name,
+            ),
+          );
+        }
       }
     }
-    return out;
+
+    return List<ResolvedHeroFeature>.unmodifiable(result);
   }
 
-  List<String> featuresAtLevel(int targetLevel) {
-    final definition = classDefinitionFor('Monaco') ?? monkClass;
-    final out = <String>[...?definition.featuresByLevel[targetLevel]];
+  List<String> get features =>
+      resolvedClassFeatures.map((feature) => feature.name).toList();
 
-    if (subclass != null) {
-      out.addAll(
-        definition.subclasses[subclass]?.featuresByLevel[targetLevel] ??
-            const <String>[],
-      );
+  List<String> featuresAtLevel(
+    int targetLevel, {
+    String? ownerClassId,
+  }) {
+    final requestedClassId = ownerClassId ?? classId;
+    final definition = phbClassDefinitionFor(requestedClassId);
+
+    if (definition == null) return const [];
+
+    final result = <String>[];
+
+    for (final featureId
+        in definition.featuresByLevel[targetLevel] ?? const <String>[]) {
+      final feature = definition.featureDefinitions[featureId];
+
+      if (feature != null && _isDisplayedClassFeature(feature)) {
+        result.add(feature.content.name);
+      }
     }
 
-    return out;
+    final subclassId = subclassForClass(requestedClassId);
+    final subclassDefinition =
+        subclassId == null ? null : definition.subclasses[subclassId];
+
+    for (final featureId in subclassDefinition?.featuresByLevel[targetLevel] ??
+        const <String>[]) {
+      final feature = subclassDefinition?.featureDefinitions[featureId];
+
+      if (feature != null && _isDisplayedClassFeature(feature)) {
+        result.add(feature.content.name);
+      }
+    }
+
+    return List<String>.unmodifiable(result);
   }
 
   Map<String, dynamic> toJson() => {
@@ -1138,15 +2276,33 @@ class HeroData {
         'tempHp': tempHp,
         'ki': ki,
         'classId': classId,
+        'classLevels': effectiveClassLevels,
         'classChoices': classChoices,
         'classResources': {
           ...classResources,
           if (classId == ClassIds.monk) 'ki': ki,
         },
-        'hitDiceUsed': hitDiceUsed,
+        'hitDiceUsed': effectiveHitDiceUsedByClass.values.fold<int>(
+          0,
+          (total, used) => total + used,
+        ),
+        'hitDiceUsedByClass': effectiveHitDiceUsedByClass,
         'subclass': subclass,
         'subclassOptionIds': subclassOptionIds,
+        'classSubclasses': {
+          ...classSubclasses,
+          if (subclass != null && !classSubclasses.containsKey(classId))
+            classId: subclass!,
+        },
+        'classSubclassOptionIds': {
+          ...classSubclassOptionIds,
+          if (subclassOptionIds.isNotEmpty &&
+              !classSubclassOptionIds.containsKey(classId))
+            classId: subclassOptionIds,
+        },
         'feat': feat,
+        'featAcquisitions':
+            featAcquisitions.map((entry) => entry.toJson()).toList(),
         'background': background,
         'backgroundId': backgroundId,
         'backgroundChoices': backgroundChoices,
@@ -1184,9 +2340,11 @@ class HeroData {
         'inspiration': inspiration,
         'inventory': inventory,
         'spellSlots': spellSlots,
+        'pactSpellSlots': currentPactSpellSlots,
         'knownSpellIds': knownSpellIds,
         'preparedSpellIds': preparedSpellIds,
         'spellbookSpellIds': spellbookSpellIds,
+        'spellClassIds': spellClassIds,
       };
 
   factory HeroData.fromJson(Map<String, dynamic> j) => HeroData(
@@ -1200,6 +2358,12 @@ class HeroData {
             ((j['classResources'] as Map?)?['ki'] as num?)?.toInt() ??
             0,
         classId: j['classId'] as String? ?? ClassIds.monk,
+        classLevels: (j['classLevels'] as Map? ?? const {}).map<String, int>(
+          (key, value) => MapEntry(
+            key.toString(),
+            (value as num).toInt(),
+          ),
+        ),
         classChoices:
             (j['classChoices'] as Map? ?? const {}).map<String, List<String>>(
           (key, value) => MapEntry(
@@ -1210,11 +2374,40 @@ class HeroData {
         classResources: Map<String, int>.from(
           j['classResources'] as Map? ?? const {},
         ),
-        hitDiceUsed: j['hitDiceUsed'] ?? 0,
+        hitDiceUsed: (j['hitDiceUsed'] as num?)?.toInt() ?? 0,
+        hitDiceUsedByClass:
+            (j['hitDiceUsedByClass'] as Map? ?? const {}).map<String, int>(
+          (key, value) => MapEntry(
+            key.toString(),
+            (value as num).toInt(),
+          ),
+        ),
         subclass: j['subclass'],
         subclassOptionIds:
             List<String>.from(j['subclassOptionIds'] ?? const []),
+        classSubclasses:
+            (j['classSubclasses'] as Map? ?? const {}).map<String, String>(
+          (key, value) => MapEntry(
+            key.toString(),
+            value.toString(),
+          ),
+        ),
+        classSubclassOptionIds:
+            (j['classSubclassOptionIds'] as Map? ?? const {})
+                .map<String, List<String>>(
+          (key, value) => MapEntry(
+            key.toString(),
+            List<String>.from(value as List? ?? const []),
+          ),
+        ),
         feat: j['feat'],
+        featAcquisitions: (j['featAcquisitions'] as List? ?? const [])
+            .map(
+              (entry) => FeatAcquisition.fromJson(
+                Map<String, dynamic>.from(entry as Map),
+              ),
+            )
+            .toList(),
         background: j['background'] ?? 'Soldato',
         backgroundId: j['backgroundId'] as String?,
         backgroundChoices: (j['backgroundChoices'] as Map? ?? const {})
@@ -1274,10 +2467,18 @@ class HeroData {
             .map((e) => Map<String, dynamic>.from(e))
             .toList(),
         spellSlots: Map<String, int>.from(j['spellSlots'] ?? const {}),
+        pactSpellSlots: (j['pactSpellSlots'] as num?)?.toInt() ?? -1,
         knownSpellIds: List<String>.from(j['knownSpellIds'] ?? const []),
         preparedSpellIds: List<String>.from(j['preparedSpellIds'] ?? const []),
         spellbookSpellIds:
             List<String>.from(j['spellbookSpellIds'] ?? const []),
+        spellClassIds:
+            (j['spellClassIds'] as Map? ?? const {}).map<String, String>(
+          (key, value) => MapEntry(
+            key.toString(),
+            value.toString(),
+          ),
+        ),
       );
 }
 
@@ -2861,8 +4062,10 @@ class _CreatorPageState extends State<CreatorPage> {
       feat: definition,
       state: creatorEligibilityState,
     );
-
     final description = definition.content.description;
+
+    // Il talento razziale iniziale dell'Umano Variante è una scelta libera.
+    final ignorePrerequisites = raceId == HumanVariantIds.variant;
 
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
@@ -2877,18 +4080,19 @@ class _CreatorPageState extends State<CreatorPage> {
             const SizedBox(height: 4),
             Text(description.details),
           ],
-          const SizedBox(height: 8),
-          Text(
-            definition.prerequisites.isEmpty
-                ? 'Nessun prerequisito.'
-                : eligibility.canSelect
-                    ? 'Requisiti soddisfatti'
-                    : 'Requisiti non soddisfatti',
-            style: const TextStyle(
-              fontWeight: FontWeight.bold,
+          if (!ignorePrerequisites && definition.prerequisites.isNotEmpty) ...[
+            const SizedBox(height: 8),
+            Text(
+              eligibility.canSelect
+                  ? 'Requisiti soddisfatti'
+                  : 'Requisiti non soddisfatti',
+              style: TextStyle(
+                color: eligibility.canSelect
+                    ? Colors.green.shade700
+                    : Colors.red.shade700,
+                fontWeight: FontWeight.bold,
+              ),
             ),
-          ),
-          if (eligibility.requirements.isNotEmpty) ...[
             const SizedBox(height: 4),
             for (final result in eligibility.requirements)
               Padding(
@@ -2897,15 +4101,25 @@ class _CreatorPageState extends State<CreatorPage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Icon(
-                      result.satisfied
-                          ? Icons.check_circle_outline
-                          : Icons.cancel_outlined,
+                      result.satisfied ? Icons.check_circle : Icons.cancel,
+                      key: Key(
+                        'creator_feat_requirement_'
+                        '${result.requirement.value}',
+                      ),
+                      color: result.satisfied
+                          ? Colors.green.shade700
+                          : Colors.red.shade700,
                       size: 18,
                     ),
                     const SizedBox(width: 6),
                     Expanded(
                       child: Text(
                         '${result.label} — ${result.detail}',
+                        style: TextStyle(
+                          color: result.satisfied
+                              ? Colors.green.shade700
+                              : Colors.red.shade700,
+                        ),
                       ),
                     ),
                   ],
@@ -4197,27 +5411,6 @@ class _CreatorPageState extends State<CreatorPage> {
                     return;
                   }
 
-                  final featEligibility = creatorSelectedFeatEligibility;
-
-                  if (featEligibility?.canSelect == false) {
-                    final missing = featEligibility!.requirements
-                        .where((result) => !result.satisfied)
-                        .map(
-                          (result) => '${result.label}: ${result.detail}',
-                        )
-                        .join('\n');
-
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text(
-                          'Il talento selezionato non soddisfa '
-                          'tutti i prerequisiti.\n$missing',
-                        ),
-                      ),
-                    );
-                    return;
-                  }
-
                   if (incompleteBackgroundChoiceIds.isNotEmpty) {
                     final missingLabels = activeBackgroundChoices
                         .where(
@@ -4348,10 +5541,21 @@ class _CreatorPageState extends State<CreatorPage> {
                     h.ki = h.classResources['ki'] ?? 0;
                   }
 
-                  h.spellSlots = buildSpellSlotsAtLevel(
+                  final initialSpellSlots = buildSpellSlotsAtLevel(
                     classDefinition: creatorClassDefinition,
                     level: h.level,
                   );
+
+                  if (h.classId == ClassIds.warlock) {
+                    h.spellSlots = const {};
+                    h.pactSpellSlots = initialSpellSlots.values.fold<int>(
+                      0,
+                      (total, count) => total + count,
+                    );
+                  } else {
+                    h.spellSlots = initialSpellSlots;
+                    h.pactSpellSlots = 0;
+                  }
 
                   h.currentHp = h.maxHp;
                   Navigator.pop(context, h);
@@ -4831,23 +6035,59 @@ class _SheetPageState extends State<SheetPage> {
 
   Future<void> levelUp() async {
     if (h.level >= 20) return;
+
+    final selectedClassId = await Navigator.push<String>(
+      context,
+      MaterialPageRoute(
+        builder: (_) => MulticlassLevelUpPage(hero: h),
+      ),
+    );
+
+    if (selectedClassId == null || !mounted) return;
+
+    final universalClass = phbClassDefinitionFor(selectedClassId);
+
+    if (universalClass == null) return;
+
+    final previousMaximumSpellSlots = maximumSpellSlotsForHero(h);
+    final previousPactSlotMaximum = pactSlotMaximumForHero(h);
+
+    final addingNewClass = !h.activeClassIds.contains(selectedClassId);
+    var multiclassChoiceSelections = <String, List<String>>{};
+
+    if (addingNewClass &&
+        multiclassRequiresProficiencyChoices(
+          selectedClassId,
+        )) {
+      final selections = await showMulticlassProficiencyDialog(
+        context: context,
+        hero: h,
+        classId: selectedClassId,
+      );
+
+      if (selections == null || !mounted) return;
+      multiclassChoiceSelections = selections;
+    }
+
+    final previousSelectedClassLevel = h.classLevel(selectedClassId);
+    final nextSelectedClassLevel = previousSelectedClassLevel + 1;
     final next = h.level + 1;
+
     final hp = await showDialog<int>(
       context: context,
       builder: (ctx) => HpDialog(
         nextLevel: next,
         conMod: mod(h.scores['COS']!),
-        hitDie: h.hitDie,
+        hitDie: universalClass.hitDie,
       ),
     );
     if (hp == null || !mounted) return;
 
     String? chosenSubclass;
 
-    final universalClass = h.catalogClassDefinition;
-    final mustChooseUniversalSubclass = h.subclass == null &&
-        universalClass != null &&
-        (h.level + 1) == universalClass.subclassSelectionLevel &&
+    final mustChooseUniversalSubclass = selectedClassId != ClassIds.monk &&
+        h.subclassForClass(selectedClassId) == null &&
+        nextSelectedClassLevel == universalClass.subclassSelectionLevel &&
         universalClass.subclasses.isNotEmpty;
 
     if (mustChooseUniversalSubclass) {
@@ -4887,9 +6127,11 @@ class _SheetPageState extends State<SheetPage> {
       if (!mounted) return;
       chosenSubclass = selectedSubclass;
     }
-    var chosenSubclassOptionIds = List<String>.from(h.subclassOptionIds);
+    var chosenSubclassOptionIds = List<String>.from(
+      h.subclassOptionsForClass(selectedClassId),
+    );
 
-    if (next == 3) {
+    if (selectedClassId == ClassIds.monk && nextSelectedClassLevel == 3) {
       chosenSubclass = await Navigator.push<String>(
         context,
         MaterialPageRoute(builder: (_) => const SubclassPage()),
@@ -4902,7 +6144,8 @@ class _SheetPageState extends State<SheetPage> {
         final automaticOptions = subclassDefinition.options
             .where(
               (option) =>
-                  option.grantedAutomatically && option.minimumLevel <= next,
+                  option.grantedAutomatically &&
+                  option.minimumLevel <= nextSelectedClassLevel,
             )
             .map((option) => option.id);
 
@@ -4912,7 +6155,8 @@ class _SheetPageState extends State<SheetPage> {
         }.toList();
 
         final progression = subclassDefinition.optionProgression;
-        final selectionsAtLevel = progression?.selectionsByLevel[next] ?? 0;
+        final selectionsAtLevel =
+            progression?.selectionsByLevel[nextSelectedClassLevel] ?? 0;
 
         final alreadyChosenSelectable = subclassDefinition.options
             .where(
@@ -4927,7 +6171,7 @@ class _SheetPageState extends State<SheetPage> {
         for (var i = 0; i < choicesNeeded; i++) {
           final option = await chooseSubclassOption(
             subclass: subclassDefinition,
-            level: next,
+            level: nextSelectedClassLevel,
             excludedIds: chosenSubclassOptionIds.toSet(),
             title: 'Scegli una disciplina elementale',
           );
@@ -4937,16 +6181,20 @@ class _SheetPageState extends State<SheetPage> {
           chosenSubclassOptionIds.add(option.id);
         }
       }
-    } else if (h.subclass != null) {
-      final subclassDefinition = monkClass.subclasses[h.subclass];
+    } else if (selectedClassId == ClassIds.monk &&
+        h.subclassForClass(ClassIds.monk) != null) {
+      final subclassDefinition =
+          monkClass.subclasses[h.subclassForClass(ClassIds.monk)];
       final progression = subclassDefinition?.optionProgression;
-      final selectionsAtLevel = progression?.selectionsByLevel[next];
+      final selectionsAtLevel =
+          progression?.selectionsByLevel[nextSelectedClassLevel];
 
       if (subclassDefinition != null && selectionsAtLevel != null) {
         final automaticOptions = subclassDefinition.options
             .where(
               (option) =>
-                  option.grantedAutomatically && option.minimumLevel <= next,
+                  option.grantedAutomatically &&
+                  option.minimumLevel <= nextSelectedClassLevel,
             )
             .map((option) => option.id);
 
@@ -4968,7 +6216,7 @@ class _SheetPageState extends State<SheetPage> {
         for (var i = 0; i < choicesNeeded; i++) {
           final option = await chooseSubclassOption(
             subclass: subclassDefinition,
-            level: next,
+            level: nextSelectedClassLevel,
             excludedIds: chosenSubclassOptionIds.toSet(),
             title: 'Scegli una nuova disciplina elementale',
           );
@@ -4978,7 +6226,7 @@ class _SheetPageState extends State<SheetPage> {
           chosenSubclassOptionIds.add(option.id);
         }
 
-        if (progression?.canReplaceAtLevel(next) == true) {
+        if (progression?.canReplaceAtLevel(nextSelectedClassLevel) == true) {
           final replace = await showDialog<bool>(
             context: context,
             builder: (ctx) => AlertDialog(
@@ -5019,7 +6267,7 @@ class _SheetPageState extends State<SheetPage> {
 
               final replacement = await chooseSubclassOption(
                 subclass: subclassDefinition,
-                level: next,
+                level: nextSelectedClassLevel,
                 excludedIds: idsWithoutOld,
                 title: 'Scegli la nuova disciplina',
               );
@@ -5039,41 +6287,91 @@ class _SheetPageState extends State<SheetPage> {
       }
     }
 
-    if (const [4, 8, 12, 16, 19].contains(next)) {
+    if (classReceivesAsiAtLevel(
+      selectedClassId,
+      nextSelectedClassLevel,
+    )) {
       final ok = await Navigator.push<bool>(
         context,
-        MaterialPageRoute(builder: (_) => AsiPage(hero: h)),
+        MaterialPageRoute(
+          builder: (_) => AsiPage(
+            hero: h,
+            acquisitionLevel: next,
+            sourceClassId: selectedClassId,
+          ),
+        ),
       );
       if (ok != true || !mounted) return;
     }
 
     if (chosenSubclass != null) {
-      h.subclass = chosenSubclass;
+      h.classSubclasses = {
+        ...h.classSubclasses,
+        selectedClassId: chosenSubclass,
+      };
+
+      if (selectedClassId == h.classId) {
+        h.subclass = chosenSubclass;
+      }
     }
 
-    h.subclassOptionIds = chosenSubclassOptionIds;
+    h.classSubclassOptionIds = {
+      ...h.classSubclassOptionIds,
+      selectedClassId: List<String>.from(
+        chosenSubclassOptionIds,
+      ),
+    };
+
+    if (selectedClassId == h.classId) {
+      h.subclassOptionIds = List<String>.from(
+        chosenSubclassOptionIds,
+      );
+    }
+
+    if (multiclassChoiceSelections.isNotEmpty) {
+      h.classChoices = {
+        ...h.classChoices,
+        for (final entry in multiclassChoiceSelections.entries)
+          entry.key: List<String>.from(entry.value),
+      };
+    }
+
     h.hpRolls = [...h.hpRolls, hp];
-    final previousClassLevel = h.level;
+    h.classLevels = {
+      ...h.effectiveClassLevels,
+      selectedClassId: nextSelectedClassLevel,
+    };
     h.level = next;
 
     synchronizeHeroClassProgression(
       h,
-      oldLevel: previousClassLevel,
+      oldLevel: previousSelectedClassLevel,
+      progressionClassId: selectedClassId,
+      newLevel: nextSelectedClassLevel,
+      synchronizeSpellSlots: false,
     );
-    h.ki = h.maxKi;
+
+    synchronizeCombinedSpellSlots(
+      h,
+      oldMaximumSlots: previousMaximumSpellSlots,
+      oldPactMaximum: previousPactSlotMaximum,
+    );
+
     h.currentHp = h.maxHp;
     await persist();
 
     if (!mounted) return;
-    final newFeatures = h.featuresAtLevel(next);
+    final newFeatures = universalClass.featuresAtLevel(nextSelectedClassLevel);
     await showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: Text('Monaco $next'),
+        title: Text(
+          '${universalClass.name} $nextSelectedClassLevel',
+        ),
         content: Text(
           newFeatures.isEmpty
               ? 'Avanzamento completato.'
-              : 'Avanzamento completato.\n\nNovità del livello $next:\n• ${newFeatures.join('\n• ')}',
+              : 'Avanzamento completato.\n\nNovità del livello $nextSelectedClassLevel:\n• ${newFeatures.join('\n• ')}',
         ),
         actions: [
           TextButton(
@@ -5131,49 +6429,74 @@ class _SheetPageState extends State<SheetPage> {
   }
 
   void restoreAllSpellSlots() {
-    final rules = h.catalogClassDefinition?.spellcasting;
-    final maximumSlots = rules?.slotsAtLevel(h.level) ?? const <int>[];
-
-    h.spellSlots = {
-      for (var index = 0; index < maximumSlots.length; index++)
-        if (maximumSlots[index] > 0) '${index + 1}': maximumSlots[index],
-    };
+    restoreAllHeroSpellSlots(h);
   }
 
   Future<void> shortRest() async {
-    final hitDie = h.hitDie;
-    final available = h.hitDiceAvailable;
-    final result = await showDialog<int>(
+    final result = await showDialog<Map<String, int>>(
       context: context,
-      builder: (ctx) => HitDiceDialog(
-        available: available,
-        hitDie: hitDie,
-      ),
+      builder: (ctx) => MulticlassHitDiceDialog(hero: h),
     );
+
     if (result == null) return;
 
     h.ki = h.maxKi;
 
-    final spellcasting = h.catalogClassDefinition?.spellcasting;
-    if ((spellcasting?.pactSlotLevelAtLevel(h.level) ?? 0) > 0) {
-      restoreAllSpellSlots();
+    if (pactSlotMaximumForHero(h) > 0) {
+      restoreHeroPactSpellSlots(h);
     }
 
-    if (result > 0) {
-      final con = mod(h.scores['COS']!);
-      final rolls = List.generate(result, (_) => Random().nextInt(hitDie) + 1);
-      final heal = rolls.fold(0, (sum, roll) => sum + max(0, roll + con));
-      h.hitDiceUsed += result;
-      h.currentHp = min(h.maxHp, h.currentHp + heal);
+    if (result.isNotEmpty) {
+      final constitution = mod(h.scores['COS']!);
+      final descriptions = <String>[];
+      var totalHealing = 0;
+
+      for (final entry in result.entries) {
+        final ownerClassId = entry.key;
+        final count = entry.value;
+
+        if (count <= 0) continue;
+
+        final die = h.hitDieForClass(ownerClassId);
+        final rolls = List.generate(
+          count,
+          (_) => Random().nextInt(die) + 1,
+        );
+
+        final healing = rolls.fold<int>(
+          0,
+          (total, roll) => total + max(0, roll + constitution),
+        );
+
+        h.spendHitDice(ownerClassId, count);
+        totalHealing += healing;
+
+        final className =
+            phbClassDefinitionFor(ownerClassId)?.name ?? ownerClassId;
+
+        descriptions.add(
+          '$className ${count}d$die: ${rolls.join(', ')}',
+        );
+      }
+
+      h.currentHp = min(
+        h.maxHp,
+        h.currentHp + totalHealing,
+      );
+
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(
-                '🎲 ${rolls.join(', ')} · COS ${sign(con)} per dado · recuperi $heal PF'),
+              '🎲 ${descriptions.join(' · ')} · '
+              'COS ${sign(constitution)} per dado · '
+              'recuperi $totalHealing PF',
+            ),
           ),
         );
       }
     }
+
     await persist();
   }
 
@@ -5185,7 +6508,7 @@ class _SheetPageState extends State<SheetPage> {
     h.deathFail = 0;
     h.deathSuccess = 0;
     final recover = max(1, h.level ~/ 2);
-    h.hitDiceUsed = max(0, h.hitDiceUsed - recover);
+    h.recoverHitDice(recover);
     await persist();
   }
 
@@ -5245,9 +6568,7 @@ class _SheetPageState extends State<SheetPage> {
       if (h.classId == ClassIds.monk && h.level >= 14) ...abilities,
     };
 
-    final passivePerception = 10 +
-        mod(h.scores['SAG']!) +
-        (effectiveSkills.contains('Percezione') ? h.prof : 0);
+    final passivePerception = h.passivePerception;
 
     Widget officialLabel(String label) => Text(
           label.toUpperCase(),
@@ -5469,7 +6790,7 @@ class _SheetPageState extends State<SheetPage> {
 
     Widget skillRow(MapEntry<String, String> entry) {
       final proficient = effectiveSkills.contains(entry.key);
-      final bonus = mod(h.scores[entry.value]!) + (proficient ? h.prof : 0);
+      final bonus = h.skillBonus(entry.key);
 
       return InkWell(
         key: Key('official_skill_${canonicalSkillId(entry.key)}'),
@@ -5624,6 +6945,7 @@ class _SheetPageState extends State<SheetPage> {
                     const SizedBox(height: 5),
                     Text(
                       '${h.ac}',
+                      key: const Key('official_ac_value'),
                       style: const TextStyle(
                         fontSize: 34,
                         fontWeight: FontWeight.w900,
@@ -5652,6 +6974,7 @@ class _SheetPageState extends State<SheetPage> {
                     children: [
                       Text(
                         sign(h.initiative),
+                        key: const Key('official_initiative_value'),
                         style: const TextStyle(
                           fontSize: 29,
                           fontWeight: FontWeight.w900,
@@ -5674,6 +6997,7 @@ class _SheetPageState extends State<SheetPage> {
                   children: [
                     Text(
                       '${h.speed}',
+                      key: const Key('official_speed_value'),
                       style: const TextStyle(
                         fontSize: 29,
                         fontWeight: FontWeight.w900,
@@ -5794,12 +7118,21 @@ class _SheetPageState extends State<SheetPage> {
                         const SizedBox(height: 5),
                         Text(
                           '${h.hitDiceAvailable}/${h.level}',
+                          key: const Key(
+                            'official_hit_dice_total',
+                          ),
                           style: const TextStyle(
                             fontSize: 22,
                             fontWeight: FontWeight.w900,
                           ),
                         ),
-                        Text('d${h.hitDie}'),
+                        Text(
+                          h.hitDicePoolLabel,
+                          key: const Key(
+                            'official_hit_dice_by_class',
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
                       ],
                     ),
                   ),
@@ -5984,7 +7317,7 @@ class _SheetPageState extends State<SheetPage> {
                     Expanded(
                       child: identityCell(
                         label: 'Classe e livello',
-                        value: '${h.resolvedClassName} ${h.level}',
+                        value: h.resolvedClassLevelLabel,
                       ),
                     ),
                     const SizedBox(width: 8),
@@ -6120,6 +7453,7 @@ class _SheetPageState extends State<SheetPage> {
                   child: Center(
                     child: Text(
                       '$passivePerception',
+                      key: const Key('official_passive_perception_value'),
                       style: const TextStyle(
                         fontSize: 25,
                         fontWeight: FontWeight.w900,
@@ -6239,21 +7573,67 @@ class _SheetPageState extends State<SheetPage> {
             title: 'Privilegi e capacità',
             icon: Icons.auto_awesome_outlined,
             children: [
-              if (h.features.isEmpty)
+              if (h.resolvedClassFeatures.isEmpty)
                 const Padding(
                   padding: EdgeInsets.all(12),
                   child: Text('Nessun privilegio disponibile.'),
                 )
               else
-                ...h.features.map(
+                ...h.resolvedClassFeatures.map(
                   (feature) => ListTile(
+                    key: Key(
+                      'official_feature_'
+                      '${feature.ownerClassId}_${feature.id}',
+                    ),
                     dense: true,
                     contentPadding: EdgeInsets.zero,
                     leading: const Icon(
                       Icons.circle,
                       size: 7,
                     ),
-                    title: Text(feature),
+                    title: Text(feature.name),
+                    subtitle: Text(feature.sourceLabel),
+                    trailing: const Icon(
+                      Icons.chevron_right,
+                      size: 18,
+                    ),
+                    onTap: () => showModalBottomSheet<void>(
+                      context: context,
+                      useSafeArea: true,
+                      isScrollControlled: true,
+                      showDragHandle: true,
+                      builder: (sheetContext) => DraggableScrollableSheet(
+                        expand: false,
+                        initialChildSize: 0.72,
+                        maxChildSize: 0.94,
+                        builder: (context, controller) => ListView(
+                          controller: controller,
+                          padding: const EdgeInsets.fromLTRB(
+                            20,
+                            4,
+                            20,
+                            28,
+                          ),
+                          children: [
+                            Text(
+                              feature.name,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .headlineSmall
+                                  ?.copyWith(
+                                    fontWeight: FontWeight.w900,
+                                  ),
+                            ),
+                            Text(feature.sourceLabel),
+                            const Divider(),
+                            RuleDescriptionView(
+                              content: feature.definition.content,
+                              initiallyExpanded: true,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
                   ),
                 ),
             ],
@@ -6300,19 +7680,21 @@ class _SheetPageState extends State<SheetPage> {
   }
 
   List<SubclassOptionDefinition> get knownSubclassOptions {
+    final monkSubclassId = h.subclassForClass(ClassIds.monk);
     final subclass =
-        h.subclass == null ? null : monkClass.subclasses[h.subclass];
+        monkSubclassId == null ? null : monkClass.subclasses[monkSubclassId];
 
     if (subclass == null) {
       return const <SubclassOptionDefinition>[];
     }
 
-    final knownIds = h.subclassOptionIds.toSet();
+    final knownIds = h.subclassOptionsForClass(ClassIds.monk).toSet();
+    final monkLevel = h.classLevel(ClassIds.monk);
 
     final options = subclass.options
         .where(
           (option) =>
-              knownIds.contains(option.id) && option.minimumLevel <= h.level,
+              knownIds.contains(option.id) && option.minimumLevel <= monkLevel,
         )
         .toList()
       ..sort((a, b) {
@@ -6777,39 +8159,30 @@ class _SheetPageState extends State<SheetPage> {
   }
 
   Future<void> removeCharacterSpell(SpellDefinition spell) async {
-    h.knownSpellIds = h.knownSpellIds.where((id) => id != spell.id).toList();
-    h.preparedSpellIds =
-        h.preparedSpellIds.where((id) => id != spell.id).toList();
-    h.spellbookSpellIds =
-        h.spellbookSpellIds.where((id) => id != spell.id).toList();
-
+    h.unregisterCharacterSpell(spell.id);
     await persist();
   }
 
   Future<void> addSpellFromClassList() async {
-    final classDefinition = h.catalogClassDefinition;
-    final rules = classDefinition?.spellcasting;
+    final spellcastingClasses = h.activeSpellcastingClassIds;
 
-    if (rules == null) return;
+    if (spellcastingClasses.isEmpty) return;
 
-    final alreadyRegistered = {
-      ...h.knownSpellIds,
-      ...h.preparedSpellIds,
-      ...h.spellbookSpellIds,
-    };
+    final selectedClassId = spellcastingClasses.length == 1
+        ? spellcastingClasses.single
+        : await showDialog<String>(
+            context: context,
+            builder: (ctx) => SpellcastingClassDialog(hero: h),
+          );
 
-    final available = spellDefinitions.values
-        .where(
-          (spell) =>
-              !alreadyRegistered.contains(spell.id) &&
-              (rules.spellIds.contains(spell.id) ||
-                  spell.classIds.contains(h.classId)),
-        )
-        .toList()
-      ..sort((a, b) {
-        final level = a.level.compareTo(b.level);
-        return level != 0 ? level : a.content.name.compareTo(b.content.name);
-      });
+    if (selectedClassId == null || !mounted) return;
+
+    final classDefinition = phbClassDefinitionFor(
+      selectedClassId,
+    );
+    final available = h.availableSpellsForClass(
+      selectedClassId,
+    );
 
     final selected = await showModalBottomSheet<SpellDefinition>(
       context: context,
@@ -6822,17 +8195,38 @@ class _SheetPageState extends State<SheetPage> {
         maxChildSize: 0.95,
         builder: (context, controller) => ListView(
           controller: controller,
-          padding: const EdgeInsets.fromLTRB(12, 4, 12, 24),
+          padding: const EdgeInsets.fromLTRB(
+            12,
+            4,
+            12,
+            24,
+          ),
           children: [
-            const ListTile(
-              title: Text(
+            ListTile(
+              title: const Text(
                 'AGGIUNGI INCANTESIMO',
-                style: TextStyle(fontWeight: FontWeight.w900),
+                style: TextStyle(
+                  fontWeight: FontWeight.w900,
+                ),
               ),
-              subtitle: Text('Lista ufficiale della classe'),
+              subtitle: Text(
+                '${classDefinition?.name ?? selectedClassId}'
+                ' · ${h.spellcastingAbilityForClass(selectedClassId)}'
+                ' · massimo livello '
+                '${h.maximumSpellLevelForClass(selectedClassId)}',
+              ),
             ),
+            if (available.isEmpty)
+              const ListTile(
+                title: Text(
+                  'Nessun nuovo incantesimo disponibile',
+                ),
+              ),
             for (final spell in available)
               ListTile(
+                key: Key(
+                  'add_spell_${selectedClassId}_${spell.id}',
+                ),
                 title: Text(spell.content.name),
                 subtitle: Text(
                   spell.level == 0 ? 'Trucchetto' : 'Livello ${spell.level}',
@@ -6847,33 +8241,30 @@ class _SheetPageState extends State<SheetPage> {
 
     if (selected == null || !mounted) return;
 
-    if (selected.level == 0) {
-      h.knownSpellIds = {...h.knownSpellIds, selected.id}.toList();
-    } else if (classDefinition?.spellbook != null) {
-      h.spellbookSpellIds = {
-        ...h.spellbookSpellIds,
-        selected.id,
-      }.toList();
-    } else if (rules.preparesSpells) {
-      h.preparedSpellIds = {
-        ...h.preparedSpellIds,
-        selected.id,
-      }.toList();
-    } else {
-      h.knownSpellIds = {...h.knownSpellIds, selected.id}.toList();
+    final registered = h.registerSpellForClass(
+      requestedClassId: selectedClassId,
+      spellId: selected.id,
+    );
+
+    if (!registered) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+            'Incantesimo non valido per questa classe o livello.',
+          ),
+        ),
+      );
+      return;
     }
 
     await persist();
   }
 
   Future<void> showSpellSheet(SpellDefinition spell) async {
-    final rules = h.catalogClassDefinition?.spellcasting;
-    final maximumSlots = rules?.slotsAtLevel(h.level) ?? const <int>[];
-
-    int maximumAt(int level) =>
-        level <= maximumSlots.length ? maximumSlots[level - 1] : 0;
-
-    int currentAt(int level) => h.spellSlots['$level'] ?? maximumAt(level);
+    final sourceClassId = h.spellcastingClassForSpell(spell.id);
+    final sourceClassName = sourceClassId == null
+        ? null
+        : phbClassDefinitionFor(sourceClassId)?.name ?? sourceClassId;
 
     Future<void> castSpell(BuildContext sheetContext) async {
       if (spell.level == 0) {
@@ -6884,30 +8275,50 @@ class _SheetPageState extends State<SheetPage> {
         return;
       }
 
-      final available = [
-        for (var level = spell.level; level <= 9; level++)
-          if (maximumAt(level) > 0 && currentAt(level) > 0) level,
-      ];
+      final availableNormalSlots = availableNormalSpellSlotLevels(
+        h,
+        minimumLevel: spell.level,
+      );
 
-      if (available.isEmpty) {
+      final pactLevel = pactSlotLevelForHero(h);
+      final pactAvailable = canUsePactSlotForSpell(
+        h,
+        spellLevel: spell.level,
+      );
+
+      if (availableNormalSlots.isEmpty && !pactAvailable) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Nessuno slot disponibile.')),
         );
         return;
       }
 
-      final chosen = await showDialog<int>(
+      final chosen = await showDialog<String>(
         context: context,
         builder: (ctx) => AlertDialog(
           title: const Text('Scegli lo slot'),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              for (final level in available)
+              for (final level in availableNormalSlots)
                 ListTile(
+                  key: Key('spell_slot_normal_$level'),
                   title: Text('Slot di livello $level'),
-                  subtitle: Text('${currentAt(level)} disponibili'),
-                  onTap: () => Navigator.pop(ctx, level),
+                  subtitle: Text(
+                    '${h.spellSlots['$level'] ?? 0} disponibili',
+                  ),
+                  onTap: () => Navigator.pop(ctx, 'normal:$level'),
+                ),
+              if (pactAvailable)
+                ListTile(
+                  key: const Key('spell_slot_pact'),
+                  title: Text(
+                    'Magia del Patto · livello $pactLevel',
+                  ),
+                  subtitle: Text(
+                    '${h.currentPactSpellSlots} disponibili',
+                  ),
+                  onTap: () => Navigator.pop(ctx, 'pact'),
                 ),
             ],
           ),
@@ -6916,10 +8327,20 @@ class _SheetPageState extends State<SheetPage> {
 
       if (chosen == null || !mounted) return;
 
-      h.spellSlots = {
-        ...h.spellSlots,
-        '$chosen': currentAt(chosen) - 1,
-      };
+      String slotDescription;
+
+      if (chosen == 'pact') {
+        if (!spendPactSpellSlot(h)) return;
+
+        slotDescription = 'uno slot del Patto di livello $pactLevel';
+      } else {
+        final level = int.parse(chosen.split(':').last);
+
+        if (!spendNormalSpellSlot(h, slotLevel: level)) return;
+
+        slotDescription = 'uno slot di livello $level';
+      }
+
       await persist();
 
       if (sheetContext.mounted) Navigator.pop(sheetContext);
@@ -6928,7 +8349,7 @@ class _SheetPageState extends State<SheetPage> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(
-              '${spell.content.name} lanciato con uno slot di livello $chosen.',
+              '${spell.content.name} lanciato con $slotDescription.',
             ),
           ),
         );
@@ -6959,6 +8380,14 @@ class _SheetPageState extends State<SheetPage> {
                   ? 'Trucchetto'
                   : 'Incantesimo di livello ${spell.level}',
             ),
+            if (sourceClassId != null)
+              Text(
+                '$sourceClassName'
+                ' · ${h.spellcastingAbilityForClass(sourceClassId)}'
+                ' · CD ${h.spellSaveDcForClass(sourceClassId)}'
+                ' · Attacco '
+                '${sign(h.spellAttackBonusForClass(sourceClassId))}',
+              ),
             const Divider(),
             RuleDescriptionView(
               content: spell.content,
@@ -6979,16 +8408,12 @@ class _SheetPageState extends State<SheetPage> {
   }
 
   Widget spellsTab() {
-    final rules = h.catalogClassDefinition?.spellcasting;
-    final ability = rules?.ability ?? 'SAG';
+    final spellcastingClasses = h.activeSpellcastingClassIds;
+    final ability = h.effectiveSpellcastingAbility;
     final abilityModifier = mod(h.scores[ability] ?? 10);
     final saveDc = 8 + h.prof + abilityModifier;
     final attackBonus = h.prof + abilityModifier;
-    final characterSpellIds = {
-      ...h.knownSpellIds,
-      ...h.preparedSpellIds,
-      ...h.spellbookSpellIds,
-    };
+    final characterSpellIds = h.effectiveCharacterSpellIds;
     final characterSpells = characterSpellIds
         .map((id) => spellDefinitions[id])
         .whereType<SpellDefinition>()
@@ -6998,7 +8423,9 @@ class _SheetPageState extends State<SheetPage> {
         return level != 0 ? level : a.content.name.compareTo(b.content.name);
       });
     final selectedCount = characterSpells.length;
-    final maximumSlots = rules?.slotsAtLevel(h.level) ?? const <int>[];
+    final maximumSlots = maximumSpellSlotsForHero(h);
+    final pactMaximum = pactSlotMaximumForHero(h);
+    final pactLevel = pactSlotLevelForHero(h);
 
     int maximumAt(int level) =>
         level <= maximumSlots.length ? maximumSlots[level - 1] : 0;
@@ -7008,8 +8435,15 @@ class _SheetPageState extends State<SheetPage> {
     void changeSlot(int level, int change) {
       h.spellSlots = {
         ...h.spellSlots,
-        '$level': (currentAt(level) + change).clamp(0, maximumAt(level)),
+        '$level':
+            (currentAt(level) + change).clamp(0, maximumAt(level)).toInt(),
       };
+      persist();
+    }
+
+    void changePactSlot(int change) {
+      h.pactSpellSlots =
+          (h.currentPactSpellSlots + change).clamp(0, pactMaximum).toInt();
       persist();
     }
 
@@ -7045,6 +8479,30 @@ class _SheetPageState extends State<SheetPage> {
           ),
         );
 
+    String spellSourceLabel(SpellDefinition spell) {
+      final sourceClassId = h.spellcastingClassForSpell(spell.id);
+
+      if (sourceClassId == null) return '';
+
+      final className =
+          phbClassDefinitionFor(sourceClassId)?.name ?? sourceClassId;
+      final ability = h.spellcastingAbilityForClass(sourceClassId);
+
+      return '$className · $ability';
+    }
+
+    bool spellCanBePrepared(SpellDefinition spell) {
+      final sourceClassId = h.spellcastingClassForSpell(spell.id);
+
+      if (sourceClassId == null) return false;
+
+      return heroSpellcastingForClass(
+            h,
+            sourceClassId,
+          )?.preparesSpells ==
+          true;
+    }
+
     return Material(
       color: const Color(0xffeee9dc),
       child: ListView(
@@ -7068,17 +8526,41 @@ class _SheetPageState extends State<SheetPage> {
             ),
           ),
           const SizedBox(height: 12),
-          Row(
-            children: [
-              metric('CARATTERISTICA', ability),
-              metric('CD SALVEZZA', '$saveDc'),
-              metric('BONUS ATTACCO', sign(attackBonus)),
-            ],
-          ),
+          if (spellcastingClasses.isEmpty)
+            Row(
+              children: [
+                metric('CARATTERISTICA', ability),
+                metric('CD SALVEZZA', '$saveDc'),
+                metric(
+                  'BONUS ATTACCO',
+                  sign(attackBonus),
+                ),
+              ],
+            )
+          else
+            for (final classId in spellcastingClasses)
+              Card(
+                key: Key(
+                  'spellcasting_metrics_$classId',
+                ),
+                child: ListTile(
+                  title: Text(
+                    phbClassDefinitionFor(classId)?.name ?? classId,
+                  ),
+                  subtitle: Text(
+                    'Caratteristica '
+                    '${h.spellcastingAbilityForClass(classId)}'
+                    ' · CD '
+                    '${h.spellSaveDcForClass(classId)}'
+                    ' · Attacco '
+                    '${sign(h.spellAttackBonusForClass(classId))}',
+                  ),
+                ),
+              ),
           const SizedBox(height: 10),
           Text(
-            rules == null
-                ? 'La classe non possiede una progressione magica base.'
+            spellcastingClasses.isEmpty
+                ? 'Nessuna classe possiede una progressione magica base.'
                 : '$selectedCount incantesimi registrati per il personaggio.',
           ),
           if (maximumSlots.any((value) => value > 0)) ...[
@@ -7115,11 +8597,49 @@ class _SheetPageState extends State<SheetPage> {
                   ),
                 ),
           ],
+          if (pactMaximum > 0) ...[
+            const SizedBox(height: 16),
+            const Text(
+              'MAGIA DEL PATTO',
+              key: Key('official_pact_slots_title'),
+              style: TextStyle(fontWeight: FontWeight.w900),
+            ),
+            Card(
+              key: const Key('official_pact_slots_card'),
+              child: ListTile(
+                title: Text('Slot del Patto · livello $pactLevel'),
+                subtitle: Text(
+                  '${h.currentPactSpellSlots} / '
+                  '$pactMaximum disponibili',
+                ),
+                trailing: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    IconButton(
+                      key: const Key('decrease_pact_slot'),
+                      onPressed: h.currentPactSpellSlots > 0
+                          ? () => changePactSlot(-1)
+                          : null,
+                      icon: const Icon(Icons.remove_circle_outline),
+                    ),
+                    IconButton(
+                      key: const Key('increase_pact_slot'),
+                      onPressed: h.currentPactSpellSlots < pactMaximum
+                          ? () => changePactSlot(1)
+                          : null,
+                      icon: const Icon(Icons.add_circle_outline),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
           const SizedBox(height: 12),
           SizedBox(
             width: double.infinity,
             child: OutlinedButton.icon(
-              onPressed: rules == null ? null : addSpellFromClassList,
+              onPressed:
+                  spellcastingClasses.isEmpty ? null : addSpellFromClassList,
               icon: const Icon(Icons.add),
               label: const Text('AGGIUNGI TRUCCHETTO O INCANTESIMO'),
             ),
@@ -7158,6 +8678,8 @@ class _SheetPageState extends State<SheetPage> {
                           title: Text(spell.content.name),
                           subtitle: Text(
                             [
+                              if (spellSourceLabel(spell).isNotEmpty)
+                                spellSourceLabel(spell),
                               if (spell.ritual) 'Rituale',
                               if (h.preparedSpellIds.contains(spell.id))
                                 'Preparato',
@@ -7172,8 +8694,7 @@ class _SheetPageState extends State<SheetPage> {
                               }
                             },
                             itemBuilder: (context) => [
-                              if (rules?.preparesSpells == true &&
-                                  spell.level > 0)
+                              if (spellCanBePrepared(spell) && spell.level > 0)
                                 PopupMenuItem(
                                   value: 'prepare',
                                   child: Text(
@@ -8227,6 +9748,208 @@ class _HpDialogState extends State<HpDialog> {
       );
 }
 
+class SpellcastingClassDialog extends StatelessWidget {
+  const SpellcastingClassDialog({
+    super.key,
+    required this.hero,
+  });
+
+  final HeroData hero;
+
+  @override
+  Widget build(BuildContext context) {
+    final classIds = hero.activeSpellcastingClassIds;
+
+    return AlertDialog(
+      title: const Text('Scegli la classe magica'),
+      content: Column(
+        key: const Key('spellcasting_class_dialog'),
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          for (final classId in classIds)
+            ListTile(
+              key: Key('spellcasting_class_$classId'),
+              title: Text(
+                phbClassDefinitionFor(classId)?.name ?? classId,
+              ),
+              subtitle: Text(
+                '${hero.spellcastingAbilityForClass(classId)}'
+                ' · livello classe ${hero.classLevel(classId)}'
+                ' · incantesimi fino al livello '
+                '${hero.maximumSpellLevelForClass(classId)}',
+              ),
+              onTap: () => Navigator.pop(context, classId),
+            ),
+        ],
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(context),
+          child: const Text('ANNULLA'),
+        ),
+      ],
+    );
+  }
+}
+
+class MulticlassHitDiceDialog extends StatefulWidget {
+  const MulticlassHitDiceDialog({
+    super.key,
+    required this.hero,
+  });
+
+  final HeroData hero;
+
+  @override
+  State<MulticlassHitDiceDialog> createState() =>
+      _MulticlassHitDiceDialogState();
+}
+
+class _MulticlassHitDiceDialogState extends State<MulticlassHitDiceDialog> {
+  final Map<String, int> selectedByClass = {};
+
+  int selectedFor(String classId) => selectedByClass[classId] ?? 0;
+
+  int get totalSelected => selectedByClass.values.fold<int>(
+        0,
+        (total, count) => total + count,
+      );
+
+  void changeSelection(
+    String classId,
+    int change,
+  ) {
+    final available = widget.hero.hitDiceAvailableForClass(classId);
+
+    final next = (selectedFor(classId) + change).clamp(0, available).toInt();
+
+    setState(() {
+      if (next <= 0) {
+        selectedByClass.remove(classId);
+      } else {
+        selectedByClass[classId] = next;
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final classLevels = widget.hero.orderedClassLevels;
+
+    return AlertDialog(
+      title: const Text('Riposo breve'),
+      content: SingleChildScrollView(
+        child: Column(
+          key: const Key('multiclass_hit_dice_dialog'),
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            const Text(
+              'Il Ki e gli slot della Magia del Patto verranno '
+              'recuperati. Scegli quali Dadi Vita spendere.',
+            ),
+            const SizedBox(height: 12),
+            for (final entry in classLevels)
+              Builder(
+                builder: (context) {
+                  final ownerClassId = entry.key;
+                  final className =
+                      phbClassDefinitionFor(ownerClassId)?.name ?? ownerClassId;
+                  final available =
+                      widget.hero.hitDiceAvailableForClass(ownerClassId);
+                  final die = widget.hero.hitDieForClass(ownerClassId);
+                  final selected = selectedFor(ownerClassId);
+
+                  return Card(
+                    key: Key(
+                      'hit_dice_class_$ownerClassId',
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(10),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            '$className · '
+                            '${available}d$die disponibili',
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              IconButton(
+                                key: Key(
+                                  'hit_die_remove_'
+                                  '$ownerClassId',
+                                ),
+                                onPressed: selected > 0
+                                    ? () => changeSelection(
+                                          ownerClassId,
+                                          -1,
+                                        )
+                                    : null,
+                                icon: const Icon(
+                                  Icons.remove_circle_outline,
+                                ),
+                              ),
+                              Text(
+                                '$selected d$die',
+                                style: const TextStyle(
+                                  fontSize: 22,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              IconButton(
+                                key: Key(
+                                  'hit_die_add_$ownerClassId',
+                                ),
+                                onPressed: selected < available
+                                    ? () => changeSelection(
+                                          ownerClassId,
+                                          1,
+                                        )
+                                    : null,
+                                icon: const Icon(
+                                  Icons.add_circle_outline,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                },
+              ),
+          ],
+        ),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(context),
+          child: const Text('ANNULLA'),
+        ),
+        FilledButton(
+          key: const Key('confirm_multiclass_hit_dice'),
+          onPressed: () => Navigator.pop(
+            context,
+            Map<String, int>.unmodifiable(
+              selectedByClass,
+            ),
+          ),
+          child: Text(
+            totalSelected == 0
+                ? 'SOLO RIPOSO'
+                : 'TIRA $totalSelected DADI VITA',
+          ),
+        ),
+      ],
+    );
+  }
+}
+
 class HitDiceDialog extends StatefulWidget {
   const HitDiceDialog({
     super.key,
@@ -8369,112 +10092,1028 @@ class SubclassPreviewPage extends StatelessWidget {
   }
 }
 
-class AsiPage extends StatefulWidget {
-  const AsiPage({super.key, required this.hero});
+Future<Map<String, List<String>>?> showMulticlassProficiencyDialog({
+  required BuildContext context,
+  required HeroData hero,
+  required String classId,
+}) {
+  final requiredSkills = multiclassSkillChoicesFor(classId);
+  final requiredTools = multiclassToolChoicesFor(classId);
+
+  final ownedSkills = hero.effectiveSkillProficiencies;
+  final ownedTools = hero.effectiveToolProficiencies;
+
+  final skillOptions = multiclassSkillOptionsFor(classId)
+      .where(
+        (id) => !ownedSkills.contains(skillDisplayName(id)),
+      )
+      .toList()
+    ..sort(
+      (a, b) => skillDisplayName(a).compareTo(skillDisplayName(b)),
+    );
+
+  final toolOptions = multiclassToolOptionsFor(classId)
+      .where((id) => !ownedTools.contains(id))
+      .toList()
+    ..sort();
+
+  final selectedSkills = <String>{};
+  final selectedTools = <String>{};
+
+  return showDialog<Map<String, List<String>>>(
+    context: context,
+    barrierDismissible: false,
+    builder: (dialogContext) => StatefulBuilder(
+      builder: (context, setDialogState) {
+        final complete = selectedSkills.length == requiredSkills &&
+            selectedTools.length == requiredTools;
+
+        return AlertDialog(
+          title: Text(
+            'Competenze da '
+            '${phbClassDefinitionFor(classId)?.name ?? classId}',
+          ),
+          content: SingleChildScrollView(
+            child: Column(
+              key: const Key(
+                'multiclass_proficiency_choices',
+              ),
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                if (requiredSkills > 0) ...[
+                  Text('Scegli $requiredSkills abilità'),
+                  const SizedBox(height: 8),
+                  Wrap(
+                    spacing: 6,
+                    runSpacing: 6,
+                    children: [
+                      for (final id in skillOptions)
+                        FilterChip(
+                          key: Key(
+                            'multiclass_skill_choice_$id',
+                          ),
+                          label: Text(skillDisplayName(id)),
+                          selected: selectedSkills.contains(id),
+                          onSelected: (selected) {
+                            setDialogState(() {
+                              if (selected) {
+                                if (selectedSkills.length < requiredSkills) {
+                                  selectedSkills.add(id);
+                                }
+                              } else {
+                                selectedSkills.remove(id);
+                              }
+                            });
+                          },
+                        ),
+                    ],
+                  ),
+                ],
+                if (requiredTools > 0) ...[
+                  if (requiredSkills > 0) const SizedBox(height: 16),
+                  Text(
+                    'Scegli $requiredTools '
+                    'strumento musicale',
+                  ),
+                  const SizedBox(height: 8),
+                  Wrap(
+                    spacing: 6,
+                    runSpacing: 6,
+                    children: [
+                      for (final id in toolOptions)
+                        FilterChip(
+                          key: Key(
+                            'multiclass_tool_choice_$id',
+                          ),
+                          label: Text(id),
+                          selected: selectedTools.contains(id),
+                          onSelected: (selected) {
+                            setDialogState(() {
+                              if (selected) {
+                                if (selectedTools.length < requiredTools) {
+                                  selectedTools.add(id);
+                                }
+                              } else {
+                                selectedTools.remove(id);
+                              }
+                            });
+                          },
+                        ),
+                    ],
+                  ),
+                ],
+              ],
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(dialogContext),
+              child: const Text('ANNULLA'),
+            ),
+            FilledButton(
+              key: const Key(
+                'multiclass_confirm_proficiencies',
+              ),
+              onPressed: complete
+                  ? () {
+                      Navigator.pop(
+                        dialogContext,
+                        <String, List<String>>{
+                          if (selectedSkills.isNotEmpty)
+                            multiclassSkillChoiceKey(classId):
+                                selectedSkills.toList(),
+                          if (selectedTools.isNotEmpty)
+                            multiclassToolChoiceKey(classId):
+                                selectedTools.toList(),
+                        },
+                      );
+                    }
+                  : null,
+              child: const Text('CONFERMA'),
+            ),
+          ],
+        );
+      },
+    ),
+  );
+}
+
+class MulticlassLevelUpPage extends StatefulWidget {
+  const MulticlassLevelUpPage({
+    super.key,
+    required this.hero,
+  });
+
   final HeroData hero;
+
+  @override
+  State<MulticlassLevelUpPage> createState() => _MulticlassLevelUpPageState();
+}
+
+class _MulticlassLevelUpPageState extends State<MulticlassLevelUpPage> {
+  String? selectedClassId;
+
+  CharacterEligibilityState get eligibilityState {
+    final hero = widget.hero;
+
+    return CharacterEligibilityState(
+      abilityScores: Map<String, int>.from(hero.scores),
+      raceId: hero.resolvedRaceId,
+      proficiencies: <String>{
+        ...hero.effectiveSkillProficiencies,
+        ...hero.effectiveWeaponProficiencies,
+        ...hero.effectiveArmorProficiencies,
+        ...hero.effectiveToolProficiencies,
+      },
+      canCastSpells: hero.catalogClassDefinition?.spellcasting != null ||
+          hero.effectiveCharacterSpellIds.isNotEmpty,
+    );
+  }
+
+  bool get selectedClassIsNew {
+    final classId = selectedClassId;
+
+    return classId != null && !widget.hero.activeClassIds.contains(classId);
+  }
+
+  MulticlassEligibilityResult? get selectedEligibility {
+    final classId = selectedClassId;
+
+    if (classId == null || !selectedClassIsNew) {
+      return null;
+    }
+
+    return evaluateMulticlassEligibility(
+      existingClassIds: widget.hero.activeClassIds,
+      targetClassId: classId,
+      state: eligibilityState,
+    );
+  }
+
+  String className(String classId) =>
+      phbClassDefinitionFor(classId)?.name ?? classId;
+
+  void showMessage(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(message)),
+    );
+  }
+
+  void confirmClass() {
+    final classId = selectedClassId;
+
+    if (classId == null) {
+      showMessage('Seleziona la classe in cui salire.');
+      return;
+    }
+
+    final eligibility = selectedEligibility;
+
+    if (selectedClassIsNew && (eligibility == null || !eligibility.canSelect)) {
+      showMessage(
+        'Non possiedi tutti i requisiti per il multiclasse.',
+      );
+      return;
+    }
+
+    Navigator.pop(context, classId);
+  }
+
+  Widget buildEligibilityCard(
+    MulticlassClassEligibility entry,
+  ) {
+    final classLabel = className(entry.classId);
+    final requirements = entry.eligibility.requirements;
+
+    return Card(
+      key: Key('multiclass_requirements_${entry.classId}'),
+      margin: const EdgeInsets.only(top: 10),
+      child: Padding(
+        padding: const EdgeInsets.all(12),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              entry.targetClass
+                  ? '$classLabel · nuova classe'
+                  : '$classLabel · classe posseduta',
+              style: Theme.of(context).textTheme.titleSmall,
+            ),
+            const SizedBox(height: 8),
+            for (var index = 0; index < requirements.length; index++)
+              Builder(
+                builder: (context) {
+                  final result = requirements[index];
+
+                  return Padding(
+                    padding: const EdgeInsets.only(bottom: 7),
+                    child: Row(
+                      key: Key(
+                        'multiclass_requirement_'
+                        '${entry.classId}_$index',
+                      ),
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Icon(
+                          result.satisfied ? Icons.check_circle : Icons.cancel,
+                          color: result.satisfied
+                              ? Colors.green.shade700
+                              : Colors.red.shade700,
+                          size: 20,
+                        ),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: Text(
+                            '${result.label}: ${result.detail}',
+                            style: TextStyle(
+                              color: result.satisfied
+                                  ? Colors.green.shade700
+                                  : Colors.red.shade700,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                },
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final definitions = phbClassDefinitions.values.toList()
+      ..sort((a, b) => a.name.compareTo(b.name));
+
+    final eligibility = selectedEligibility;
+    final selectedId = selectedClassId;
+
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(
+          'Nuovo livello · ${widget.hero.level + 1}',
+        ),
+      ),
+      body: SafeArea(
+        child: ListView(
+          padding: const EdgeInsets.all(16),
+          children: [
+            Text(
+              'Scegli la classe',
+              style: Theme.of(context).textTheme.titleLarge,
+            ),
+            const SizedBox(height: 6),
+            const Text(
+              'Puoi continuare una classe posseduta oppure '
+              'aggiungerne una nuova se soddisfi tutti i '
+              'prerequisiti della classe attuale e di quella nuova.',
+            ),
+            const SizedBox(height: 12),
+            RadioGroup<String>(
+              groupValue: selectedClassId,
+              onChanged: (value) {
+                if (value == null) return;
+                setState(() => selectedClassId = value);
+              },
+              child: Column(
+                children: [
+                  for (final definition in definitions)
+                    RadioListTile<String>(
+                      key: Key(
+                        'multiclass_class_${definition.id}',
+                      ),
+                      value: definition.id,
+                      title: Text(definition.name),
+                      subtitle: Text(
+                        widget.hero.activeClassIds.contains(definition.id)
+                            ? 'Classe posseduta · livello '
+                                '${widget.hero.classLevel(definition.id)}'
+                            : 'Nuova classe',
+                      ),
+                    ),
+                ],
+              ),
+            ),
+            if (selectedId != null && !selectedClassIsNew) ...[
+              Card(
+                key: const Key(
+                  'multiclass_existing_class_message',
+                ),
+                margin: const EdgeInsets.only(top: 10),
+                child: Padding(
+                  padding: const EdgeInsets.all(12),
+                  child: Text(
+                    'Continuerai come ${className(selectedId)} '
+                    'al livello '
+                    '${widget.hero.classLevel(selectedId) + 1}.',
+                  ),
+                ),
+              ),
+            ],
+            if (eligibility != null) ...[
+              const SizedBox(height: 6),
+              Text(
+                eligibility.canSelect
+                    ? 'Tutti i requisiti sono soddisfatti'
+                    : 'Alcuni requisiti non sono soddisfatti',
+                key: const Key(
+                  'multiclass_eligibility_summary',
+                ),
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: eligibility.canSelect
+                      ? Colors.green.shade700
+                      : Colors.red.shade700,
+                ),
+              ),
+              for (final entry in eligibility.classes)
+                buildEligibilityCard(entry),
+            ],
+            const SizedBox(height: 18),
+            FilledButton(
+              key: const Key('multiclass_confirm_class'),
+              onPressed: confirmClass,
+              child: const Text('CONFERMA CLASSE'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class AsiPage extends StatefulWidget {
+  const AsiPage({
+    super.key,
+    required this.hero,
+    this.acquisitionLevel,
+    this.sourceClassId,
+  });
+
+  final HeroData hero;
+  final int? acquisitionLevel;
+  final String? sourceClassId;
+
   @override
   State<AsiPage> createState() => _AsiPageState();
 }
 
 class _AsiPageState extends State<AsiPage> {
   String mode = 'plus2';
-  String? a1, a2;
+  String? a1;
+  String? a2;
   String? selectedFeat;
 
-  @override
-  void initState() {
-    super.initState();
-    selectedFeat = widget.hero.feat;
+  final Map<String, List<String>> selectedFeatChoices = {};
+
+  List<FeatDefinition> get availableFeats {
+    final definitions = featDefinitions.values.toList()
+      ..sort((a, b) => a.name.compareTo(b.name));
+
+    return definitions;
+  }
+
+  CharacterEligibilityState get asiEligibilityState {
+    final hero = widget.hero;
+
+    return CharacterEligibilityState(
+      abilityScores: Map<String, int>.from(hero.scores),
+      raceId: hero.resolvedRaceId,
+      proficiencies: <String>{
+        ...hero.effectiveSkillProficiencies,
+        ...hero.effectiveWeaponProficiencies,
+        ...hero.effectiveArmorProficiencies,
+        ...hero.effectiveToolProficiencies,
+      },
+      canCastSpells: hero.catalogClassDefinition?.spellcasting != null ||
+          hero.effectiveCharacterSpellIds.isNotEmpty,
+    );
+  }
+
+  Set<String> get ownedProficiencies => asiEligibilityState.proficiencies;
+
+  FeatDefinition? get selectedFeatDefinition {
+    final featId = selectedFeat;
+    return featId == null ? null : featDefinitionFor(featId);
+  }
+
+  CharacterEligibilityResult? eligibilityForFeat(String? featId) {
+    if (featId == null) return null;
+
+    final definition = featDefinitionFor(featId);
+    if (definition == null) return null;
+
+    return evaluateFeatEligibility(
+      feat: definition,
+      state: asiEligibilityState,
+    );
+  }
+
+  bool featAlreadyOwned(String featId) {
+    return widget.hero.resolvedFeatIds.contains(featId) &&
+        !featCanBeTakenMultipleTimes(featId);
+  }
+
+  List<String> optionIdsFor(
+    CharacterChoiceDefinition choice,
+  ) {
+    if (choice.id == 'skilled_proficiencies') {
+      return [
+        for (final id in characterSkillIds) 'skill:$id',
+        for (final id in characterToolIds) 'tool:$id',
+      ];
+    }
+
+    if (choice.options.isNotEmpty) {
+      return choice.options.map((option) => option.id).toList(growable: false);
+    }
+
+    if (choice.optionIds.isNotEmpty) {
+      return choice.optionIds;
+    }
+
+    switch (choice.type) {
+      case CharacterChoiceType.ability:
+        return const ['FOR', 'DES', 'COS', 'INT', 'SAG', 'CAR'];
+
+      case CharacterChoiceType.skill:
+        return characterSkillIds;
+
+      case CharacterChoiceType.language:
+        return characterLanguageIds;
+
+      case CharacterChoiceType.feat:
+        return featDefinitions.keys.toList(growable: false);
+
+      case CharacterChoiceType.tool:
+      case CharacterChoiceType.weapon:
+      case CharacterChoiceType.armor:
+      case CharacterChoiceType.equipment:
+      case CharacterChoiceType.spell:
+      case CharacterChoiceType.cantrip:
+      case CharacterChoiceType.subclass:
+      case CharacterChoiceType.other:
+        return const [];
+    }
+  }
+
+  String optionLabel(
+    CharacterChoiceDefinition choice,
+    String optionId,
+  ) {
+    for (final option in choice.options) {
+      if (option.id == optionId) {
+        return option.label;
+      }
+    }
+
+    const abilityLabels = {
+      'FOR': 'Forza',
+      'DES': 'Destrezza',
+      'COS': 'Costituzione',
+      'INT': 'Intelligenza',
+      'SAG': 'Saggezza',
+      'CAR': 'Carisma',
+    };
+
+    if (optionId.startsWith('skill:')) {
+      return skillDisplayName(optionId.substring('skill:'.length));
+    }
+
+    if (optionId.startsWith('tool:')) {
+      return optionId.substring('tool:'.length);
+    }
+
+    if (choice.type == CharacterChoiceType.skill) {
+      return skillDisplayName(optionId);
+    }
+
+    return abilityLabels[optionId] ?? optionId;
+  }
+
+  String normalizedProficiencyId(String optionId) {
+    if (optionId.startsWith('skill:')) {
+      return optionId.substring('skill:'.length);
+    }
+
+    if (optionId.startsWith('tool:')) {
+      return optionId.substring('tool:'.length);
+    }
+
+    return optionId;
+  }
+
+  bool repeatableOptionAlreadyOwned(
+    CharacterChoiceDefinition choice,
+    String optionId,
+  ) {
+    if (selectedFeat != FeatIds.elementalAdept ||
+        choice.id != 'elemental_adept_damage_type') {
+      return false;
+    }
+
+    final alreadyChosen = <String>{
+      if (widget.hero.legacyFeatId == FeatIds.elementalAdept)
+        ...?widget.hero.featChoices[choice.id],
+      for (final acquisition in widget.hero.featAcquisitions)
+        if (acquisition.featId == FeatIds.elementalAdept)
+          ...?acquisition.selections[choice.id],
+    };
+
+    return alreadyChosen.contains(optionId);
+  }
+
+  bool optionUnavailable(
+    CharacterChoiceDefinition choice,
+    String optionId,
+  ) {
+    final proficiencyId = normalizedProficiencyId(optionId);
+    final alreadyOwned = ownedProficiencies.contains(proficiencyId);
+
+    if (choice.requireNewAcquisition && alreadyOwned) {
+      return true;
+    }
+
+    if (choice.requireExistingAcquisition && !alreadyOwned) {
+      return true;
+    }
+
+    return repeatableOptionAlreadyOwned(choice, optionId);
+  }
+
+  bool choicesAreComplete(FeatDefinition definition) {
+    for (final choice in definition.effects.choices) {
+      final selected = selectedFeatChoices[choice.id] ?? const <String>[];
+
+      if (selected.length < choice.minimumSelections ||
+          selected.length > choice.maximumSelections) {
+        return false;
+      }
+
+      if (selected.any(
+        (optionId) => optionUnavailable(choice, optionId),
+      )) {
+        return false;
+      }
+
+      if (choice.unique && selected.toSet().length != selected.length) {
+        return false;
+      }
+    }
+
+    return true;
+  }
+
+  void showMessage(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(message)),
+    );
+  }
+
+  Widget buildEligibilityPanel(FeatDefinition definition) {
+    final eligibility = eligibilityForFeat(definition.id)!;
+    final description = definition.content.description;
+
+    return Card(
+      key: const Key('asi_feat_details'),
+      margin: const EdgeInsets.only(top: 12),
+      child: Padding(
+        padding: const EdgeInsets.all(12),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              definition.name,
+              style: Theme.of(context).textTheme.titleMedium,
+            ),
+            if (description.summary.isNotEmpty) ...[
+              const SizedBox(height: 6),
+              Text(description.summary),
+            ],
+            if (description.details.isNotEmpty) ...[
+              const SizedBox(height: 4),
+              Text(description.details),
+            ],
+            if (definition.prerequisites.isNotEmpty) ...[
+              const SizedBox(height: 12),
+              Text(
+                eligibility.canSelect
+                    ? 'Requisiti soddisfatti'
+                    : 'Requisiti non soddisfatti',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: eligibility.canSelect
+                      ? Colors.green.shade700
+                      : Colors.red.shade700,
+                ),
+              ),
+              const SizedBox(height: 8),
+              for (var index = 0;
+                  index < eligibility.requirements.length;
+                  index++)
+                Builder(
+                  builder: (context) {
+                    final result = eligibility.requirements[index];
+
+                    return Padding(
+                      padding: const EdgeInsets.only(bottom: 6),
+                      child: Row(
+                        key: Key(
+                          'asi_feat_requirement_'
+                          '${definition.id}_$index',
+                        ),
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Icon(
+                            result.satisfied
+                                ? Icons.check_circle
+                                : Icons.cancel,
+                            color: result.satisfied
+                                ? Colors.green.shade700
+                                : Colors.red.shade700,
+                            size: 20,
+                          ),
+                          const SizedBox(width: 8),
+                          Expanded(
+                            child: Text(
+                              '${result.label}: ${result.detail}',
+                              style: TextStyle(
+                                color: result.satisfied
+                                    ? Colors.green.shade700
+                                    : Colors.red.shade700,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                ),
+            ],
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget buildFeatChoice(
+    CharacterChoiceDefinition choice,
+  ) {
+    final selected = selectedFeatChoices[choice.id] ?? const <String>[];
+    final optionIds = optionIdsFor(choice);
+
+    return Card(
+      margin: const EdgeInsets.only(top: 12),
+      child: Padding(
+        padding: const EdgeInsets.all(12),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              choice.label,
+              style: Theme.of(context).textTheme.titleSmall,
+            ),
+            const SizedBox(height: 4),
+            Text(
+              choice.minimumSelections == choice.maximumSelections
+                  ? 'Scegli ${choice.minimumSelections}.'
+                  : 'Scegli da ${choice.minimumSelections} a '
+                      '${choice.maximumSelections}.',
+            ),
+            const SizedBox(height: 10),
+            if (optionIds.isEmpty)
+              const Text(
+                'Nessuna opzione disponibile.',
+                style: TextStyle(color: Colors.red),
+              )
+            else
+              Wrap(
+                spacing: 6,
+                runSpacing: 6,
+                children: optionIds.map((optionId) {
+                  final isSelected = selected.contains(optionId);
+                  final unavailable = optionUnavailable(choice, optionId);
+
+                  return FilterChip(
+                    key: Key(
+                      'asi_feat_choice_${choice.id}_$optionId',
+                    ),
+                    label: Text(
+                      unavailable
+                          ? '${optionLabel(choice, optionId)} · '
+                              'non disponibile'
+                          : optionLabel(choice, optionId),
+                    ),
+                    selected: isSelected,
+                    onSelected: unavailable
+                        ? null
+                        : (value) {
+                            setState(() {
+                              final current = List<String>.from(
+                                selectedFeatChoices[choice.id] ??
+                                    const <String>[],
+                              );
+
+                              if (value) {
+                                if (!current.contains(optionId) &&
+                                    current.length < choice.maximumSelections) {
+                                  current.add(optionId);
+                                }
+                              } else {
+                                current.remove(optionId);
+                              }
+
+                              if (current.isEmpty) {
+                                selectedFeatChoices.remove(choice.id);
+                              } else {
+                                selectedFeatChoices[choice.id] = current;
+                              }
+                            });
+                          },
+                  );
+                }).toList(),
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void confirmSelection() {
+    if (mode == 'feat') {
+      final definition = selectedFeatDefinition;
+
+      if (definition == null) {
+        showMessage('Seleziona un talento.');
+        return;
+      }
+
+      if (featAlreadyOwned(definition.id)) {
+        showMessage(
+          '${definition.name} è già stato acquisito.',
+        );
+        return;
+      }
+
+      final eligibility = eligibilityForFeat(definition.id);
+
+      if (eligibility == null || !eligibility.canSelect) {
+        showMessage(
+          'Non possiedi tutti i requisiti per questo talento.',
+        );
+        return;
+      }
+
+      if (!choicesAreComplete(definition)) {
+        showMessage(
+          'Completa tutte le scelte richieste dal talento.',
+        );
+        return;
+      }
+
+      final acquisition = FeatAcquisition(
+        instanceId: 'asi_${widget.acquisitionLevel ?? widget.hero.level}_'
+            '${DateTime.now().microsecondsSinceEpoch}',
+        featId: definition.id,
+        source: 'asi',
+        sourceClassId: widget.sourceClassId,
+        acquiredAtLevel: widget.acquisitionLevel ?? widget.hero.level,
+        selections: {
+          for (final entry in selectedFeatChoices.entries)
+            entry.key: List<String>.from(entry.value),
+        },
+      );
+
+      widget.hero.featAcquisitions = [
+        ...widget.hero.featAcquisitions,
+        acquisition,
+      ];
+
+      Navigator.pop(context, true);
+      return;
+    }
+
+    if (a1 == null) {
+      showMessage('Seleziona una caratteristica.');
+      return;
+    }
+
+    if (mode == 'plus1' && (a2 == null || a1 == a2)) {
+      showMessage('Seleziona due caratteristiche diverse.');
+      return;
+    }
+
+    final firstIncrease = mode == 'plus2' ? 2 : 1;
+
+    final updatedBaseScores = Map<String, int>.from(
+      widget.hero.baseScores,
+    );
+
+    updatedBaseScores[a1!] = min(
+      20,
+      updatedBaseScores[a1!]! + firstIncrease,
+    );
+
+    if (mode == 'plus1') {
+      updatedBaseScores[a2!] = min(
+        20,
+        updatedBaseScores[a2!]! + 1,
+      );
+    }
+
+    widget.hero.baseScores = updatedBaseScores;
+
+    Navigator.pop(context, true);
   }
 
   @override
-  Widget build(BuildContext context) => Scaffold(
-        appBar: AppBar(title: const Text('Livello 4 · ASI o Talento')),
-        body: SafeArea(
-          child: ListView(
-            padding: const EdgeInsets.all(16),
-            children: [
-              RadioGroup<String>(
-                groupValue: mode,
-                onChanged: (v) {
-                  if (v != null) setState(() => mode = v);
+  Widget build(BuildContext context) {
+    final definition = selectedFeatDefinition;
+
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(
+          'Livello ${widget.hero.level} · ASI o Talento',
+        ),
+      ),
+      body: SafeArea(
+        child: ListView(
+          padding: const EdgeInsets.all(16),
+          children: [
+            RadioGroup<String>(
+              groupValue: mode,
+              onChanged: (value) {
+                if (value == null) return;
+
+                setState(() {
+                  mode = value;
+
+                  if (mode != 'feat') {
+                    selectedFeat = null;
+                    selectedFeatChoices.clear();
+                  }
+                });
+              },
+              child: const Column(
+                children: [
+                  RadioListTile<String>(
+                    value: 'plus2',
+                    title: Text('+2 a una caratteristica'),
+                  ),
+                  RadioListTile<String>(
+                    value: 'plus1',
+                    title: Text('+1 a due caratteristiche'),
+                  ),
+                  RadioListTile<String>(
+                    value: 'feat',
+                    title: Text('Scegli un talento'),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 12),
+            if (mode != 'feat') ...[
+              DropdownButtonFormField<String>(
+                initialValue: a1,
+                decoration: const InputDecoration(
+                  labelText: 'Prima caratteristica',
+                ),
+                items: abilities
+                    .map(
+                      (ability) => DropdownMenuItem(
+                        value: ability,
+                        child: Text(
+                          '$ability · ${widget.hero.scores[ability]}',
+                        ),
+                      ),
+                    )
+                    .toList(),
+                onChanged: (value) {
+                  setState(() {
+                    a1 = value;
+                    if (a2 == value) a2 = null;
+                  });
                 },
-                child: const Column(
+              ),
+              if (mode == 'plus1') ...[
+                const SizedBox(height: 12),
+                DropdownButtonFormField<String>(
+                  initialValue: a2,
+                  decoration: const InputDecoration(
+                    labelText: 'Seconda caratteristica',
+                  ),
+                  items: abilities
+                      .where((ability) => ability != a1)
+                      .map(
+                        (ability) => DropdownMenuItem(
+                          value: ability,
+                          child: Text(
+                            '$ability · '
+                            '${widget.hero.scores[ability]}',
+                          ),
+                        ),
+                      )
+                      .toList(),
+                  onChanged: (value) {
+                    setState(() => a2 = value);
+                  },
+                ),
+              ],
+            ] else ...[
+              Text(
+                'Talenti disponibili',
+                style: Theme.of(context).textTheme.titleLarge,
+              ),
+              const SizedBox(height: 6),
+              const Text(
+                'I requisiti sono obbligatori per i talenti '
+                'acquisiti tramite aumento di caratteristica.',
+              ),
+              const SizedBox(height: 8),
+              RadioGroup<String>(
+                groupValue: selectedFeat,
+                onChanged: (value) {
+                  if (value == null) return;
+
+                  setState(() {
+                    selectedFeat = value;
+                    selectedFeatChoices.clear();
+                  });
+                },
+                child: Column(
                   children: [
-                    RadioListTile(
-                        value: 'plus2', title: Text('+2 a una caratteristica')),
-                    RadioListTile(
-                        value: 'split',
-                        title: Text('+1 a due caratteristiche diverse')),
-                    RadioListTile(
-                        value: 'feat', title: Text('Scegli un talento')),
+                    for (final feat in availableFeats)
+                      RadioListTile<String>(
+                        key: Key('asi_feat_${feat.id}'),
+                        value: feat.id,
+                        enabled: !featAlreadyOwned(feat.id),
+                        title: Text(feat.name),
+                        subtitle: featAlreadyOwned(feat.id)
+                            ? const Text('Già acquisito')
+                            : null,
+                      ),
                   ],
                 ),
               ),
-              if (mode != 'feat') ...[
-                DropdownButtonFormField<String>(
-                  decoration:
-                      const InputDecoration(labelText: 'Caratteristica'),
-                  items: abilities
-                      .map((a) => DropdownMenuItem(
-                          value: a,
-                          child: Text('$a · ${widget.hero.scores[a]}')))
-                      .toList(),
-                  onChanged: (v) => setState(() {
-                    a1 = v;
-                    if (a2 == v) a2 = null;
-                  }),
-                ),
-                if (mode == 'split')
-                  DropdownButtonFormField<String>(
-                    decoration: const InputDecoration(
-                        labelText: 'Seconda caratteristica'),
-                    items: abilities
-                        .where((a) => a != a1)
-                        .map((a) => DropdownMenuItem(
-                            value: a,
-                            child: Text('$a · ${widget.hero.scores[a]}')))
-                        .toList(),
-                    onChanged: (v) => setState(() => a2 = v),
-                  ),
-              ] else ...[
-                const SizedBox(height: 10),
-                const Text(
-                    'Talenti V0.2 · selezione iniziale. Le descrizioni complete saranno aggiunte dalle fonti verificate.'),
-                RadioGroup<String>(
-                  groupValue: selectedFeat,
-                  onChanged: (v) => setState(() => selectedFeat = v),
-                  child: Column(
-                    children: ['Allerta', 'Atleta', 'Fortunato']
-                        .map((f) =>
-                            RadioListTile<String>(value: f, title: Text(f)))
-                        .toList(),
-                  ),
-                ),
+              if (definition != null) ...[
+                buildEligibilityPanel(definition),
+                for (final choice in definition.effects.choices)
+                  buildFeatChoice(choice),
               ],
-              const SizedBox(height: 16),
-              FilledButton(
-                onPressed: () {
-                  if (mode == 'feat') {
-                    if (selectedFeat == null) return;
-                    widget.hero.feat = selectedFeat;
-                    Navigator.pop(context, true);
-                    return;
-                  }
-                  if (a1 == null || (mode == 'split' && a2 == null)) return;
-                  final inc1 = mode == 'plus2' ? 2 : 1;
-                  widget.hero.baseScores[a1!] =
-                      min(19, widget.hero.baseScores[a1!]! + inc1);
-                  if (mode == 'split') {
-                    widget.hero.baseScores[a2!] =
-                        min(19, widget.hero.baseScores[a2!]! + 1);
-                  }
-                  Navigator.pop(context, true);
-                },
-                child: const Text('CONFERMA SCELTA'),
-              ),
             ],
-          ),
+            const SizedBox(height: 20),
+            FilledButton(
+              key: const Key('asi_confirm_selection'),
+              onPressed: confirmSelection,
+              child: const Text('CONFERMA SCELTA'),
+            ),
+          ],
         ),
-      );
+      ),
+    );
+  }
 }

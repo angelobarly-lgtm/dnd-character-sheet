@@ -1,7 +1,7 @@
 name: dnd_character_sheet
-description: D&D 5e 2014 character sheet - V0.2
+description: D&D Creazione Personaggio - Scheda D&D 5e 2014
 publish_to: "none"
-version: 0.5.0+5
+version: 0.6.0+6
 
 environment:
   sdk: ">=3.4.0 <4.0.0"

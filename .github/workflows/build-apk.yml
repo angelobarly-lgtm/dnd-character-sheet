@@ -7,9 +7,13 @@ on:
       - main
       - v0.6-mega-update
 
+permissions:
+  contents: read
+
 jobs:
   build:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
 
     steps:
       - name: Checkout repository
@@ -24,7 +28,7 @@ jobs:
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          channel: stable
+          flutter-version: '3.44.8'
           cache: true
 
       - name: Flutter version
@@ -36,12 +40,19 @@ jobs:
       - name: Analyze
         run: flutter analyze
 
+      - name: Run tests
+        run: flutter test
+
       - name: Build release APK
         run: flutter build apk --release
+
+      - name: Rename APK
+        run: cp build/app/outputs/flutter-apk/app-release.apk build/app/outputs/flutter-apk/dnd-creazione-personaggio-v0.6.0.apk
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: dnd-character-sheet-apk
-          path: build/app/outputs/flutter-apk/app-release.apk
+          name: dnd-creazione-personaggio-v0.6.0
+          path: build/app/outputs/flutter-apk/dnd-creazione-personaggio-v0.6.0.apk
           if-no-files-found: error
+          retention-days: 30

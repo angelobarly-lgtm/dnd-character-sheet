@@ -23,6 +23,7 @@ abstract final class CharacterChoiceConstraintKeys {
   static const classId = 'class_id';
   static const spellSchool = 'spell_school';
   static const ritual = 'ritual';
+  static const spellAttack = 'spell_attack';
 }
 
 /// Cataloghi condivisi utilizzabili dalle CharacterChoiceDefinition.

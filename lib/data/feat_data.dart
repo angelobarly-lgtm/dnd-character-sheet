@@ -11,6 +11,59 @@ import 'choice_data.dart';
 /// ID canonici dei talenti.
 ///
 /// Usiamo ID stabili indipendenti dal nome visualizzato.
+/// Una singola acquisizione di un talento.
+///
+/// Conservare le acquisizioni separatamente permette di distinguere il
+/// talento razziale, quelli ottenuti tramite ASI e i talenti ripetibili.
+class FeatAcquisition {
+  final String instanceId;
+  final String featId;
+  final String source;
+  final String? sourceClassId;
+  final int acquiredAtLevel;
+  final Map<String, List<String>> selections;
+
+  const FeatAcquisition({
+    this.instanceId = '',
+    required this.featId,
+    this.source = 'asi',
+    this.sourceClassId,
+    this.acquiredAtLevel = 1,
+    this.selections = const {},
+  });
+
+  Map<String, dynamic> toJson() => {
+        'instanceId': instanceId,
+        'featId': featId,
+        'source': source,
+        'sourceClassId': sourceClassId,
+        'acquiredAtLevel': acquiredAtLevel,
+        'selections': selections,
+      };
+
+  factory FeatAcquisition.fromJson(Map<String, dynamic> json) {
+    final featId = json['featId'] as String? ?? '';
+    final source = json['source'] as String? ?? 'asi';
+    final acquiredAtLevel = (json['acquiredAtLevel'] as num?)?.toInt() ?? 1;
+
+    return FeatAcquisition(
+      instanceId: json['instanceId'] as String? ??
+          '${featId}_${source}_$acquiredAtLevel',
+      featId: featId,
+      source: source,
+      sourceClassId: json['sourceClassId'] as String?,
+      acquiredAtLevel: acquiredAtLevel,
+      selections:
+          (json['selections'] as Map? ?? const {}).map<String, List<String>>(
+        (key, value) => MapEntry(
+          key.toString(),
+          List<String>.from(value as List? ?? const []),
+        ),
+      ),
+    );
+  }
+}
+
 abstract final class FeatIds {
   // PHB — ID canonici stabili.
   static const alert = 'alert';
@@ -143,6 +196,26 @@ const Map<String, FeatDefinition> featDefinitions = {
           optionIds: ['FOR', 'DES'],
         ),
       ],
+      ruleEffects: [
+        CharacterRuleEffect(
+          id: 'athlete_stand_from_prone',
+          type: CharacterRuleEffectType.movement,
+          target: 'stand_from_prone_cost',
+          value: 1.5,
+        ),
+        CharacterRuleEffect(
+          id: 'athlete_climbing_no_extra_cost',
+          type: CharacterRuleEffectType.movement,
+          target: 'climbing_extra_movement_cost',
+          value: 0,
+        ),
+        CharacterRuleEffect(
+          id: 'athlete_short_running_jump',
+          type: CharacterRuleEffectType.movement,
+          target: 'running_jump_required_distance',
+          value: 1.5,
+        ),
+      ],
     ),
   ),
   FeatIds.actor: FeatDefinition(
@@ -218,43 +291,6 @@ const Map<String, FeatDefinition> featDefinitions = {
       ownerId: FeatIds.charger,
     ),
     effects: CharacterEffects(
-      choices: [
-        CharacterChoiceDefinition(
-          id: 'ritual_caster_class',
-          label: 'Classe incantatrice',
-          type: CharacterChoiceType.other,
-          optionIds: [
-            'bard',
-            'cleric',
-            'druid',
-            'sorcerer',
-            'warlock',
-            'wizard',
-          ],
-        ),
-        CharacterChoiceDefinition(
-          id: 'ritual_caster_spells',
-          label: 'Incantesimi rituali',
-          type: CharacterChoiceType.spell,
-          catalogId: CharacterChoiceCatalogIds.spells,
-          minimumSelections: 2,
-          maximumSelections: 2,
-          constraints: [
-            CharacterChoiceConstraint(
-              key: CharacterChoiceConstraintKeys.classId,
-              valueFromChoice: 'ritual_caster_class',
-            ),
-            CharacterChoiceConstraint(
-              key: CharacterChoiceConstraintKeys.spellLevel,
-              values: ['1'],
-            ),
-            CharacterChoiceConstraint(
-              key: CharacterChoiceConstraintKeys.ritual,
-              values: ['true'],
-            ),
-          ],
-        ),
-      ],
       ruleEffects: [
         CharacterRuleEffect(
           id: 'charger_dash_bonus_action',
@@ -353,20 +389,10 @@ const Map<String, FeatDefinition> featDefinitions = {
       ),
     ],
     effects: CharacterEffects(
-      choices: [
-        CharacterChoiceDefinition(
-          id: 'martial_adept_maneuvers',
-          label: 'Manovre del Maestro di Battaglia',
-          type: CharacterChoiceType.other,
-          minimumSelections: 2,
-          maximumSelections: 2,
-          catalogId: CharacterChoiceCatalogIds.battleMasterManeuvers,
-        ),
-      ],
       ruleEffects: [
         CharacterRuleEffect(
           id: 'defensive_duelist_reaction_ac',
-          type: CharacterRuleEffectType.conditional,
+          type: CharacterRuleEffectType.reaction,
           target: 'armor_class_against_triggering_melee_attack',
           condition:
               'wielding_proficient_finesse_weapon_and_hit_by_melee_attack',
@@ -452,19 +478,19 @@ const Map<String, FeatDefinition> featDefinitions = {
       ruleEffects: [
         CharacterRuleEffect(
           id: 'dungeon_delver_secret_door_perception',
-          type: CharacterRuleEffectType.conditional,
+          type: CharacterRuleEffectType.advantage,
           target: 'Percezione',
           condition: 'detect_secret_door',
         ),
         CharacterRuleEffect(
           id: 'dungeon_delver_secret_door_investigation',
-          type: CharacterRuleEffectType.conditional,
+          type: CharacterRuleEffectType.advantage,
           target: 'Indagare',
           condition: 'detect_secret_door',
         ),
         CharacterRuleEffect(
           id: 'dungeon_delver_trap_saves',
-          type: CharacterRuleEffectType.conditional,
+          type: CharacterRuleEffectType.advantage,
           target: 'saving_throw',
           condition: 'avoid_or_resist_trap',
         ),
@@ -476,7 +502,7 @@ const Map<String, FeatDefinition> featDefinitions = {
         ),
         CharacterRuleEffect(
           id: 'dungeon_delver_normal_pace_trap_search',
-          type: CharacterRuleEffectType.conditional,
+          type: CharacterRuleEffectType.movement,
           target: 'trap_search_movement_pace',
           condition: 'searching_for_traps',
         ),
@@ -548,7 +574,27 @@ const Map<String, FeatDefinition> featDefinitions = {
       ),
       ownerId: FeatIds.elementalAdept,
     ),
+    prerequisites: [
+      FeatPrerequisite(
+        type: FeatPrerequisiteType.spellcasting,
+        value: 'spellcasting',
+      ),
+    ],
     effects: CharacterEffects(
+      choices: [
+        CharacterChoiceDefinition(
+          id: 'elemental_adept_damage_type',
+          label: 'Tipo di danno elementale',
+          type: CharacterChoiceType.other,
+          optionIds: [
+            'acid',
+            'cold',
+            'fire',
+            'lightning',
+            'thunder',
+          ],
+        ),
+      ],
       ruleEffects: [
         CharacterRuleEffect(
           id: 'elemental_adept_ignore_resistance',
@@ -600,7 +646,7 @@ const Map<String, FeatDefinition> featDefinitions = {
       ruleEffects: [
         CharacterRuleEffect(
           id: 'grappler_advantage_against_grappled',
-          type: CharacterRuleEffectType.conditional,
+          type: CharacterRuleEffectType.advantage,
           target: 'attack_roll',
           condition: 'target_grappled_by_character',
         ),
@@ -649,12 +695,19 @@ const Map<String, FeatDefinition> featDefinitions = {
           condition: 'critical_hit_or_reduce_to_zero_hp',
         ),
         CharacterRuleEffect(
-          id: 'great_weapon_master_power_attack',
-          type: CharacterRuleEffectType.conditional,
-          target: 'heavy_weapon_attack',
-          value: 10,
-          condition: 'minus_five_to_hit',
+          id: 'great_weapon_master_power_attack_to_hit',
+          type: CharacterRuleEffectType.attackBonus,
+          target: 'heavy_weapon_attack_roll',
+          value: -5,
+          condition: 'chosen_before_attack_with_proficient_heavy_weapon',
         ),
+        CharacterRuleEffect(
+          id: 'great_weapon_master_power_attack_damage',
+          type: CharacterRuleEffectType.damageBonus,
+          target: 'heavy_weapon_damage',
+          value: 10,
+          condition: 'power_attack_hit',
+        )
       ],
     ),
   ),
@@ -695,9 +748,10 @@ const Map<String, FeatDefinition> featDefinitions = {
         ),
         CharacterRuleEffect(
           id: 'healer_medical_treatment',
-          type: CharacterRuleEffectType.conditional,
+          type: CharacterRuleEffectType.resource,
           target: 'healers_kit_healing',
-          condition: 'once_per_short_or_long_rest_per_target',
+          condition:
+              'heals_1d6_plus_4_plus_target_max_hit_dice_once_per_short_or_long_rest',
         ),
       ],
     ),
@@ -767,6 +821,12 @@ const Map<String, FeatDefinition> featDefinitions = {
       ),
       ownerId: FeatIds.heavyArmorMaster,
     ),
+    prerequisites: [
+      FeatPrerequisite(
+        type: FeatPrerequisiteType.proficiency,
+        value: 'heavy_armor',
+      ),
+    ],
     effects: CharacterEffects(
       abilityBonuses: [
         AbilityBonusDefinition(
@@ -779,6 +839,11 @@ const Map<String, FeatDefinition> featDefinitions = {
           id: 'heavy_armor_master_damage_reduction',
           type: CharacterRuleEffectType.conditional,
           target: 'nonmagical_weapon_damage',
+          referenceIds: [
+            'bludgeoning',
+            'piercing',
+            'slashing',
+          ],
           value: 3,
           condition: 'while_wearing_heavy_armor',
         ),
@@ -822,9 +887,10 @@ const Map<String, FeatDefinition> featDefinitions = {
       ruleEffects: [
         CharacterRuleEffect(
           id: 'inspiring_leader_temporary_hp',
-          type: CharacterRuleEffectType.conditional,
+          type: CharacterRuleEffectType.resource,
           target: 'temporary_hit_points',
-          condition: 'after_10_minute_inspiring_speech',
+          condition:
+              'after_10_minute_speech_grants_level_plus_charisma_modifier',
         ),
       ],
     ),
@@ -996,7 +1062,7 @@ const Map<String, FeatDefinition> featDefinitions = {
       ruleEffects: [
         CharacterRuleEffect(
           id: 'lucky_luck_points',
-          type: CharacterRuleEffectType.conditional,
+          type: CharacterRuleEffectType.resource,
           target: 'luck_points',
           value: 3,
           condition: 'recovered_on_long_rest',
@@ -1048,13 +1114,13 @@ const Map<String, FeatDefinition> featDefinitions = {
       ruleEffects: [
         CharacterRuleEffect(
           id: 'mage_slayer_reaction_attack',
-          type: CharacterRuleEffectType.conditional,
+          type: CharacterRuleEffectType.reaction,
           target: 'reaction_attack',
           condition: 'adjacent_creature_casts_spell',
         ),
         CharacterRuleEffect(
           id: 'mage_slayer_concentration_disadvantage',
-          type: CharacterRuleEffectType.conditional,
+          type: CharacterRuleEffectType.disadvantage,
           target: 'concentration_save',
           condition: 'after_melee_damage',
         ),
@@ -1186,11 +1252,23 @@ const Map<String, FeatDefinition> featDefinitions = {
       ownerId: FeatIds.martialAdept,
     ),
     effects: CharacterEffects(
+      choices: [
+        CharacterChoiceDefinition(
+          id: 'martial_adept_maneuvers',
+          label: 'Due manovre del Maestro di Battaglia',
+          type: CharacterChoiceType.other,
+          minimumSelections: 2,
+          maximumSelections: 2,
+          catalogId: CharacterChoiceCatalogIds.battleMasterManeuvers,
+        ),
+      ],
       ruleEffects: [
         CharacterRuleEffect(
           id: 'martial_adept_superiority_die',
           type: CharacterRuleEffectType.resource,
           target: 'superiority_die',
+          referenceIds: ['d6'],
+          condition: 'recovered_on_short_or_long_rest',
           value: 1,
         ),
         CharacterRuleEffect(
@@ -1226,6 +1304,12 @@ const Map<String, FeatDefinition> featDefinitions = {
       ),
       ownerId: FeatIds.mediumArmorMaster,
     ),
+    prerequisites: [
+      FeatPrerequisite(
+        type: FeatPrerequisiteType.proficiency,
+        value: 'medium_armor',
+      ),
+    ],
     effects: CharacterEffects(
       ruleEffects: [
         CharacterRuleEffect(
@@ -1266,16 +1350,17 @@ const Map<String, FeatDefinition> featDefinitions = {
       ownerId: FeatIds.mobile,
     ),
     effects: CharacterEffects(
+      walkingSpeedBonus: 3,
       ruleEffects: [
         CharacterRuleEffect(
           id: 'mobile_speed_bonus',
-          type: CharacterRuleEffectType.conditional,
+          type: CharacterRuleEffectType.movement,
           target: 'walking_speed',
-          value: 10,
+          value: 3,
         ),
         CharacterRuleEffect(
           id: 'mobile_dash_ignores_difficult_terrain',
-          type: CharacterRuleEffectType.conditional,
+          type: CharacterRuleEffectType.movement,
           target: 'difficult_terrain',
           condition: 'after_dash_action_on_turn',
         ),
@@ -1379,7 +1464,7 @@ const Map<String, FeatDefinition> featDefinitions = {
         ),
         CharacterRuleEffect(
           id: 'mounted_combatant_redirect_attack',
-          type: CharacterRuleEffectType.reaction,
+          type: CharacterRuleEffectType.conditional,
           target: 'mount_targeting_attack',
         ),
         CharacterRuleEffect(
@@ -1425,13 +1510,21 @@ const Map<String, FeatDefinition> featDefinitions = {
       ruleEffects: [
         CharacterRuleEffect(
           id: 'observant_passive_perception',
-          type: CharacterRuleEffectType.conditional,
+          type: CharacterRuleEffectType.passiveScoreBonus,
           target: 'passive_perception',
+          value: 5,
         ),
         CharacterRuleEffect(
           id: 'observant_passive_investigation',
-          type: CharacterRuleEffectType.conditional,
+          type: CharacterRuleEffectType.passiveScoreBonus,
           target: 'passive_investigation',
+          value: 5,
+        ),
+        CharacterRuleEffect(
+          id: 'observant_read_lips',
+          type: CharacterRuleEffectType.conditional,
+          target: 'speech_reading',
+          condition: 'can_see_creature_mouth_and_understand_language',
         ),
       ],
     ),
@@ -1470,6 +1563,14 @@ const Map<String, FeatDefinition> featDefinitions = {
           id: 'polearm_master_bonus_attack',
           type: CharacterRuleEffectType.conditional,
           target: 'polearm_bonus_attack',
+          value: 4,
+          referenceIds: [
+            'glaive',
+            'halberd',
+            'quarterstaff',
+            'spear',
+          ],
+          condition: 'bonus_attack_deals_1d4_bludgeoning_damage',
         ),
         CharacterRuleEffect(
           id: 'polearm_master_opportunity_reach',
@@ -1599,7 +1700,51 @@ const Map<String, FeatDefinition> featDefinitions = {
       ),
       ownerId: FeatIds.ritualCaster,
     ),
+    prerequisites: [
+      FeatPrerequisite(
+        type: FeatPrerequisiteType.minimumAbility,
+        value: 'INT_OR_SAG',
+        minimum: 13,
+      ),
+    ],
     effects: CharacterEffects(
+      choices: [
+        CharacterChoiceDefinition(
+          id: 'ritual_caster_class',
+          label: 'Classe incantatrice',
+          type: CharacterChoiceType.other,
+          optionIds: [
+            'bard',
+            'cleric',
+            'druid',
+            'sorcerer',
+            'warlock',
+            'wizard',
+          ],
+        ),
+        CharacterChoiceDefinition(
+          id: 'ritual_caster_spells',
+          label: 'Due incantesimi rituali di 1° livello',
+          type: CharacterChoiceType.spell,
+          catalogId: CharacterChoiceCatalogIds.spells,
+          minimumSelections: 2,
+          maximumSelections: 2,
+          constraints: [
+            CharacterChoiceConstraint(
+              key: CharacterChoiceConstraintKeys.classId,
+              valueFromChoice: 'ritual_caster_class',
+            ),
+            CharacterChoiceConstraint(
+              key: CharacterChoiceConstraintKeys.spellLevel,
+              values: ['1'],
+            ),
+            CharacterChoiceConstraint(
+              key: CharacterChoiceConstraintKeys.ritual,
+              values: ['true'],
+            ),
+          ],
+        ),
+      ],
       ruleEffects: [
         CharacterRuleEffect(
           id: 'ritual_caster_spellbook',
@@ -1680,9 +1825,10 @@ const Map<String, FeatDefinition> featDefinitions = {
       ruleEffects: [
         CharacterRuleEffect(
           id: 'sentinel_speed_zero',
-          type: CharacterRuleEffectType.conditional,
+          type: CharacterRuleEffectType.movement,
           target: 'opportunity_attack',
-          condition: 'speed_becomes_zero',
+          value: 0,
+          condition: 'opportunity_attack_hits_until_end_of_turn',
         ),
         CharacterRuleEffect(
           id: 'sentinel_ignore_disengage',
@@ -1740,12 +1886,19 @@ const Map<String, FeatDefinition> featDefinitions = {
           condition: 'half_and_three_quarters_cover',
         ),
         CharacterRuleEffect(
-          id: 'sharpshooter_power_shot',
-          type: CharacterRuleEffectType.conditional,
-          target: 'ranged_attack',
-          value: 10,
-          condition: 'minus_five_to_hit',
+          id: 'sharpshooter_power_shot_to_hit',
+          type: CharacterRuleEffectType.attackBonus,
+          target: 'ranged_weapon_attack_roll',
+          value: -5,
+          condition: 'chosen_before_attack_with_proficient_ranged_weapon',
         ),
+        CharacterRuleEffect(
+          id: 'sharpshooter_power_shot_damage',
+          type: CharacterRuleEffectType.damageBonus,
+          target: 'ranged_weapon_damage',
+          value: 10,
+          condition: 'power_shot_hit',
+        )
       ],
     ),
   ),
@@ -1789,6 +1942,7 @@ const Map<String, FeatDefinition> featDefinitions = {
           id: 'shield_master_dexterity_save_bonus',
           type: CharacterRuleEffectType.conditional,
           target: 'dexterity_saving_throw',
+          value: 2,
           condition: 'add_shield_ac_bonus',
         ),
         CharacterRuleEffect(
@@ -1918,8 +2072,27 @@ const Map<String, FeatDefinition> featDefinitions = {
       ),
       ownerId: FeatIds.spellSniper,
     ),
+    prerequisites: [
+      FeatPrerequisite(
+        type: FeatPrerequisiteType.spellcasting,
+        value: 'spellcasting',
+      ),
+    ],
     effects: CharacterEffects(
       choices: [
+        CharacterChoiceDefinition(
+          id: 'spell_sniper_class',
+          label: 'Classe del trucchetto',
+          type: CharacterChoiceType.other,
+          optionIds: [
+            'bard',
+            'cleric',
+            'druid',
+            'sorcerer',
+            'warlock',
+            'wizard',
+          ],
+        ),
         CharacterChoiceDefinition(
           id: 'spell_sniper_cantrip',
           label: 'Trucchetto',
@@ -1927,8 +2100,16 @@ const Map<String, FeatDefinition> featDefinitions = {
           catalogId: CharacterChoiceCatalogIds.spells,
           constraints: [
             CharacterChoiceConstraint(
+              key: CharacterChoiceConstraintKeys.classId,
+              valueFromChoice: 'spell_sniper_class',
+            ),
+            CharacterChoiceConstraint(
               key: CharacterChoiceConstraintKeys.spellLevel,
               values: ['0'],
+            ),
+            CharacterChoiceConstraint(
+              key: CharacterChoiceConstraintKeys.spellAttack,
+              values: ['true'],
             ),
           ],
         ),
@@ -1979,6 +2160,9 @@ const Map<String, FeatDefinition> featDefinitions = {
       ownerId: FeatIds.tavernBrawler,
     ),
     effects: CharacterEffects(
+      weaponProficiencies: {
+        'improvised_weapons',
+      },
       choices: [
         CharacterChoiceDefinition(
           id: 'tavern_brawler_ability',
@@ -1999,6 +2183,8 @@ const Map<String, FeatDefinition> featDefinitions = {
           id: 'tavern_brawler_unarmed_strike',
           type: CharacterRuleEffectType.damageBonus,
           target: 'unarmed_strike',
+          value: 4,
+          referenceIds: ['1d4'],
         ),
         CharacterRuleEffect(
           id: 'tavern_brawler_bonus_grapple',
@@ -2064,6 +2250,12 @@ const Map<String, FeatDefinition> featDefinitions = {
       ),
       ownerId: FeatIds.warCaster,
     ),
+    prerequisites: [
+      FeatPrerequisite(
+        type: FeatPrerequisiteType.spellcasting,
+        value: 'spellcasting',
+      ),
+    ],
     effects: CharacterEffects(
       ruleEffects: [
         CharacterRuleEffect(
@@ -2107,7 +2299,24 @@ const Map<String, FeatDefinition> featDefinitions = {
       ),
       ownerId: FeatIds.fightingInitiate,
     ),
+    prerequisites: [
+      FeatPrerequisite(
+        type: FeatPrerequisiteType.proficiency,
+        value: 'martial_weapon',
+      ),
+    ],
     effects: CharacterEffects(
+      choices: [
+        CharacterChoiceDefinition(
+          id: 'fighting_initiate_style',
+          requireNewAcquisition: true,
+          label: 'Stile di combattimento',
+          type: CharacterChoiceType.other,
+          catalogId: CharacterChoiceCatalogIds.fightingStyles,
+          minimumSelections: 1,
+          maximumSelections: 1,
+        ),
+      ],
       ruleEffects: [
         CharacterRuleEffect(
           id: 'grant_fighting_style',
@@ -2153,7 +2362,6 @@ const Map<String, FeatDefinition> featDefinitions = {
         ),
         CharacterChoiceDefinition(
           id: 'weapon_master_weapons',
-          requireNewAcquisition: true,
           label: 'Quattro armi di Maestro d’Armi',
           type: CharacterChoiceType.weapon,
           minimumSelections: 4,
@@ -2308,6 +2516,23 @@ CharacterEffects _featChoiceEffects(
       }
     }
 
+    if (choice.id == 'elemental_adept_damage_type') {
+      result = _mergeFeatEffects(
+        result,
+        CharacterEffects(
+          ruleEffects: [
+            CharacterRuleEffect(
+              id: 'elemental_adept_selected_$selectedId',
+              type: CharacterRuleEffectType.conditional,
+              target: 'elemental_adept_damage_type',
+              referenceIds: [selectedId],
+            ),
+          ],
+        ),
+      );
+      continue;
+    }
+
     final CharacterEffects selectedEffect;
 
     switch (choice.type) {
@@ -2405,6 +2630,35 @@ ResolvedFeatEffects? resolveFeatEffects({
   return ResolvedFeatEffects(
     definition: definition,
     effects: effects,
+  );
+}
+
+/// Indica se il PHB consente acquisizioni multiple del talento.
+bool featCanBeTakenMultipleTimes(String featId) =>
+    featId == FeatIds.elementalAdept;
+
+/// Combina gli effetti già risolti di più acquisizioni.
+///
+/// Ogni acquisizione viene prima risolta con le proprie selezioni, così
+/// le diverse istanze di un talento ripetibile restano indipendenti.
+ResolvedFeatEffects? combineResolvedFeatEffects(
+  Iterable<ResolvedFeatEffects?> entries,
+) {
+  FeatDefinition? firstDefinition;
+  var combined = const CharacterEffects();
+
+  for (final entry in entries) {
+    if (entry == null) continue;
+
+    firstDefinition ??= entry.definition;
+    combined = _mergeFeatEffects(combined, entry.effects);
+  }
+
+  if (firstDefinition == null) return null;
+
+  return ResolvedFeatEffects(
+    definition: firstDefinition,
+    effects: combined,
   );
 }
 

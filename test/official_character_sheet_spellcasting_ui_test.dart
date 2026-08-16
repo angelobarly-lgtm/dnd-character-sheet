@@ -52,6 +52,8 @@ void main() {
 
     expect(find.text('LANCIA INCANTESIMO'), findsOneWidget);
 
+    await tester.ensureVisible(find.text('LANCIA INCANTESIMO'));
+    await tester.pumpAndSettle();
     await tester.tap(find.text('LANCIA INCANTESIMO'));
     await tester.pumpAndSettle();
 

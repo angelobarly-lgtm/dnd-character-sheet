@@ -768,7 +768,13 @@ CharacterEligibilityResult evaluateCharacterEligibility({
   for (final requirement in requirements) {
     switch (requirement.type) {
       case CharacterRequirementType.minimumAbility:
-        final current = state.abilityScores[requirement.value] ?? 0;
+        final abilityIds = requirement.value.split('_OR_');
+        final current = abilityIds
+            .map((ability) => state.abilityScores[ability] ?? 0)
+            .fold<int>(
+              0,
+              (highest, score) => score > highest ? score : highest,
+            );
         final minimum = requirement.minimum ?? 0;
 
         results.add(
